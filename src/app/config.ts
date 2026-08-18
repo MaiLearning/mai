@@ -5,6 +5,7 @@ export interface AppConfig {
   mode: AppMode
   plugins: string[]
   logging: string
+  fakeData: boolean
 }
 
 const modes: AppMode[] = ['development', 'production', 'release']
@@ -17,4 +18,5 @@ export const appConfig: AppConfig = {
   mode: rawConfig.mode as AppMode,
   plugins: rawConfig.plugins,
   logging: rawConfig.logging,
+  fakeData: rawConfig.fakeData,
 }

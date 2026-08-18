@@ -4,6 +4,7 @@ interface MaiConfigModule {
   mode: 'development' | 'production' | 'release'
   plugins: string[]
   logging: string
+  fakeData: boolean
 }
 
 declare module 'virtual:mai-config' {

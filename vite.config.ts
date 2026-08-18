@@ -38,6 +38,7 @@ function maiConfigPlugin(mode: string): Plugin {
         mode,
         plugins: values.plugins ? values.plugins.split(',').map((item) => item.trim()) : [],
         logging: values.logging ?? 'info',
+        fakeData: values.fake_data === 'true' && mode === 'development',
       })}`
     },
   }
