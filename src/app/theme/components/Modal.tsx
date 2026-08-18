@@ -1,4 +1,4 @@
-import { useEffect, type ReactNode } from 'react'
+import { type ReactNode, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import styled from 'styled-components'
 
@@ -51,7 +51,6 @@ const Overlay = styled.div`
   padding: 24px;
   background: rgba(0, 0, 0, 0.48);
 `
-
 const Content = styled.div`
   width: min(100%, 520px);
   max-height: calc(100dvh - 48px);
@@ -63,7 +62,6 @@ const Content = styled.div`
   color: ${({ theme }) => theme.colors.text};
   box-shadow: 0 24px 80px rgba(0, 0, 0, 0.28);
 `
-
 const Header = styled.div`
   display: flex;
   align-items: center;

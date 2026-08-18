@@ -1,4 +1,4 @@
-import { RouteObject, Navigate } from 'react-router-dom'
+import { Navigate, RouteObject } from 'react-router-dom'
 
 export const rootRoute: RouteObject = {
   path: '/',

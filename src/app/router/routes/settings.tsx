@@ -1,10 +1,10 @@
-import { RouteObject, Navigate } from 'react-router-dom'
-import { SettingsPage } from '@/pages/settings'
+import { Navigate, RouteObject } from 'react-router-dom'
 import {
-  GlobalSettings,
-  ProfileSettings,
   CourseSettings,
+  GlobalSettings,
   PluginSettings,
+  ProfileSettings,
+  SettingsPage,
 } from '@/pages/settings'
 
 export const settingsRoute: RouteObject = {

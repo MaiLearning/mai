@@ -1,12 +1,12 @@
 import { useEffect } from 'react'
 import { RouterProvider } from 'react-router-dom'
-import { ThemeProvider } from './theme'
-import { Runner } from './runner'
-import { appConfig } from './config'
-import { initLoggerTask } from './runner/task/init_logger'
-import { initPluginsTask } from './runner/task/init_external_plugins'
-import AppRouter from './router'
 import { SafeAreaProvider } from '@/layouts'
+import { appConfig } from './config'
+import AppRouter from './router'
+import { Runner } from './runner'
+import { initPluginsTask } from './runner/task/init_external_plugins'
+import { initLoggerTask } from './runner/task/init_logger'
+import { ThemeProvider } from './theme'
 
 /**
  * Корневой компонент всего приложения.

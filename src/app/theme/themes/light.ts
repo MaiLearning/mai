@@ -12,7 +12,6 @@ const typography = {
     h6: { fontSize: '0.875rem', fontWeight: '500', lineHeight: '1.5' },
   },
 } as const
-
 const shared = {
   typography,
   spacing: { xs: '4px', sm: '8px', md: '12px', lg: '16px', xl: '24px' },

@@ -1,9 +1,9 @@
-import { useEffect, useMemo, useState, type ReactNode } from 'react'
-import { ThemeProvider as StyledComponentsThemeProvider } from 'styled-components'
+import { type ReactNode, useEffect, useMemo, useState } from 'react'
 import { Toaster } from 'sonner'
+import { ThemeProvider as StyledComponentsThemeProvider } from 'styled-components'
 import { AppThemeContext } from './context'
-import { themes, type ThemeName, type ThemePreference } from './theme'
 import { GlobalStyle } from './global-style'
+import { type ThemeName, type ThemePreference, themes } from './theme'
 
 interface ThemeProviderProps {
   children: ReactNode
@@ -43,9 +43,7 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
     <StyledComponentsThemeProvider theme={activeTheme}>
       <GlobalStyle />
       <Toaster position="bottom-right" />
-      <AppThemeContext.Provider value={context}>
-        {children}
-      </AppThemeContext.Provider>
+      <AppThemeContext.Provider value={context}>{children}</AppThemeContext.Provider>
     </StyledComponentsThemeProvider>
   )
 }

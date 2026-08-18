@@ -5,11 +5,7 @@ export interface InlineProps extends HTMLAttributes<HTMLDivElement> {
   gap?: string
   justify?: string
 }
-export function Inline({
-  gap = 'md',
-  justify = 'flex-start',
-  ...props
-}: InlineProps) {
+export function Inline({ gap = 'md', justify = 'flex-start', ...props }: InlineProps) {
   return <Root $gap={gap} $justify={justify} {...props} />
 }
 const Root = styled.div<{ $gap: string; $justify: string }>`

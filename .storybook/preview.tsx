@@ -1,5 +1,5 @@
 import type { Preview } from '@storybook/react-vite'
-import { ThemeProvider } from '@/app/theme'
+import { ThemeProvider } from '../src/app/theme'
 
 const preview: Preview = {
   decorators: [
@@ -12,8 +12,8 @@ const preview: Preview = {
   parameters: {
     controls: {
       matchers: {
-       color: /(background|color)$/i,
-       date: /Date$/i,
+        color: /(background|color)$/i,
+        date: /Date$/i,
       },
     },
 
@@ -21,6 +21,6 @@ const preview: Preview = {
       test: 'todo',
     },
   },
-};
+}
 
-export default preview;
+export default preview
