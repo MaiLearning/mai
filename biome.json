@@ -8,7 +8,8 @@
       "!!storybook-static",
       "!!src-tauri/target",
       "!!src-tauri/gen",
-      "!!src/features/plugin/external/sandbox/shell/template.html"
+      "!!src/features/plugin/external/sandbox/shell/template.html",
+      "!!coverage"
     ]
   },
   "formatter": {
