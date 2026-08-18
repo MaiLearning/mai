@@ -1,13 +1,6 @@
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-  type ReactNode,
-} from 'react'
+import { createContext, type ReactNode, useContext, useEffect, useState } from 'react'
 
 type SafeAreaInsets = { top: number; bottom: number; left: number; right: number }
-
 const SafeAreaContext = createContext<SafeAreaInsets>({ top: 0, bottom: 0, left: 0, right: 0 })
 export const useSafeArea = () => useContext(SafeAreaContext)
 

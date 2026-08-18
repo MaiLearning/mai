@@ -4,11 +4,8 @@ import react from '@vitejs/plugin-react'
 import { defineConfig, type Plugin } from 'vite'
 
 const host = process.env.TAURI_DEV_HOST
-
 const virtualModuleId = 'virtual:mai-config'
-
 const resolvedVirtualModuleId = `\0${virtualModuleId}`
-
 function maiConfigPlugin(mode: string): Plugin {
   return {
     name: 'mai-config',

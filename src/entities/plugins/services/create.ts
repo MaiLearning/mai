@@ -23,7 +23,6 @@ export async function registerInternalPlugin(input: RegisterInternalPluginInput)
   const version = validatePluginVersion(input.version)
   const description = input.description ?? null
   const author = input.author ?? null
-
   const request = RegisterInternalPluginInputSchema.parse({
     id,
     name,
