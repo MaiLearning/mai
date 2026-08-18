@@ -1,11 +1,12 @@
-import { defineConfig, type Plugin } from 'vite'
-import react from '@vitejs/plugin-react'
 import fs from 'node:fs'
 import path from 'node:path'
+import react from '@vitejs/plugin-react'
+import { defineConfig, type Plugin } from 'vite'
 
-const host = process.env.TAURI_DEV_HOST;
+const host = process.env.TAURI_DEV_HOST
 
 const virtualModuleId = 'virtual:mai-config'
+
 const resolvedVirtualModuleId = `\0${virtualModuleId}`
 
 function maiConfigPlugin(mode: string): Plugin {
@@ -58,13 +59,13 @@ export default defineConfig(({ mode }) => ({
     host: host || false,
     hmr: host
       ? {
-          protocol: "ws",
+          protocol: 'ws',
           host,
           port: 1421,
         }
       : undefined,
     watch: {
-      ignored: ["**/src-tauri/**"],
+      ignored: ['**/src-tauri/**'],
     },
   },
 }))
