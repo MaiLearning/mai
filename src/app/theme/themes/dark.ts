@@ -1,12 +1,34 @@
 import type { AppTheme } from '../theme'
-import { lightTheme } from './light'
 
 /** Темная тема использует тот же полный контракт semantic tokens. */
 export const darkTheme: AppTheme = {
-  ...lightTheme,
   name: 'dark',
+  font: {
+    display: 'Sora, ui-sans-serif, system-ui, sans-serif',
+    body: 'Plus Jakarta Sans, ui-sans-serif, system-ui, sans-serif',
+  },
+  typography: {
+    fontFamily: 'Plus Jakarta Sans, ui-sans-serif, system-ui, sans-serif',
+    fontFamilyMonospace: 'JetBrains Mono, monospace',
+    headings: {
+      h1: { fontSize: '2.5rem', fontWeight: '700', lineHeight: '1.2' },
+      h2: { fontSize: '2rem', fontWeight: '700', lineHeight: '1.25' },
+      h3: { fontSize: '1.5rem', fontWeight: '600', lineHeight: '1.3' },
+      h4: { fontSize: '1.25rem', fontWeight: '600', lineHeight: '1.35' },
+      h5: { fontSize: '1rem', fontWeight: '500', lineHeight: '1.4' },
+      h6: { fontSize: '0.875rem', fontWeight: '500', lineHeight: '1.4' },
+    },
+  },
+  spacing: { xs: '4px', sm: '8px', md: '12px', lg: '16px', xl: '24px' },
+  radii: { sm: '8px', md: '12px', lg: '18px', xl: '26px', pill: '999px' },
+  shadows: {
+    sm: '0 1px 2px rgba(0,0,0,0.24)',
+    md: '0 6px 20px rgba(0,0,0,0.32)',
+    lg: '0 20px 50px rgba(0,0,0,0.40)',
+  },
+  transitions: { fast: '120ms ease', normal: '180ms ease' },
+  breakpoints: { sm: '640px', md: '768px', lg: '1024px', xl: '1280px' },
   colors: {
-    ...lightTheme.colors,
     body: '#111118',
     surface: '#191922',
     surfaceElevated: '#232330',
@@ -18,6 +40,8 @@ export const darkTheme: AppTheme = {
     primary: '#8b8af5',
     primaryHover: '#a9a5ff',
     primarySurface: '#302e68',
+    accent: '#f5b942',
+    accentSurface: '#4d3c1c',
     danger: '#ef767a',
     dangerHover: '#ff9295',
     dangerSurface: '#512629',

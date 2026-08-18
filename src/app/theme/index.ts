@@ -1,5 +1,6 @@
 export { colors } from './colors'
 export * from './components'
+export { up } from './helpers'
 export { useAppTheme, useColorScheme } from './hooks'
 export { ThemeProvider } from './provider'
 export { type AppTheme, type ThemeName, theme, themes } from './theme'

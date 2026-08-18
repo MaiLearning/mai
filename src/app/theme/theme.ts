@@ -23,6 +23,8 @@ export interface AppTheme {
     primary: string
     primaryHover: string
     primarySurface: string
+    accent: string
+    accentSurface: string
     danger: string
     dangerHover: string
     dangerSurface: string
@@ -35,6 +37,10 @@ export interface AppTheme {
     focus: string
     overlay: string
   }
+  font: {
+    display: string
+    body: string
+  }
   typography: {
     fontFamily: string
     fontFamilyMonospace: string
@@ -44,9 +50,10 @@ export interface AppTheme {
     >
   }
   spacing: Record<'xs' | 'sm' | 'md' | 'lg' | 'xl', string>
-  radii: Record<'sm' | 'md' | 'lg' | 'pill', string>
+  radii: Record<'sm' | 'md' | 'lg' | 'xl' | 'pill', string>
   shadows: Record<'sm' | 'md' | 'lg', string>
   transitions: Record<'fast' | 'normal', string>
+  breakpoints: Record<'sm' | 'md' | 'lg' | 'xl', string>
 }
 
 /**
