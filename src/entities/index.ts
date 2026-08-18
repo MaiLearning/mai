@@ -1,0 +1,7 @@
+export * from './course'
+export * as directory from './directory'
+export * from './plugins'
+export * from './resource'
+export * as structure from './structure'
+export * from './task-plugin'
+export * from './theory-plugin'
