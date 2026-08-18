@@ -6,6 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
     "format": "biome check --write . && eslint . --fix",
     "format:check": "biome check . && eslint .",
     "preview": "vite preview",
@@ -46,6 +49,8 @@
     "storybook": "^10.5.8",
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.67.0",
-    "vite": "^7.0.4"
+    "vite": "^7.0.4",
+    "vitest": "^4.1.10",
+    "@vitest/coverage-v8": "^4.1.10"
   }
 }
