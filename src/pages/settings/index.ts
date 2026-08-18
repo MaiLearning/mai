@@ -1,0 +1,5 @@
+export { SettingsPage } from './settings-page'
+export { GlobalSettings } from './global'
+export { ProfileSettings } from './profile'
+export { CourseSettings } from './course'
+export { PluginSettings } from './plugin'
