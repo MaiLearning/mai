@@ -1,7 +1,9 @@
+import { useTranslation } from '@/app/i18n'
 import { Brand, FooterInner, FooterRoot, Mark } from './footer.styles'
 import { HomeIcon } from './HomeIcon'
 
 export function HomeFooter() {
+  const { t } = useTranslation('home')
   return (
     <FooterRoot>
       <FooterInner>
@@ -11,7 +13,7 @@ export function HomeFooter() {
           </Mark>
           Mai
         </Brand>
-        <span>© {new Date().getFullYear()} Mai. Build your own course, then learn it.</span>
+        <span>{t('footer.copyright', { year: new Date().getFullYear() })}</span>
       </FooterInner>
     </FooterRoot>
   )

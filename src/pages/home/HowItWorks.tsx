@@ -1,29 +1,31 @@
+import { useTranslation } from '@/app/i18n'
 import { HomeIcon } from './HomeIcon'
 import { Step, StepIcon, Steps } from './home.styles'
 
 export function HowItWorks() {
+  const { t } = useTranslation('home')
   return (
     <Steps id="how-it-works">
       <Step>
         <StepIcon>
           <HomeIcon name="pen" size={20} />
         </StepIcon>
-        <h3>Describe your goal</h3>
-        <p>Tell Mai what you want to learn — a topic, a skill, or a book you're working through.</p>
+        <h3>{t('howItWorks.step1.title')}</h3>
+        <p>{t('howItWorks.step1.text')}</p>
       </Step>
       <Step>
         <StepIcon>
           <HomeIcon name="layers" size={20} />
         </StepIcon>
-        <h3>Get a structured outline</h3>
-        <p>Mai organizes it into sections and lessons you can reshape into a path that fits you.</p>
+        <h3>{t('howItWorks.step2.title')}</h3>
+        <p>{t('howItWorks.step2.text')}</p>
       </Step>
       <Step>
         <StepIcon>
           <HomeIcon name="compass" size={20} />
         </StepIcon>
-        <h3>Learn at your pace</h3>
-        <p>Work through lessons, track progress, and pick up exactly where you left off.</p>
+        <h3>{t('howItWorks.step3.title')}</h3>
+        <p>{t('howItWorks.step3.text')}</p>
       </Step>
     </Steps>
   )

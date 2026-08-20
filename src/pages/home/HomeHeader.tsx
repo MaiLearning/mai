@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { useTranslation } from '@/app/i18n'
 import { HomeIcon } from './HomeIcon'
 import {
   ActionLink,
@@ -11,6 +12,7 @@ import {
 } from './header.styles'
 
 export function HomeHeader() {
+  const { t } = useTranslation('home')
   return (
     <HeaderRoot>
       <HeaderContainer>
@@ -20,18 +22,18 @@ export function HomeHeader() {
           </Mark>
           Mai
         </Brand>
-        <NavLinks aria-label="Основная навигация">
-          <Link to="/home">My courses</Link>
-          <Link to="/course">Continue</Link>
-          <Link to="#how-it-works">How it works</Link>
+        <NavLinks aria-label={t('header.nav.ariaLabel')}>
+          <Link to="/home">{t('header.nav.myCourses')}</Link>
+          <Link to="/course">{t('header.nav.continue')}</Link>
+          <Link to="#how-it-works">{t('header.nav.howItWorks')}</Link>
         </NavLinks>
         <Actions>
           <ActionLink to="/course" $variant="ghost">
-            Sign in
+            {t('header.actions.signIn')}
           </ActionLink>
           <ActionLink to="/course">
             <HomeIcon name="plus" size={16} />
-            New course
+            {t('header.actions.newCourse')}
           </ActionLink>
         </Actions>
       </HeaderContainer>

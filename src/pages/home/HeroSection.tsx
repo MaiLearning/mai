@@ -1,3 +1,4 @@
+import { useTranslation } from '@/app/i18n'
 import { Badge, ProgressFill, ProgressTrack } from '@/app/theme/components'
 import { HomeIcon } from './HomeIcon'
 import {
@@ -15,38 +16,35 @@ import {
 } from './home.styles'
 
 export function HeroSection() {
+  const { t } = useTranslation('home')
   return (
     <Hero>
       <div>
         <Badge variant="accent">
           <HomeIcon name="spark" size={14} />
-          Learn anything, your way
+          {t('hero.badge')}
         </Badge>
         <HeroTitle>
-          You decide what to learn. <span>Mai</span> shapes it into a course.
+          {t('hero.title')} <span>Mai</span>
         </HeroTitle>
-        <HeroText>
-          Mai isn't a catalog of someone else's classes. Describe what you want to understand, and
-          it becomes a structured course you build, organize, and actually finish — at your own
-          pace.
-        </HeroText>
+        <HeroText>{t('hero.text')}</HeroText>
         <HeroActions>
           <ActionLink to="/course" $size="lg">
             <HomeIcon name="plus" size={18} />
-            Create a course
+            {t('hero.createCourse')}
           </ActionLink>
           <ActionLink to="/course" $variant="ghost" $size="lg">
-            Continue learning <HomeIcon name="arrow" size={18} />
+            {t('hero.continueLearning')} <HomeIcon name="arrow" size={18} />
           </ActionLink>
         </HeroActions>
       </div>
-      <ContinueCard aria-label="Continue where you left off">
+      <ContinueCard aria-label={t('hero.continueCard.ariaLabel')}>
         <TopRow>
           <Badge variant="primary">
             <HomeIcon name="flame" size={14} />
-            Continue learning
+            {t('hero.badges.continue')}
           </Badge>
-          <Badge variant="neutral">Your course</Badge>
+          <Badge variant="neutral">{t('hero.badges.yourCourse')}</Badge>
         </TopRow>
         <Thumb>
           <HomeIcon name="book" size={44} />
@@ -55,15 +53,15 @@ export function HeroSection() {
           <CourseName>Understanding Neural Networks</CourseName>
           <Meta>
             <HomeIcon name="book" size={14} />
-            13 lessons <span>·</span>
+            {t('hero.progress.lessons')} <span>·</span>
             <HomeIcon name="clock" size={14} />
-            ~3h left
+            {t('hero.progress.timeLeft')}
           </Meta>
         </div>
         <div>
           <ProgressLabel>
-            <span>46% complete</span>
-            <span>6/13</span>
+            <span>{t('hero.progressLabel.percent')}</span>
+            <span>{t('hero.progressLabel.fraction')}</span>
           </ProgressLabel>
           <ProgressTrack
             role="progressbar"
@@ -75,7 +73,7 @@ export function HeroSection() {
           </ProgressTrack>
         </div>
         <ActionLink to="/course">
-          Resume course <HomeIcon name="arrow" size={16} />
+          {t('hero.resumeCourse')} <HomeIcon name="arrow" size={16} />
         </ActionLink>
       </ContinueCard>
     </Hero>

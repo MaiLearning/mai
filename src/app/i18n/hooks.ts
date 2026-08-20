@@ -1,36 +1,36 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { useTranslation as useTranslationBase } from 'react-i18next'
-import { type AppLanguage, DEFAULT_LANGUAGE, DEFAULT_NS, SUPPORTED_LANGUAGES } from './config'
+import {
+  type AppLanguage,
+  LANGUAGE_STORAGE_KEY,
+  NAMESPACES,
+  SUPPORTED_LANGUAGES,
+  resolveInitialLanguage,
+} from './config'
 import { i18next } from './init'
 
 /**
  * Обёртка над `useTranslation` из react-i18next с предзаполненным `defaultNS`.
  * Возвращает тот же кортеж `[t, i18n, ready]`.
  */
-export function useTranslation(ns: string | string[] = DEFAULT_NS) {
+export function useTranslation(ns: string | string[] = NAMESPACES[0]) {
   return useTranslationBase(ns)
 }
 
 /**
- * Доступ к текущему языку интерфейса и переключателю.
- * Подписывается на смену языка через `useTranslation`, поэтому перерендерит
- * при любом источнике изменения (LanguageDetector, другой компонент).
+ * Ручное управление языком через localStorage.
+ * Читает/записывает значение в localStorage по ключу `mai.lang`.
  */
 export function useCurrentLanguage(): {
   language: AppLanguage
   setLanguage: (lang: AppLanguage) => Promise<void>
   supported: readonly AppLanguage[]
 } {
-  const { i18n } = useTranslationBase(DEFAULT_NS)
-  const language = useMemo<AppLanguage>(
-    () =>
-      SUPPORTED_LANGUAGES.includes(i18n.language as AppLanguage)
-        ? (i18n.language as AppLanguage)
-        : DEFAULT_LANGUAGE,
-    [i18n.language],
-  )
+  const [language, setLanguageState] = useState<AppLanguage>(() => resolveInitialLanguage())
   const setLanguage = useCallback(async (lang: AppLanguage) => {
     await i18next.changeLanguage(lang)
+    localStorage.setItem(LANGUAGE_STORAGE_KEY, lang)
+    setLanguageState(lang)
   }, [])
 
   return useMemo(

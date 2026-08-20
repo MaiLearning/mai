@@ -1,3 +1,4 @@
+import { useTranslation } from '@/app/i18n'
 import { Badge, ProgressFill, ProgressTrack } from '@/app/theme/components'
 import { HomeIcon } from './HomeIcon'
 import { courses } from './home.data'
@@ -16,16 +17,17 @@ import {
 } from './home.styles'
 
 export function CoursesSection() {
+  const { t } = useTranslation('home')
   return (
     <Section>
       <SectionHead>
         <div>
-          <h2>My courses</h2>
-          <p>Everything you've built for yourself, in one place.</p>
+          <h2>{t('coursesSection.title')}</h2>
+          <p>{t('coursesSection.subtitle')}</p>
         </div>
         <ActionLink to="/course" $variant="soft">
           <HomeIcon name="plus" size={16} />
-          New course
+          {t('coursesSection.newCourse')}
         </ActionLink>
       </SectionHead>
       <CourseGrid>
@@ -35,18 +37,18 @@ export function CoursesSection() {
               <HomeIcon name="book" size={34} />
             </CardArt>
             <CardBody>
-              <Badge variant={variant}>{status}</Badge>
+              <Badge variant={variant}>{t('coursesSection.cards.status', { status })}</Badge>
               <h3>{title}</h3>
               <CardMeta>
                 <span>{topic}</span>
                 <span>·</span>
-                <span>{lessons} lessons</span>
+                <span>{t('coursesSection.cards.lessons', { count: lessons })}</span>
               </CardMeta>
               <CardFoot>
                 <div className="row">
-                  <span>{percent}% complete</span>
+                  <span>{t('coursesSection.cards.percentComplete', { percent })}</span>
                   <ActionLink to="/course">
-                    Open <HomeIcon name="arrow" size={13} />
+                    {t('coursesSection.cards.open')} <HomeIcon name="arrow" size={13} />
                   </ActionLink>
                 </div>
                 <ProgressTrack>
@@ -60,8 +62,8 @@ export function CoursesSection() {
           <CreateIcon>
             <HomeIcon name="plus" size={24} />
           </CreateIcon>
-          <strong>Create a new course</strong>
-          <span>Start from a topic, a goal, or a document you want to master.</span>
+          <strong>{t('coursesSection.createCard.title')}</strong>
+          <span>{t('coursesSection.createCard.subtitle')}</span>
         </CreateCard>
       </CourseGrid>
     </Section>

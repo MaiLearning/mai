@@ -1,0 +1,69 @@
+{
+  "header": {
+    "nav": {
+      "ariaLabel": "Основная навигация",
+      "myCourses": "My courses",
+      "continue": "Continue",
+      "howItWorks": "How it works"
+    },
+    "actions": {
+      "signIn": "Sign in",
+      "newCourse": "New course"
+    }
+  },
+  "hero": {
+    "badge": "Learn anything, your way",
+    "title": "You decide what to learn. Mai shapes it into a course.",
+    "text": "Mai isn't a catalog of someone else's classes. Describe what you want to understand, and it becomes a structured course you build, organize, and actually finish — at your own pace.",
+    "createCourse": "Create a course",
+    "continueLearning": "Continue learning",
+    "continueCard": {
+      "ariaLabel": "Continue where you left off"
+    },
+    "badges": {
+      "continue": "Continue learning",
+      "yourCourse": "Your course"
+    },
+    "progress": {
+      "lessons": "13 lessons",
+      "timeLeft": "~3h left"
+    },
+    "progressLabel": {
+      "percent": "46% complete",
+      "fraction": "6/13"
+    },
+    "resumeCourse": "Resume course"
+  },
+  "howItWorks": {
+    "step1": {
+      "title": "Describe your goal",
+      "text": "Tell Mai what you want to learn — a topic, a skill, or a book you're working through."
+    },
+    "step2": {
+      "title": "Get a structured outline",
+      "text": "Mai organizes it into sections and lessons you can reshape into a path that fits you."
+    },
+    "step3": {
+      "title": "Learn at your pace",
+      "text": "Work through lessons, track progress, and pick up exactly where you left off."
+    }
+  },
+  "coursesSection": {
+    "title": "My courses",
+    "subtitle": "Everything you've built for yourself, in one place.",
+    "newCourse": "New course",
+    "cards": {
+      "status": "{{status}}",
+      "lessons": "{{count}} lessons",
+      "percentComplete": "{{percent}}% complete",
+      "open": "Open"
+    },
+    "createCard": {
+      "title": "Create a new course",
+      "subtitle": "Start from a topic, a goal, or a document you want to master."
+    }
+  },
+  "footer": {
+    "copyright": "© {year} Mai. Build your own course, then learn it."
+  }
+}
