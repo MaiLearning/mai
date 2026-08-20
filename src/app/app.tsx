@@ -1,10 +1,12 @@
 import { useEffect } from 'react'
 import { RouterProvider } from 'react-router-dom'
+import { I18nProvider } from '@/app/i18n'
 import { SafeAreaProvider } from '@/layouts'
 import { appConfig } from './config'
 import AppRouter from './router'
 import { Runner } from './runner'
 import { initPluginsTask } from './runner/task/init_external_plugins'
+import { initI18nTask } from './runner/task/init_i18n'
 import { initLoggerTask } from './runner/task/init_logger'
 import { ThemeProvider } from './theme'
 
@@ -16,7 +18,8 @@ export default function Application() {
   useEffect(() => {
     const runner = new Runner()
 
-    runner.register(initLoggerTask, 'development')
+    runner.register(initLoggerTask, ['development', 'production', 'release'])
+    runner.register(initI18nTask, ['development', 'production', 'release'])
     runner.register(initPluginsTask, ['development', 'production', 'release'])
 
     runner.current = appConfig.mode
@@ -25,9 +28,11 @@ export default function Application() {
 
   return (
     <ThemeProvider>
-      <SafeAreaProvider>
-        <RouterProvider router={AppRouter} />
-      </SafeAreaProvider>
+      <I18nProvider>
+        <SafeAreaProvider>
+          <RouterProvider router={AppRouter} />
+        </SafeAreaProvider>
+      </I18nProvider>
     </ThemeProvider>
   )
 }

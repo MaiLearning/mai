@@ -1,0 +1,11 @@
+{
+  "app": {
+    "title": "Mai"
+  },
+  "common": {
+    "loading": "Loading…",
+    "error": "Error",
+    "save": "Save",
+    "cancel": "Cancel"
+  }
+}

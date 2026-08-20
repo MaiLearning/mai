@@ -32,7 +32,6 @@ const icons: Record<LessonType, typeof Play> = {
   exercise: PenLine,
   quiz: ListChecks,
 }
-
 interface Props {
   course: Course
   activeId: string
@@ -40,7 +39,6 @@ interface Props {
   onClose: () => void
   onSelect: (id: string) => void
 }
-
 function Node({
   node,
   depth,

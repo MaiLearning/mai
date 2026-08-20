@@ -1,0 +1,12 @@
+{
+  "settings": {
+    "global": {
+      "title": "General settings",
+      "language": {
+        "label": "Interface language",
+        "ru": "Русский",
+        "en": "English"
+      }
+    }
+  }
+}
