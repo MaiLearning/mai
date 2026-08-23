@@ -1,0 +1,16 @@
+{
+  "loading": "Loading",
+  "retry": "Retry",
+  "load_failed": "Failed to load the resource",
+  "resource_not_found": "Resource not found",
+  "types_load_failed": "Failed to load resource types",
+  "assign_failed": "Failed to assign the type",
+  "no_types": "No resource types available",
+  "pick_type_title": "Choose a resource type",
+  "pick_type_hint": "The resource has no type yet. Choose a suitable one from the list below.",
+  "type_assigned_title": "Type assigned",
+  "type_assigned_message": "The resource now has type \"{{name}}\"",
+  "plugin_not_found": "Plugin \"{{id}}\" not found or disabled",
+  "no_plugin_for_type": "No plugin to display a resource of type \"{{type}}\"",
+  "viewer_not_registered": "No viewer registered for type \"{{type}}\" yet"
+}

@@ -1,7 +1,7 @@
 import { invoke } from '@tauri-apps/api/core'
-import type { Plugin } from '../core/model'
+import type { Plugin, RegisterPluginInput } from '../core/model'
 
-export function sendRegisterPlugin(input: { path: string }): Promise<Plugin> {
+export function sendRegisterPlugin(input: RegisterPluginInput): Promise<Plugin> {
   return invoke<Plugin>('register_plugin', { request: input })
 }
 

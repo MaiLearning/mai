@@ -1,12 +1,20 @@
 import i18next from 'i18next'
 import { initReactI18next } from 'react-i18next'
-import { DEFAULT_NS, I18N_OPTIONS, NAMESPACES, SUPPORTED_LANGUAGES, resolveInitialLanguage } from './config'
+import {
+  DEFAULT_NS,
+  I18N_OPTIONS,
+  NAMESPACES,
+  resolveInitialLanguage,
+  SUPPORTED_LANGUAGES,
+} from './config'
 import commonEn from './locales/en/common.json'
 import homeEn from './locales/en/home.json'
 import settingsEn from './locales/en/settings.json'
+import viewerEn from './locales/en/viewer.json'
 import commonRu from './locales/ru/common.json'
 import homeRu from './locales/ru/home.json'
 import settingsRu from './locales/ru/settings.json'
+import viewerRu from './locales/ru/viewer.json'
 
 let initialized = false
 
@@ -29,8 +37,8 @@ export async function initI18n(): Promise<void> {
     ns: NAMESPACES,
     supportedLngs: [...SUPPORTED_LANGUAGES],
     resources: {
-      ru: { common: commonRu, home: homeRu, settings: settingsRu },
-      en: { common: commonEn, home: homeEn, settings: settingsEn },
+      ru: { common: commonRu, home: homeRu, settings: settingsRu, viewer: viewerRu },
+      en: { common: commonEn, home: homeEn, settings: settingsEn, viewer: viewerEn },
     },
     interpolation: { escapeValue: false },
     react: { useSuspense: true },

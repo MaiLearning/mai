@@ -25,7 +25,7 @@ export function HeroSection() {
           {t('hero.badge')}
         </Badge>
         <HeroTitle>
-          {t('hero.title')} <span>Mai</span>
+          {t('hero.title')}
         </HeroTitle>
         <HeroText>{t('hero.text')}</HeroText>
         <HeroActions>

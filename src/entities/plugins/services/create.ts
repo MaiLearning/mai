@@ -3,7 +3,12 @@ import {
   sendRegisterInternalPlugin as invokeRegisterInternal,
 } from '../api/create'
 import type { Plugin, RegisterInternalPluginInput, RegisterPluginInput } from '../core/model'
-import { validatePluginId, validatePluginName, validatePluginVersion } from '../core/rules'
+import {
+  validatePluginId,
+  validatePluginName,
+  validatePluginVersion,
+  validateSdkVersion,
+} from '../core/rules'
 import {
   PluginSchema,
   RegisterInternalPluginInputSchema,
@@ -11,8 +16,22 @@ import {
 } from '../core/schema'
 
 export async function registerPlugin(input: RegisterPluginInput): Promise<Plugin> {
-  const path = input.path.trim()
-  const request = RegisterPluginInputSchema.parse({ path })
+  const id = validatePluginId(input.id)
+  const name = validatePluginName(input.name)
+  const version = validatePluginVersion(input.version)
+  const description = input.description?.trim() ? input.description.trim() : null
+  const author = input.author?.trim() ? input.author.trim() : null
+  const code = input.code
+  const sdkVersion = validateSdkVersion(input.sdkVersion)
+  const request = RegisterPluginInputSchema.parse({
+    id,
+    name,
+    version,
+    description,
+    author,
+    code,
+    sdkVersion,
+  })
   const data = await invokeRegister(request)
   return PluginSchema.parse(data)
 }

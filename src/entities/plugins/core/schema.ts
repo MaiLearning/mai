@@ -25,7 +25,13 @@ export const PluginManifestSchema = z.object({
 })
 
 export const RegisterPluginInputSchema = z.object({
-  path: z.string(),
+  id: z.string(),
+  name: z.string(),
+  version: z.string(),
+  description: z.string().nullable(),
+  author: z.string().nullable(),
+  code: z.string(),
+  sdkVersion: z.string(),
 })
 
 export const RegisterInternalPluginInputSchema = z.object({

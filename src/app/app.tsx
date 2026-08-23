@@ -5,8 +5,8 @@ import { SafeAreaProvider } from '@/layouts'
 import { appConfig } from './config'
 import AppRouter from './router'
 import { Runner } from './runner'
-import { initPluginsTask } from './runner/task/init_external_plugins'
 import { initLoggerTask } from './runner/task/init_logger'
+import { initPluginsTask } from './runner/task/init_plugins'
 import { ThemeProvider } from './theme'
 
 /**
