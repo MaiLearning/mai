@@ -1,0 +1,152 @@
+import { forwardRef, useEffect, useRef, useState, type HTMLAttributes } from 'react'
+import { ChevronIcon, FolderIcon, FolderOpenIcon, ResourceIcon, TrashIcon } from './icons'
+import { Badge, DeleteButton, NodeIcon, RenameInput, Row, Title, Twisty } from './TreeRow.style'
+import type { CourseNode } from './types'
+
+export const ROW_INDENT = 16
+
+interface TreeRowProps {
+  node: CourseNode
+  level: number
+  expanded: boolean
+  selected: boolean
+  focused: boolean
+  hasChildren: boolean
+  /** Активный режим инлайн-переименования (double-click по заголовку). */
+  isRenaming: boolean
+  onToggle: () => void
+  onSelect: () => void
+  onFocusRow: () => void
+  onRenameStart: () => void
+  onRenameCommit: (name: string) => void
+  onRenameCancel: () => void
+  onDeleteRequest: () => void
+  /** Строка рендерится внутри DragOverlay (плавающая копия за курсором). */
+  overlay?: boolean
+  /** Приглушить исходную строку, пока идёт перетаскивание. */
+  dimmed?: boolean
+  /** Слушатели/атрибуты перетаскивания от useSortable. */
+  dragProps?: HTMLAttributes<HTMLDivElement>
+}
+
+/**
+ * Одна строка дерева. Полностью презентационный компонент:
+ * состояние (раскрытие / выделение / фокус / переименование) приходит сверху.
+ *
+ * Двойной клик по заголовку → инлайн-переименование.
+ * Кнопка удаления появляется при наведении (не в overlay-режиме).
+ */
+export const TreeRow = forwardRef<HTMLDivElement, TreeRowProps>(function TreeRow(
+  {
+    node,
+    level,
+    expanded,
+    selected,
+    focused,
+    hasChildren,
+    isRenaming,
+    onToggle,
+    onSelect,
+    onFocusRow,
+    onRenameStart,
+    onRenameCommit,
+    onRenameCancel,
+    onDeleteRequest,
+    overlay = false,
+    dimmed = false,
+    dragProps,
+  },
+  ref,
+) {
+  const isFolder = node.type === 'folder'
+  const [renameValue, setRenameValue] = useState(node.title)
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    if (isRenaming) {
+      setRenameValue(node.title)
+      requestAnimationFrame(() => {
+        inputRef.current?.focus()
+        inputRef.current?.select()
+      })
+    }
+  }, [isRenaming, node.title])
+
+  return (
+    <Row
+      ref={ref}
+      role="treeitem"
+      aria-level={level + 1}
+      aria-selected={selected}
+      aria-expanded={isFolder ? expanded : undefined}
+      tabIndex={focused ? 0 : -1}
+      $selected={selected}
+      $indent={level * ROW_INDENT}
+      $overlay={overlay}
+      $dimmed={dimmed}
+      onFocus={onFocusRow}
+      onClick={() => {
+        onSelect()
+        if (isFolder) onToggle()
+      }}
+      {...dragProps}
+    >
+      <Twisty
+        as="span"
+        role="presentation"
+        $visible={isFolder && hasChildren}
+        $expanded={expanded}
+        onClick={(event) => {
+          event.stopPropagation()
+          onToggle()
+        }}
+      >
+        <ChevronIcon />
+      </Twisty>
+
+      <NodeIcon $folder={isFolder}>
+        {isFolder ? expanded ? <FolderOpenIcon /> : <FolderIcon /> : <ResourceIcon />}
+      </NodeIcon>
+
+      {isRenaming ? (
+        <RenameInput
+          ref={inputRef}
+          value={renameValue}
+          onChange={(event) => setRenameValue(event.target.value)}
+          onKeyDown={(event) => {
+            if (event.key === 'Enter') {
+              event.stopPropagation()
+              onRenameCommit(renameValue.trim())
+            }
+            if (event.key === 'Escape') {
+              event.stopPropagation()
+              onRenameCancel()
+            }
+          }}
+          onBlur={() => onRenameCommit(renameValue.trim())}
+          onClick={(event) => event.stopPropagation()}
+        />
+      ) : (
+        <Title $folder={isFolder} onDoubleClick={() => onRenameStart()}>
+          {node.title}
+        </Title>
+      )}
+
+      {node.badge && <Badge $tone={node.badgeTone ?? 'neutral'}>{node.badge}</Badge>}
+
+      {!overlay && !isRenaming && (
+        <DeleteButton
+          type="button"
+          aria-label="Удалить"
+          onClick={(event) => {
+            event.stopPropagation()
+            onDeleteRequest()
+          }}
+        >
+          <TrashIcon />
+        </DeleteButton>
+      )}
+    </Row>
+  )
+})
+

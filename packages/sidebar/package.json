@@ -1,0 +1,16 @@
+{
+  "name": "@mai/sidebar",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@tauri-apps/plugin-log": "^2.9.0",
+    "jotai": "^2.20.2",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  }
+}

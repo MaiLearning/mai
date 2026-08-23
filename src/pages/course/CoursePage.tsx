@@ -1,9 +1,9 @@
 import { Menu } from 'lucide-react'
 import { useState } from 'react'
+import { CourseSidebar } from '@/features/sidebar'
 import { CourseContent } from './CourseContent'
-import { CourseSidebar } from './CourseSidebar'
 import { course, flattenLessons } from './course.data'
-import { Main, MenuButton, MobileBar, Shell } from './course.styles'
+import { Main, MenuButton, MobileBar, Overlay, Shell, SidebarSlot } from './course.styles'
 
 export function CoursePage() {
   const lessons = flattenLessons(course)
@@ -19,13 +19,19 @@ export function CoursePage() {
   }
   return (
     <Shell>
-      <CourseSidebar
-        course={course}
-        activeId={activeId}
-        open={menuOpen}
-        onClose={() => setMenuOpen(false)}
-        onSelect={select}
-      />
+      <SidebarSlot $open={menuOpen}>
+        <CourseSidebar
+          courseId="course-react-basics"
+          courseTitle="React Basics"
+          courseSubtitle="Основы React: компоненты, состояние, эффекты."
+          onResourceSelect={(resourceId) => {
+            // TODO: навигация на страницу ресурса, когда будет роутинг
+            console.log('resource selected:', resourceId)
+          }}
+        />
+      </SidebarSlot>
+      {menuOpen && <Overlay $open={menuOpen} onClick={() => setMenuOpen(false)} />}
+
       <Main>
         <MobileBar>
           <MenuButton onClick={() => setMenuOpen(true)}>

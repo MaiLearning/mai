@@ -5,7 +5,20 @@ export const Shell = styled.div`
   min-height: 100vh;
   grid-template-columns: 1fr;
   @media (min-width: ${({ theme }) => theme.breakpoints.lg}) {
-    grid-template-columns: 340px 1fr;
+    grid-template-columns: 288px 1fr;
+  }
+`
+export const SidebarSlot = styled.div<{ $open: boolean }>`
+  position: fixed;
+  inset: 0 auto 0 0;
+  z-index: 20;
+  transform: translateX(${({ $open }) => ($open ? '0' : '-100%')});
+  transition: transform 0.25s ease;
+  @media (min-width: ${({ theme }) => theme.breakpoints.lg}) {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    transform: none;
   }
 `
 export const Main = styled.main`
