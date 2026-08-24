@@ -1,20 +1,27 @@
+import { Pencil } from 'lucide-react'
 import { useTranslation } from '@/app/i18n'
-import { Alert, Badge, ProgressFill, ProgressTrack, Spinner } from '@/app/theme/components'
-import type { Course, CourseStatus } from '@/entities/course'
-import { HomeIcon } from './HomeIcon'
+import { Alert, Button, ProgressFill, ProgressTrack, Spinner } from '@/app/theme/components'
+import type { Course } from '@/entities/course'
+import { mix, readableOn } from '@/features/course-modal'
 import {
-  ActionLink,
-  CardArt,
   CardBody,
+  CardCover,
+  CardDescription,
   CardFoot,
-  CardMeta,
+  CardMetaRow,
   CourseCard,
   CourseGrid,
+  CoverEditButton,
+  CoverTag,
+  CoverTags,
   CreateCard,
   CreateIcon,
   CoursesSection as Section,
   SectionHead,
-} from './home.styles'
+  StatusBadge,
+} from './CoursesSection.styles'
+import { HomeIcon } from './HomeIcon'
+import { ActionLink } from './shared.styles'
 
 const DEFAULT_COLOR_FROM = '#6a54ff'
 const DEFAULT_COLOR_TO = '#9d7bff'
@@ -25,13 +32,10 @@ interface CoursesSectionProps {
   loading: boolean
   error: string | null
   reload: () => void
-}
-
-/** Маппинг статуса курса на вариант бейджа. */
-const STATUS_VARIANT: Record<CourseStatus, 'neutral' | 'primary' | 'success'> = {
-  draft: 'neutral',
-  in_progress: 'primary',
-  completed: 'success',
+  /** Открыть модальное окно создания курса. */
+  onCreateCourse: () => void
+  /** Открыть модальное окно настроек курса. */
+  onEditCourse: (course: Course) => void
 }
 
 export function CoursesSection({
@@ -40,6 +44,8 @@ export function CoursesSection({
   loading,
   error,
   reload,
+  onCreateCourse,
+  onEditCourse,
 }: CoursesSectionProps) {
   const { t } = useTranslation('home')
 
@@ -50,11 +56,10 @@ export function CoursesSection({
           <h2>{t('coursesSection.title')}</h2>
           <p>{t('coursesSection.subtitle')}</p>
         </div>
-        {/* TODO: роут создания курса */}
-        <ActionLink to="/course" $variant="soft">
+        <Button variant="soft" onClick={onCreateCourse}>
           <HomeIcon name="plus" size={16} />
           {t('coursesSection.newCourse')}
-        </ActionLink>
+        </Button>
       </SectionHead>
 
       {loading && (
@@ -83,28 +88,38 @@ export function CoursesSection({
         <CourseGrid>
           {courses.map((course) => {
             const lessons = lessonCounts[course.id]
+            const from = course.colorFrom ?? DEFAULT_COLOR_FROM
+            const to = course.colorTo ?? DEFAULT_COLOR_TO
+            const ink = readableOn(mix(from, to, 0.5))
             return (
               <CourseCard key={course.id}>
-                <CardArt
-                  $from={course.colorFrom ?? DEFAULT_COLOR_FROM}
-                  $to={course.colorTo ?? DEFAULT_COLOR_TO}
-                >
-                  <HomeIcon name="book" size={34} />
-                </CardArt>
+                <CardCover $from={from} $to={to} $ink={ink}>
+                  <CoverTags>
+                    {course.tags.map((tag) => (
+                      <CoverTag key={tag} $ink={ink}>
+                        {tag}
+                      </CoverTag>
+                    ))}
+                  </CoverTags>
+                  <CoverEditButton
+                    type="button"
+                    aria-label={t('coursesSection.cards.settings')}
+                    onClick={() => onEditCourse(course)}
+                  >
+                    <Pencil size={15} aria-hidden="true" />
+                  </CoverEditButton>
+                </CardCover>
                 <CardBody>
-                  <Badge variant={STATUS_VARIANT[course.status]}>
-                    {t(`coursesSection.cards.status.${course.status}`)}
-                  </Badge>
                   <h3>{course.name}</h3>
-                  {(course.topic || lessons !== undefined) && (
-                    <CardMeta>
-                      {course.topic && <span>{course.topic}</span>}
-                      {course.topic && lessons !== undefined && <span>·</span>}
-                      {lessons !== undefined && (
-                        <span>{t('coursesSection.cards.lessons', { count: lessons })}</span>
-                      )}
-                    </CardMeta>
-                  )}
+                  {course.description && <CardDescription>{course.description}</CardDescription>}
+                  <CardMetaRow>
+                    <StatusBadge $status={course.status}>
+                      {t(`coursesSection.cards.status.${course.status}`)}
+                    </StatusBadge>
+                    {lessons !== undefined && (
+                      <span>{t('coursesSection.cards.lessons', { count: lessons })}</span>
+                    )}
+                  </CardMetaRow>
                   <CardFoot>
                     <div className="row">
                       {/* Прогресс-трекинга пока нет — показываем 0% (follow-up) */}
@@ -126,7 +141,7 @@ export function CoursesSection({
               </CourseCard>
             )
           })}
-          <CreateCard to="/course">
+          <CreateCard type="button" onClick={onCreateCourse}>
             <CreateIcon>
               <HomeIcon name="plus" size={24} />
             </CreateIcon>

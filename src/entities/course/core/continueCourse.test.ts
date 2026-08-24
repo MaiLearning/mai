@@ -1,12 +1,12 @@
 import { describe, expect, it } from 'vitest'
-import type { Course } from './model'
 import { resolveContinueCourse } from './continueCourse'
+import type { Course } from './model'
 
 function makeCourse(overrides: Partial<Course> & Pick<Course, 'id'>): Course {
   return {
     name: overrides.id,
     description: null,
-    topic: null,
+    tags: [],
     colorFrom: null,
     colorTo: null,
     status: 'draft',
@@ -15,7 +15,6 @@ function makeCourse(overrides: Partial<Course> & Pick<Course, 'id'>): Course {
     ...overrides,
   }
 }
-
 const fresh = makeCourse({ id: 'fresh', status: 'draft', updatedAt: 300 })
 const progress = makeCourse({ id: 'progress', status: 'in_progress', updatedAt: 200 })
 const done = makeCourse({ id: 'done', status: 'completed', updatedAt: 100 })

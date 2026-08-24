@@ -5,7 +5,7 @@ export const DEFAULT_LANGUAGE: AppLanguage = 'ru'
 export const FALLBACK_LANGUAGE: AppLanguage = 'ru'
 
 export const DEFAULT_NS = 'common'
-export const NAMESPACES = ['common', 'settings', 'home', 'viewer'] as const
+export const NAMESPACES = ['common', 'settings', 'home', 'viewer', 'courseModal'] as const
 
 export const LANGUAGE_STORAGE_KEY = 'mai.lang'
 

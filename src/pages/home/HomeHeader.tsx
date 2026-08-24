@@ -2,16 +2,9 @@ import { Link } from 'react-router-dom'
 import { useTranslation } from '@/app/i18n'
 import { Button } from '@/app/theme/components'
 import type { Course } from '@/entities/course'
+import { Actions, Brand, HeaderContainer, HeaderRoot, Mark, NavLinks } from './HomeHeader.styles'
 import { HomeIcon } from './HomeIcon'
-import {
-  ActionLink,
-  Actions,
-  Brand,
-  HeaderContainer,
-  HeaderRoot,
-  Mark,
-  NavLinks,
-} from './header.styles'
+import { ActionLink } from './shared.styles'
 
 interface HomeHeaderProps {
   /** Курс для ссылки «Продолжить» (резолвится в useCourses). */

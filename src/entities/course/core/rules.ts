@@ -4,14 +4,15 @@ import {
   InvalidCourseIdError,
   InvalidCourseNameError,
   InvalidCourseStatusError,
+  InvalidCourseTagsError,
   InvalidCourseTimelineError,
-  InvalidCourseTopicError,
 } from './exceptions'
 import type { CourseStatus } from './schema'
 
 export const COURSE_STATUSES: CourseStatus[] = ['draft', 'in_progress', 'completed']
 export const DEFAULT_COURSE_STATUS: CourseStatus = 'draft'
-export const MAX_TOPIC_LENGTH = 80
+/** Максимальная длина одного тега в символах (не байтах — теги кириллические). */
+export const MAX_TAG_LENGTH = 32
 
 export function validateCourseName(name: string): string {
   const value = name.trim()
@@ -35,13 +36,22 @@ export function validateCourseTimeline(createdAt: number, updatedAt: number): vo
   if (updatedAt < createdAt)
     throw new InvalidCourseTimelineError('Дата обновления не может быть раньше даты создания')
 }
-export function validateCourseTopic(topic: string | null): string | null {
-  if (topic === null) return null
-  const value = topic.trim()
-  if (!value) return null
-  if (value.length > MAX_TOPIC_LENGTH)
-    throw new InvalidCourseTopicError(`Тема курса не должна превышать ${MAX_TOPIC_LENGTH} символов`)
-  return value
+/**
+ * Проверяет и нормализует список тегов курса: обрезает пробелы, отбрасывает
+ * пустые, снимает дубли без учёта регистра. Количество тегов не ограничено,
+ * каждый тег — от 1 до MAX_TAG_LENGTH символов.
+ */
+export function validateCourseTags(tags: string[]): string[] {
+  const normalized: string[] = []
+  for (const tag of tags) {
+    const value = tag.trim()
+    if (!value) continue
+    if ([...value].length > MAX_TAG_LENGTH)
+      throw new InvalidCourseTagsError(`Тег курса не должен превышать ${MAX_TAG_LENGTH} символов`)
+    if (normalized.some((existing) => existing.toLowerCase() === value.toLowerCase())) continue
+    normalized.push(value)
+  }
+  return normalized
 }
 export function validateCourseColor(color: string | null): string | null {
   if (color === null) return null

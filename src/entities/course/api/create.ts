@@ -11,7 +11,7 @@ export function sendCreateCourse(input: CreateCourseInput): Promise<Course> {
     id: fakeId(),
     name: input.name,
     description: input.description,
-    topic: input.topic ?? null,
+    tags: input.tags ?? [],
     colorFrom: input.colorFrom ?? null,
     colorTo: input.colorTo ?? null,
     status: input.status ?? DEFAULT_COURSE_STATUS,

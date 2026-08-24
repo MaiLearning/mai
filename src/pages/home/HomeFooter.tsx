@@ -1,5 +1,5 @@
 import { useTranslation } from '@/app/i18n'
-import { Brand, FooterInner, FooterRoot, Mark } from './footer.styles'
+import { Brand, FooterInner, FooterRoot, Mark } from './HomeFooter.styles'
 import { HomeIcon } from './HomeIcon'
 
 export function HomeFooter() {

@@ -7,7 +7,7 @@ export const CourseSchema = z.object({
   id: z.string(),
   name: z.string(),
   description: z.string().nullable(),
-  topic: z.string().nullable(),
+  tags: z.array(z.string()),
   colorFrom: z.string().nullable(),
   colorTo: z.string().nullable(),
   status: CourseStatusSchema,
@@ -18,8 +18,18 @@ export const CourseSchema = z.object({
 export const CreateCourseInputSchema = z.object({
   name: z.string(),
   description: z.string().nullable(),
-  topic: z.string().nullable().optional(),
+  tags: z.array(z.string()).optional(),
   colorFrom: z.string().nullable().optional(),
   colorTo: z.string().nullable().optional(),
   status: CourseStatusSchema.optional(),
+})
+
+export const UpdateCourseInputSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  description: z.string().nullable(),
+  tags: z.array(z.string()),
+  colorFrom: z.string().nullable(),
+  colorTo: z.string().nullable(),
+  status: CourseStatusSchema,
 })

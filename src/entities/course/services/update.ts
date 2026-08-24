@@ -1,23 +1,25 @@
-import { sendCreateCourse as invokeCreate } from '../api/create'
-import type { Course, CreateCourseInput } from '../core/model'
+import { sendUpdateCourse as invokeUpdate } from '../api/update'
+import type { Course, UpdateCourseInput } from '../core/model'
 import {
-  DEFAULT_COURSE_STATUS,
   validateCourseColor,
   validateCourseDescription,
+  validateCourseId,
   validateCourseName,
   validateCourseStatus,
   validateCourseTags,
 } from '../core/rules'
-import { CourseSchema, CreateCourseInputSchema } from '../core/schema'
+import { CourseSchema, UpdateCourseInputSchema } from '../core/schema'
 
-export async function createCourse(input: CreateCourseInput): Promise<Course> {
+export async function updateCourse(input: UpdateCourseInput): Promise<Course> {
+  const id = validateCourseId(input.id)
   const name = validateCourseName(input.name)
   const description = validateCourseDescription(input.description ?? null)
   const tags = validateCourseTags(input.tags ?? [])
   const colorFrom = validateCourseColor(input.colorFrom ?? null)
   const colorTo = validateCourseColor(input.colorTo ?? null)
-  const status = input.status ? validateCourseStatus(input.status) : DEFAULT_COURSE_STATUS
-  const request = CreateCourseInputSchema.parse({
+  const status = validateCourseStatus(input.status)
+  const request = UpdateCourseInputSchema.parse({
+    id,
     name,
     description,
     tags,
@@ -25,6 +27,6 @@ export async function createCourse(input: CreateCourseInput): Promise<Course> {
     colorTo,
     status,
   })
-  const data = await invokeCreate(request)
+  const data = await invokeUpdate(request)
   return CourseSchema.parse(data)
 }

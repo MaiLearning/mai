@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import type { Course } from '../core/model'
 import { sendCreateCourse } from '../api/create'
+import type { Course } from '../core/model'
 import { createCourse } from './create'
 
 vi.mock('../api/create', () => ({ sendCreateCourse: vi.fn() }))
@@ -10,7 +10,7 @@ const course: Course = {
   id: 'course-1',
   name: 'Математика',
   description: null,
-  topic: null,
+  tags: [],
   colorFrom: null,
   colorTo: null,
   status: 'draft',
@@ -30,7 +30,7 @@ describe('course create service', () => {
     expect(invokeCreate).toHaveBeenCalledWith({
       name: 'Математика',
       description: null,
-      topic: null,
+      tags: [],
       colorFrom: null,
       colorTo: null,
       status: 'draft',
@@ -42,7 +42,7 @@ describe('course create service', () => {
     await createCourse({
       name: 'Математика',
       description: null,
-      topic: ' Алгебра ',
+      tags: [' Алгебра ', 'геометрия', 'АЛГЕБРА'],
       colorFrom: '#6A54FF',
       colorTo: '#9d7bff',
       status: 'in_progress',
@@ -50,7 +50,7 @@ describe('course create service', () => {
     expect(invokeCreate).toHaveBeenCalledWith({
       name: 'Математика',
       description: null,
-      topic: 'Алгебра',
+      tags: ['Алгебра', 'геометрия'],
       colorFrom: '#6a54ff',
       colorTo: '#9d7bff',
       status: 'in_progress',

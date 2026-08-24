@@ -25,8 +25,7 @@
       "yourCourse": "Your course"
     },
     "progress": {
-      "metaSeparator": "·",
-      "noTopic": "No topic"
+      "metaSeparator": "·"
     },
     "progressLabel": {
       "percent": "{{percent}}% complete",
@@ -61,7 +60,8 @@
       "lessons_one": "{{count}} lesson",
       "lessons_other": "{{count}} lessons",
       "percentComplete": "{{percent}}% complete",
-      "open": "Open"
+      "open": "Open",
+      "settings": "Course settings"
     },
     "createCard": {
       "title": "Create a new course",

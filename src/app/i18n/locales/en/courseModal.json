@@ -1,0 +1,68 @@
+{
+  "createEyebrow": "New course",
+  "editEyebrow": "Edit course",
+  "close": "Close window",
+  "dirtyBadge": "Unsaved changes",
+  "previewTitlePlaceholder": "Course title",
+  "actions": {
+    "cancel": "Cancel",
+    "create": "Create course",
+    "creating": "Creating…",
+    "save": "Save",
+    "saving": "Saving…"
+  },
+  "notifications": {
+    "createSuccess": "Course created",
+    "createError": "Failed to create course",
+    "saveSuccess": "Course updated",
+    "saveError": "Failed to save course",
+    "deleteSuccess": "Course deleted",
+    "deleteError": "Failed to delete course"
+  },
+  "validation": {
+    "tagsRequired": "Add at least one topic"
+  },
+  "fields": {
+    "name": "Course title",
+    "namePlaceholder": "For example, React from scratch to production",
+    "description": "Description",
+    "descriptionHint": "Briefly describe what the student will get after the course.",
+    "descriptionPlaceholder": "We'll cover components, state, routing and deployment on a real project…",
+    "tags": "Course topics",
+    "tagsHint": "Up to {{max}} characters per topic. Enter or comma to add.",
+    "tagsPlaceholderExisting": "Add a topic…",
+    "tagsPlaceholderEmpty": "For example, Frontend",
+    "tagsLimitReached": "Topic is too long",
+    "removeTag": "Remove topic {{tag}}",
+    "colors": "Card colors",
+    "colorsHint": "Two colors form the gradient of the course cover.",
+    "status": "Course status",
+    "statusGroupLabel": "Course status"
+  },
+  "statuses": {
+    "draft": { "label": "Draft", "hint": "Visible only to you" },
+    "in_progress": { "label": "In progress", "hint": "Available to students" },
+    "completed": { "label": "Completed", "hint": "Materials are closed" }
+  },
+  "colorPicker": {
+    "presetsLabel": "Presets",
+    "presetsAria": "Palette {{name}}",
+    "slotsLabel": "Two card colors",
+    "fromLabel": "First color",
+    "toLabel": "Second color",
+    "paletteLabel": "Palette · {{slot}}",
+    "swap": "Swap colors",
+    "hexAria": "HEX for \"{{slot}}\"",
+    "native": "Custom color"
+  },
+  "danger": {
+    "title": "Delete course",
+    "description": "The course will disappear along with all its materials and statistics.",
+    "delete": "Delete course",
+    "confirmTitle": "Delete course \"{{name}}\"?",
+    "confirmText": "The course and all its progress will be permanently deleted. This action cannot be undone.",
+    "confirm": "Yes, delete course",
+    "cancel": "Keep it",
+    "deleting": "Deleting…"
+  }
+}

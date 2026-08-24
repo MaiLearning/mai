@@ -1,0 +1,68 @@
+{
+  "createEyebrow": "Новый курс",
+  "editEyebrow": "Редактирование курса",
+  "close": "Закрыть окно",
+  "dirtyBadge": "Есть несохранённые изменения",
+  "previewTitlePlaceholder": "Название курса",
+  "actions": {
+    "cancel": "Отмена",
+    "create": "Создать курс",
+    "creating": "Создание…",
+    "save": "Сохранить",
+    "saving": "Сохранение…"
+  },
+  "notifications": {
+    "createSuccess": "Курс создан",
+    "createError": "Не удалось создать курс",
+    "saveSuccess": "Курс обновлён",
+    "saveError": "Не удалось сохранить курс",
+    "deleteSuccess": "Курс удалён",
+    "deleteError": "Не удалось удалить курс"
+  },
+  "validation": {
+    "tagsRequired": "Добавьте хотя бы одну тему"
+  },
+  "fields": {
+    "name": "Название курса",
+    "namePlaceholder": "Например, React с нуля до продакшена",
+    "description": "Описание",
+    "descriptionHint": "Коротко о том, что студент получит после курса.",
+    "descriptionPlaceholder": "Разберем компоненты, состояние, роутинг и деплой на реальном проекте…",
+    "tags": "Темы курса",
+    "tagsHint": "До {{max}} символов на тему. Enter или запятая — добавить.",
+    "tagsPlaceholderExisting": "Добавить тему…",
+    "tagsPlaceholderEmpty": "Например, Frontend",
+    "tagsLimitReached": "Тема слишком длинная",
+    "removeTag": "Убрать тему {{tag}}",
+    "colors": "Цвета карточки",
+    "colorsHint": "Два цвета формируют градиент обложки курса.",
+    "status": "Статус курса",
+    "statusGroupLabel": "Статус курса"
+  },
+  "statuses": {
+    "draft": { "label": "Черновик", "hint": "Виден только вам" },
+    "in_progress": { "label": "В процессе", "hint": "Доступен студентам" },
+    "completed": { "label": "Завершён", "hint": "Материал закрыт" }
+  },
+  "colorPicker": {
+    "presetsLabel": "Готовые пары",
+    "presetsAria": "Палитра {{name}}",
+    "slotsLabel": "Два цвета карточки",
+    "fromLabel": "Первый цвет",
+    "toLabel": "Второй цвет",
+    "paletteLabel": "Палитра · {{slot}}",
+    "swap": "Поменять цвета местами",
+    "hexAria": "HEX для «{{slot}}»",
+    "native": "Свой цвет"
+  },
+  "danger": {
+    "title": "Удаление курса",
+    "description": "Курс исчезнет вместе со всеми материалами и статистикой.",
+    "delete": "Удалить курс",
+    "confirmTitle": "Удалить курс «{{name}}»?",
+    "confirmText": "Курс и весь его прогресс будут удалены безвозвратно. Действие нельзя отменить.",
+    "confirm": "Да, удалить курс",
+    "cancel": "Оставить",
+    "deleting": "Удаление…"
+  }
+}

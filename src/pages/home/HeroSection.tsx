@@ -1,9 +1,7 @@
 import { useTranslation } from '@/app/i18n'
 import { Badge, Button, ProgressFill, ProgressTrack } from '@/app/theme/components'
 import type { Course } from '@/entities/course'
-import { HomeIcon } from './HomeIcon'
 import {
-  ActionLink,
   ContinueCard,
   CourseName,
   Hero,
@@ -14,7 +12,9 @@ import {
   ProgressLabel,
   Thumb,
   TopRow,
-} from './home.styles'
+} from './HeroSection.styles'
+import { HomeIcon } from './HomeIcon'
+import { ActionLink } from './shared.styles'
 
 interface HeroSectionProps {
   /** Курс для continue-карточки (резолвится в useCourses). */
@@ -35,9 +35,7 @@ export function HeroSection({ continueCourse, lessonCounts, onCreateCourse }: He
           <HomeIcon name="spark" size={14} />
           {t('hero.badge')}
         </Badge>
-        <HeroTitle>
-          {t('hero.title')}
-        </HeroTitle>
+        <HeroTitle>{t('hero.title')}</HeroTitle>
         <HeroText>{t('hero.text')}</HeroText>
         <HeroActions>
           <Button size="lg" onClick={onCreateCourse}>
@@ -63,14 +61,21 @@ export function HeroSection({ continueCourse, lessonCounts, onCreateCourse }: He
             </Badge>
             <Badge variant="neutral">{t('hero.badges.yourCourse')}</Badge>
           </TopRow>
-          <Thumb>
+          <Thumb
+            $from={continueCourse.colorFrom ?? undefined}
+            $to={continueCourse.colorTo ?? undefined}
+          >
             <HomeIcon name="book" size={44} />
           </Thumb>
           <div>
             <CourseName>{continueCourse.name}</CourseName>
             <Meta>
-              <HomeIcon name="book" size={14} />
-              {continueCourse.topic ?? t('hero.progress.noTopic')}
+              {continueCourse.tags.length > 0 && (
+                <>
+                  <HomeIcon name="book" size={14} />
+                  <span>{continueCourse.tags.slice(0, 3).join(', ')}</span>
+                </>
+              )}
               {lessons !== undefined && (
                 <>
                   <span>{t('hero.progress.metaSeparator')}</span>

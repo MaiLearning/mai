@@ -6,7 +6,10 @@ import type { Course } from './model'
  * 2. иначе самый свежий in_progress;
  * 3. иначе просто самый свежий по updatedAt.
  */
-export function resolveContinueCourse(courses: Course[], lastOpenedId: string | null): Course | null {
+export function resolveContinueCourse(
+  courses: Course[],
+  lastOpenedId: string | null,
+): Course | null {
   if (courses.length === 0) return null
 
   if (lastOpenedId) {

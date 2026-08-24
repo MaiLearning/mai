@@ -3,16 +3,16 @@ import {
   InvalidCourseColorError,
   InvalidCourseNameError,
   InvalidCourseStatusError,
+  InvalidCourseTagsError,
   InvalidCourseTimelineError,
-  InvalidCourseTopicError,
 } from './exceptions'
 import {
   validateCourseColor,
   validateCourseDescription,
   validateCourseName,
   validateCourseStatus,
+  validateCourseTags,
   validateCourseTimeline,
-  validateCourseTopic,
 } from './rules'
 
 describe('course rules', () => {
@@ -27,11 +27,19 @@ describe('course rules', () => {
     expect(() => validateCourseTimeline(10, 9)).toThrow(InvalidCourseTimelineError)
   })
 
-  it('normalizes topic', () => {
-    expect(validateCourseTopic('  Алгебра  ')).toBe('Алгебра')
-    expect(validateCourseTopic(null)).toBeNull()
-    expect(validateCourseTopic('   ')).toBeNull()
-    expect(() => validateCourseTopic('т'.repeat(81))).toThrow(InvalidCourseTopicError)
+  it('normalizes tags', () => {
+    expect(validateCourseTags(['  Алгебра  ', ' Геометрия '])).toEqual(['Алгебра', 'Геометрия'])
+    expect(validateCourseTags([])).toEqual([])
+    expect(validateCourseTags(['   ', ''])).toEqual([])
+    // дубли без учёта регистра снимаются
+    expect(validateCourseTags(['Frontend', 'frontend', 'FRONTEND'])).toEqual(['Frontend'])
+  })
+
+  it('rejects too long tags but allows many tags', () => {
+    expect(() => validateCourseTags(['т'.repeat(33)])).toThrow(InvalidCourseTagsError)
+    expect(validateCourseTags(Array.from({ length: 20 }, (_, i) => `тег-${i + 1}`))).toHaveLength(
+      20,
+    )
   })
 
   it('validates color format', () => {

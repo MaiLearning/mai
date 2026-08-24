@@ -1,6 +1,6 @@
 import { useTranslation } from '@/app/i18n'
 import { HomeIcon } from './HomeIcon'
-import { Step, StepIcon, Steps } from './home.styles'
+import { Step, StepIcon, Steps } from './HowItWorks.styles'
 
 export function HowItWorks() {
   const { t } = useTranslation('home')

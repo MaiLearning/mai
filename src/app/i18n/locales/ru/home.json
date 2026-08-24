@@ -25,8 +25,7 @@
       "yourCourse": "Ваш курс"
     },
     "progress": {
-      "metaSeparator": "·",
-      "noTopic": "Без темы"
+      "metaSeparator": "·"
     },
     "progressLabel": {
       "percent": "{{percent}}% завершено",
@@ -63,7 +62,8 @@
       "lessons_many": "{{count}} уроков",
       "lessons_other": "{{count}} урока",
       "percentComplete": "{{percent}}% завершено",
-      "open": "Открыть"
+      "open": "Открыть",
+      "settings": "Настройки курса"
     },
     "createCard": {
       "title": "Создать новый курс",
