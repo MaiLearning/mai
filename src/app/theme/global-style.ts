@@ -37,4 +37,38 @@ export const GlobalStyle = createGlobalStyle`
   ::selection {
     background: ${({ theme }) => theme.colors.primarySurface};
   }
+
+  /* Кастомный scrollbar для скроллящихся областей модалок */
+  .app-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: ${({ theme }) => theme.colors.borderStrong} transparent;
+  }
+
+  .app-scroll::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  .app-scroll::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .app-scroll::-webkit-scrollbar-thumb {
+    background: ${({ theme }) => theme.colors.borderStrong};
+    border: 3px solid transparent;
+    background-clip: content-box;
+    border-radius: 999px;
+  }
+
+  body[data-scroll-locked='true'] {
+    overflow: hidden;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
 `
