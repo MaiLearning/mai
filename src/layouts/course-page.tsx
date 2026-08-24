@@ -3,6 +3,8 @@ import { Menu } from 'lucide-react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Outlet, useNavigate, useParams } from 'react-router-dom'
 import { Button, Spinner, Text } from '@/app/theme/components'
+import { setKvValue } from '@/entities/kv/services'
+import { LAST_OPENED_COURSE_KEY } from '@/entities/course'
 import { loadCourseByIdAtom, selectCourseAtom } from '@/entities/course/store'
 import { CourseSidebar } from '@/features/sidebar'
 import {
@@ -54,6 +56,14 @@ export default function CoursePage() {
   useEffect(() => {
     load()
   }, [load])
+
+  // Фиксируем последний открытый курс (fire-and-forget, ошибка не критична)
+  useEffect(() => {
+    if (!courseId) return
+    setKvValue(LAST_OPENED_COURSE_KEY, courseId).catch((e) => {
+      console.warn('[course-page] failed to save last opened course:', e)
+    })
+  }, [courseId])
 
   if (!courseId) return null
 

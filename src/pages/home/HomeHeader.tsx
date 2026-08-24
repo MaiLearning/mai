@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useTranslation } from '@/app/i18n'
+import { Button } from '@/app/theme/components'
 import type { Course } from '@/entities/course'
 import { HomeIcon } from './HomeIcon'
 import {
@@ -13,13 +14,14 @@ import {
 } from './header.styles'
 
 interface HomeHeaderProps {
-  courses: Course[]
+  /** Курс для ссылки «Продолжить» (резолвится в useCourses). */
+  continueCourse: Course | null
+  /** Открыть модальное окно создания курса. */
+  onCreateCourse: () => void
 }
 
-export function HomeHeader({ courses }: HomeHeaderProps) {
+export function HomeHeader({ continueCourse, onCreateCourse }: HomeHeaderProps) {
   const { t } = useTranslation('home')
-  const byFreshness = [...courses].sort((a, b) => b.updatedAt - a.updatedAt)
-  const continueCourse = byFreshness.find((c) => c.status === 'in_progress') ?? byFreshness[0]
 
   return (
     <HeaderRoot>
@@ -32,8 +34,7 @@ export function HomeHeader({ courses }: HomeHeaderProps) {
         </Brand>
         <NavLinks aria-label={t('header.nav.ariaLabel')}>
           <Link to="/home">{t('header.nav.myCourses')}</Link>
-          {/* TODO: роут создания курса */}
-          <Link to={continueCourse ? `/course/${continueCourse.id}` : '/course'}>
+          <Link to={continueCourse ? `/course/${continueCourse.id}` : '/home'}>
             {t('header.nav.continue')}
           </Link>
           <Link to="#how-it-works">{t('header.nav.howItWorks')}</Link>
@@ -42,10 +43,10 @@ export function HomeHeader({ courses }: HomeHeaderProps) {
           <ActionLink to="/course" $variant="ghost">
             {t('header.actions.signIn')}
           </ActionLink>
-          <ActionLink to="/course">
+          <Button onClick={onCreateCourse}>
             <HomeIcon name="plus" size={16} />
             {t('header.actions.newCourse')}
-          </ActionLink>
+          </Button>
         </Actions>
       </HeaderContainer>
     </HeaderRoot>

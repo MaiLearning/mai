@@ -1,5 +1,5 @@
 import { useTranslation } from '@/app/i18n'
-import { Badge, ProgressFill, ProgressTrack } from '@/app/theme/components'
+import { Badge, Button, ProgressFill, ProgressTrack } from '@/app/theme/components'
 import type { Course } from '@/entities/course'
 import { HomeIcon } from './HomeIcon'
 import {
@@ -17,20 +17,15 @@ import {
 } from './home.styles'
 
 interface HeroSectionProps {
-  courses: Course[]
+  /** Курс для continue-карточки (резолвится в useCourses). */
+  continueCourse: Course | null
   lessonCounts: Record<string, number>
+  /** Открыть модальное окно создания курса. */
+  onCreateCourse: () => void
 }
 
-/** Самый свежий in_progress-курс, иначе — просто самый свежий. */
-function pickContinueCourse(courses: Course[]): Course | null {
-  if (courses.length === 0) return null
-  const byFreshness = [...courses].sort((a, b) => b.updatedAt - a.updatedAt)
-  return byFreshness.find((c) => c.status === 'in_progress') ?? byFreshness[0]
-}
-
-export function HeroSection({ courses, lessonCounts }: HeroSectionProps) {
+export function HeroSection({ continueCourse, lessonCounts, onCreateCourse }: HeroSectionProps) {
   const { t } = useTranslation('home')
-  const continueCourse = pickContinueCourse(courses)
   const lessons = continueCourse ? lessonCounts[continueCourse.id] : undefined
 
   return (
@@ -45,13 +40,12 @@ export function HeroSection({ courses, lessonCounts }: HeroSectionProps) {
         </HeroTitle>
         <HeroText>{t('hero.text')}</HeroText>
         <HeroActions>
-          {/* TODO: роут создания курса */}
-          <ActionLink to="/course" $size="lg">
+          <Button size="lg" onClick={onCreateCourse}>
             <HomeIcon name="plus" size={18} />
             {t('hero.createCourse')}
-          </ActionLink>
+          </Button>
           <ActionLink
-            to={continueCourse ? `/course/${continueCourse.id}` : '/course'}
+            to={continueCourse ? `/course/${continueCourse.id}` : '/home'}
             $variant="ghost"
             $size="lg"
           >
