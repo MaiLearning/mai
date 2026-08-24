@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import Application from './app/app'
 import { initI18n } from '@/app/i18n'
+import Application from './app/app'
 
 /**
  * i18next инициализируется до первого рендера, чтобы избежать пустого
