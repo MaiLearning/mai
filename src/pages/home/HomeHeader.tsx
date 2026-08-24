@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useTranslation } from '@/app/i18n'
+import type { Course } from '@/entities/course'
 import { HomeIcon } from './HomeIcon'
 import {
   ActionLink,
@@ -11,8 +12,15 @@ import {
   NavLinks,
 } from './header.styles'
 
-export function HomeHeader() {
+interface HomeHeaderProps {
+  courses: Course[]
+}
+
+export function HomeHeader({ courses }: HomeHeaderProps) {
   const { t } = useTranslation('home')
+  const byFreshness = [...courses].sort((a, b) => b.updatedAt - a.updatedAt)
+  const continueCourse = byFreshness.find((c) => c.status === 'in_progress') ?? byFreshness[0]
+
   return (
     <HeaderRoot>
       <HeaderContainer>
@@ -24,7 +32,10 @@ export function HomeHeader() {
         </Brand>
         <NavLinks aria-label={t('header.nav.ariaLabel')}>
           <Link to="/home">{t('header.nav.myCourses')}</Link>
-          <Link to="/course">{t('header.nav.continue')}</Link>
+          {/* TODO: роут создания курса */}
+          <Link to={continueCourse ? `/course/${continueCourse.id}` : '/course'}>
+            {t('header.nav.continue')}
+          </Link>
           <Link to="#how-it-works">{t('header.nav.howItWorks')}</Link>
         </NavLinks>
         <Actions>

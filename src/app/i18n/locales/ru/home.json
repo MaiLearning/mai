@@ -25,12 +25,12 @@
       "yourCourse": "Ваш курс"
     },
     "progress": {
-      "lessons": "13 уроков",
-      "timeLeft": "~3ч осталось"
+      "metaSeparator": "·",
+      "noTopic": "Без темы"
     },
     "progressLabel": {
-      "percent": "46% завершено",
-      "fraction": "6/13"
+      "percent": "{{percent}}% завершено",
+      "fraction": "{{done}}/{{total}}"
     },
     "resumeCourse": "Продолжить курс"
   },
@@ -53,8 +53,15 @@
     "subtitle": "Всё, что вы создали для себя, в одном месте.",
     "newCourse": "Новый курс",
     "cards": {
-      "status": "{{status}}",
-      "lessons": "{{count}} уроков",
+      "status": {
+        "draft": "Черновик",
+        "in_progress": "В процессе",
+        "completed": "Завершён"
+      },
+      "lessons_one": "{{count}} урок",
+      "lessons_few": "{{count}} урока",
+      "lessons_many": "{{count}} уроков",
+      "lessons_other": "{{count}} урока",
       "percentComplete": "{{percent}}% завершено",
       "open": "Открыть"
     },
@@ -64,6 +71,10 @@
     }
   },
   "footer": {
-    "copyright": "© {year} Mai. Создавайте свой курс, а потом учите его."
+    "copyright": "© {{year}} Mai. Создавайте свой курс, а потом учите его."
+  },
+  "error": {
+    "loadFailed": "Не удалось загрузить курсы: {{error}}",
+    "retry": "Повторить"
   }
 }

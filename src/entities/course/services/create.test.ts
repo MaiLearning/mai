@@ -1,11 +1,22 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+import type { Course } from '../core/model'
 import { sendCreateCourse } from '../api/create'
 import { createCourse } from './create'
 
 vi.mock('../api/create', () => ({ sendCreateCourse: vi.fn() }))
 
 const invokeCreate = vi.mocked(sendCreateCourse)
-const course = { id: 'course-1', name: 'Математика', description: null, createdAt: 1, updatedAt: 1 }
+const course: Course = {
+  id: 'course-1',
+  name: 'Математика',
+  description: null,
+  topic: null,
+  colorFrom: null,
+  colorTo: null,
+  status: 'draft',
+  createdAt: 1,
+  updatedAt: 1,
+}
 
 describe('course create service', () => {
   beforeEach(() => invokeCreate.mockReset())
@@ -16,7 +27,34 @@ describe('course create service', () => {
     await expect(createCourse({ name: '  Математика  ', description: '  ' })).resolves.toEqual(
       course,
     )
-    expect(invokeCreate).toHaveBeenCalledWith({ name: 'Математика', description: null })
+    expect(invokeCreate).toHaveBeenCalledWith({
+      name: 'Математика',
+      description: null,
+      topic: null,
+      colorFrom: null,
+      colorTo: null,
+      status: 'draft',
+    })
+  })
+
+  it('passes meta fields and defaults status', async () => {
+    invokeCreate.mockResolvedValue(course)
+    await createCourse({
+      name: 'Математика',
+      description: null,
+      topic: ' Алгебра ',
+      colorFrom: '#6A54FF',
+      colorTo: '#9d7bff',
+      status: 'in_progress',
+    })
+    expect(invokeCreate).toHaveBeenCalledWith({
+      name: 'Математика',
+      description: null,
+      topic: 'Алгебра',
+      colorFrom: '#6a54ff',
+      colorTo: '#9d7bff',
+      status: 'in_progress',
+    })
   })
 
   it('does not call API for invalid input', async () => {

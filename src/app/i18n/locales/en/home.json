@@ -25,12 +25,12 @@
       "yourCourse": "Your course"
     },
     "progress": {
-      "lessons": "13 lessons",
-      "timeLeft": "~3h left"
+      "metaSeparator": "·",
+      "noTopic": "No topic"
     },
     "progressLabel": {
-      "percent": "46% complete",
-      "fraction": "6/13"
+      "percent": "{{percent}}% complete",
+      "fraction": "{{done}}/{{total}}"
     },
     "resumeCourse": "Resume course"
   },
@@ -53,8 +53,13 @@
     "subtitle": "Everything you've built for yourself, in one place.",
     "newCourse": "New course",
     "cards": {
-      "status": "{{status}}",
-      "lessons": "{{count}} lessons",
+      "status": {
+        "draft": "Draft",
+        "in_progress": "In progress",
+        "completed": "Completed"
+      },
+      "lessons_one": "{{count}} lesson",
+      "lessons_other": "{{count}} lessons",
       "percentComplete": "{{percent}}% complete",
       "open": "Open"
     },
@@ -64,6 +69,10 @@
     }
   },
   "footer": {
-    "copyright": "© {year} Mai. Build your own course, then learn it."
+    "copyright": "© {{year}} Mai. Build your own course, then learn it."
+  },
+  "error": {
+    "loadFailed": "Failed to load courses: {{error}}",
+    "retry": "Retry"
   }
 }
