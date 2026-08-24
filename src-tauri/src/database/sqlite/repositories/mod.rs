@@ -1,0 +1,7 @@
+pub mod course;
+pub mod directory;
+pub mod plugin;
+pub mod resource;
+pub mod resource_type;
+pub mod structure;
+pub mod theory;
