@@ -4,7 +4,7 @@
 use super::exceptions::{
     InvalidCourseColorException, InvalidCourseDescriptionException,
     InvalidCourseIdentifierException, InvalidCourseNameException, InvalidCourseStatusException,
-    InvalidCourseTimelineException, InvalidCourseTopicException,
+    InvalidCourseTagsException, InvalidCourseTimelineException,
 };
 
 /// Статус по умолчанию для нового курса.
@@ -18,7 +18,8 @@ impl CourseRules {
     pub const MIN_NAME_LENGTH: usize = 3;
     pub const MAX_NAME_LENGTH: usize = 120;
     pub const MAX_DESCRIPTION_LENGTH: usize = 2000;
-    pub const MAX_TOPIC_LENGTH: usize = 80;
+    /// Ограничение длины одного тега в символах (не байтах — теги кириллические).
+    pub const MAX_TAG_CHARS: usize = 32;
 
     /// Проверяет и нормализует имя курса.
     pub fn validate_course_name(name: &str) -> Result<String, InvalidCourseNameException> {
@@ -95,28 +96,36 @@ impl CourseRules {
         Ok(())
     }
 
-    /// Проверяет и нормализует тему курса (пустая/пробельная → None).
-    pub fn validate_course_topic(
-        topic: Option<&str>,
-    ) -> Result<Option<String>, InvalidCourseTopicException> {
-        match topic {
-            None => Ok(None),
-            Some(t) => {
-                let normalized = t.trim().to_string();
-                if normalized.is_empty() {
-                    return Ok(None);
-                }
-                if normalized.len() > Self::MAX_TOPIC_LENGTH {
-                    return Err(InvalidCourseTopicException {
-                        message: format!(
-                            "Course topic must not exceed {} characters.",
-                            Self::MAX_TOPIC_LENGTH
-                        ),
-                    });
-                }
-                Ok(Some(normalized))
+    /// Проверяет и нормализует список тегов курса:
+    /// обрезает пробелы, отбрасывает пустые, снимает дубли без учёта регистра.
+    /// Количество тегов не ограничено; каждый тег — 1..=MAX_TAG_CHARS символов.
+    pub fn validate_course_tags(
+        tags: &[String],
+    ) -> Result<Vec<String>, InvalidCourseTagsException> {
+        let mut normalized: Vec<String> = Vec::with_capacity(tags.len());
+        for tag in tags {
+            let value = tag.trim().to_string();
+            if value.is_empty() {
+                continue;
             }
+            if value.chars().count() > Self::MAX_TAG_CHARS {
+                return Err(InvalidCourseTagsException {
+                    message: format!(
+                        "Course tag must not exceed {} characters.",
+                        Self::MAX_TAG_CHARS
+                    ),
+                });
+            }
+            // Дубли снимаем с учётом регистра (кириллица), сохраняя первое написание.
+            if normalized
+                .iter()
+                .any(|existing| existing.to_lowercase() == value.to_lowercase())
+            {
+                continue;
+            }
+            normalized.push(value);
         }
+        Ok(normalized)
     }
 
     /// Проверяет и нормализует цвет карточки (hex-формат `#RRGGBB`).

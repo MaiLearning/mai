@@ -51,13 +51,13 @@ impl fmt::Display for InvalidCourseTimelineException {
 }
 
 #[derive(Debug, Clone)]
-pub struct InvalidCourseTopicException {
+pub struct InvalidCourseTagsException {
     pub message: String,
 }
 
-impl fmt::Display for InvalidCourseTopicException {
+impl fmt::Display for InvalidCourseTagsException {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "Invalid course topic: {}", self.message)
+        write!(f, "Invalid course tags: {}", self.message)
     }
 }
 
@@ -131,8 +131,8 @@ impl From<InvalidCourseTimelineException> for CourseServiceError {
     }
 }
 
-impl From<InvalidCourseTopicException> for CourseServiceError {
-    fn from(e: InvalidCourseTopicException) -> Self {
+impl From<InvalidCourseTagsException> for CourseServiceError {
+    fn from(e: InvalidCourseTagsException) -> Self {
         Self::Validation(e.message)
     }
 }

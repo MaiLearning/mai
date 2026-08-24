@@ -12,8 +12,8 @@ pub struct CourseData {
     pub id: String,
     pub name: String,
     pub description: Option<String>,
-    /// Тема/категория курса (для отображения на карточке).
-    pub topic: Option<String>,
+    /// Теги курса (для отображения на карточке и аналитики).
+    pub tags: Vec<String>,
     /// Начальный цвет градиента карточки (hex, например "#6a54ff").
     pub color_from: Option<String>,
     /// Конечный цвет градиента карточки (hex).

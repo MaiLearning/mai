@@ -13,7 +13,8 @@ use crate::utils::paths::AppPaths;
 pub struct CreateCourseRequest {
     pub name: String,
     pub description: Option<String>,
-    pub topic: Option<String>,
+    #[serde(default)]
+    pub tags: Vec<String>,
     pub color_from: Option<String>,
     pub color_to: Option<String>,
     pub status: Option<String>,
@@ -50,7 +51,7 @@ pub async fn create_course(
         id: uuid::Uuid::new_v4().to_string(),
         name: request.name,
         description: request.description,
-        topic: request.topic,
+        tags: request.tags,
         color_from: request.color_from,
         color_to: request.color_to,
         status: request.status.unwrap_or_default(),
@@ -70,6 +71,44 @@ pub async fn get_course(
     let repo = Arc::new(SqliteCourseRepository::new(pool.inner().clone()));
     let service = CourseService::new(app_paths.inner().clone(), repo);
     service.get(&id).await.map_err(|e| e.to_string())
+}
+
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct UpdateCourseRequest {
+    pub name: String,
+    pub description: Option<String>,
+    #[serde(default)]
+    pub tags: Vec<String>,
+    pub color_from: Option<String>,
+    pub color_to: Option<String>,
+    pub status: Option<String>,
+}
+
+#[tauri::command]
+pub async fn update_course(
+    pool: State<'_, SqlitePool>,
+    app_paths: State<'_, AppPaths>,
+    id: String,
+    request: UpdateCourseRequest,
+) -> Result<CourseData, String> {
+    let repo = Arc::new(SqliteCourseRepository::new(pool.inner().clone()));
+    let service = CourseService::new(app_paths.inner().clone(), repo);
+
+    let existing = service.get(&id).await.map_err(|e| e.to_string())?;
+    let data = CourseData {
+        id,
+        name: request.name,
+        description: request.description,
+        tags: request.tags,
+        color_from: request.color_from,
+        color_to: request.color_to,
+        status: request.status.unwrap_or_default(),
+        created_at: existing.created_at,
+        updated_at: now_millis(),
+    };
+
+    service.update(data).await.map_err(|e| e.to_string())
 }
 
 #[tauri::command]

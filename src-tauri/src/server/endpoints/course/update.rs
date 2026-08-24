@@ -17,7 +17,8 @@ use crate::utils::paths::AppPaths;
 pub struct UpdateCourseRequest {
     pub name: String,
     pub description: Option<String>,
-    pub topic: Option<String>,
+    #[serde(default)]
+    pub tags: Vec<String>,
     pub color_from: Option<String>,
     pub color_to: Option<String>,
     pub status: Option<String>,
@@ -48,7 +49,7 @@ pub async fn handler(
         id,
         name: body.name,
         description: body.description,
-        topic: body.topic,
+        tags: body.tags,
         color_from: body.color_from,
         color_to: body.color_to,
         status: body.status.unwrap_or_default(),

@@ -62,7 +62,7 @@ impl CourseService {
         let resolved_name = CourseRules::validate_course_name(&data.name)?;
         let resolved_description =
             CourseRules::validate_course_description(data.description.as_deref())?;
-        let resolved_topic = CourseRules::validate_course_topic(data.topic.as_deref())?;
+        let resolved_tags = CourseRules::validate_course_tags(&data.tags)?;
         let resolved_color_from = CourseRules::validate_course_color(data.color_from.as_deref())?;
         let resolved_color_to = CourseRules::validate_course_color(data.color_to.as_deref())?;
         let resolved_status = match data.status.trim() {
@@ -75,7 +75,7 @@ impl CourseService {
             id: resolved_id.clone(),
             name: resolved_name,
             description: resolved_description,
-            topic: resolved_topic,
+            tags: resolved_tags,
             color_from: resolved_color_from,
             color_to: resolved_color_to,
             status: resolved_status,
@@ -108,7 +108,7 @@ impl CourseService {
         let resolved_name = CourseRules::validate_course_name(&data.name)?;
         let resolved_description =
             CourseRules::validate_course_description(data.description.as_deref())?;
-        let resolved_topic = CourseRules::validate_course_topic(data.topic.as_deref())?;
+        let resolved_tags = CourseRules::validate_course_tags(&data.tags)?;
         let resolved_color_from = CourseRules::validate_course_color(data.color_from.as_deref())?;
         let resolved_color_to = CourseRules::validate_course_color(data.color_to.as_deref())?;
         let resolved_status = match data.status.trim() {
@@ -121,7 +121,7 @@ impl CourseService {
             id: resolved_id,
             name: resolved_name,
             description: resolved_description,
-            topic: resolved_topic,
+            tags: resolved_tags,
             color_from: resolved_color_from,
             color_to: resolved_color_to,
             status: resolved_status,
