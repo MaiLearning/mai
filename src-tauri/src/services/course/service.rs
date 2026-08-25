@@ -5,7 +5,7 @@ use std::sync::Arc;
 
 use crate::database::repository::course::CourseRepository;
 use crate::database::repository::RepoError;
-use crate::services::course::CourseData;
+use crate::services::course::{CourseData, CourseTagStat};
 use crate::utils::paths::{AppPaths, FsError};
 
 use super::exceptions::CourseServiceError;
@@ -39,6 +39,16 @@ impl CourseService {
             .all_courses()
             .await
             .map_err(|e| map_repo_error(e, "get courses"))
+    }
+
+    // ------------------------------------------------------------------
+    // all_tags
+    // ------------------------------------------------------------------
+    pub async fn all_tags(&self) -> Result<Vec<CourseTagStat>, CourseServiceError> {
+        self.repo
+            .all_tags()
+            .await
+            .map_err(|e| map_repo_error(e, "get tags"))
     }
 
     // ------------------------------------------------------------------

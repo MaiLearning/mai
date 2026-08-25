@@ -60,6 +60,7 @@ pub fn run() {
         .invoke_handler(tauri::generate_handler![
             client::command::health::health,
             client::command::course::all_courses,
+            client::command::course::all_tags,
             client::command::course::create_course,
             client::command::kv::kv_set,
             client::command::kv::kv_get,

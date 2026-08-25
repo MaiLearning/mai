@@ -12,6 +12,7 @@ use super::endpoints::{
         health::health,
         // Courses
         course::all::handler,
+        course::tags::handler,
         course::create::handler,
         course::get::handler,
         course::update::handler,
@@ -46,6 +47,7 @@ use super::endpoints::{
         health::HealthResponse,
         // Courses
         crate::services::course::CourseData,
+        crate::services::course::CourseTagStat,
         // Structures
         crate::services::structure::StructureNodeFlat,
         crate::services::structure::DirectoryData,

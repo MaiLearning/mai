@@ -9,7 +9,7 @@ use sqlx::SqlitePool;
 
 use crate::database::repository::course::CourseRepository;
 use crate::database::repository::{RepoError, RepoResult};
-use crate::services::course::CourseData;
+use crate::services::course::{CourseData, CourseTagStat};
 
 pub struct SqliteCourseRepository {
     pool: SqlitePool,
@@ -52,6 +52,22 @@ impl CourseRepository for SqliteCourseRepository {
                 let tags = tags_by_course.remove(&r.id).unwrap_or_default();
                 r.into_data(tags)
             })
+            .collect())
+    }
+
+    async fn all_tags(&self) -> RepoResult<Vec<CourseTagStat>> {
+        let rows = sqlx::query_as::<_, (String, i64)>(
+            "SELECT t.name, COUNT(ct.course_id) AS count \
+             FROM tags t LEFT JOIN course_tags ct ON ct.tag_id = t.id \
+             GROUP BY t.id ORDER BY count DESC, t.name",
+        )
+        .fetch_all(&self.pool)
+        .await
+        .map_err(RepoError::Db)?;
+
+        Ok(rows
+            .into_iter()
+            .map(|(name, count)| CourseTagStat { name, count })
             .collect())
     }
 

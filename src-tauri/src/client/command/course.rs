@@ -5,7 +5,7 @@ use sqlx::SqlitePool;
 use tauri::State;
 
 use crate::database::sqlite::repositories::course::SqliteCourseRepository;
-use crate::services::course::{CourseData, CourseService};
+use crate::services::course::{CourseData, CourseService, CourseTagStat};
 use crate::utils::paths::AppPaths;
 
 #[derive(Deserialize)]
@@ -35,6 +35,16 @@ pub async fn all_courses(
     let repo = Arc::new(SqliteCourseRepository::new(pool.inner().clone()));
     let service = CourseService::new(app_paths.inner().clone(), repo);
     service.all().await.map_err(|e| e.to_string())
+}
+
+#[tauri::command]
+pub async fn all_tags(
+    pool: State<'_, SqlitePool>,
+    app_paths: State<'_, AppPaths>,
+) -> Result<Vec<CourseTagStat>, String> {
+    let repo = Arc::new(SqliteCourseRepository::new(pool.inner().clone()));
+    let service = CourseService::new(app_paths.inner().clone(), repo);
+    service.all_tags().await.map_err(|e| e.to_string())
 }
 
 #[tauri::command]

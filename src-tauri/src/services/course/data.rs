@@ -23,3 +23,11 @@ pub struct CourseData {
     pub created_at: i64,
     pub updated_at: i64,
 }
+
+/// Статистика тега: имя и количество курсов, использующих его.
+#[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
+#[serde(rename_all = "camelCase")]
+pub struct CourseTagStat {
+    pub name: String,
+    pub count: i64,
+}
