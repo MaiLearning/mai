@@ -95,7 +95,6 @@ export default function CoursePage() {
         <CourseSidebar
           courseId={courseId}
           courseTitle={course.name}
-          courseSubtitle={course.description ?? undefined}
           onResourceSelect={(resourceId) => {
             window.scrollTo({ top: 0, behavior: 'smooth' })
             setMenuOpen(false)
