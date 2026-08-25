@@ -79,7 +79,7 @@ export function HeroSection({ continueCourse, lessonCounts, onCreateCourse }: He
               {lessons !== undefined && (
                 <>
                   <span>{t('hero.progress.metaSeparator')}</span>
-                  <span>{t('coursesSection.cards.lessons', { count: lessons })}</span>
+                  <span>{t('coursesSection.cards.resources', { count: lessons })}</span>
                 </>
               )}
             </Meta>

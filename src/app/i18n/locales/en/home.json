@@ -51,14 +51,16 @@
     "title": "My courses",
     "subtitle": "Everything you've built for yourself, in one place.",
     "newCourse": "New course",
+    "manage": "Manage courses",
+    "library": "Course library",
     "cards": {
       "status": {
         "draft": "Draft",
         "in_progress": "In progress",
         "completed": "Completed"
       },
-      "lessons_one": "{{count}} lesson",
-      "lessons_other": "{{count}} lessons",
+      "resources_one": "{{count}} resource",
+      "resources_other": "{{count}} resources",
       "percentComplete": "{{percent}}% complete",
       "open": "Open",
       "settings": "Course settings"
@@ -67,6 +69,9 @@
       "title": "Create a new course",
       "subtitle": "Start from a topic, a goal, or a document you want to master."
     }
+  },
+  "coursesPage": {
+    "title": "Manage courses"
   },
   "footer": {
     "copyright": "© {{year}} Mai. Build your own course, then learn it."

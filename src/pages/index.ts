@@ -1,4 +1,5 @@
 export { CoursePage } from './course'
 export { CourseInfo } from './course-info'
+export { CoursesPage } from './courses'
 export { HomePage } from './home'
 export { ResourcePage } from './resource'

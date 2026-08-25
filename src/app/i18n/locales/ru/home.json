@@ -51,16 +51,18 @@
     "title": "Мои курсы",
     "subtitle": "Всё, что вы создали для себя, в одном месте.",
     "newCourse": "Новый курс",
+    "manage": "Управление курсами",
+    "library": "Библиотека курсов",
     "cards": {
       "status": {
         "draft": "Черновик",
         "in_progress": "В процессе",
         "completed": "Завершён"
       },
-      "lessons_one": "{{count}} урок",
-      "lessons_few": "{{count}} урока",
-      "lessons_many": "{{count}} уроков",
-      "lessons_other": "{{count}} урока",
+      "resources_one": "{{count}} ресурс",
+      "resources_few": "{{count}} ресурса",
+      "resources_many": "{{count}} ресурсов",
+      "resources_other": "{{count}} ресурса",
       "percentComplete": "{{percent}}% завершено",
       "open": "Открыть",
       "settings": "Настройки курса"
@@ -69,6 +71,9 @@
       "title": "Создать новый курс",
       "subtitle": "Начните с темы, цели или документа, который хотите освоить."
     }
+  },
+  "coursesPage": {
+    "title": "Управление курсами"
   },
   "footer": {
     "copyright": "© {{year}} Mai. Создавайте свой курс, а потом учите его."
