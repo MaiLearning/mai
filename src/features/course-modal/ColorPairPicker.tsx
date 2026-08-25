@@ -1,7 +1,8 @@
 import { ArrowLeftRight, Check, Pipette } from 'lucide-react'
-import { useEffect, useId, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import styled, { css } from 'styled-components'
 import { useTranslation } from '@/app/i18n'
+import { ColorPicker } from './ColorPicker'
 import { GRADIENT_PRESETS, SWATCHES } from './constants'
 import { isValidHex, normalizeHex, readableOn } from './utils/color'
 
@@ -190,15 +191,20 @@ const HexInput = styled.input`
     box-shadow: 0 0 0 3px ${({ theme }) => theme.colors.primarySurface};
   }
 `
-const NativePicker = styled.label`
+const PickerAnchor = styled.div`
+  position: relative;
+  display: inline-flex;
+`
+const CustomButton = styled.button<{ $open: boolean }>`
   display: inline-flex;
   align-items: center;
   gap: 7px;
   height: 38px;
   padding: 0 12px;
   border-radius: ${({ theme }) => theme.radii.sm};
-  border: 1px dashed ${({ theme }) => theme.colors.borderStrong};
-  color: ${({ theme }) => theme.colors.textMuted};
+  border: 1px dashed
+    ${({ theme, $open }) => ($open ? theme.colors.primary : theme.colors.borderStrong)};
+  color: ${({ theme, $open }) => ($open ? theme.colors.primary : theme.colors.textMuted)};
   font-size: 12.5px;
   font-weight: 600;
   cursor: pointer;
@@ -211,14 +217,20 @@ const NativePicker = styled.label`
     color: ${({ theme }) => theme.colors.primary};
     border-color: ${({ theme }) => theme.colors.primary};
   }
+`
 
-  input {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    opacity: 0;
-    pointer-events: none;
-  }
+/** Попап с пикером: раскрывается вверх от кнопки «Свой цвет». */
+const Popup = styled.div`
+  position: absolute;
+  bottom: calc(100% + 8px);
+  right: 0;
+  z-index: 20;
+  width: 248px;
+  padding: ${({ theme }) => theme.spacing.md};
+  border-radius: ${({ theme }) => theme.radii.md};
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  background: ${({ theme }) => theme.colors.surfaceElevated};
+  box-shadow: ${({ theme }) => theme.shadows.md};
 `
 
 export interface ColorPairPickerProps {
@@ -235,9 +247,37 @@ export function ColorPairPicker({ value, onChange }: ColorPairPickerProps) {
   }
   const [slot, setSlot] = useState<keyof CourseGradient>('from')
   const [hexDraft, setHexDraft] = useState(value[slot])
-  const nativeId = useId()
+  const [pickerOpen, setPickerOpen] = useState(false)
+  const anchorRef = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => setHexDraft(value[slot]), [slot, value])
+
+  // Закрытие пикера: клик вне панели и Escape.
+  // Escape ловим в capture-фазе: Modal перехватывает всплытие клавиши
+  // (onKeyDown + stopPropagation на панели модалки), поэтому bubble-листенер
+  // на document при реальном вводе не получает событие. Capture доходит всегда.
+  useEffect(() => {
+    if (!pickerOpen) return
+
+    const handlePointerDown = (event: PointerEvent) => {
+      if (anchorRef.current && !anchorRef.current.contains(event.target as Node)) {
+        setPickerOpen(false)
+      }
+    }
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape') return
+      event.stopPropagation()
+      setPickerOpen(false)
+    }
+
+    document.addEventListener('pointerdown', handlePointerDown)
+    document.addEventListener('keydown', handleKeyDown, true)
+
+    return () => {
+      document.removeEventListener('pointerdown', handlePointerDown)
+      document.removeEventListener('keydown', handleKeyDown, true)
+    }
+  }, [pickerOpen])
 
   const setColor = (color: string) => onChange({ ...value, [slot]: normalizeHex(color) })
   const commitHex = (raw: string) => {
@@ -331,16 +371,23 @@ export function ColorPairPicker({ value, onChange }: ColorPairPickerProps) {
             }
           }}
         />
-        <NativePicker htmlFor={nativeId}>
-          <Pipette size={14} aria-hidden="true" />
-          {t('colorPicker.native')}
-          <input
-            id={nativeId}
-            type="color"
-            value={/^#[0-9a-fA-F]{6}$/.test(value[slot]) ? value[slot] : '#000000'}
-            onChange={(event) => setColor(event.target.value)}
-          />
-        </NativePicker>
+        <PickerAnchor ref={anchorRef}>
+          <CustomButton
+            type="button"
+            $open={pickerOpen}
+            aria-expanded={pickerOpen}
+            aria-haspopup="dialog"
+            onClick={() => setPickerOpen((open) => !open)}
+          >
+            <Pipette size={14} aria-hidden="true" />
+            {t('colorPicker.custom')}
+          </CustomButton>
+          {pickerOpen && (
+            <Popup role="dialog" aria-label={t('colorPicker.panelAria')}>
+              <ColorPicker color={value[slot]} onChange={setColor} />
+            </Popup>
+          )}
+        </PickerAnchor>
       </HexRow>
     </Root>
   )

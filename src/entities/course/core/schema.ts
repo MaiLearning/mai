@@ -33,3 +33,8 @@ export const UpdateCourseInputSchema = z.object({
   colorTo: z.string().nullable(),
   status: CourseStatusSchema,
 })
+
+export const TagStatSchema = z.object({
+  name: z.string(),
+  count: z.number(),
+})

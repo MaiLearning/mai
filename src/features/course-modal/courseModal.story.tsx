@@ -52,7 +52,7 @@ function ModalShell({
 }) {
   const [opened, setOpened] = useState(true)
   const titleId = 'story-course-modal-title'
-  const { values, setField, errors } = useCourseForm(initial ?? emptyCourseForm, opened)
+  const { values, setField, blur, errors } = useCourseForm(initial ?? emptyCourseForm, opened)
 
   return (
     <>
@@ -65,7 +65,12 @@ function ModalShell({
           titleId={titleId}
         />
         <ModalBody>
-          <CourseFormFields values={values} errors={errors} setField={setField} />
+          <CourseFormFields
+            values={values}
+            errors={errors}
+            setField={setField}
+            onFieldBlur={blur}
+          />
           {children}
         </ModalBody>
         <ModalFooter>

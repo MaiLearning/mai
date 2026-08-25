@@ -20,20 +20,21 @@
     "deleteError": "Failed to delete course"
   },
   "validation": {
-    "tagsRequired": "Add at least one topic"
+    "nameRange": "Course title must be between 3 and 120 characters",
+    "descriptionMax": "Course description must not exceed {{max}} characters",
+    "tagMax": "A topic must not exceed {{max}} characters"
   },
   "fields": {
     "name": "Course title",
     "namePlaceholder": "For example, React from scratch to production",
     "description": "Description",
-    "descriptionHint": "Briefly describe what the student will get after the course.",
     "descriptionPlaceholder": "We'll cover components, state, routing and deployment on a real project…",
-    "tags": "Course topics",
-    "tagsHint": "Up to {{max}} characters per topic. Enter or comma to add.",
-    "tagsPlaceholderExisting": "Add a topic…",
+    "tags": "Course tags",
+    "tagsHint": "Up to {{max}} characters per tag. Enter or comma to add.",
+    "tagsPlaceholderExisting": "Add a tag…",
     "tagsPlaceholderEmpty": "For example, Frontend",
-    "tagsLimitReached": "Topic is too long",
-    "removeTag": "Remove topic {{tag}}",
+    "tagsLimitReached": "Tag is too long",
+    "removeTag": "Remove tag {{tag}}",
     "colors": "Card colors",
     "colorsHint": "Two colors form the gradient of the course cover.",
     "status": "Course status",
@@ -53,7 +54,10 @@
     "paletteLabel": "Palette · {{slot}}",
     "swap": "Swap colors",
     "hexAria": "HEX for \"{{slot}}\"",
-    "native": "Custom color"
+    "custom": "Custom color",
+    "panelAria": "Color picker panel",
+    "hue": "Hue",
+    "saturation": "Saturation and brightness"
   },
   "danger": {
     "title": "Delete course",

@@ -40,7 +40,7 @@ export function CreateCourseModal({ opened, onClose, onCreated }: CreateCourseMo
   const titleId = useId()
   const [submitting, setSubmitting] = useState(false)
   const [formError, setFormError] = useState<string | null>(null)
-  const { values, setField, errors, isValid, submit } = useCourseForm(emptyCourseForm, opened)
+  const { values, setField, blur, errors, isValid, submit } = useCourseForm(emptyCourseForm, opened)
 
   // Сброс состояния отправки при каждом открытии модалки
   useEffect(() => {
@@ -94,7 +94,12 @@ export function CreateCourseModal({ opened, onClose, onCreated }: CreateCourseMo
         style={{ display: 'contents' }}
       >
         <ModalBody>
-          <CourseFormFields values={values} errors={errors} setField={setField} />
+          <CourseFormFields
+            values={values}
+            errors={errors}
+            setField={setField}
+            onFieldBlur={blur}
+          />
           {formError && <FormError role="alert">{formError}</FormError>}
         </ModalBody>
 

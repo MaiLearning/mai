@@ -20,20 +20,21 @@
     "deleteError": "Не удалось удалить курс"
   },
   "validation": {
-    "tagsRequired": "Добавьте хотя бы одну тему"
+    "nameRange": "Название курса должно содержать от 3 до 120 символов",
+    "descriptionMax": "Описание курса не должно превышать {{max}} символов",
+    "tagMax": "Тег курса не должен превышать {{max}} символов"
   },
   "fields": {
     "name": "Название курса",
     "namePlaceholder": "Например, React с нуля до продакшена",
     "description": "Описание",
-    "descriptionHint": "Коротко о том, что студент получит после курса.",
     "descriptionPlaceholder": "Разберем компоненты, состояние, роутинг и деплой на реальном проекте…",
-    "tags": "Темы курса",
-    "tagsHint": "До {{max}} символов на тему. Enter или запятая — добавить.",
-    "tagsPlaceholderExisting": "Добавить тему…",
+    "tags": "Теги курса",
+    "tagsHint": "До {{max}} символов на тег. Enter или запятая — добавить.",
+    "tagsPlaceholderExisting": "Добавить тег…",
     "tagsPlaceholderEmpty": "Например, Frontend",
-    "tagsLimitReached": "Тема слишком длинная",
-    "removeTag": "Убрать тему {{tag}}",
+    "tagsLimitReached": "Тег слишком длинный",
+    "removeTag": "Убрать тег {{tag}}",
     "colors": "Цвета карточки",
     "colorsHint": "Два цвета формируют градиент обложки курса.",
     "status": "Статус курса",
@@ -53,7 +54,10 @@
     "paletteLabel": "Палитра · {{slot}}",
     "swap": "Поменять цвета местами",
     "hexAria": "HEX для «{{slot}}»",
-    "native": "Свой цвет"
+    "custom": "Свой цвет",
+    "panelAria": "Панель выбора цвета",
+    "hue": "Тон",
+    "saturation": "Насыщенность и яркость"
   },
   "danger": {
     "title": "Удаление курса",

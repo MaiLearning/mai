@@ -34,7 +34,14 @@ export const emptyCourseForm: CourseFormValues = {
   status: 'draft',
 }
 
-export type CourseFormErrors = Partial<Record<'name' | 'description' | 'tags', string>>
+/** Поля формы с валидацией и состоянием «затронуто». */
+export type CourseFormField = 'name' | 'description' | 'tags'
+
+/**
+ * Ошибки полей: значения — ключи i18n неймспейса courseModal (validation.*),
+ * а не готовые сообщения: перевод выполняется в UI-слое.
+ */
+export type CourseFormErrors = Partial<Record<CourseFormField, string>>
 
 function validate(values: CourseFormValues): CourseFormErrors {
   const errors: CourseFormErrors = {}
@@ -42,38 +49,41 @@ function validate(values: CourseFormValues): CourseFormErrors {
   try {
     validateCourseName(values.name)
   } catch (e) {
-    if (e instanceof InvalidCourseNameError) errors.name = e.message
+    if (e instanceof InvalidCourseNameError) errors.name = 'validation.nameRange'
   }
 
   try {
     validateCourseDescription(values.description === '' ? null : values.description)
   } catch (e) {
-    if (e instanceof InvalidCourseDescriptionError) errors.description = e.message
+    if (e instanceof InvalidCourseDescriptionError) errors.description = 'validation.descriptionMax'
   }
 
   try {
     validateCourseTags(values.tags)
-    if (values.tags.length === 0) errors.tags = 'Добавьте хотя бы одну тему'
   } catch (e) {
-    if (e instanceof InvalidCourseTagsError) errors.tags = e.message
+    if (e instanceof InvalidCourseTagsError) errors.tags = 'validation.tagMax'
   }
 
   return errors
 }
 
 /**
- * Состояние формы курса: значения, ошибки (после первого сабмита),
+ * Состояние формы курса: значения, ошибки по полям, затронутые поля,
  * признак изменений относительно начальных значений и отправка.
+ * Ошибки поля видны после его blur либо после первого сабмита (все сразу).
+ * Теги не обязательны: ошибка только про длину отдельного тега.
  * Форма сбрасывается к initial при каждом открытии окна (open = true).
  */
 export function useCourseForm(initial: CourseFormValues, open: boolean) {
   const [values, setValues] = useState(initial)
-  const [touched, setTouched] = useState(false)
+  const [touchedFields, setTouchedFields] = useState<Partial<Record<CourseFormField, boolean>>>({})
+  const [submitted, setSubmitted] = useState(false)
 
   useEffect(() => {
     if (open) {
       setValues(initial)
-      setTouched(false)
+      setTouchedFields({})
+      setSubmitted(false)
     }
     // Сброс привязан к open: initial пересоздаётся родителем на каждый course/open.
   }, [open])
@@ -83,8 +93,21 @@ export function useCourseForm(initial: CourseFormValues, open: boolean) {
       setValues((current) => ({ ...current, [key]: next })),
     [],
   )
+  /** Отмечает поле затронутым: его ошибки становятся видимыми до сабмита. */
+  const blur = useCallback((field: CourseFormField) => {
+    setTouchedFields((current) => ({ ...current, [field]: true }))
+  }, [])
   const errors = useMemo(() => validate(values), [values])
-  const visibleErrors = touched ? errors : {}
+  const visibleErrors = useMemo(() => {
+    if (submitted) return errors
+
+    const result: CourseFormErrors = {}
+    for (const field of Object.keys(touchedFields) as CourseFormField[]) {
+      if (touchedFields[field] && errors[field]) result[field] = errors[field]
+    }
+
+    return result
+  }, [submitted, touchedFields, errors])
   const isValid = Object.keys(errors).length === 0
   const isDirty = useMemo(
     () => JSON.stringify(values) !== JSON.stringify(initial),
@@ -92,7 +115,8 @@ export function useCourseForm(initial: CourseFormValues, open: boolean) {
   )
   const submit = useCallback(
     (onValid: (values: CourseFormValues) => void) => {
-      setTouched(true)
+      setSubmitted(true)
+      setTouchedFields({ name: true, description: true, tags: true })
       if (!isValid) return false
       onValid({
         ...values,
@@ -106,5 +130,5 @@ export function useCourseForm(initial: CourseFormValues, open: boolean) {
     [isValid, values],
   )
 
-  return { values, setField, errors: visibleErrors, isValid, isDirty, submit }
+  return { values, setField, blur, errors: visibleErrors, isValid, isDirty, submit }
 }

@@ -1,5 +1,8 @@
 import { attachConsole } from '@tauri-apps/plugin-log'
 
+// Уровни логирования проксируются в tauri-plugin-log (stdout, файл, webview console).
+export { debug, error, info, trace, warn } from '@tauri-apps/plugin-log'
+
 /**
  * Инициализирует логгер: подключает console как целевой вывод для
  * `@tauri-apps/plugin-log`. Все последующие вызовы `info()`, `error()` и

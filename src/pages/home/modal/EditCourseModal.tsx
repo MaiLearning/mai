@@ -27,7 +27,8 @@ import { notifyError, notifySuccess } from '@/utils/notifications'
 
 const SectionDivider = styled.hr`
   height: 1px;
-  margin: 0;
+  /* Компенсируем gap ModalBody (xl = 24px): между статусом и опасной зоной нужно ~16px */
+  margin: -8px 0;
   border: none;
   background: ${({ theme }) => theme.colors.border};
 `
@@ -76,7 +77,10 @@ export function EditCourseModal({
         : emptyCourseForm,
     [course],
   )
-  const { values, setField, errors, isValid, isDirty, submit } = useCourseForm(initial, opened)
+  const { values, setField, blur, errors, isValid, isDirty, submit } = useCourseForm(
+    initial,
+    opened,
+  )
   const busy = submitting || deleting
 
   // Сброс состояния при каждом открытии модалки
@@ -153,7 +157,12 @@ export function EditCourseModal({
         style={{ display: 'contents' }}
       >
         <ModalBody>
-          <CourseFormFields values={values} errors={errors} setField={setField} />
+          <CourseFormFields
+            values={values}
+            errors={errors}
+            setField={setField}
+            onFieldBlur={blur}
+          />
 
           <SectionDivider />
 

@@ -1,4 +1,5 @@
 export { ColorPairPicker, type CourseGradient } from './ColorPairPicker'
+export { ColorPicker } from './ColorPicker'
 export { CourseFormFields } from './CourseFormFields'
 export { CoursePreviewHeader } from './CoursePreviewHeader'
 export { DangerPlate } from './DangerPlate'

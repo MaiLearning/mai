@@ -33,17 +33,3 @@ export const SWATCHES: string[] = [
   '#6d6a85',
   '#e9e7f3',
 ]
-
-/** Подсказки тем курса для быстрого добавления тегов. */
-export const TAG_SUGGESTIONS: string[] = [
-  'Frontend',
-  'Backend',
-  'Дизайн',
-  'Аналитика',
-  'Маркетинг',
-  'Математика',
-  'DevOps',
-  'Продукт',
-  'Soft skills',
-  'Мобильная разработка',
-]
