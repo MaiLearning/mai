@@ -9,15 +9,3 @@ export const CenteredWrap = styled.div`
   height: 100%;
   min-height: 200px;
 `
-
-export const ModalBody = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-`
-
-export const ButtonRow = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  gap: 8px;
-`

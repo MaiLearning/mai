@@ -6,7 +6,7 @@ import { Button, Modal, Spinner, Text } from '@/app/theme/components'
 import { sidebarApi } from './api'
 import { CourseSidebar as CourseSidebarView } from './CourseSidebar'
 import { toCourseNodes } from './convert'
-import { ButtonRow, CenteredWrap, ModalBody } from './index.style'
+import { CenteredWrap } from './index.style'
 import type { CourseNode, SidebarAction } from './types'
 
 // ================================================================
@@ -197,16 +197,11 @@ function CourseSidebarConnected({
 
       <Modal
         opened={deleteTarget !== null}
-        onClose={() => (deleting ? undefined : setDeleteTarget(null))}
+        onClose={() => setDeleteTarget(null)}
+        dismissible={!deleting}
         title="Подтверждение удаления"
-      >
-        <ModalBody>
-          <Text>
-            {deleteTarget?.type === 'folder'
-              ? `Удалить папку «${deleteTarget?.title}» и всё её содержимое?`
-              : `Удалить ресурс «${deleteTarget?.title}»?`}
-          </Text>
-          <ButtonRow>
+        footer={
+          <>
             <Button variant="secondary" onClick={() => setDeleteTarget(null)} disabled={deleting}>
               Отмена
             </Button>
@@ -217,8 +212,14 @@ function CourseSidebarConnected({
             >
               {deleting ? <Spinner label="Удаление" /> : 'Удалить'}
             </Button>
-          </ButtonRow>
-        </ModalBody>
+          </>
+        }
+      >
+        <Text>
+          {deleteTarget?.type === 'folder'
+            ? `Удалить папку «${deleteTarget?.title}» и всё её содержимое?`
+            : `Удалить ресурс «${deleteTarget?.title}»?`}
+        </Text>
       </Modal>
     </>
   )
