@@ -1,4 +1,5 @@
 import type { ComponentType } from 'react'
+import { TheoryViewer } from '@/plugins'
 import type { PluginRenderProps } from './core/types'
 
 /**
@@ -13,4 +14,6 @@ import type { PluginRenderProps } from './core/types'
  * 2. Импортируйте его сюда
  * 3. Добавьте запись в INTERNAL_VIEWERS
  */
-export const INTERNAL_VIEWERS: Record<string, ComponentType<PluginRenderProps>> = {}
+export const INTERNAL_VIEWERS: Record<string, ComponentType<PluginRenderProps>> = {
+  theory: TheoryViewer,
+}
