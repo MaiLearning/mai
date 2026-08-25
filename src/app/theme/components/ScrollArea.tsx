@@ -4,7 +4,11 @@ export function ScrollArea({
   children,
   ...props
 }: HTMLAttributes<HTMLDivElement> & { children: ReactNode }) {
-  return <Root {...props}>{children}</Root>
+  return (
+    <Root data-lenis-prevent="true" {...props}>
+      {children}
+    </Root>
+  )
 }
 const Root = styled.div`
   min-width: 0;

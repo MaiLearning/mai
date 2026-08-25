@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { ReactLenis } from 'lenis/react'
 import { RouterProvider } from 'react-router-dom'
 import { I18nProvider } from '@/app/i18n'
 import { SafeAreaProvider } from '@/layouts'
@@ -27,9 +28,12 @@ export default function Application() {
   return (
     <ThemeProvider>
       <I18nProvider>
-        <SafeAreaProvider>
-          <RouterProvider router={AppRouter} />
-        </SafeAreaProvider>
+        {/* Плавный инерционный скролл (window-level); вложенные скроллы — через data-lenis-prevent */}
+        <ReactLenis root options={{ duration: 1.15 }}>
+          <SafeAreaProvider>
+            <RouterProvider router={AppRouter} />
+          </SafeAreaProvider>
+        </ReactLenis>
       </I18nProvider>
     </ThemeProvider>
   )

@@ -92,8 +92,13 @@ const Grabber = styled.div`
   }
 `
 
-/** Прокручиваемое тело модалки (класс .app-scroll стилизуется в global-style). */
-export const ModalBody = styled.div.attrs({ className: 'app-scroll' })`
+/** Прокручиваемое тело модалки (класс .app-scroll стилизуется в global-style).
+ * data-lenis-prevent — скролл внутри модалки нативный, Lenis перехватывает только window. */
+export const ModalBody = styled.div.attrs((props) => ({
+  ...props,
+  className: `app-scroll ${props.className ?? ''}`.trim(),
+  'data-lenis-prevent': 'true',
+}))`
   display: flex;
   flex-direction: column;
   gap: ${({ theme }) => theme.spacing.xl};
