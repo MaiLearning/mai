@@ -1,7 +1,4 @@
 import { useMemo, useState } from 'react'
-import { CourseTree } from './CourseTree'
-import { SidebarActions } from './SidebarActions'
-import { CloseIcon, SearchIcon } from './icons'
 import {
   Aside,
   ClearButton,
@@ -15,6 +12,9 @@ import {
   SearchInput,
   SearchRow,
 } from './CourseSidebar.style'
+import { CourseTree } from './CourseTree'
+import { CloseIcon, SearchIcon } from './icons'
+import { SidebarActions } from './SidebarActions'
 import type { CourseNode, SidebarAction } from './types'
 
 export interface CourseSidebarProps {
@@ -56,14 +56,15 @@ function countNodes(nodes: CourseNode[]) {
     }
   }
   walk(nodes)
+
   return { resources, folders }
 }
-
 function plural(count: number, forms: [string, string, string]) {
   const mod10 = count % 10
   const mod100 = count % 100
   if (mod10 === 1 && mod100 !== 11) return forms[0]
   if (mod10 >= 2 && mod10 <= 4 && (mod100 < 10 || mod100 >= 20)) return forms[1]
+
   return forms[2]
 }
 
@@ -94,39 +95,32 @@ export function CourseSidebar({
   className,
 }: CourseSidebarProps) {
   const [internalSelectedId, setInternalSelectedId] = useState<string | null>(null)
-  const [expandedIds, setExpandedIds] = useState<Set<string>>(
-    () => new Set(defaultExpandedIds),
-  )
+  const [expandedIds, setExpandedIds] = useState<Set<string>>(() => new Set(defaultExpandedIds))
   const [query, setQuery] = useState('')
-
-  const selectedId =
-    controlledSelectedId !== undefined ? controlledSelectedId : internalSelectedId
-
+  const selectedId = controlledSelectedId !== undefined ? controlledSelectedId : internalSelectedId
   const stats = useMemo(() => countNodes(nodes), [nodes])
-
   const handleToggle = (id: string) => {
     setExpandedIds((prev) => {
       const next = new Set(prev)
       if (next.has(id)) next.delete(id)
       else next.add(id)
+
       return next
     })
   }
-
   const handleExpand = (id: string) => {
     setExpandedIds((prev) => {
       if (prev.has(id)) return prev
       const next = new Set(prev)
       next.add(id)
+
       return next
     })
   }
-
   const handleSelect = (node: CourseNode) => {
     if (controlledSelectedId === undefined) setInternalSelectedId(node.id)
     onSelect?.(node)
   }
-
   const initials = courseTitle
     .split(/\s+/)
     .slice(0, 2)
@@ -142,18 +136,15 @@ export function CourseSidebar({
           <Meta>
             {courseSubtitle ?? (
               <>
-                {stats.resources}{' '}
-                {plural(stats.resources, ['ресурс', 'ресурса', 'ресурсов'])} · {stats.folders}{' '}
-                {plural(stats.folders, ['группа', 'группы', 'групп'])}
+                {stats.resources} {plural(stats.resources, ['ресурс', 'ресурса', 'ресурсов'])} ·{' '}
+                {stats.folders} {plural(stats.folders, ['группа', 'группы', 'групп'])}
               </>
             )}
           </Meta>
         </HeaderText>
       </Header>
 
-      {actions.length > 0 && (
-        <SidebarActions actions={actions} maxVisible={maxVisibleActions} />
-      )}
+      {actions.length > 0 && <SidebarActions actions={actions} maxVisible={maxVisibleActions} />}
 
       {searchable && (
         <SearchRow>
@@ -195,4 +186,3 @@ export function CourseSidebar({
     </Aside>
   )
 }
-

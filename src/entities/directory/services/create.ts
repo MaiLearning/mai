@@ -12,5 +12,6 @@ export async function createDirectory(input: CreateDirectoryInput): Promise<Dire
     parentId: input.parentId ?? null,
   })
   const data = await invokeCreate(request.courseId, request.name, request.parentId)
+
   return DirectorySchema.parse(data)
 }

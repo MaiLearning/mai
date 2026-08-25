@@ -18,5 +18,6 @@ export function resolveContinueCourse(
   }
 
   const byFreshness = [...courses].sort((a, b) => b.updatedAt - a.updatedAt)
+
   return byFreshness.find((course) => course.status === 'in_progress') ?? byFreshness[0]
 }

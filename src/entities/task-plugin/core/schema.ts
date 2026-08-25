@@ -1,6 +1,7 @@
 import { z } from 'zod'
 
 const TaskOptionSchema = z.object({ id: z.string(), text: z.string() })
+
 const ChoiceTaskSchema = z.object({
   id: z.string(),
   type: z.literal('choice'),

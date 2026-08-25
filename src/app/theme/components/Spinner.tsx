@@ -3,6 +3,7 @@ export function Spinner({ label = 'Загрузка' }: { label?: string }) {
   return <Root role="status" aria-label={label} />
 }
 const spin = keyframes`to { transform: rotate(360deg); }`
+
 const Root = styled.span`
   display: inline-block;
   width: 1em;

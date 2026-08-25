@@ -37,7 +37,6 @@ function resolvePlugin(
 export function PluginViewer({ pluginId, resourceId, courseId, data }: PluginViewerProps) {
   const plugins = useAtomValue(runtimePluginsAtom)
   const { t } = useTranslation('viewer')
-
   const typeKey = data?.typeKey ?? undefined
   const plugin = resolvePlugin(plugins, pluginId, typeKey)
 

@@ -8,10 +8,12 @@ import {
 import type { PluginManifest } from './model'
 
 type EntityError = new (message: string) => Error
+
 const bounded = (value: string, min: number, max: number, error: EntityError, label: string) => {
   const v = value.trim()
   if (v.length < min || v.length > max)
     throw new error(`${label}: допустимо от ${min} до ${max} символов`)
+
   return v
 }
 export const validatePluginId = (v: string) =>

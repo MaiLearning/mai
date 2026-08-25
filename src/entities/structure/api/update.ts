@@ -10,5 +10,6 @@ export function sendMoveNode(
   if (!isFakeDataEnabled) return invoke('move_node', { nodeId, newParentId, position })
   const node = fakeState.nodes.find((item) => item.id === nodeId)
   if (node) Object.assign(node, { parentId: newParentId, position })
+
   return Promise.resolve()
 }

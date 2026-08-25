@@ -49,9 +49,7 @@ function CourseSidebarConnected({
   const [renamingId, setRenamingId] = useState<string | null>(null)
   const [deleteTarget, setDeleteTarget] = useState<CourseNode | null>(null)
   const [deleting, setDeleting] = useState(false)
-
   const nodes = useMemo(() => toCourseNodes(controller.nodes), [controller.nodes])
-
   // ── Toolbar actions ──────────────────────────────────────────────────────
   const actions = useMemo<SidebarAction[]>(
     () => [
@@ -84,7 +82,6 @@ function CourseSidebarConnected({
       })
     }
   }
-
   async function handleCreateFolder() {
     try {
       await controller.create('Новая папка', null)
@@ -94,13 +91,8 @@ function CourseSidebarConnected({
       })
     }
   }
-
   // ── DnD ──────────────────────────────────────────────────────────────────
-  async function handleMove(params: {
-    id: string
-    parentId: string | null
-    position: number
-  }) {
+  async function handleMove(params: { id: string; parentId: string | null; position: number }) {
     try {
       await controller.move(params.id, params.parentId, params.position)
     } catch (e) {
@@ -109,17 +101,16 @@ function CourseSidebarConnected({
       })
     }
   }
-
   // ── Переименование ───────────────────────────────────────────────────────
   function handleRenameStart(id: string) {
     const item = controller.tree.getItem(id)
     if (!item) return
     setRenamingId(id)
   }
-
   async function handleRenameCommit(name: string) {
     if (!renamingId || !name.trim()) {
       setRenamingId(null)
+
       return
     }
     const id = renamingId
@@ -132,16 +123,13 @@ function CourseSidebarConnected({
       })
     }
   }
-
   function handleRenameCancel() {
     setRenamingId(null)
   }
-
   // ── Удаление ─────────────────────────────────────────────────────────────
   function handleDeleteRequest(node: CourseNode) {
     setDeleteTarget(node)
   }
-
   async function handleDeleteConfirm() {
     if (!deleteTarget || deleting) return
     setDeleting(true)
@@ -229,7 +217,6 @@ function CourseSidebarConnected({
 //  Реэкспорты
 // ================================================================
 
+export type { SidebarApi } from '@mai/sidebar'
 export type { CourseSidebarProps } from './CourseSidebar'
 export type { CourseNode, CourseNodeType, SidebarAction } from './types'
-export type { SidebarApi } from '@mai/sidebar'
-

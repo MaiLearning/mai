@@ -4,6 +4,7 @@ import { HomeIcon } from './HomeIcon'
 
 export function HomeFooter() {
   const { t } = useTranslation('home')
+
   return (
     <FooterRoot>
       <FooterInner>

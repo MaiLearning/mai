@@ -31,5 +31,6 @@ export function resolveInitialLanguage(): AppLanguage {
   } catch {
     // localStorage недоступен (SSR/ограничения окружения) — fallback ниже
   }
+
   return DEFAULT_LANGUAGE
 }

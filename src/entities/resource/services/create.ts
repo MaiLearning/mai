@@ -21,5 +21,6 @@ export async function createResourceType(input: CreateResourceTypeInput): Promis
     supportedExtensions,
   })
   const data = await invokeCreate(request)
+
   return ResourceTypeSchema.parse(data)
 }

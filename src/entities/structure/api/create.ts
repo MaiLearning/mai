@@ -39,5 +39,6 @@ export function sendCreateResource(
     name,
   }
   fakeState.nodes.push(node)
+
   return Promise.resolve(node)
 }

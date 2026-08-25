@@ -25,7 +25,6 @@ interface SidebarActionsProps {
 export function SidebarActions({ actions, maxVisible = 2 }: SidebarActionsProps) {
   const [openMenu, setOpenMenu] = useState(false)
   const wrapRef = useRef<HTMLDivElement>(null)
-
   const visible = actions.slice(0, maxVisible)
   const overflow = actions.slice(maxVisible)
 
@@ -39,6 +38,7 @@ export function SidebarActions({ actions, maxVisible = 2 }: SidebarActionsProps)
     }
     document.addEventListener('mousedown', onPointerDown)
     document.addEventListener('keydown', onKeyDown)
+
     return () => {
       document.removeEventListener('mousedown', onPointerDown)
       document.removeEventListener('keydown', onKeyDown)
@@ -97,4 +97,3 @@ export function SidebarActions({ actions, maxVisible = 2 }: SidebarActionsProps)
     </Bar>
   )
 }
-

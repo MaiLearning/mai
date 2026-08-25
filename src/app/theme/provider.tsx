@@ -22,6 +22,7 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
     const update = () => setSystemDark(media.matches)
     update()
     media.addEventListener('change', update)
+
     return () => media.removeEventListener('change', update)
   }, [])
 

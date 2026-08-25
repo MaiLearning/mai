@@ -8,5 +8,6 @@ export function sendRenameDirectory(nodeId: string, name: string): Promise<void>
   const node = fakeState.nodes.find((item) => item.id === nodeId)
   if (directory) Object.assign(directory, { name, updatedAt: fakeNow() })
   if (node) Object.assign(node, { name })
+
   return Promise.resolve()
 }

@@ -7,6 +7,7 @@ export const createDirectoryAtom = atom(
   async (_get, set, input: { courseId: string; name: string; parentId?: string | null }) => {
     const directory = await createDirectory({ ...input, parentId: input.parentId ?? null })
     set(directoriesAtom, (prev) => [...prev, directory])
+
     return directory
   },
 )

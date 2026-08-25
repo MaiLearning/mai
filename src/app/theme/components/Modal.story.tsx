@@ -8,8 +8,10 @@ import { Modal, ModalBody, ModalFooter, ModalFooterSpacer } from './Modal'
 type Close = () => void
 /** Контент или футер: либо узел, либо функция от close (программное закрытие). */
 type Slot = ReactNode | ((close: Close) => ReactNode)
+
 const resolveSlot = (slot: Slot, close: Close): ReactNode =>
   typeof slot === 'function' ? slot(close) : slot
+
 interface ModalTriggerProps {
   opened?: boolean
   title?: string
@@ -40,6 +42,7 @@ function ModalTrigger({
     onClose?.()
     setOpened(false)
   }
+
   return (
     <>
       <Button onClick={() => setOpened(true)}>Открыть модалку</Button>
@@ -57,6 +60,7 @@ function ModalTrigger({
     </>
   )
 }
+
 const meta = {
   title: 'Theme/Modal',
   component: Modal,

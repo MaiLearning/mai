@@ -1,4 +1,4 @@
-import { forwardRef, useEffect, useRef, useState, type HTMLAttributes } from 'react'
+import { forwardRef, type HTMLAttributes, useEffect, useRef, useState } from 'react'
 import { ChevronIcon, FolderIcon, FolderOpenIcon, ResourceIcon, TrashIcon } from './icons'
 import { Badge, DeleteButton, NodeIcon, RenameInput, Row, Title, Twisty } from './TreeRow.style'
 import type { CourseNode } from './types'
@@ -149,4 +149,3 @@ export const TreeRow = forwardRef<HTMLDivElement, TreeRowProps>(function TreeRow
     </Row>
   )
 })
-

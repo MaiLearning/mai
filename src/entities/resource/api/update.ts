@@ -20,5 +20,6 @@ export function sendUpdateResource(input: {
   })
   const node = fakeState.nodes.find((item) => item.resource?.id === resource.id)
   if (node) Object.assign(node, { name: resource.name, resource: { ...resource } })
+
   return Promise.resolve({ ...resource })
 }

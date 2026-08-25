@@ -6,6 +6,7 @@ import { defineConfig, type Plugin } from 'vite'
 const host = process.env.TAURI_DEV_HOST
 const virtualModuleId = 'virtual:mai-config'
 const resolvedVirtualModuleId = `\0${virtualModuleId}`
+
 function maiConfigPlugin(mode: string): Plugin {
   return {
     name: 'mai-config',
@@ -27,6 +28,7 @@ function maiConfigPlugin(mode: string): Plugin {
             if (separator < 1) {
               throw new Error(`Некорректная строка в ${configPath}: ${line}`)
             }
+
             return [line.slice(0, separator).trim(), line.slice(separator + 1).trim()]
           }),
       )

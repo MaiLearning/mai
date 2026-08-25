@@ -4,6 +4,7 @@ import { Step, StepIcon, Steps } from './HowItWorks.styles'
 
 export function HowItWorks() {
   const { t } = useTranslation('home')
+
   return (
     <Steps id="how-it-works">
       <Step>

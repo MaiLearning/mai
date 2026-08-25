@@ -11,6 +11,7 @@ export function fetchAllCourses(): Promise<Course[]> {
 
 export function fetchCourseById(id: string): Promise<Course> {
   const course = fakeState.courses.find((item) => item.id === id)
+
   return isFakeDataEnabled
     ? course
       ? Promise.resolve({ ...course })

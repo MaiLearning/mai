@@ -33,6 +33,7 @@ export async function registerPlugin(input: RegisterPluginInput): Promise<Plugin
     sdkVersion,
   })
   const data = await invokeRegister(request)
+
   return PluginSchema.parse(data)
 }
 
@@ -50,5 +51,6 @@ export async function registerInternalPlugin(input: RegisterInternalPluginInput)
     author,
   })
   const data = await invokeRegisterInternal(request)
+
   return PluginSchema.parse(data)
 }

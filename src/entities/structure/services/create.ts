@@ -18,5 +18,6 @@ export async function createResourceInStructure(
     typeKey: input.typeKey ?? null,
   })
   const data = await invokeCreate(request.courseId, request.name, request.parentId, request.typeKey)
+
   return StructureNodeFlatSchema.parse(data)
 }

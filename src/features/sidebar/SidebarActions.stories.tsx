@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { Copy, Download, FolderPlus, Plus } from 'lucide-react'
 import { fn } from 'storybook/test'
-import { Plus, FolderPlus, Copy, Download } from 'lucide-react'
 import { SidebarActions } from './SidebarActions'
 import type { SidebarAction } from './types'
 
@@ -34,7 +34,6 @@ const actions: SidebarAction[] = [
     onSelect: fn(),
   },
 ]
-
 const meta = {
   title: 'Sidebar/SidebarActions',
   component: SidebarActions,

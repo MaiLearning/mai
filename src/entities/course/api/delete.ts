@@ -8,5 +8,6 @@ export function sendDeleteCourse(id: string): Promise<void> {
   fakeState.directories = fakeState.directories.filter((directory) => directory.courseId !== id)
   fakeState.resources = fakeState.resources.filter((resource) => resource.courseId !== id)
   fakeState.nodes = fakeState.nodes.filter((node) => node.courseId !== id)
+
   return Promise.resolve()
 }

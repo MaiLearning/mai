@@ -21,12 +21,14 @@ export function toCourseNodes(nodes: SidebarNode[]): CourseNode[] {
   const build = (parentId: string | null): CourseNode[] =>
     (byParent.get(parentId) ?? [])
       .sort((a, b) => a.position - b.position)
-      .map((n): CourseNode => ({
-        id: n.id,
-        type: n.isFolder ? 'folder' : 'resource',
-        title: n.name,
-        children: n.isFolder ? build(n.id) : undefined,
-      }))
+      .map(
+        (n): CourseNode => ({
+          id: n.id,
+          type: n.isFolder ? 'folder' : 'resource',
+          title: n.name,
+          children: n.isFolder ? build(n.id) : undefined,
+        }),
+      )
 
   return build(null)
 }
@@ -43,5 +45,6 @@ export function siblingPositionOf(
   const index = flat.findIndex((item) => item.id === id)
   if (index === -1) return 0
   const target = flat[index]
+
   return flat.slice(0, index).filter((item) => item.parentId === target.parentId).length
 }

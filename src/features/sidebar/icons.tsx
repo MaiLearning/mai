@@ -1,4 +1,3 @@
-import type { SVGProps } from 'react'
 import {
   ChevronRight,
   FileText,
@@ -10,6 +9,7 @@ import {
   Trash2,
   X,
 } from 'lucide-react'
+import type { SVGProps } from 'react'
 
 /**
  * Иконки sidebar-а на базе lucide-react.

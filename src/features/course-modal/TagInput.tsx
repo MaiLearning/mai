@@ -135,6 +135,7 @@ export function TagInput({ id, value, suggestions = [], onChange }: TagInputProp
     if (!tag) return
     if ([...tag].length > MAX_TAG_LENGTH) {
       setDraft('')
+
       return
     }
     const exists = value.some((item) => item.toLowerCase() === tag.toLowerCase())
@@ -148,6 +149,7 @@ export function TagInput({ id, value, suggestions = [], onChange }: TagInputProp
     if (event.key === 'Enter' || event.key === ',') {
       event.preventDefault()
       addTag(draft)
+
       return
     }
     if (event.key === 'Backspace' && draft.length === 0 && value.length > 0) {

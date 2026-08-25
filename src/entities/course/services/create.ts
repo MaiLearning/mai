@@ -26,5 +26,6 @@ export async function createCourse(input: CreateCourseInput): Promise<Course> {
     status,
   })
   const data = await invokeCreate(request)
+
   return CourseSchema.parse(data)
 }

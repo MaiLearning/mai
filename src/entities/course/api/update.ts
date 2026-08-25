@@ -18,5 +18,6 @@ export function sendUpdateCourse(input: UpdateCourseInput): Promise<Course> {
     updatedAt: fakeNow(),
   }
   fakeState.courses[index] = updated
+
   return Promise.resolve({ ...updated })
 }

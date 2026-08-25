@@ -33,5 +33,6 @@ const BadgeRoot = styled.span`
 /** Бейдж «есть несохранённые изменения» для футера окна редактирования. */
 export function DirtyBadge() {
   const { t } = useTranslation('courseModal')
+
   return <BadgeRoot>{t('dirtyBadge')}</BadgeRoot>
 }

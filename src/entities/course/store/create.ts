@@ -6,5 +6,6 @@ import { coursesAtom } from './atoms'
 export const createCourseAtom = atom(null, async (_get, set, input: CreateCourseInput) => {
   const course = await createCourse(input)
   set(coursesAtom, (prev) => [...prev, course])
+
   return course
 })

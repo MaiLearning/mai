@@ -15,6 +15,7 @@ export async function initLogger(): Promise<() => void> {
     return await attachConsole()
   } catch {
     console.info('[Logger] Tauri API недоступен, fallback на console')
+
     return () => {}
   }
 }

@@ -28,5 +28,6 @@ export async function updateCourse(input: UpdateCourseInput): Promise<Course> {
     status,
   })
   const data = await invokeUpdate(request)
+
   return CourseSchema.parse(data)
 }

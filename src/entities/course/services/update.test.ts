@@ -6,6 +6,7 @@ import { updateCourse } from './update'
 vi.mock('../api/update', () => ({ sendUpdateCourse: vi.fn() }))
 
 const invokeUpdate = vi.mocked(sendUpdateCourse)
+
 const course: Course = {
   id: 'course-1',
   name: 'Математика',

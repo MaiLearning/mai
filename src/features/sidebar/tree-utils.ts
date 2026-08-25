@@ -26,11 +26,7 @@ export interface Projection {
   parentId: string | null
 }
 
-function flatten(
-  items: CourseNode[],
-  parentId: string | null = null,
-  depth = 0,
-): FlattenedItem[] {
+function flatten(items: CourseNode[], parentId: string | null = null, depth = 0): FlattenedItem[] {
   return items.reduce<FlattenedItem[]>((acc, node, index) => {
     const hasChildren = node.type === 'folder' && Boolean(node.children?.length)
     acc.push({
@@ -47,6 +43,7 @@ function flatten(
     if (node.children?.length) {
       acc.push(...flatten(node.children, node.id, depth + 1))
     }
+
     return acc
   }, [])
 }
@@ -59,11 +56,14 @@ export function flattenTree(items: CourseNode[]): FlattenedItem[] {
 /** Убирает потомков указанных id (для скрытия свёрнутых папок и детей перетаскиваемого узла). */
 export function removeChildrenOf(items: FlattenedItem[], ids: string[]): FlattenedItem[] {
   const excludeParentIds = new Set(ids)
+
   return items.filter((item) => {
     if (item.parentId != null && excludeParentIds.has(item.parentId)) {
       if (item.hasChildren) excludeParentIds.add(item.id)
+
       return false
     }
+
     return true
   })
 }
@@ -76,7 +76,6 @@ export function buildTree(flattenedItems: FlattenedItem[]): CourseNode[] {
     title: '',
     children: [],
   }
-
   const mapped = flattenedItems.map((item) => {
     const node: CourseNode & { children: CourseNode[] } = {
       id: item.id,
@@ -86,9 +85,9 @@ export function buildTree(flattenedItems: FlattenedItem[]): CourseNode[] {
     }
     if (item.badge) node.badge = item.badge
     if (item.badgeTone) node.badgeTone = item.badgeTone
+
     return { item, node }
   })
-
   const nodeById: Record<string, CourseNode & { children: CourseNode[] }> = {
     [root.id]: root,
   }
@@ -104,8 +103,10 @@ export function buildTree(flattenedItems: FlattenedItem[]): CourseNode[] {
     list.map((node) => {
       if (node.type === 'resource') {
         const { children: _children, ...rest } = node
+
         return rest
       }
+
       return { ...node, children: clean(node.children ?? []) }
     })
 
@@ -114,10 +115,10 @@ export function buildTree(flattenedItems: FlattenedItem[]): CourseNode[] {
 
 function getMaxDepth(previousItem?: FlattenedItem): number {
   if (!previousItem) return 0
+
   // Вложить внутрь можно только в папку. Ресурс — только сосед того же уровня.
   return previousItem.type === 'folder' ? previousItem.depth + 1 : previousItem.depth
 }
-
 function getMinDepth(nextItem?: FlattenedItem): number {
   return nextItem ? nextItem.depth : 0
 }
@@ -139,7 +140,6 @@ export function getProjection(
   const newItems = arrayMove(items, activeItemIndex, overItemIndex)
   const previousItem = newItems[overItemIndex - 1]
   const nextItem = newItems[overItemIndex + 1]
-
   const dragDepth = Math.round(dragOffset / indentationWidth)
   const projectedDepth = activeItem.depth + dragDepth
   const maxDepth = getMaxDepth(previousItem)
@@ -154,6 +154,7 @@ export function getProjection(
       .slice(0, overItemIndex)
       .reverse()
       .find((item) => item.depth === depth)?.parentId
+
     return parent ?? null
   }
 

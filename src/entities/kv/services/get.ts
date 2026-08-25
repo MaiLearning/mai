@@ -9,5 +9,6 @@ import { KvKeySchema } from '../core/schema'
 export async function getKvValue<T = unknown>(key: string): Promise<T | null> {
   const resolvedKey = KvKeySchema.parse(key)
   const data = await sendKvGet(resolvedKey)
+
   return (data ?? null) as T | null
 }

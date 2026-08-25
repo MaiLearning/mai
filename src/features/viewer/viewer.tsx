@@ -26,7 +26,6 @@ export function Viewer({ resourceId, courseId }: ViewerProps) {
   const [node, setNode] = useState<StructureNodeFlat | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
-
   const load = useCallback(() => {
     setLoading(true)
     setError(null)

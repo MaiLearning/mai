@@ -6,6 +6,7 @@ import { pluginsAtom } from './atoms'
 export const registerPluginAtom = atom(null, async (_get, set, input: RegisterPluginInput) => {
   const plugin = await registerPlugin(input)
   set(pluginsAtom, (prev) => [...prev, plugin])
+
   return plugin
 })
 
@@ -28,6 +29,7 @@ export const registerInternalPluginAtom = atom(
       author: input.author ?? null,
     })
     set(pluginsAtom, (prev) => [...prev, plugin])
+
     return plugin
   },
 )

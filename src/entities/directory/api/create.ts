@@ -27,5 +27,6 @@ export function sendCreateDirectory(
     directoryId: directory.id,
     name,
   })
+
   return Promise.resolve(directory)
 }

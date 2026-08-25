@@ -30,7 +30,6 @@ export function TypePicker({
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [assigning, setAssigning] = useState<string | null>(null)
-
   const load = useCallback(() => {
     setLoading(true)
     setError(null)

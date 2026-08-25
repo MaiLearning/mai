@@ -21,6 +21,7 @@ export const createResourceTypeAtom = atom(
       pluginId: input.pluginId ?? null,
     })
     set(resourceTypesAtom, (prev) => [...prev, type])
+
     return type
   },
 )

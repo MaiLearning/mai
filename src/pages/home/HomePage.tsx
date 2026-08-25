@@ -13,6 +13,7 @@ export function HomePage() {
   const { courses, lessonCounts, continueCourse, loading, error, reload } = useCourses()
   const [createOpened, setCreateOpened] = useState(false)
   const [editingCourse, setEditingCourse] = useState<Course | null>(null)
+
   return (
     <>
       <HomeHeader continueCourse={continueCourse} onCreateCourse={() => setCreateOpened(true)} />
@@ -34,10 +35,10 @@ export function HomePage() {
         />
       </main>
       <HomeFooter />
-      <CreateCourseModal 
-        opened={createOpened} 
-        onClose={() => setCreateOpened(false)} 
-        onCreated={reload} 
+      <CreateCourseModal
+        opened={createOpened}
+        onClose={() => setCreateOpened(false)}
+        onCreated={reload}
       />
       <EditCourseModal
         opened={editingCourse !== null}

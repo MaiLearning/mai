@@ -6,6 +6,7 @@ export const clearTheoryContentAtom = atom(null, async (_get, set, resourceId: s
   const cleared = await clearTheoryContent(resourceId)
   set(theoryContentsAtom, (prev) => {
     const filtered = prev.filter((c) => c.resourceId !== resourceId)
+
     return [...filtered, cleared]
   })
 })

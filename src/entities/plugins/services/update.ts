@@ -7,5 +7,6 @@ export async function setPluginEnabled(id: string, enabled: boolean): Promise<Pl
   const validId = validatePluginId(id)
   const request = SetPluginEnabledInputSchema.parse({ id: validId, enabled })
   const data = await invokeSetEnabled(request.id, request.enabled)
+
   return PluginSchema.parse(data)
 }

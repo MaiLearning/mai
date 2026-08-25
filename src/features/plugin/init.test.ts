@@ -22,7 +22,6 @@ describe('resolveTypeKeys', () => {
       makeType({ key: 'task', name: 'Задача', pluginId: 'internal-tasks' }),
       makeType({ key: 'free', name: 'Свободный', pluginId: null }),
     ]
-
     const result = resolveTypeKeys('internal-theory', types)
 
     expect(result).toEqual([{ key: 'theory', name: 'Теория' }])

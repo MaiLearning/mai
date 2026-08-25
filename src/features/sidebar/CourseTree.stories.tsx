@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { fn } from 'storybook/test'
+import { emptyTree, mockTree } from './__mocks__/tree-mock'
 import { CourseTree } from './CourseTree'
-import { mockTree, emptyTree } from './__mocks__/tree-mock'
 
 const meta = {
   title: 'Sidebar/CourseTree',

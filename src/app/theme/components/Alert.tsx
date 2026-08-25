@@ -34,6 +34,7 @@ const Root = styled.div<{ $variant: AlertProps['variant'] }>`
       info: { bg: theme.colors.infoSurface, border: theme.colors.info, color: theme.colors.info },
     }
     const s = map[$variant ?? 'info']
+
     return css`
       background: ${s.bg};
       border-color: ${s.border}33;

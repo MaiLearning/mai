@@ -91,6 +91,7 @@ export function CoursesSection({
             const from = course.colorFrom ?? DEFAULT_COLOR_FROM
             const to = course.colorTo ?? DEFAULT_COLOR_TO
             const ink = readableOn(mix(from, to, 0.5))
+
             return (
               <CourseCard key={course.id}>
                 <CardCover $from={from} $to={to} $ink={ink}>

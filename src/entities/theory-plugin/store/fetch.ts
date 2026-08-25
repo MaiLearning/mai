@@ -6,6 +6,7 @@ export const loadTheoryContentAtom = atom(null, async (_get, set, resourceId: st
   const content = await fetchTheoryContent(resourceId)
   set(theoryContentsAtom, (prev) => {
     const filtered = prev.filter((c) => c.resourceId !== resourceId)
+
     return [...filtered, content]
   })
 })

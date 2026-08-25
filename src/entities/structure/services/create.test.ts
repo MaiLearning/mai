@@ -5,6 +5,7 @@ import { createResourceInStructure } from './create'
 vi.mock('../api/create', () => ({ sendCreateResource: vi.fn() }))
 
 const invokeCreate = vi.mocked(sendCreateResource)
+
 const node = {
   id: 'node-1',
   courseId: 'course-1',

@@ -6,6 +6,7 @@ export interface HeadingProps extends HTMLAttributes<HTMLHeadingElement> {
 }
 export function Heading({ level = 2, ...props }: HeadingProps) {
   const Tag = `h${level}` as ElementType
+
   return <Root as={Tag as any} $level={level} {...props} />
 }
 const Root = styled.h2<{ $level: number }>`

@@ -178,6 +178,7 @@ export const StatusBadge = styled.span<{ $status: CourseStatus }>`
         background: ${theme.colors.warningSurface};
         color: ${theme.colors.warning};
       `
+
     return `
       background: ${theme.colors.primarySurface};
       color: ${theme.colors.textMuted};

@@ -8,6 +8,7 @@ type EntityError = new (message: string) => Error
 function validateId(value: string, error: EntityError, label: string): string {
   const normalized = value.trim()
   if (!normalized) throw new error(`${label} не может быть пустым`)
+
   return normalized
 }
 export const validateDirectoryId = (value: string) =>

@@ -9,7 +9,6 @@ const folderNode: CourseNode = {
   title: 'Введение в React',
   children: [],
 }
-
 const resourceNode: CourseNode = {
   id: 'res-1',
   type: 'resource',
@@ -17,7 +16,6 @@ const resourceNode: CourseNode = {
   badge: '12 мин',
   badgeTone: 'accent',
 }
-
 const resourceWithBadge: CourseNode = {
   id: 'res-2',
   type: 'resource',
@@ -25,7 +23,6 @@ const resourceWithBadge: CourseNode = {
   badge: 'Черновик',
   badgeTone: 'neutral',
 }
-
 const meta = {
   title: 'Sidebar/TreeRow',
   component: TreeRow,

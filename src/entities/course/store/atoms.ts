@@ -22,11 +22,13 @@ export function selectCourseAtom(courseId: string): Atom<Course | null> {
     target = atom((get) => get(coursesByIdAtom)[courseId] ?? null)
     selectCourseCache.set(courseId, target)
   }
+
   return target
 }
 
 export const selectedCourseAtom = atom((get) => {
   const id = get(selectedCourseIdAtom)
   const courses = get(coursesAtom)
+
   return courses.find((c) => c.id === id) ?? null
 })

@@ -31,6 +31,7 @@ const SectionDivider = styled.hr`
   border: none;
   background: ${({ theme }) => theme.colors.border};
 `
+
 interface EditCourseModalProps {
   opened: boolean
   /** Редактируемый курс. */

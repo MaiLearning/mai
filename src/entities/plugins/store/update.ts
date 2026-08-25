@@ -7,6 +7,7 @@ export const setPluginEnabledAtom = atom(
   async (_get, set, input: { id: string; enabled: boolean }) => {
     const updated = await setPluginEnabled(input.id, input.enabled)
     set(pluginsAtom, (prev) => prev.map((p) => (p.id === updated.id ? updated : p)))
+
     return updated
   },
 )

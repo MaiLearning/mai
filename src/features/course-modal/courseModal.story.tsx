@@ -39,6 +39,7 @@ const sampleCourse: Course = {
   createdAt: 0,
   updatedAt: 0,
 }
+
 /** Обёртка с открытой модалкой в композиционном режиме (как в окнах курса). */
 function ModalShell({
   eyebrow,
@@ -124,6 +125,7 @@ export const ColorPairPickerStory: StoryObj = {
 
 function ColorPairPickerState() {
   const [gradient, setGradient] = useState(emptyCourseForm.gradient)
+
   return <ColorPairPicker value={gradient} onChange={setGradient} />
 }
 
@@ -134,6 +136,7 @@ export const StatusPickerStory: StoryObj = {
 
 function StatusPickerState() {
   const [status, setStatus] = useState<Course['status']>('draft')
+
   return (
     <StatusPicker
       value={status}
@@ -154,6 +157,7 @@ export const TagInputStory: StoryObj = {
 
 function TagInputState() {
   const [tags, setTags] = useState<string[]>(['Frontend'])
+
   return (
     <TagInput value={tags} onChange={setTags} suggestions={['Backend', 'Дизайн', 'Аналитика']} />
   )

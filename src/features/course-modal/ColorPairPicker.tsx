@@ -299,6 +299,7 @@ export function ColorPairPicker({ value, onChange }: ColorPairPickerProps) {
         <SwatchGrid>
           {SWATCHES.map((color) => {
             const selected = value[slot] === color
+
             return (
               <Swatch
                 key={color}

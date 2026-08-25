@@ -100,6 +100,7 @@ export function useCourseForm(initial: CourseFormValues, open: boolean) {
         description: values.description.trim(),
         tags: validateCourseTags(values.tags),
       })
+
       return true
     },
     [isValid, values],

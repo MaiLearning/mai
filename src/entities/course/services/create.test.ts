@@ -6,6 +6,7 @@ import { createCourse } from './create'
 vi.mock('../api/create', () => ({ sendCreateCourse: vi.fn() }))
 
 const invokeCreate = vi.mocked(sendCreateCourse)
+
 const course: Course = {
   id: 'course-1',
   name: 'Математика',

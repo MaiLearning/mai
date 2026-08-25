@@ -20,5 +20,6 @@ export function sendCreateResourceType(input: {
     updatedAt: timestamp,
   }
   fakeState.resourceTypes.push(resourceType)
+
   return Promise.resolve(resourceType)
 }

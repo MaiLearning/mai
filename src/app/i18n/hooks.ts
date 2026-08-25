@@ -4,8 +4,8 @@ import {
   type AppLanguage,
   LANGUAGE_STORAGE_KEY,
   NAMESPACES,
-  SUPPORTED_LANGUAGES,
   resolveInitialLanguage,
+  SUPPORTED_LANGUAGES,
 } from './config'
 import { i18next } from './init'
 

@@ -8,6 +8,7 @@ vi.mock('../api/create', () => ({
 }))
 
 const invokeRegister = vi.mocked(sendRegisterInternalPlugin)
+
 const plugin = {
   id: 'plugin-1',
   name: 'Теория',

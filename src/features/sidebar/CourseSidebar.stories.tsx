@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { FolderPlus, Plus } from 'lucide-react'
 import { fn } from 'storybook/test'
-import { Plus, FolderPlus } from 'lucide-react'
+import { emptyTree, mockTree } from './__mocks__/tree-mock'
 import { CourseSidebar } from './CourseSidebar'
-import { mockTree, emptyTree } from './__mocks__/tree-mock'
 import type { SidebarAction } from './types'
 
 const actions: SidebarAction[] = [
@@ -33,7 +33,6 @@ const actions: SidebarAction[] = [
     onSelect: fn(),
   },
 ]
-
 const meta = {
   title: 'Sidebar/CourseSidebar',
   component: CourseSidebar,

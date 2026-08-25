@@ -12,6 +12,7 @@ type EntityError = new (message: string) => Error
 function id(value: string, error: EntityError, label: string): string {
   const normalized = value.trim()
   if (!normalized) throw new error(`${label} не может быть пустым`)
+
   return normalized
 }
 export const validateNodeId = (value: string) =>
@@ -28,5 +29,6 @@ export const validateStructureResourceName = (value: string) =>
   id(value, InvalidStructureResourceNameError, 'Название ресурса')
 export function validatePosition(value: number): number {
   if (value < 0) throw new InvalidPositionError('Позиция не может быть отрицательной')
+
   return value
 }

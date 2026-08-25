@@ -3,9 +3,9 @@ import { Menu } from 'lucide-react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Outlet, useNavigate, useParams } from 'react-router-dom'
 import { Button, Spinner, Text } from '@/app/theme/components'
-import { setKvValue } from '@/entities/kv/services'
 import { LAST_OPENED_COURSE_KEY } from '@/entities/course'
 import { loadCourseByIdAtom, selectCourseAtom } from '@/entities/course/store'
+import { setKvValue } from '@/entities/kv/services'
 import { CourseSidebar } from '@/features/sidebar'
 import {
   FullPage,
@@ -36,11 +36,9 @@ export default function CoursePage() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-
   const loadCourse = useSetAtom(loadCourseByIdAtom)
   const selectCourse = useMemo(() => selectCourseAtom(courseId ?? ''), [courseId])
   const course = useAtomValue(selectCourse)
-
   const load = useCallback(() => {
     if (!courseId || course) return
     setLoading(true)

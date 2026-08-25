@@ -74,6 +74,7 @@ const Root = styled.button<{ $variant: ButtonProps['variant']; $size: ButtonProp
         color: ${theme.colors.danger};
         &:hover { background: ${theme.colors.danger}; color: #fff; }
       `
+
     return css`
       background: ${theme.colors.primary};
       color: ${theme.colors.textOnPrimary};

@@ -8,5 +8,6 @@ export async function saveTheoryContent(input: SaveTheoryContentInput): Promise<
     content: input.content,
   })
   const data = await invokeSave(request.resourceId, request.content)
+
   return TheoryContentSchema.parse(data)
 }

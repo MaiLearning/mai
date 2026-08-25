@@ -11,6 +11,7 @@ export const updateResourceAtom = atom(
   ) => {
     const updated = await updateResource(input)
     set(resourcesAtom, (prev) => prev.map((r) => (r.id === updated.id ? updated : r)))
+
     return updated
   },
 )

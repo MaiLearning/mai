@@ -8,8 +8,10 @@ export const saveTheoryContentAtom = atom(
     const saved = await saveTheoryContent(input)
     set(theoryContentsAtom, (prev) => {
       const filtered = prev.filter((c) => c.resourceId !== input.resourceId)
+
       return [...filtered, saved]
     })
+
     return saved
   },
 )

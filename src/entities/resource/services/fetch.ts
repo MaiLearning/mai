@@ -5,5 +5,6 @@ import { ResourceTypeSchema } from '../core/schema'
 
 export async function fetchResourceTypes(): Promise<ResourceType[]> {
   const data = await invokeFetch()
+
   return z.array(ResourceTypeSchema).parse(data)
 }

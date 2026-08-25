@@ -10,5 +10,6 @@ export function sendDeleteNode(nodeId: string): Promise<void> {
     fakeState.resources = fakeState.resources.filter(
       (resource) => resource.id !== node.resource?.id,
     )
+
   return Promise.resolve()
 }

@@ -15,6 +15,7 @@ export const createResourceInStructureAtom = atom(
       typeKey: input.typeKey ?? null,
     })
     set(structureNodesAtom, (prev) => [...prev, node])
+
     return node
   },
 )

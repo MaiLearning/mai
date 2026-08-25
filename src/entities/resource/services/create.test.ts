@@ -5,6 +5,7 @@ import { createResourceType } from './create'
 vi.mock('../api/create', () => ({ sendCreateResourceType: vi.fn() }))
 
 const invokeCreate = vi.mocked(sendCreateResourceType)
+
 const resourceType = {
   key: 'theory',
   name: 'Теория',

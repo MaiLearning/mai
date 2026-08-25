@@ -214,6 +214,7 @@ export function Modal({
       if (!visible) restoreFocus.current = document.activeElement as HTMLElement
       setVisible(true)
       setClosing(false)
+
       return
     }
     if (!visible) return
@@ -223,6 +224,7 @@ export function Modal({
       setClosing(false)
       restoreFocus.current?.focus?.()
     }, CLOSE_DURATION_MS)
+
     return () => window.clearTimeout(timer)
   }, [opened, visible])
 
@@ -230,6 +232,7 @@ export function Modal({
   useEffect(() => {
     if (!visible) return
     document.body.dataset.scrollLocked = 'true'
+
     return () => {
       delete document.body.dataset.scrollLocked
     }
@@ -242,6 +245,7 @@ export function Modal({
       const first = panelRef.current?.querySelector<HTMLElement>(FOCUSABLE)
       ;(first ?? panelRef.current)?.focus({ preventScroll: true })
     })
+
     return () => cancelAnimationFrame(frame)
   }, [opened, visible])
 
@@ -250,6 +254,7 @@ export function Modal({
       if (event.key === 'Escape') {
         event.stopPropagation()
         if (dismissible) onClose()
+
         return
       }
       if (event.key !== 'Tab') return

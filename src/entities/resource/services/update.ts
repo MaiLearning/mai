@@ -14,5 +14,6 @@ export async function updateResource(input: UpdateResourceInput): Promise<Resour
     typeKey: input.typeKey ?? null,
   })
   const data = await invokeUpdate(request)
+
   return ResourceSchema.parse(data)
 }

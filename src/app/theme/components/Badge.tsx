@@ -28,6 +28,7 @@ const Root = styled.span<{ $variant: BadgeProps['variant'] }>`
       neutral: { bg: theme.colors.surface, color: theme.colors.textMuted },
     }
     const s = map[$variant ?? 'primary']
+
     return css`
       background: ${s.bg};
       color: ${s.color};

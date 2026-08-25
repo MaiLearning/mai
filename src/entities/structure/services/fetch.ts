@@ -5,5 +5,6 @@ import { StructureNodeFlatSchema } from '../core/schema'
 
 export async function fetchStructure(courseId: string): Promise<StructureNodeFlat[]> {
   const data = await invokeFetch(courseId)
+
   return z.array(StructureNodeFlatSchema).parse(data)
 }

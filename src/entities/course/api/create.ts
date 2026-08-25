@@ -19,5 +19,6 @@ export function sendCreateCourse(input: CreateCourseInput): Promise<Course> {
     updatedAt: timestamp,
   }
   fakeState.courses.push(course)
+
   return Promise.resolve(course)
 }

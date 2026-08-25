@@ -14,6 +14,7 @@ export class PluginStore {
 
     if (prev.some((p) => p.id === plugin.id)) {
       console.warn(`[PluginStore] Plugin "${plugin.id}" is already registered`)
+
       return
     }
 
@@ -29,6 +30,7 @@ export class PluginStore {
       runtimePluginsAtom,
       prev.filter((p) => p.id !== id),
     )
+
     return true
   }
 

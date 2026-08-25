@@ -1,12 +1,12 @@
 import type { SidebarApi, SidebarNode } from '@mai/sidebar'
 import { createDirectory, renameDirectory } from '@/entities/directory/services'
+import type { StructureNodeFlat } from '@/entities/structure/core/model'
 import {
   createResourceInStructure,
   deleteNode,
   fetchStructure,
   moveNode,
 } from '@/entities/structure/services'
-import type { StructureNodeFlat } from '@/entities/structure/core/model'
 
 /**
  * sidebarApi — реализация SidebarApi (контракт пакета @mai/sidebar)
@@ -30,11 +30,13 @@ function toSidebarNode(node: StructureNodeFlat): SidebarNode {
 export const sidebarApi: SidebarApi = {
   async fetchStructure(courseId: string): Promise<SidebarNode[]> {
     const nodes = await fetchStructure(courseId)
+
     return nodes.map(toSidebarNode)
   },
 
   async createDirectory(courseId, name, parentId): Promise<SidebarNode> {
     const dir = await createDirectory({ courseId, name, parentId })
+
     /**
      * Сервис createDirectory возвращает Directory (без parentId/position),
      * поэтому позиция неизвестна — используем MAX_SAFE_INTEGER для вставки
@@ -58,6 +60,7 @@ export const sidebarApi: SidebarApi = {
       parentId,
       typeKey: typeKey ?? null,
     })
+
     return toSidebarNode(node)
   },
 

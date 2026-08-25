@@ -22,7 +22,6 @@ const Root = styled.div`
   gap: ${({ theme }) => theme.spacing.sm};
   flex-wrap: nowrap;
 `
-
 const Mark = styled.span`
   width: 32px;
   height: 32px;
@@ -33,7 +32,6 @@ const Mark = styled.span`
   background: ${({ theme }) => theme.colors.primary};
   color: ${({ theme }) => theme.colors.textOnPrimary};
 `
-
 const Wordmark = styled.span`
   font-family: ${({ theme }) => theme.font.display};
   font-size: 1.25rem;

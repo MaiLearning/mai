@@ -18,6 +18,7 @@ export function validateCourseName(name: string): string {
   const value = name.trim()
   if (value.length < 3 || value.length > 120)
     throw new InvalidCourseNameError('Название курса должно содержать от 3 до 120 символов')
+
   return value
 }
 export function validateCourseDescription(description: string | null): string | null {
@@ -25,11 +26,13 @@ export function validateCourseDescription(description: string | null): string | 
   const value = description.trim()
   if (value.length > 2000)
     throw new InvalidCourseDescriptionError('Описание курса не должно превышать 2000 символов')
+
   return value || null
 }
 export function validateCourseId(id: string): string {
   const value = id.trim()
   if (!value) throw new InvalidCourseIdError('Идентификатор курса не может быть пустым')
+
   return value
 }
 export function validateCourseTimeline(createdAt: number, updatedAt: number): void {
@@ -51,6 +54,7 @@ export function validateCourseTags(tags: string[]): string[] {
     if (normalized.some((existing) => existing.toLowerCase() === value.toLowerCase())) continue
     normalized.push(value)
   }
+
   return normalized
 }
 export function validateCourseColor(color: string | null): string | null {
@@ -59,6 +63,7 @@ export function validateCourseColor(color: string | null): string | null {
   if (!value) return null
   if (!/^#[0-9a-fA-F]{6}$/.test(value))
     throw new InvalidCourseColorError('Цвет курса должен быть в формате #RRGGBB')
+
   return value.toLowerCase()
 }
 export function validateCourseStatus(status: CourseStatus | string): CourseStatus {
@@ -67,5 +72,6 @@ export function validateCourseStatus(status: CourseStatus | string): CourseStatu
     throw new InvalidCourseStatusError(
       `Статус курса должен быть одним из: ${COURSE_STATUSES.join(', ')}`,
     )
+
   return value as CourseStatus
 }
