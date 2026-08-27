@@ -1,6 +1,6 @@
 import { useAtomValue, useSetAtom } from 'jotai'
-import { Menu } from 'lucide-react'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { ChevronLeft, PanelLeftOpen, Settings } from 'lucide-react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Outlet, useNavigate, useParams } from 'react-router-dom'
 import { Button, Spinner, Text } from '@/app/theme/components'
 import { LAST_OPENED_COURSE_KEY } from '@/entities/course'
@@ -11,9 +11,9 @@ import {
   FullPage,
   LoadState,
   Main,
-  MenuButton,
-  MobileBar,
   Overlay,
+  Rail,
+  RailButton,
   Shell,
   SidebarSlot,
 } from './course-page.styles'
@@ -34,8 +34,10 @@ export default function CoursePage() {
   const { courseId } = useParams<{ courseId: string }>()
   const navigate = useNavigate()
   const [menuOpen, setMenuOpen] = useState(false)
+  const [railExpanded, setRailExpanded] = useState(false)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const swipeStartRef = useRef<{ x: number; y: number } | null>(null)
   const loadCourse = useSetAtom(loadCourseByIdAtom)
   const selectCourse = useMemo(() => selectCourseAtom(courseId ?? ''), [courseId])
   const course = useAtomValue(selectCourse)
@@ -62,6 +64,32 @@ export default function CoursePage() {
       console.warn('[course-page] failed to save last opened course:', e)
     })
   }, [courseId])
+
+  // Свайп вправо от левого края открывает содержание (тач-экраны).
+  // Закрытие — тапом по затемнению или выбором ресурса.
+  useEffect(() => {
+    if (menuOpen) return
+    const onTouchStart = (event: TouchEvent) => {
+      const touch = event.touches[0]
+      swipeStartRef.current = touch.clientX <= 24 ? { x: touch.clientX, y: touch.clientY } : null
+    }
+    const onTouchEnd = (event: TouchEvent) => {
+      const start = swipeStartRef.current
+      if (!start) return
+      swipeStartRef.current = null
+      const touch = event.changedTouches[0]
+      const dx = touch.clientX - start.x
+      const dy = Math.abs(touch.clientY - start.y)
+      if (dx > 48 && dy < 40) setMenuOpen(true)
+    }
+    document.addEventListener('touchstart', onTouchStart, { passive: true })
+    document.addEventListener('touchend', onTouchEnd, { passive: true })
+
+    return () => {
+      document.removeEventListener('touchstart', onTouchStart)
+      document.removeEventListener('touchend', onTouchEnd)
+    }
+  }, [menuOpen])
 
   if (!courseId) return null
 
@@ -104,14 +132,28 @@ export default function CoursePage() {
       </SidebarSlot>
       {menuOpen && <Overlay $open={menuOpen} onClick={() => setMenuOpen(false)} />}
 
+      <Rail $expanded={railExpanded} aria-label="Панель курса">
+        {railExpanded ? (
+          <>
+            <RailButton onClick={() => setMenuOpen(true)} aria-label="Открыть содержание">
+              <PanelLeftOpen size={18} />
+            </RailButton>
+            {/* Настроек курса пока нет — временно ведём на главную */}
+            <RailButton onClick={() => navigate('/home')} aria-label="Настройки курса">
+              <Settings size={18} />
+            </RailButton>
+            <RailButton onClick={() => setRailExpanded(false)} aria-label="Свернуть панель">
+              <ChevronLeft size={18} />
+            </RailButton>
+          </>
+        ) : (
+          <RailButton onClick={() => setRailExpanded(true)} aria-label="Открыть панель курса">
+            <PanelLeftOpen size={16} />
+          </RailButton>
+        )}
+      </Rail>
+
       <Main>
-        <MobileBar>
-          <MenuButton onClick={() => setMenuOpen(true)}>
-            <Menu size={18} />
-            Содержание
-          </MenuButton>
-          <span>{course.name}</span>
-        </MobileBar>
         <Outlet />
       </Main>
     </Shell>
