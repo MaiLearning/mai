@@ -65,6 +65,7 @@ export function useTreeController(courseId: string) {
           setLoading(false)
         }
       })
+
     return () => {
       cancelled = true
     }

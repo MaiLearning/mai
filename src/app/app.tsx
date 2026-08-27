@@ -1,5 +1,5 @@
-import { useEffect } from 'react'
 import { ReactLenis } from 'lenis/react'
+import { useEffect } from 'react'
 import { RouterProvider } from 'react-router-dom'
 import { I18nProvider } from '@/app/i18n'
 import { SafeAreaProvider } from '@/layouts'

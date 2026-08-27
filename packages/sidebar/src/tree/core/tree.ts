@@ -134,6 +134,7 @@ export class Tree {
    */
   getParent(id: string): string | null {
     const parent = this.parents.get(id)
+
     return parent === ROOT_ID ? null : (parent ?? null)
   }
 
@@ -189,6 +190,7 @@ export class Tree {
       })
     }
     walk(ROOT_ID)
+
     return nodes
   }
 
@@ -205,6 +207,7 @@ export class Tree {
     for (const key of Object.keys(this.children)) {
       out[key] = [...this.children[key]]
     }
+
     return out
   }
 

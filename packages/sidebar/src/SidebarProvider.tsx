@@ -1,7 +1,7 @@
 import { useAtomValue } from 'jotai'
 import { useHydrateAtoms } from 'jotai/react/utils'
 import type { ReactNode } from 'react'
-import { sidebarDepsAtom, type SidebarDeps } from './deps'
+import { type SidebarDeps, sidebarDepsAtom } from './deps'
 
 interface SidebarProviderProps {
   deps: SidebarDeps
@@ -17,6 +17,7 @@ interface SidebarProviderProps {
  */
 export function SidebarProvider({ deps, children }: SidebarProviderProps) {
   useHydrateAtoms(new Map([[sidebarDepsAtom, deps]]))
+
   return <>{children}</>
 }
 
@@ -31,5 +32,6 @@ export function useSidebarDeps(): SidebarDeps {
       'sidebar: зависимости не внедрены — оберните компоненты пакета в <SidebarProvider deps={...}>',
     )
   }
+
   return deps
 }

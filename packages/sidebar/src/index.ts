@@ -1,9 +1,9 @@
-export { SidebarProvider, useSidebarDeps } from './SidebarProvider'
-export { sidebarDepsAtom } from './deps'
-export { useTreeController } from './tree/core'
 export type {
   SidebarApi,
   SidebarDeps,
   SidebarNode,
 } from './deps'
-export type { Tree, Item, Node, Nodes } from './tree/core'
+export { sidebarDepsAtom } from './deps'
+export { SidebarProvider, useSidebarDeps } from './SidebarProvider'
+export type { Item, Node, Nodes, Tree } from './tree/core'
+export { useTreeController } from './tree/core'

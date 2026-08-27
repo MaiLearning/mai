@@ -46,6 +46,7 @@ export class TreeStore {
    */
   subscribe(cb: () => void): () => void {
     this.listeners.add(cb)
+
     return () => this.listeners.delete(cb)
   }
 
