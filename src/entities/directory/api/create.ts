@@ -1,32 +1,43 @@
 import { invoke } from '@tauri-apps/api/core'
+import type { StructureNodeFlat } from '@/entities/structure/core/model'
 import { isFakeDataEnabled } from '@/utils/fake-entities-storage'
 import { fakeId, fakeNow, fakeState } from '@/utils/fake-entities-storage/state'
-import type { Directory } from '../core/model'
 
+/**
+ * Создание директории.
+ *
+ * Контракт совпадает с backend-командой create_directory: ответ — плоский
+ * узел структуры (StructureNodeFlat), без меток времени (они остаются в БД
+ * и читаются через get_directories).
+ */
 export function sendCreateDirectory(
   courseId: string,
   name: string,
   parentId?: string | null,
-): Promise<Directory> {
+): Promise<StructureNodeFlat> {
+  const resolvedParentId = parentId ?? null
+
   if (!isFakeDataEnabled)
-    return invoke<Directory>('create_directory', {
+    return invoke<StructureNodeFlat>('create_directory', {
       courseId,
       name,
-      parentId: parentId ?? null,
+      parentId: resolvedParentId,
     })
+
+  const id = fakeId()
   const timestamp = fakeNow()
-  const directory = { id: fakeId(), courseId, name, createdAt: timestamp, updatedAt: timestamp }
-  fakeState.directories.push(directory)
-  fakeState.nodes.push({
-    id: directory.id,
+  const node: StructureNodeFlat = {
+    id,
     courseId,
-    parentId: parentId ?? null,
-    position: fakeState.nodes.filter((node) => node.parentId === (parentId ?? null)).length,
+    parentId: resolvedParentId,
+    position: fakeState.nodes.filter((item) => item.parentId === resolvedParentId).length,
     isDirectory: true,
     resource: null,
-    directoryId: directory.id,
+    directoryId: id,
     name,
-  })
+  }
+  fakeState.directories.push({ id, courseId, name, createdAt: timestamp, updatedAt: timestamp })
+  fakeState.nodes.push(node)
 
-  return Promise.resolve(directory)
+  return Promise.resolve(node)
 }

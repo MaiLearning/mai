@@ -35,22 +35,7 @@ export const sidebarApi: SidebarApi = {
   },
 
   async createDirectory(courseId, name, parentId): Promise<SidebarNode> {
-    const dir = await createDirectory({ courseId, name, parentId })
-
-    /**
-     * Сервис createDirectory возвращает Directory (без parentId/position),
-     * поэтому позиция неизвестна — используем MAX_SAFE_INTEGER для вставки
-     * в конец (Tree.insert через splice сам ограничит до длины массива).
-     * Бэкенд вычисляет корректную позицию; при следующем fetch она исправится.
-     */
-    return {
-      id: dir.id,
-      name: dir.name,
-      isFolder: true,
-      resourceId: null,
-      parentId,
-      position: Number.MAX_SAFE_INTEGER,
-    }
+    return toSidebarNode(await createDirectory({ courseId, name, parentId }))
   },
 
   async createResource(courseId, name, parentId, typeKey): Promise<SidebarNode> {

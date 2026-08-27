@@ -1,9 +1,18 @@
+import type { StructureNodeFlat } from '@/entities/structure/core/model'
+import { StructureNodeFlatSchema } from '@/entities/structure/core/schema'
 import { sendCreateDirectory as invokeCreate } from '../api/create'
-import type { CreateDirectoryInput, Directory } from '../core/model'
+import type { CreateDirectoryInput } from '../core/model'
 import { validateDirectoryCourseId, validateDirectoryName } from '../core/rules'
-import { CreateDirectoryInputSchema, DirectorySchema } from '../core/schema'
+import { CreateDirectoryInputSchema } from '../core/schema'
 
-export async function createDirectory(input: CreateDirectoryInput): Promise<Directory> {
+/**
+ * createDirectory — создание директории.
+ *
+ * Контракт ответа backend — StructureNodeFlat (плоский узел дерева),
+ * аналогично createResourceInStructure. Метки времени остаются в БД
+ * и не проходят через эту команду.
+ */
+export async function createDirectory(input: CreateDirectoryInput): Promise<StructureNodeFlat> {
   const courseId = validateDirectoryCourseId(input.courseId)
   const name = validateDirectoryName(input.name)
   const request = CreateDirectoryInputSchema.parse({
@@ -13,5 +22,5 @@ export async function createDirectory(input: CreateDirectoryInput): Promise<Dire
   })
   const data = await invokeCreate(request.courseId, request.name, request.parentId)
 
-  return DirectorySchema.parse(data)
+  return StructureNodeFlatSchema.parse(data)
 }

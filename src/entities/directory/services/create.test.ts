@@ -5,17 +5,26 @@ import { createDirectory } from './create'
 vi.mock('../api/create', () => ({ sendCreateDirectory: vi.fn() }))
 
 const invokeCreate = vi.mocked(sendCreateDirectory)
-const directory = { id: 'dir-1', courseId: 'course-1', name: 'Раздел', createdAt: 1, updatedAt: 1 }
+const node = {
+  id: 'dir-1',
+  courseId: 'course-1',
+  name: 'Раздел',
+  parentId: null,
+  position: 0,
+  isDirectory: true,
+  resource: null,
+  directoryId: 'dir-1',
+}
 
 describe('directory create service', () => {
   beforeEach(() => invokeCreate.mockReset())
 
-  it('normalizes fields and passes null parent', async () => {
-    invokeCreate.mockResolvedValue(directory)
+  it('normalizes fields and passes null parent, validating node contract', async () => {
+    invokeCreate.mockResolvedValue(node)
 
     await expect(
       createDirectory({ courseId: ' course-1 ', name: ' Раздел ', parentId: null }),
-    ).resolves.toEqual(directory)
+    ).resolves.toEqual(node)
     expect(invokeCreate).toHaveBeenCalledWith('course-1', 'Раздел', null)
   })
 
