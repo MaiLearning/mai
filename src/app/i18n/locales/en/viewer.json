@@ -10,7 +10,11 @@
   "pick_type_hint": "The resource has no type yet. Choose a suitable one from the list below.",
   "type_assigned_title": "Type assigned",
   "type_assigned_message": "The resource now has type \"{{name}}\"",
-  "plugin_not_found": "Plugin \"{{id}}\" not found or disabled",
-  "no_plugin_for_type": "No plugin to display a resource of type \"{{type}}\"",
-  "viewer_not_registered": "No viewer registered for type \"{{type}}\" yet"
+  "fallback": {
+    "title": "This resource can't be viewed yet",
+    "reason_plugin_not_found": "Plugin \"{{id}}\" was not found or is disabled.",
+    "reason_no_plugin_for_type": "No plugin is connected for this resource type yet.",
+    "reason_no_viewer": "The plugin has no viewer for this type yet.",
+    "type_label": "Type"
+  }
 }

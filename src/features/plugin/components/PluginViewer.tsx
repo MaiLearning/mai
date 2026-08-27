@@ -1,10 +1,19 @@
 import { useAtomValue } from 'jotai'
+import { Puzzle } from 'lucide-react'
 import { useTranslation } from '@/app/i18n'
-import { Text } from '@/app/theme/components/Text'
 import type { Plugin } from '../core/model'
 import type { PluginViewerProps } from '../core/types'
 import { runtimePluginsAtom } from '../store'
-import { MessageRoot, ViewerRoot } from './PluginViewer.style'
+import {
+  FallbackCard,
+  FallbackDescription,
+  FallbackIcon,
+  FallbackTitle,
+  MessageRoot,
+  TypeChip,
+  TypeChipLabel,
+  ViewerRoot,
+} from './PluginViewer.style'
 
 /**
  * Ищет среди включённых плагинов подходящий по явному `pluginId`,
@@ -27,6 +36,44 @@ function resolvePlugin(
   return enabled.find((p) => p.typeKeys.some((tk) => tk.key === typeKey))
 }
 
+type FallbackKind = 'plugin_not_found' | 'no_plugin_for_type' | 'no_viewer'
+
+interface FallbackProps {
+  kind: FallbackKind
+  /** Параметры причины: id плагина и/или тип ресурса для чипа. */
+  pluginId?: string
+  type?: string
+}
+
+/** Единое empty-state «ресурс нечем отобразить»: иконка, причина, чип типа. */
+function Fallback({ kind, pluginId, type }: FallbackProps) {
+  const { t } = useTranslation('viewer')
+  const reason =
+    kind === 'plugin_not_found'
+      ? t('fallback.reason_plugin_not_found', { id: pluginId ?? '?' })
+      : kind === 'no_plugin_for_type'
+        ? t('fallback.reason_no_plugin_for_type')
+        : t('fallback.reason_no_viewer')
+
+  return (
+    <MessageRoot>
+      <FallbackCard>
+        <FallbackIcon>
+          <Puzzle size={26} aria-hidden="true" />
+        </FallbackIcon>
+        <FallbackTitle>{t('fallback.title')}</FallbackTitle>
+        <FallbackDescription>{reason}</FallbackDescription>
+        {type && (
+          <TypeChip>
+            <TypeChipLabel>{t('fallback.type_label')}</TypeChipLabel>
+            {type}
+          </TypeChip>
+        )}
+      </FallbackCard>
+    </MessageRoot>
+  )
+}
+
 /**
  * PluginViewer — отображает содержимое ресурса через плагин.
  *
@@ -36,30 +83,17 @@ function resolvePlugin(
  */
 export function PluginViewer({ pluginId, resourceId, courseId, data }: PluginViewerProps) {
   const plugins = useAtomValue(runtimePluginsAtom)
-  const { t } = useTranslation('viewer')
   const typeKey = data?.typeKey ?? undefined
   const plugin = resolvePlugin(plugins, pluginId, typeKey)
 
   if (!plugin) {
-    return (
-      <MessageRoot>
-        <Text muted>
-          {pluginId
-            ? t('plugin_not_found', { id: pluginId })
-            : t('no_plugin_for_type', { type: typeKey ?? '?' })}
-        </Text>
-      </MessageRoot>
-    )
+    return <Fallback kind="plugin_not_found" pluginId={pluginId} type={typeKey} />
   }
 
   const ViewerComponent = typeKey ? plugin.viewers[typeKey] : undefined
 
   if (!ViewerComponent) {
-    return (
-      <MessageRoot>
-        <Text muted>{t('viewer_not_registered', { type: typeKey ?? '?' })}</Text>
-      </MessageRoot>
-    )
+    return <Fallback kind="no_viewer" type={typeKey} />
   }
 
   return (
