@@ -4,8 +4,9 @@ import { fileURLToPath } from 'url'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
+
 const config: StorybookConfig = {
-  stories: ['../src/**/*.mdx', '../src/**/*.stories.@(js|jsx|mjs|ts|tsx)'],
+  stories: ['../src/**/*.mdx', '../src/**/*.stor(y|ies).@(js|jsx|mjs|ts|tsx)'],
   addons: [
     '@chromatic-com/storybook',
     '@storybook/addon-a11y',
@@ -19,6 +20,7 @@ const config: StorybookConfig = {
       ...config.resolve.alias,
       '@': __dirname.replace('.storybook', 'src'),
     }
+
     return config
   },
 }
