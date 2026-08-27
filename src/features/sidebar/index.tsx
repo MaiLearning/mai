@@ -170,6 +170,7 @@ function CourseSidebarConnected({
       <CourseSidebarView
         courseTitle={courseTitle}
         courseSubtitle={courseSubtitle}
+        courseHomeHref={`/course/${courseId}`}
         nodes={nodes}
         actions={actions}
         renamingId={renamingId}

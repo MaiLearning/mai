@@ -6,6 +6,7 @@ import {
   Header,
   HeaderText,
   Mark,
+  MarkLink,
   Meta,
   Scroll,
   SearchIconSlot,
@@ -21,6 +22,8 @@ export interface CourseSidebarProps {
   courseTitle: string
   /** Подпись под названием: автор, поток, статус курса. */
   courseSubtitle?: string
+  /** Если задан, круглая метка курса становится ссылкой на обзор курса (роут /course/:courseId). */
+  courseHomeHref?: string
   nodes: CourseNode[]
   actions?: SidebarAction[]
   /** Сколько действий показывать кнопками до сворачивания в «…». */
@@ -78,6 +81,7 @@ function plural(count: number, forms: [string, string, string]) {
 export function CourseSidebar({
   courseTitle,
   courseSubtitle,
+  courseHomeHref,
   nodes,
   actions = [],
   maxVisibleActions = 2,
@@ -130,7 +134,13 @@ export function CourseSidebar({
   return (
     <Aside className={className} aria-label="Структура курса">
       <Header>
-        <Mark aria-hidden="true">{initials}</Mark>
+        {courseHomeHref ? (
+          <MarkLink to={courseHomeHref} aria-label="К обзору курса" title="К обзору курса">
+            <Mark aria-hidden="true">{initials}</Mark>
+          </MarkLink>
+        ) : (
+          <Mark aria-hidden="true">{initials}</Mark>
+        )}
         <HeaderText>
           <CourseTitle title={courseTitle}>{courseTitle}</CourseTitle>
           <Meta>

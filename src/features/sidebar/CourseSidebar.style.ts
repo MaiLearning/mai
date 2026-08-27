@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 
 export const Aside = styled.aside`
@@ -34,6 +35,29 @@ export const Mark = styled.div`
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.02em;
+`
+
+/** Ссылка-обёртка метки: клик ведёт к обзору курса (/course/:courseId). */
+export const MarkLink = styled(Link)`
+  display: inline-flex;
+  flex-shrink: 0;
+  border-radius: ${({ theme }) => theme.radii.lg};
+  cursor: pointer;
+  transition: transform ${({ theme }) => theme.transitions.fast};
+
+  &:hover {
+    transform: translateY(-1px);
+  }
+
+  &:hover ${Mark} {
+    background: ${({ theme }) => theme.colors.primary};
+    color: ${({ theme }) => theme.colors.textOnPrimary};
+  }
+
+  &:focus-visible {
+    outline: 2px solid ${({ theme }) => theme.colors.focus};
+    outline-offset: 2px;
+  }
 `
 
 export const HeaderText = styled.div`

@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { FolderPlus, Plus } from 'lucide-react'
+import { MemoryRouter } from 'react-router-dom'
 import { fn } from 'storybook/test'
 import { emptyTree, mockTree } from './__mocks__/tree-mock'
 import { CourseSidebar } from './CourseSidebar'
@@ -57,9 +58,12 @@ const meta = {
   },
   decorators: [
     (Story) => (
-      <div style={{ height: '100vh', display: 'flex' }}>
-        <Story />
-      </div>
+      // Марка курса — ссылка на /course/:id, в сторах нужен контент роутера
+      <MemoryRouter>
+        <div style={{ height: '100vh', display: 'flex' }}>
+          <Story />
+        </div>
+      </MemoryRouter>
     ),
   ],
 } satisfies Meta<typeof CourseSidebar>
