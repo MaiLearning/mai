@@ -3,7 +3,8 @@ import styled from 'styled-components'
 export const Shell = styled.div`
   display: grid;
   min-height: 100vh;
-  grid-template-columns: 1fr;
+  /* Первая колонка — вертикальная панель курса, вторая — контент */
+  grid-template-columns: 48px 1fr;
   @media (min-width: ${({ theme }) => theme.breakpoints.lg}) {
     grid-template-columns: 288px 1fr;
   }
@@ -38,25 +39,22 @@ export const Overlay = styled.button<{ $open: boolean }>`
   }
 `
 /**
- * Вертикальная панель курса для узких экранов: скрытая ручка у левого края,
- * по клику разворачивается в пилюлю с действиями (открыть содержание, настройки).
+ * Вертикальная панель курса для узких экранов: постоянная узкая колонка
+ * у левого края с кнопками сверху вниз («Открыть» содержание, «Настройки»).
  * На десктопе (>=lg) не отображается — там сайдбар является постоянной колонкой.
  */
-export const Rail = styled.div<{ $expanded: boolean }>`
-  position: fixed;
-  left: 8px;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 10;
+export const Rail = styled.nav`
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  z-index: 11;
   display: none;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
-  padding: ${({ $expanded }) => ($expanded ? '5px' : '0')};
-  border: 1px solid ${({ theme, $expanded }) => ($expanded ? theme.colors.border : 'transparent')};
-  border-radius: ${({ theme }) => theme.radii.pill};
-  background: ${({ theme, $expanded }) => ($expanded ? theme.colors.surface : 'transparent')};
-  box-shadow: ${({ theme, $expanded }) => ($expanded ? theme.shadows.md : 'none')};
+  gap: 6px;
+  padding-top: ${({ theme }) => theme.spacing.md};
+  background: ${({ theme }) => theme.colors.surface};
+  border-right: 1px solid ${({ theme }) => theme.colors.border};
 
   @media (max-width: calc(${({ theme }) => theme.breakpoints.lg} - 1px)) {
     display: flex;
@@ -67,11 +65,11 @@ export const RailButton = styled.button`
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 34px;
-  height: 34px;
+  width: 40px;
+  height: 40px;
   padding: 0;
   border: none;
-  border-radius: ${({ theme }) => theme.radii.pill};
+  border-radius: ${({ theme }) => theme.radii.md};
   background: transparent;
   color: ${({ theme }) => theme.colors.textMuted};
   cursor: pointer;

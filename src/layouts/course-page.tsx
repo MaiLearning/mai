@@ -1,5 +1,5 @@
 import { useAtomValue, useSetAtom } from 'jotai'
-import { ChevronLeft, PanelLeftOpen, Settings } from 'lucide-react'
+import { PanelLeftOpen, Settings } from 'lucide-react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Outlet, useNavigate, useParams } from 'react-router-dom'
 import { Button, Spinner, Text } from '@/app/theme/components'
@@ -34,7 +34,6 @@ export default function CoursePage() {
   const { courseId } = useParams<{ courseId: string }>()
   const navigate = useNavigate()
   const [menuOpen, setMenuOpen] = useState(false)
-  const [railExpanded, setRailExpanded] = useState(false)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const swipeStartRef = useRef<{ x: number; y: number } | null>(null)
@@ -132,25 +131,14 @@ export default function CoursePage() {
       </SidebarSlot>
       {menuOpen && <Overlay $open={menuOpen} onClick={() => setMenuOpen(false)} />}
 
-      <Rail $expanded={railExpanded} aria-label="Панель курса">
-        {railExpanded ? (
-          <>
-            <RailButton onClick={() => setMenuOpen(true)} aria-label="Открыть содержание">
-              <PanelLeftOpen size={18} />
-            </RailButton>
-            {/* Настроек курса пока нет — временно ведём на главную */}
-            <RailButton onClick={() => navigate('/home')} aria-label="Настройки курса">
-              <Settings size={18} />
-            </RailButton>
-            <RailButton onClick={() => setRailExpanded(false)} aria-label="Свернуть панель">
-              <ChevronLeft size={18} />
-            </RailButton>
-          </>
-        ) : (
-          <RailButton onClick={() => setRailExpanded(true)} aria-label="Открыть панель курса">
-            <PanelLeftOpen size={16} />
-          </RailButton>
-        )}
+      <Rail aria-label="Панель курса">
+        {/* Настроек курса пока нет — временно ведём на главную */}
+        <RailButton onClick={() => setMenuOpen(true)} aria-label="Открыть содержание">
+          <PanelLeftOpen size={18} />
+        </RailButton>
+        <RailButton onClick={() => navigate('/home')} aria-label="Настройки курса">
+          <Settings size={18} />
+        </RailButton>
       </Rail>
 
       <Main>
