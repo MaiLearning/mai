@@ -4,7 +4,6 @@ import { CoursesSection } from './CoursesSection'
 import { HeroSection } from './HeroSection'
 import { HomeFooter } from './HomeFooter'
 import { HomeHeader } from './HomeHeader'
-import { HowItWorks } from './HowItWorks'
 import { CreateCourseModal } from './modal/CreateCourseModal'
 import { EditCourseModal } from './modal/EditCourseModal'
 import { useCourses } from './useCourses'
@@ -23,7 +22,6 @@ export function HomePage() {
           lessonCounts={lessonCounts}
           onCreateCourse={() => setCreateOpened(true)}
         />
-        <HowItWorks />
         <CoursesSection
           courses={courses}
           lessonCounts={lessonCounts}

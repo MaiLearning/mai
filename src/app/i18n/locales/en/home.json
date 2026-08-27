@@ -3,8 +3,7 @@
     "nav": {
       "ariaLabel": "Основная навигация",
       "myCourses": "My courses",
-      "continue": "Continue",
-      "howItWorks": "How it works"
+      "continue": "Continue"
     },
     "actions": {
       "signIn": "Sign in",
@@ -33,20 +32,6 @@
     },
     "resumeCourse": "Resume course"
   },
-  "howItWorks": {
-    "step1": {
-      "title": "Describe your goal",
-      "text": "Tell Mai what you want to learn — a topic, a skill, or a book you're working through."
-    },
-    "step2": {
-      "title": "Get a structured outline",
-      "text": "Mai organizes it into sections and lessons you can reshape into a path that fits you."
-    },
-    "step3": {
-      "title": "Learn at your pace",
-      "text": "Work through lessons, track progress, and pick up exactly where you left off."
-    }
-  },
   "coursesSection": {
     "title": "My courses",
     "subtitle": "Everything you've built for yourself, in one place.",
@@ -74,7 +59,7 @@
     "title": "Manage courses"
   },
   "footer": {
-    "copyright": "© {{year}} Mai. Build your own course, then learn it."
+    "copyright": "© {{year}} Mai. Create your courses and learn something new."
   },
   "error": {
     "loadFailed": "Failed to load courses: {{error}}",
