@@ -1,7 +1,7 @@
 import { useTranslation } from '@/app/i18n'
 
 /** Страница управления курсами (заглушка). */
-export function CoursesPage() {
+export function CoursesManagementPage() {
   const { t } = useTranslation('home')
 
   return (
