@@ -26,11 +26,10 @@ export function HomeHeader({ continueCourse, onCreateCourse }: HomeHeaderProps) 
           Mai
         </Brand>
         <NavLinks aria-label={t('header.nav.ariaLabel')}>
-          <Link to="/home">{t('header.nav.myCourses')}</Link>
+          <Link to="/courses">{t('header.nav.myCourses')}</Link>
           <Link to={continueCourse ? `/course/${continueCourse.id}` : '/home'}>
             {t('header.nav.continue')}
           </Link>
-          <Link to="#how-it-works">{t('header.nav.howItWorks')}</Link>
         </NavLinks>
         <Actions>
           <ActionLink to="/course" $variant="ghost">
