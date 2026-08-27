@@ -1,18 +1,7 @@
 import { attachConsole } from '@tauri-apps/plugin-log'
 
-// Уровни логирования проксируются в tauri-plugin-log (stdout, файл, webview console).
-export { debug, error, info, trace, warn } from '@tauri-apps/plugin-log'
-
-/**
- * Инициализирует логгер: подключает console как целевой вывод для
- * `@tauri-apps/plugin-log`. Все последующие вызовы `info()`, `error()` и
- * других уровней будут дублироваться в консоль браузера/терминала.
- *
- * Если Tauri API недоступен (например, при запуске в обычном браузере),
- * логгер молча переключается на fallback без выброса ошибки.
- *
- * @returns Функция отключения — при вызове останавливает дублирование в console.
- */
+// Подключает webview-console как целевой вывод tauri-plugin-log.
+// Вызывается один раз при старте приложения (runner-таска init-logger).
 export async function initLogger(): Promise<() => void> {
   try {
     return await attachConsole()
