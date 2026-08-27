@@ -20,7 +20,7 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { type MouseEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { Empty, EmptyHint, EmptyTitle, Guide, Indicator, RowSlot, Tree } from './CourseTree.style'
 import { ROW_INDENT, TreeRow } from './TreeRow'
@@ -45,6 +45,8 @@ interface CourseTreeProps {
   onRenameCommit: (name: string) => void
   onRenameCancel: () => void
   onDeleteRequest: (node: CourseNode) => void
+  /** ПКМ по строке узла: открыть контекстное меню. */
+  onNodeContextMenu?: (node: CourseNode, event: MouseEvent) => void
 }
 
 const MEASURING = {
@@ -91,6 +93,7 @@ export function CourseTree({
   onRenameCommit,
   onRenameCancel,
   onDeleteRequest,
+  onNodeContextMenu,
 }: CourseTreeProps) {
   const normalizedQuery = query.trim().toLowerCase()
   const dndEnabled = Boolean(onMove) && !normalizedQuery
@@ -320,6 +323,7 @@ export function CourseTree({
                 onRenameCommit={onRenameCommit}
                 onRenameCancel={onRenameCancel}
                 onDeleteRequest={() => onDeleteRequest(toDisplayNode(item))}
+                onNodeContextMenu={(event) => onNodeContextMenu?.(toDisplayNode(item), event)}
                 registerRef={registerRef}
               />
             )
@@ -372,6 +376,7 @@ interface SortableTreeItemProps {
   onRenameCommit: (name: string) => void
   onRenameCancel: () => void
   onDeleteRequest: () => void
+  onNodeContextMenu?: (event: MouseEvent<HTMLDivElement>) => void
   registerRef: (id: string, element: HTMLDivElement | null) => void
 }
 function SortableTreeItem({
@@ -390,6 +395,7 @@ function SortableTreeItem({
   onRenameCommit,
   onRenameCancel,
   onDeleteRequest,
+  onNodeContextMenu,
   registerRef,
 }: SortableTreeItemProps) {
   const { setNodeRef, listeners, transform, transition } = useSortable({
@@ -424,6 +430,7 @@ function SortableTreeItem({
           onRenameCommit={onRenameCommit}
           onRenameCancel={onRenameCancel}
           onDeleteRequest={onDeleteRequest}
+          onNodeContextMenu={onNodeContextMenu}
           dragProps={disabled || isRenaming ? undefined : listeners}
         />
       )}

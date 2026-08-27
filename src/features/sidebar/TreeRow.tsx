@@ -1,4 +1,11 @@
-import { forwardRef, type HTMLAttributes, useEffect, useRef, useState } from 'react'
+import {
+  forwardRef,
+  type HTMLAttributes,
+  type MouseEvent,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 import { ChevronIcon, FolderIcon, FolderOpenIcon, ResourceIcon, TrashIcon } from './icons'
 import { Badge, DeleteButton, NodeIcon, RenameInput, Row, Title, Twisty } from './TreeRow.style'
 import type { CourseNode } from './types'
@@ -21,6 +28,8 @@ interface TreeRowProps {
   onRenameCommit: (name: string) => void
   onRenameCancel: () => void
   onDeleteRequest: () => void
+  /** ПКМ по строке: открыть контекстное меню узла (не в overlay-режиме). */
+  onNodeContextMenu?: (event: MouseEvent<HTMLDivElement>) => void
   /** Строка рендерится внутри DragOverlay (плавающая копия за курсором). */
   overlay?: boolean
   /** Приглушить исходную строку, пока идёт перетаскивание. */
@@ -52,6 +61,7 @@ export const TreeRow = forwardRef<HTMLDivElement, TreeRowProps>(function TreeRow
     onRenameCommit,
     onRenameCancel,
     onDeleteRequest,
+    onNodeContextMenu,
     overlay = false,
     dimmed = false,
     dragProps,
@@ -85,6 +95,7 @@ export const TreeRow = forwardRef<HTMLDivElement, TreeRowProps>(function TreeRow
       $overlay={overlay}
       $dimmed={dimmed}
       onFocus={onFocusRow}
+      onContextMenu={!overlay && !isRenaming ? onNodeContextMenu : undefined}
       onClick={() => {
         onSelect()
         if (isFolder) onToggle()

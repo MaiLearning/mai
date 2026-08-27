@@ -1,8 +1,9 @@
 import { SidebarProvider, useTreeController } from '@mai/sidebar'
-import { FolderPlus, Plus } from 'lucide-react'
-import { useMemo, useState } from 'react'
+import { FolderInput, FolderPlus, Pen, Plus } from 'lucide-react'
+import { type MouseEvent, useCallback, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import { Button, Modal, Spinner, Text } from '@/app/theme/components'
+import { ContextMenu, useContextMenu } from '@/features/context-menu'
 import { sidebarApi } from './api'
 import { CourseSidebar as CourseSidebarView } from './CourseSidebar'
 import { toCourseNodes } from './convert'
@@ -50,6 +51,36 @@ function CourseSidebarConnected({
   const [deleteTarget, setDeleteTarget] = useState<CourseNode | null>(null)
   const [deleting, setDeleting] = useState(false)
   const nodes = useMemo(() => toCourseNodes(controller.nodes), [controller.nodes])
+
+  // ── Контекстное меню дерева ─────────────────────────────────────────────
+  const menu = useContextMenu()
+  const menuState = menu.state
+  const menuTargetId = menuState?.targetId ?? null
+
+  const handleNodeContextMenu = useCallback(
+    (node: { id: string }, event: MouseEvent) => {
+      if (renamingId) return
+      menu.openFromEvent(event, node.id)
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [renamingId],
+  )
+
+  /** Целевой узел меню (для действия удаления нужен полный объект). */
+  const menuTargetNode = useMemo(
+    () => (menuTargetId ? findNodeById(nodes, menuTargetId) : null),
+    [nodes, menuTargetId],
+  )
+
+  /**
+   * Папки-приёмники для «Переместить в»: все папки дерева,
+   * кроме самой цели и её поддерева.
+   */
+  const folderTargets = useMemo(() => {
+    const targetSubtree = menuTargetNode ? collectSubtreeIds(menuTargetNode) : null
+
+    return collectFolders(nodes).filter((folder) => !targetSubtree || !targetSubtree.has(folder.id))
+  }, [nodes, menuTargetNode])
   // ── Toolbar actions ──────────────────────────────────────────────────────
   const actions = useMemo<SidebarAction[]>(
     () => [
@@ -126,6 +157,15 @@ function CourseSidebarConnected({
   function handleRenameCancel() {
     setRenamingId(null)
   }
+  // ── Перемещение через контекстное меню ─────────────────────────────────
+  /** Переместить цель меню в конец выбранной папки. */
+  async function handleMoveToFolder(parentId: string) {
+    const id = menuState?.targetId
+    if (!id) return
+
+    const parent = findNodeById(nodes, parentId)
+    await handleMove({ id, parentId, position: parent?.children?.length ?? 0 })
+  }
   // ── Удаление ─────────────────────────────────────────────────────────────
   function handleDeleteRequest(node: CourseNode) {
     setDeleteTarget(node)
@@ -182,6 +222,7 @@ function CourseSidebarConnected({
         onRenameCommit={handleRenameCommit}
         onRenameCancel={handleRenameCancel}
         onDeleteRequest={handleDeleteRequest}
+        onNodeContextMenu={handleNodeContextMenu}
       />
 
       <Modal
@@ -210,8 +251,82 @@ function CourseSidebarConnected({
             : `Удалить ресурс «${deleteTarget?.title}»?`}
         </Text>
       </Modal>
+
+      {menuState && (
+        <ContextMenu
+          opened
+          x={menuState.x}
+          y={menuState.y}
+          onClose={menu.close}
+          onDelete={
+            menuTargetNode && !deleting ? () => handleDeleteRequest(menuTargetNode) : undefined
+          }
+        >
+          <ContextMenu.Item
+            label="Переименовать"
+            icon={<Pen size={16} strokeWidth={1.5} />}
+            hotkey="F2"
+            disabled={!menuTargetId || renamingId !== null}
+            onSelect={() => {
+              if (menuTargetId) handleRenameStart(menuTargetId)
+            }}
+          />
+          <ContextMenu.Sub label="Переместить в" icon={<FolderInput size={16} strokeWidth={1.5} />}>
+            {folderTargets.length > 0 ? (
+              folderTargets.map((folder) => (
+                <ContextMenu.Item
+                  key={folder.id}
+                  label={folder.title}
+                  onSelect={() => void handleMoveToFolder(folder.id)}
+                />
+              ))
+            ) : (
+              <ContextMenu.Item label="Нет доступных папок" disabled />
+            )}
+          </ContextMenu.Sub>
+        </ContextMenu>
+      )}
     </>
   )
+}
+
+// ================================================================
+//  Вспомогательный поиск по дереву узлов
+// ================================================================
+
+/** Найти узел по id в глубину (дерево маленькое — рекурсия достаточна). */
+function findNodeById(nodes: CourseNode[], id: string): CourseNode | null {
+  for (const node of nodes) {
+    if (node.id === id) return node
+    if (node.children) {
+      const found = findNodeById(node.children, id)
+      if (found) return found
+    }
+  }
+
+  return null
+}
+
+/** Собрать множество id целевого узла и всех его потомков. */
+function collectSubtreeIds(node: CourseNode, acc: Set<string> = new Set()): Set<string> {
+  acc.add(node.id)
+  for (const child of node.children ?? []) collectSubtreeIds(child, acc)
+
+  return acc
+}
+
+/** Плоский список всех папок дерева (в порядке обхода сверху вниз). */
+function collectFolders(
+  nodes: CourseNode[],
+  acc: { id: string; title: string }[] = [],
+): { id: string; title: string }[] {
+  for (const node of nodes) {
+    if (node.type !== 'folder') continue
+    acc.push({ id: node.id, title: node.title })
+    if (node.children) collectFolders(node.children, acc)
+  }
+
+  return acc
 }
 
 // ================================================================

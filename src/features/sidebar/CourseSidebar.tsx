@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { type MouseEvent, useMemo, useState } from 'react'
 import {
   Aside,
   ClearButton,
@@ -42,6 +42,8 @@ export interface CourseSidebarProps {
   onRenameCommit?: (name: string) => void
   onRenameCancel?: () => void
   onDeleteRequest?: (node: CourseNode) => void
+  /** ПКМ по узлу дерева: открыть контекстное меню. */
+  onNodeContextMenu?: (node: CourseNode, event: MouseEvent) => void
   className?: string
 }
 
@@ -96,6 +98,7 @@ export function CourseSidebar({
   onRenameCommit,
   onRenameCancel,
   onDeleteRequest,
+  onNodeContextMenu,
   className,
 }: CourseSidebarProps) {
   const [internalSelectedId, setInternalSelectedId] = useState<string | null>(null)
@@ -191,6 +194,7 @@ export function CourseSidebar({
           onRenameCommit={(name) => onRenameCommit?.(name)}
           onRenameCancel={() => onRenameCancel?.()}
           onDeleteRequest={(node) => onDeleteRequest?.(node)}
+          onNodeContextMenu={(node, event) => onNodeContextMenu?.(node, event)}
         />
       </Scroll>
     </Aside>
