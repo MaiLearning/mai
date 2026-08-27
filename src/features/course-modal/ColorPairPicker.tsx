@@ -204,6 +204,8 @@ const CustomButton = styled.button<{ $open: boolean }>`
   border-radius: ${({ theme }) => theme.radii.sm};
   border: 1px dashed
     ${({ theme, $open }) => ($open ? theme.colors.primary : theme.colors.borderStrong)};
+  /* Без явного фона рисуется дефолтный светлый buttonface браузера */
+  background: transparent;
   color: ${({ theme, $open }) => ($open ? theme.colors.primary : theme.colors.textMuted)};
   font-size: 12.5px;
   font-weight: 600;

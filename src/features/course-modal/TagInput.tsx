@@ -73,11 +73,20 @@ const BareInput = styled.input`
     color: ${({ theme }) => theme.colors.textMuted};
     opacity: 0.75;
   }
+
+  /* Индикатор фокуса один — на Shell; гасим глобальное :focus-visible,
+     иначе обводка рисуется вокруг внутреннего инпута и «урезает» поле */
+  &:focus,
+  &:focus-visible {
+    outline: none;
+    box-shadow: none;
+  }
 `
 const Suggestions = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
+  margin-top: ${({ theme }) => theme.spacing.md};
 `
 const Suggestion = styled.button`
   display: inline-flex;
