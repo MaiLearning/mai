@@ -1,4 +1,4 @@
-import type { CourseNode } from '../types'
+import type { CourseNode } from '../model/types'
 
 /** Иерархия курса для сторис: 2 уровня, папки + ресурсы с бейджами. */
 export const mockTree: CourseNode[] = [

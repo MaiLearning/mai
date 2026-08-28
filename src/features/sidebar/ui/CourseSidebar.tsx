@@ -1,4 +1,6 @@
 import { type MouseEvent, useMemo, useState } from 'react'
+import { useSidebarSearch } from '../hooks/useSidebarSearch'
+import type { CourseNode, SidebarAction } from '../model/types'
 import {
   Aside,
   ClearButton,
@@ -16,7 +18,6 @@ import {
 import { CourseTree } from './CourseTree'
 import { CloseIcon, SearchIcon } from './icons'
 import { SidebarActions } from './SidebarActions'
-import type { CourseNode, SidebarAction } from './types'
 
 export interface CourseSidebarProps {
   courseTitle: string
@@ -78,7 +79,7 @@ function plural(count: number, forms: [string, string, string]) {
  * поиск и иерархическое дерево «папки + ресурсы».
  *
  * Чисто презентационный компонент — состоянием структуры владеет
- * хост (через useTreeController из пакета @mai/sidebar).
+ * entity-стор structure (features/sidebar связывает его с этим UI).
  */
 export function CourseSidebar({
   courseTitle,
@@ -103,7 +104,7 @@ export function CourseSidebar({
 }: CourseSidebarProps) {
   const [internalSelectedId, setInternalSelectedId] = useState<string | null>(null)
   const [expandedIds, setExpandedIds] = useState<Set<string>>(() => new Set(defaultExpandedIds))
-  const [query, setQuery] = useState('')
+  const { query, setQuery, clear: clearQuery } = useSidebarSearch()
   const selectedId = controlledSelectedId !== undefined ? controlledSelectedId : internalSelectedId
   const stats = useMemo(() => countNodes(nodes), [nodes])
   const handleToggle = (id: string) => {
@@ -172,7 +173,7 @@ export function CourseSidebar({
             onChange={(event) => setQuery(event.target.value)}
           />
           {query && (
-            <ClearButton type="button" aria-label="Очистить поиск" onClick={() => setQuery('')}>
+            <ClearButton type="button" aria-label="Очистить поиск" onClick={clearQuery}>
               <CloseIcon />
             </ClearButton>
           )}

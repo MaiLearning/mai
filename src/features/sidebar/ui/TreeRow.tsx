@@ -6,9 +6,9 @@ import {
   useRef,
   useState,
 } from 'react'
+import type { CourseNode } from '../model/types'
 import { ChevronIcon, FolderIcon, FolderOpenIcon, ResourceIcon, TrashIcon } from './icons'
 import { Badge, DeleteButton, NodeIcon, RenameInput, Row, Title, Twisty } from './TreeRow.style'
-import type { CourseNode } from './types'
 
 export const ROW_INDENT = 16
 

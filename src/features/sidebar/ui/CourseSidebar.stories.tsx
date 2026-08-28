@@ -2,9 +2,9 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { FolderPlus, Plus } from 'lucide-react'
 import { MemoryRouter } from 'react-router-dom'
 import { fn } from 'storybook/test'
-import { emptyTree, mockTree } from './__mocks__/tree-mock'
+import { emptyTree, mockTree } from '../__mocks__/tree-mock'
+import type { SidebarAction } from '../model/types'
 import { CourseSidebar } from './CourseSidebar'
-import type { SidebarAction } from './types'
 
 const actions: SidebarAction[] = [
   {

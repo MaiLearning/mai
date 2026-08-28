@@ -1,6 +1,3 @@
-import type { SidebarApi } from '../../deps'
-import type { Tree } from './tree'
-
 /**
  * ROOT_ID — идентификатор виртуального корня дерева.
  *
@@ -9,6 +6,7 @@ import type { Tree } from './tree'
  * служебный узел для единообразия: у каждого элемента есть родитель.
  */
 export const ROOT_ID = '__root__'
+
 /**
  * Item — элемент дерева «как есть».
  *
@@ -27,6 +25,7 @@ export interface Item {
   isFolder: boolean
   resourceId: string | null
 }
+
 /**
  * Node — «сырой» узел для сборки дерева.
  *
@@ -47,6 +46,7 @@ export interface Node {
   parentId: string | null
   position: number
 }
+
 /**
  * Nodes — сокращение для Array<Node>.
  */
@@ -61,6 +61,7 @@ export type Nodes = Node[]
  * Значение: Item
  */
 export type ItemMap = Record<string, Item>
+
 /**
  * ChildrenMap — иерархия «родитель → дети».
  *
@@ -71,6 +72,7 @@ export type ItemMap = Record<string, Item>
  * гарантируется сортировкой в Tree.from().
  */
 export type ChildrenMap = Record<string, string[]>
+
 /**
  * ParentsMap — обратная связь «ребёнок → родитель».
  *
@@ -85,32 +87,3 @@ export type ChildrenMap = Record<string, string[]>
  * - клонирование: new Map(original)
  */
 export type ParentsMap = Map<string, string>
-
-// --- Командный паттерн (Action) ---
-
-/**
- * Action — единица изменения дерева.
- *
- * Каждое действие над деревом (move, rename, remove, create)
- * оборачивается в реализацию Action. Это позволяет:
- * 1. Откатывать изменения (undo/redo)
- * 2. Синхронизировать изменения с backend (sendDo/sendUndo)
- * 3. Строить цепочку действий (для будущей синхронизации/интеграции с ИИ-агентами)
- *
- * Контракт:
- * - do(tree)          — применить изменение, вернуть новое дерево
- * - undo(tree)        — откатить изменение, вернуть предыдущее состояние
- * - sendDo(api)       — отправить изменение через внедрённый SidebarApi
- * - sendUndo(api)     — отправить отмену изменения через внедрённый SidebarApi
- *
- * Мутации для undo/redo:
- * - DO:   execute (history.execute → action.do + push)
- * - UNDO: sendUndo(api) → commitUndo (action.undo + pointer--)
- * - REDO: sendDo(api)   → commitRedo (action.do + pointer++)
- */
-export interface Action {
-  do(tree: Tree): Tree
-  undo(tree: Tree): Tree
-  sendDo(api: SidebarApi): Promise<void>
-  sendUndo(api: SidebarApi): Promise<void>
-}

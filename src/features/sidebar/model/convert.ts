@@ -1,17 +1,17 @@
-import type { SidebarNode } from '@mai/sidebar'
+import type { StructureNodeFlat } from '@/entities/structure'
 import type { CourseNode } from './types'
 
 /**
- * Конвертация плоского SidebarNode[] (из пакета @mai/sidebar) во вложенное
- * CourseNode[] (визуальная модель дизайна) и обратно.
+ * Конвертация плоского StructureNodeFlat[] (wire-модель сущности structure)
+ * во вложенное CourseNode[] (визуальная модель sidebar-а).
  *
- * SidebarNode — плоская модель с parentId/position (источник: бэкенд через пакет).
- * CourseNode — вложенная модель для рендера (дизайн sidebar-а).
+ * StructureNodeFlat — плоская модель с parentId/position (источник: entity-стор).
+ * CourseNode — вложенная модель для рендера дерева.
  */
 
 /** Плоский → вложенный: группировка по parentId, сортировка по position. */
-export function toCourseNodes(nodes: SidebarNode[]): CourseNode[] {
-  const byParent = new Map<string | null, SidebarNode[]>()
+export function toCourseNodes(nodes: StructureNodeFlat[]): CourseNode[] {
+  const byParent = new Map<string | null, StructureNodeFlat[]>()
   for (const n of nodes) {
     const list = byParent.get(n.parentId) ?? []
     list.push(n)
@@ -24,9 +24,9 @@ export function toCourseNodes(nodes: SidebarNode[]): CourseNode[] {
       .map(
         (n): CourseNode => ({
           id: n.id,
-          type: n.isFolder ? 'folder' : 'resource',
+          type: n.isDirectory ? 'folder' : 'resource',
           title: n.name,
-          children: n.isFolder ? build(n.id) : undefined,
+          children: n.isDirectory ? build(n.id) : undefined,
         }),
       )
 
@@ -34,7 +34,7 @@ export function toCourseNodes(nodes: SidebarNode[]): CourseNode[] {
 }
 
 /**
- * Вычислить sibling-position узла в новой структуре после dnd.
+ * Вычислить sibling-position узла в плоском списке после dnd.
  * Перебирает плоский список до позиции перемещённого узла и считает
  * сколько элементов с тем же parentId встретилось до него.
  */

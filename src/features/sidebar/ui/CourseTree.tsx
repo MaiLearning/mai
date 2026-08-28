@@ -22,10 +22,17 @@ import {
 import { CSS } from '@dnd-kit/utilities'
 import { type MouseEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
+import { useTreeKeyboardNav } from '../hooks/useTreeKeyboardNav'
+import { siblingPositionOf } from '../model/convert'
+import {
+  type FlattenedItem,
+  flattenTree,
+  getProjection,
+  removeChildrenOf,
+} from '../model/tree-utils'
+import type { CourseNode } from '../model/types'
 import { Empty, EmptyHint, EmptyTitle, Guide, Indicator, RowSlot, Tree } from './CourseTree.style'
 import { ROW_INDENT, TreeRow } from './TreeRow'
-import { type FlattenedItem, flattenTree, getProjection, removeChildrenOf } from './tree-utils'
-import type { CourseNode } from './types'
 
 interface CourseTreeProps {
   nodes: CourseNode[]
@@ -39,7 +46,7 @@ interface CourseTreeProps {
   onToggle: (id: string) => void
   /** Принудительно раскрыть папку (авто-раскрытие при наведении / после дропа). */
   onExpand?: (id: string) => void
-  /** Перемещение узла (оптимистично обрабатывается контроллером пакета). */
+  /** Перемещение узла (оптимистично обрабатывается entity-стором structure). */
   onMove?: (params: { id: string; parentId: string | null; position: number }) => void
   onRenameStart: (id: string) => void
   onRenameCommit: (name: string) => void
@@ -139,13 +146,13 @@ export function CourseTree({
     useSensor(TouchSensor, { activationConstraint: { delay: 180, tolerance: 6 } }),
   )
   // ── Клавиатурная навигация ────────────────────────────────────────────────
-  const [focusedId, setFocusedId] = useState<string | null>(null)
-  const rowRefs = useRef(new Map<string, HTMLDivElement>())
-  const activeId = focusedId ?? selectedId ?? rows[0]?.id ?? null
-
-  useEffect(() => {
-    if (focusedId && !rows.some((row) => row.id === focusedId)) setFocusedId(null)
-  }, [rows, focusedId])
+  const { activeId, markFocused, registerRef, handleKeyDown } = useTreeKeyboardNav({
+    rows,
+    selectedId,
+    isExpanded,
+    onToggle,
+    onSelect: (item) => onSelect(toDisplayNode(item)),
+  })
 
   const clearExpandTimer = useCallback(() => {
     if (expandTimer.current) clearTimeout(expandTimer.current)
@@ -155,57 +162,6 @@ export function CourseTree({
 
   useEffect(() => () => clearExpandTimer(), [clearExpandTimer])
 
-  const focusRow = useCallback((id: string) => {
-    setFocusedId(id)
-    rowRefs.current.get(id)?.focus()
-  }, [])
-  const registerRef = useCallback((id: string, element: HTMLDivElement | null) => {
-    if (element) rowRefs.current.set(id, element)
-    else rowRefs.current.delete(id)
-  }, [])
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
-    if (!activeId) return
-    const index = rows.findIndex((row) => row.id === activeId)
-    if (index === -1) return
-    const current = rows[index]
-
-    switch (event.key) {
-      case 'ArrowDown':
-        event.preventDefault()
-        if (rows[index + 1]) focusRow(rows[index + 1].id)
-        break
-      case 'ArrowUp':
-        event.preventDefault()
-        if (rows[index - 1]) focusRow(rows[index - 1].id)
-        break
-      case 'ArrowRight':
-        event.preventDefault()
-        if (current.hasChildren && !isExpanded(current)) onToggle(current.id)
-        else if (rows[index + 1]?.parentId === current.id) focusRow(rows[index + 1].id)
-        break
-      case 'ArrowLeft':
-        event.preventDefault()
-        if (current.hasChildren && isExpanded(current)) onToggle(current.id)
-        else if (current.parentId) focusRow(current.parentId)
-        break
-      case 'Home':
-        event.preventDefault()
-        if (rows[0]) focusRow(rows[0].id)
-        break
-      case 'End':
-        event.preventDefault()
-        if (rows[rows.length - 1]) focusRow(rows[rows.length - 1].id)
-        break
-      case 'Enter':
-      case ' ':
-        event.preventDefault()
-        onSelect(toDisplayNode(current))
-        if (current.hasChildren) onToggle(current.id)
-        break
-      default:
-        break
-    }
-  }
   // ── DnD-обработчики ───────────────────────────────────────────────────────
   const resetDragState = useCallback(() => {
     setDragId(null)
@@ -265,9 +221,7 @@ export function CourseTree({
     const sorted = arrayMove(clonedItems, activeIndex, overIndex)
     // Вычисляем sibling-position перемещённого узла среди детей нового родителя.
     const movedItem = sorted[overIndex]
-    const position = sorted
-      .slice(0, overIndex)
-      .filter((item) => item.parentId === movedItem.parentId).length
+    const position = siblingPositionOf(sorted, movedItem.id)
 
     onMove({ id: String(active.id), parentId, position })
 
@@ -318,7 +272,7 @@ export function CourseTree({
                 isRenaming={renamingId === item.id}
                 onToggle={() => onToggle(item.id)}
                 onSelect={() => onSelect(toDisplayNode(item))}
-                onFocusRow={() => setFocusedId(item.id)}
+                onFocusRow={() => markFocused(item.id)}
                 onRenameStart={() => onRenameStart(item.id)}
                 onRenameCommit={onRenameCommit}
                 onRenameCancel={onRenameCancel}

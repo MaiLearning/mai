@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Copy, Download, FolderPlus, Plus } from 'lucide-react'
 import { fn } from 'storybook/test'
+import type { SidebarAction } from '../model/types'
 import { SidebarActions } from './SidebarActions'
-import type { SidebarAction } from './types'
 
 const actions: SidebarAction[] = [
   {

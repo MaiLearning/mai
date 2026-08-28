@@ -6,7 +6,7 @@ import { Button, Spinner, Text } from '@/app/theme/components'
 import { LAST_OPENED_COURSE_KEY } from '@/entities/course'
 import { loadCourseByIdAtom, selectCourseAtom } from '@/entities/course/store'
 import { setKvValue } from '@/entities/kv/services'
-import { CourseSidebar } from '@/features/sidebar'
+import { CourseSidebarRoot } from '@/features/sidebar'
 import {
   FullPage,
   LoadState,
@@ -119,7 +119,7 @@ export default function CoursePage() {
   return (
     <Shell>
       <SidebarSlot $open={menuOpen}>
-        <CourseSidebar
+        <CourseSidebarRoot
           courseId={courseId}
           courseTitle={course.name}
           onResourceSelect={(resourceId) => {

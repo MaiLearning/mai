@@ -89,8 +89,20 @@ State: `resourcesAtom`, `resourceTypesAtom` + операции.
 resource? — полный встроенный Resource, directoryId?, name}`;
 `Structure {courseId, nodes[]}`.
 Входы: `CreateStructureResourceInput`, `MoveStructureNodeInput`.
-State: `structureNodesAtom` + операции.
-Из корня экспортируется **с неймспейсом**.
+State: SSOT — `structureTreeAtom` (иммутабельное дерево, модуль
+`tree/`) + `structureFlatByIdAtom` (payload-оригиналы узлов);
+потребители читают производную плоскую проекцию
+`structureNodesAtom: StructureNodeFlat[]` и реактивные
+`canUndoAtom`/`canRedoAtom`. Операции: `loadStructureAtom`,
+`createDirectoryAtom`, `createResourceAtom`, `moveNodeAtom`,
+`renameNodeAtom`, `deleteNodeAtom`, `undoStructureAtom`,
+`redoStructureAtom`. Мутации optimistic (кроме создания —
+backend-first), при ошибке backend автоматический откат; undo/redo —
+backend-first (подробности в `STRUCTURE.md`). Иерархию валидирует и
+оптимистично применяет History-машина (`store/history.ts` +
+`store/actions.ts` на основе `tree/Tree`); переименование идёт через
+directory-сервис для любых узлов. Из корня экспортируется
+**с неймспейсом**.
 
 ### task-plugin
 Содержимое заданий, привязанное к ресурсу (формат task-плагина).

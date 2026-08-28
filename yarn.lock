@@ -838,17 +838,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mai/sidebar@workspace:*, @mai/sidebar@workspace:packages/sidebar":
-  version: 0.0.0-use.local
-  resolution: "@mai/sidebar@workspace:packages/sidebar"
-  dependencies:
-    "@tauri-apps/plugin-log": "npm:^2.9.0"
-    jotai: "npm:^2.20.2"
-    react: "npm:^19.1.0"
-    react-dom: "npm:^19.1.0"
-  languageName: unknown
-  linkType: soft
-
 "@mdx-js/react@npm:^3.0.0":
   version: 3.1.1
   resolution: "@mdx-js/react@npm:3.1.1"
@@ -4126,7 +4115,6 @@ __metadata:
     "@dnd-kit/core": "npm:^6.3.1"
     "@dnd-kit/sortable": "npm:^10.0.0"
     "@dnd-kit/utilities": "npm:^3.2.2"
-    "@mai/sidebar": "workspace:*"
     "@storybook/addon-a11y": "npm:^10.5.8"
     "@storybook/addon-docs": "npm:^10.5.8"
     "@storybook/addon-mcp": "npm:latest"

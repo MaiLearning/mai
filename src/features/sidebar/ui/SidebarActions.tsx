@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import type { SidebarAction } from '../model/types'
 import { MoreIcon, PlusIcon } from './icons'
 import {
   ActionButton,
@@ -9,7 +10,6 @@ import {
   MenuWrap,
   MoreButton,
 } from './SidebarActions.style'
-import type { SidebarAction } from './types'
 
 interface SidebarActionsProps {
   actions: SidebarAction[]

@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { fn } from 'storybook/test'
+import type { CourseNode } from '../model/types'
 import { TreeRow } from './TreeRow'
-import type { CourseNode } from './types'
 
 const folderNode: CourseNode = {
   id: 'folder-1',
