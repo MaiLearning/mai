@@ -1,3 +1,4 @@
+import { useLenis } from 'lenis/react'
 import { X } from 'lucide-react'
 import { type ReactNode, useCallback, useEffect, useId, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
@@ -206,6 +207,11 @@ export function Modal({
   const [closing, setClosing] = useState(false)
   const panelRef = useRef<HTMLDivElement>(null)
   const restoreFocus = useRef<HTMLElement | null>(null)
+  /** Позиция скролла страницы на момент блокировки — возвращаем её при снятии лока. */
+  const savedScrollY = useRef(0)
+  // Lenis управляет скроллом окна (ReactLenis root): CSS overflow на body его ломает
+  // (позиция сбрасывается при снятии лока), поэтому останавливаем его штатным API.
+  const lenis = useLenis()
   const fallbackId = useId()
   const titleId = useId()
 
@@ -227,7 +233,7 @@ export function Modal({
     const timer = window.setTimeout(() => {
       setVisible(false)
       setClosing(false)
-      restoreFocus.current?.focus?.()
+      restoreFocus.current?.focus?.({ preventScroll: true })
     }, CLOSE_DURATION_MS)
 
     return () => window.clearTimeout(timer)
@@ -236,12 +242,25 @@ export function Modal({
   // Блокировка прокрутки страницы под модалкой
   useEffect(() => {
     if (!visible) return
+
+    savedScrollY.current = window.scrollY
     document.body.dataset.scrollLocked = 'true'
+    lenis?.stop()
 
     return () => {
       delete document.body.dataset.scrollLocked
+
+      // Снятие CSS-лока может сбросить scroll окна в начало (в особенности
+      // WebKitGTK), поэтому сразу возвращаем сохранённую позицию и проверяем
+      // ещё раз на следующем кадре, после завершения перерасчёта layout.
+      const y = savedScrollY.current
+      lenis?.start()
+      window.scrollTo(0, y)
+      requestAnimationFrame(() => {
+        if (window.scrollY !== y) window.scrollTo(0, y)
+      })
     }
-  }, [visible])
+  }, [visible, lenis])
 
   // Автофокус на первом интерактивном элементе панели
   useEffect(() => {
