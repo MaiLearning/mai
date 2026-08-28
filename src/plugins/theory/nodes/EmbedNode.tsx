@@ -1,9 +1,9 @@
+import { error as logError } from '@tauri-apps/plugin-log'
 import { openUrl } from '@tauri-apps/plugin-opener'
 import { mergeAttributes, Node } from '@tiptap/core'
 import { type NodeViewProps, ReactNodeViewRenderer } from '@tiptap/react'
 import { Play, Video } from 'lucide-react'
 import { useState } from 'react'
-import { error as logError } from '@/utils/logger'
 import {
   CaptionInput,
   EmbedCaptionRow,
@@ -11,7 +11,7 @@ import {
   EmbedFrame,
   EmbedSetup,
   SetupInput,
-} from './views.style'
+} from './EmbedNode.style'
 
 /**
  * Открывает ссылку на видео во внешнем браузере через opener-плагин Tauri.

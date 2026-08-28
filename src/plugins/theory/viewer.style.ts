@@ -1,6 +1,48 @@
 import { EditorContent } from '@tiptap/react'
 import styled from 'styled-components'
 
+// ─────────────────────────  Корневая зона viewer  ─────────────────────────
+
+/** Корневая зона viewer — занимает всё доступное пространство. */
+export const ViewerRoot = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  background: ${({ theme }) => theme.colors.body};
+  color: ${({ theme }) => theme.colors.text};
+  font-family: ${({ theme }) => theme.font.body};
+`
+
+// ─────────────────────────  Layout: Canvas + Aside  ─────────────────────────
+
+export const Body = styled.div`
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+`
+
+/** Прокручиваемая рабочая область с листом документа по центру. */
+export const Canvas = styled.div.attrs({ className: 'app-scroll', 'data-lenis-prevent': 'true' })`
+  flex: 1;
+  min-width: 0;
+  overflow-y: auto;
+  padding: ${({ theme }) => `${theme.spacing.xl} ${theme.spacing.lg}`};
+`
+
+/** Лист документа — колонка текста фиксированной ширины. */
+export const Sheet = styled.article`
+  width: 100%;
+  max-width: 760px;
+  margin: 0 auto;
+  padding-bottom: 120px;
+`
+
+// ─────────────────────────  Документ (TipTap)  ─────────────────────────
+
 /**
  * Область редактируемого документа.
  *

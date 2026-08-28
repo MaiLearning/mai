@@ -16,7 +16,7 @@ import {
   MetaRow,
   TitleInput,
   TitleRow,
-} from '../styles/layout.style'
+} from './TheoryHeader.style'
 
 export interface TheoryHeaderProps {
   courseId: string

@@ -5,7 +5,7 @@ import {
   StatusBar,
   StatusItem,
   StatusSpacer,
-} from '../styles/layout.style'
+} from './TheoryStatusBar.style'
 
 export interface TheoryStatusBarProps {
   /** Состояние автосохранения — управляет точкой и подписью. */

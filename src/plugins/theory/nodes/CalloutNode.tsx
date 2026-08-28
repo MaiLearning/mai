@@ -1,7 +1,7 @@
 import { mergeAttributes, Node } from '@tiptap/core'
 import { NodeViewContent, type NodeViewProps, ReactNodeViewRenderer } from '@tiptap/react'
 import { CheckCircle2, Lightbulb, Sparkles } from 'lucide-react'
-import { CalloutBox, ToneSwitch, ToneSwitchDot } from './views.style'
+import { CalloutBox, ToneSwitch, ToneSwitchDot } from './CalloutNode.style'
 
 /** Тон выноски: подсказка, акцент/идея, успех/важно. */
 export type CalloutTone = 'info' | 'accent' | 'success'

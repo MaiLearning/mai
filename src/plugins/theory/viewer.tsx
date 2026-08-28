@@ -1,218 +1,67 @@
-import { info, error as logError } from '@tauri-apps/plugin-log'
-import Highlight from '@tiptap/extension-highlight'
-import Image from '@tiptap/extension-image'
-import { Table, TableCell, TableHeader, TableRow } from '@tiptap/extension-table'
-import TextAlign from '@tiptap/extension-text-align'
-import { CharacterCount, Placeholder } from '@tiptap/extensions'
-import { type JSONContent, useEditor, useEditorState } from '@tiptap/react'
-import StarterKit from '@tiptap/starter-kit'
+import { error as logError } from '@tauri-apps/plugin-log'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { i18next, useTranslation } from '@/app/i18n'
+import { useTranslation } from '@/app/i18n'
 import { updateResource } from '@/entities/resource/services'
-import { fetchTheoryContent, saveTheoryContent } from '@/entities/theory-plugin/services'
 import type { PluginRenderProps } from '@/features/plugin/core/types'
 import { notifyError, notifySuccess } from '@/utils/notifications'
 import { TheoryAside } from './components/TheoryAside'
 import { TheoryHeader } from './components/TheoryHeader'
 import { TheoryStatusBar } from './components/TheoryStatusBar'
 import { type InsertDialogKind, TheoryToolbar } from './components/TheoryToolbar'
+import { useWordCount } from './components/toolbar-state'
 import { UrlDialog, type UrlDialogState } from './components/UrlDialog'
+import { applyInsertDialog } from './lib/insert-dialog'
 import {
   extractOutline,
   type OutlineEntry,
   resolveActiveOutlineIndex,
   scrollToOutlineIndex,
 } from './lib/outline'
-import { CalloutNode } from './nodes/CalloutNode'
-import { EmbedNode } from './nodes/EmbedNode'
-import { FormulaNode } from './nodes/FormulaNode'
-import { InsertButton, InsertLine, InsertRow, Prose } from './styles/content.style'
-import { Body, Canvas, Sheet, ViewerRoot } from './styles/layout.style'
-
-/** Пустой документ TipTap — один абзац. */
-const EMPTY_DOC: JSONContent = { type: 'doc', content: [{ type: 'paragraph' }] }
-
-/** Задержка дебаунса автосохранения. */
-const SAVE_DEBOUNCE_MS = 500
-
-/** Минимальное время показа статуса «Сохранение…» — локальное сохранение быстрее, и статус не должен мелькать. */
-const SAVE_STATE_MIN_MS = 800
-
-/** Держит статус «Сохранение…» не меньше SAVE_STATE_MIN_MS от момента его показа. */
-function holdMinSavingDuration(savingStartedAt: number): Promise<void> {
-  const rest = SAVE_STATE_MIN_MS - (Date.now() - savingStartedAt)
-
-  return rest > 0 ? new Promise((resolve) => setTimeout(resolve, rest)) : Promise.resolve()
-}
-
-/** Проверяет, что распарсенный контент выглядит как документ TipTap. */
-function isTipTapDoc(value: unknown): value is JSONContent {
-  if (typeof value !== 'object' || value === null) return false
-  const doc = value as { type?: unknown; content?: unknown }
-
-  return doc.type === 'doc' && Array.isArray(doc.content)
-}
+import { useTheoryAutosave } from './lib/useTheoryAutosave'
+import { useTheoryEditor } from './lib/useTheoryEditor'
+import {
+  Body,
+  Canvas,
+  InsertButton,
+  InsertLine,
+  InsertRow,
+  Prose,
+  Sheet,
+  ViewerRoot,
+} from './viewer.style'
 
 /**
  * TheoryViewer — WYSIWYG-редактор теоретических материалов на TipTap.
  *
  * Компоновка повторяет дизайн-макет theory-viewer: шапка с названием и метаданными,
  * панель инструментов, лист документа по центру, боковая структура и строка состояния.
- * Контент загружается из backend и автосохраняется с дебаунсом.
+ * Контент загружается из backend и автосохраняется с дебаунсом (см. lib/useTheory*).
  */
 export function TheoryViewer({ resourceId, courseId, data, onReady }: PluginRenderProps) {
   const { t } = useTranslation('theory')
 
   const [title, setTitle] = useState(data?.name ?? '')
-  const [saveState, setSaveState] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle')
-  const [updatedAt, setUpdatedAt] = useState<number | null>(null)
   const [dialog, setDialog] = useState<UrlDialogState | null>(null)
   const [outline, setOutline] = useState<OutlineEntry[]>([])
   const [activeOutline, setActiveOutline] = useState(-1)
 
-  const loadedRef = useRef(false)
-  const pendingRef = useRef<JSONContent | null>(null)
-  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const savedTitleRef = useRef(data?.name ?? '')
   const canvasRef = useRef<HTMLDivElement>(null)
   const onReadyRef = useRef(onReady)
   onReadyRef.current = onReady
 
-  // ── Автосохранение ───────────────────────────────────────────────────────
-
-  const flushSave = useCallback(async () => {
-    if (timerRef.current) {
-      clearTimeout(timerRef.current)
-      timerRef.current = null
-    }
-
-    const content = pendingRef.current
-    pendingRef.current = null
-    if (!content) return
-
-    setSaveState('saving')
-    const savingStartedAt = Date.now()
-    try {
-      await saveTheoryContent({ resourceId, content })
-      await holdMinSavingDuration(savingStartedAt)
-      setSaveState('saved')
-      setUpdatedAt(Date.now())
-      info(`plugins/theory: autosave success (${resourceId})`)
-    } catch (e) {
-      await holdMinSavingDuration(savingStartedAt)
-      logError(`plugins/theory: save content failed: ${e instanceof Error ? e.message : String(e)}`)
-      setSaveState('error')
-      // Возвращаем контент в очередь — следующее изменение или «Сохранить» повторят попытку.
-      pendingRef.current = content
-    }
-  }, [resourceId])
-
-  const scheduleSave = useCallback(
-    (content: JSONContent) => {
-      pendingRef.current = content
-      // Статус «Сохранение…» при печати во время сохранения не сбрасываем —
-      // сбрасываем только «Ошибка» (следующее изменение повторяет попытку).
-      if (saveState === 'error') setSaveState('idle')
-
-      if (timerRef.current) clearTimeout(timerRef.current)
-      timerRef.current = setTimeout(() => void flushSave(), SAVE_DEBOUNCE_MS)
-    },
-    [flushSave, saveState],
-  )
-
-  // ── Редактор ─────────────────────────────────────────────────────────────
-
-  const editor = useEditor({
-    extensions: [
-      StarterKit.configure({
-        heading: { levels: [1, 2, 3] },
-        link: { openOnClick: false },
-      }),
-      Highlight,
-      Image,
-      Table.configure({ resizable: false }),
-      TableRow,
-      TableHeader,
-      TableCell,
-      TextAlign.configure({ types: ['heading', 'paragraph'] }),
-      Placeholder.configure({
-        placeholder: () => i18next.t('theory:placeholder'),
-      }),
-      CharacterCount,
-      CalloutNode,
-      FormulaNode,
-      EmbedNode,
-    ],
-    content: EMPTY_DOC,
-    autofocus: false,
-    editorProps: { attributes: { spellcheck: 'false' } },
-    onUpdate: ({ editor: current }) => {
-      if (!loadedRef.current) return
-
-      scheduleSave(current.getJSON())
-    },
+  const { saveState, updatedAt, setUpdatedAt, scheduleSave } = useTheoryAutosave(resourceId)
+  const { editor } = useTheoryEditor({
+    resourceId,
+    onDocChange: scheduleSave,
+    onReady: () => onReadyRef.current?.(),
+    onContentLoaded: (record) => setUpdatedAt(record.updatedAt),
+    onLoadFailed: () => notifyError(t('load_failed_title'), t('load_failed_hint')),
   })
-
-  // ── Загрузка контента ────────────────────────────────────────────────────
-
-  const [initialDoc, setInitialDoc] = useState<JSONContent | null>(null)
-
-  useEffect(() => {
-    let cancelled = false
-
-    async function load() {
-      try {
-        const record = await fetchTheoryContent(resourceId)
-        if (cancelled) return
-
-        setUpdatedAt(record.updatedAt)
-        setInitialDoc(isTipTapDoc(record.content) ? record.content : EMPTY_DOC)
-        onReadyRef.current?.()
-      } catch (e) {
-        logError(
-          `plugins/theory: load content failed: ${e instanceof Error ? e.message : String(e)}`,
-        )
-        if (cancelled) return
-
-        notifyError(t('load_failed_title'), t('load_failed_hint'))
-        setInitialDoc(EMPTY_DOC)
-        onReadyRef.current?.()
-      }
-    }
-
-    void load()
-
-    return () => {
-      cancelled = true
-    }
-  }, [resourceId, t])
-
-  // Применяем загруженный документ к редактору, когда он создан.
-  useEffect(() => {
-    if (!editor || !initialDoc) return
-
-    editor.commands.setContent(initialDoc, { emitUpdate: false })
-    loadedRef.current = true
-  }, [editor, initialDoc])
 
   // При смене ресурса возвращаем прокрутку документа наверх.
   useEffect(() => {
     canvasRef.current?.scrollTo({ top: 0 })
-  }, [resourceId])
-
-  // Финальное сохранение при размонтировании / смене ресурса.
-  useEffect(() => {
-    return () => {
-      if (timerRef.current) clearTimeout(timerRef.current)
-
-      const pending = pendingRef.current
-      pendingRef.current = null
-      if (!pending) return
-
-      saveTheoryContent({ resourceId, content: pending }).catch((e) => {
-        logError(`plugins/theory: final save failed: ${e instanceof Error ? e.message : String(e)}`)
-      })
-    }
   }, [resourceId])
 
   // ── Структура документа (outline) ────────────────────────────────────────
@@ -244,21 +93,9 @@ export function TheoryViewer({ resourceId, courseId, data, onReady }: PluginRend
     handleCanvasScroll()
   }, [outline, handleCanvasScroll])
 
-  // ── Счётчик слов для шапки (время чтения) ────────────────────────────────
-
-  const rawWords = useEditorState({
-    editor,
-    selector: ({ editor: e }) => {
-      if (!e) return 0
-
-      const characterCount = e.storage.characterCount as { words: () => number } | undefined
-
-      return characterCount?.words() ?? 0
-    },
-  })
-  const words = rawWords ?? 0
-
   // ── Название ресурса ─────────────────────────────────────────────────────
+
+  const words = useWordCount(editor)
 
   const commitTitle = useCallback(async () => {
     const name = title.trim()
@@ -293,35 +130,7 @@ export function TheoryViewer({ resourceId, courseId, data, onReady }: PluginRend
     (url: string) => {
       const kind = dialog?.kind
       setDialog(null)
-      if (!editor || !kind) return
-
-      if (kind === 'link') {
-        const chain = editor.chain().focus()
-        if (!url) {
-          chain.extendMarkRange('link').unsetLink().run()
-
-          return
-        }
-        if (editor.state.selection.empty) {
-          chain
-            .insertContent([
-              { type: 'text', text: url, marks: [{ type: 'link', attrs: { href: url } }] },
-            ])
-            .run()
-        } else {
-          chain.extendMarkRange('link').setLink({ href: url }).run()
-        }
-
-        return
-      }
-
-      if (kind === 'image') {
-        editor.chain().focus().setImage({ src: url }).run()
-
-        return
-      }
-
-      editor.chain().focus().insertEmbed({ url }).run()
+      if (editor && kind) applyInsertDialog(editor, kind, url)
     },
     [dialog, editor],
   )

@@ -15,7 +15,7 @@ import {
   ProgressLabel,
   Tag,
   TagRow,
-} from '../styles/aside.style'
+} from './TheoryAside.style'
 
 export interface TheoryAsideProps {
   entries: OutlineEntry[]
