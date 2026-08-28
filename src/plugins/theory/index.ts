@@ -1,1 +1,1 @@
-export { TheoryViewer } from './TheoryViewer'
+export { TheoryViewer } from './viewer'
