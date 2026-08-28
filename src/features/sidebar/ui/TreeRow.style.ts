@@ -3,15 +3,18 @@ import styled, { css } from 'styled-components'
 export const ROW_INDENT = 16
 
 /** Направляющая уровня вложенности: вертикальная линия «из шеврона» родителя. */
-export const Guide = styled.span<{ $level: number }>`
+export const Guide = styled.span<{ $level: number; $indent: number }>`
   position: absolute;
   top: 0;
   /* Перекрытие на 1px вниз: строки разделены зазором gap: 1px у Tree,
      без этого направляющая была бы пунктирной. */
   bottom: -1px;
-  /* Центр колонки twisty (14px / 2) родительского уровня: линия выровнена
-     под шевроном папки-родителя и идёт слева от шевронов дочерних строк. */
-  left: ${({ $level, theme }) => `calc(${theme.spacing.sm} + ${($level - 1) * ROW_INDENT}px + 7px)`};
+  /* Центр колонки twisty (14px / 2) родительского уровня. Отсчёт — от края
+     Row, сдвинутого на отступ вложенности ($indent), поэтому сдвиг
+     компенсируется: у глубоких строк left уходит в минус и линия выходит
+     в гаттер слева от строки. */
+  left: ${({ $level, $indent, theme }) =>
+    `calc(${theme.spacing.sm} + ${($level - 1) * ROW_INDENT - $indent}px + 7px)`};
   width: 1px;
   background: ${({ theme }) => theme.colors.border};
   pointer-events: none;
@@ -32,8 +35,12 @@ export const Row = styled.div<{
   align-items: center;
   gap: 6px;
   height: 28px;
+  /* Бокс строки начинается на отступе вложенности: фон (hover, выделение,
+     подсветка дропа) тянется от левого края элемента до правого края панели,
+     а не от края дерева. */
+  margin-left: ${({ $indent }) => $indent}px;
   padding-right: ${({ theme }) => theme.spacing.sm};
-  padding-left: ${({ $indent, theme }) => `calc(${theme.spacing.sm} + ${$indent}px)`};
+  padding-left: ${({ theme }) => theme.spacing.sm};
   border-radius: ${({ theme }) => theme.radii.md};
   color: ${({ theme, $selected }) => ($selected ? theme.colors.text : theme.colors.textMuted)};
   cursor: pointer;
@@ -65,14 +72,14 @@ export const Row = styled.div<{
       }
     `}
 
-  ${({ $dropLine, $indent, theme }) =>
+  ${({ $dropLine, theme }) =>
     $dropLine &&
     css`
       &::after {
         content: '';
         position: absolute;
-        left: calc(${theme.spacing.sm} + ${$indent}px - 4px);
-        right: ${({ theme }) => theme.spacing.sm};
+        left: calc(${theme.spacing.sm} - 4px);
+        right: ${theme.spacing.sm};
         ${$dropLine === 'before' ? 'top: -3px;' : 'bottom: -3px;'}
         height: 2px;
         border-radius: ${({ theme }) => theme.radii.pill};

@@ -110,8 +110,13 @@ export const TreeRow = forwardRef<HTMLDivElement, TreeRowProps>(function TreeRow
     >
       {/* Направляющие — первый контент строки: фон красится под линией,
           шеврон и иконки — над ней. */}
-      {guideLevels.map((level) => (
-        <Guide key={level} $level={level} aria-hidden="true" />
+      {guideLevels.map((guideLevel) => (
+        <Guide
+          key={guideLevel}
+          $level={guideLevel}
+          $indent={level * ROW_INDENT}
+          aria-hidden="true"
+        />
       ))}
 
       <Twisty
