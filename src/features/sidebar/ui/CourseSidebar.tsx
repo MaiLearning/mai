@@ -10,7 +10,6 @@ import {
   Mark,
   MarkLink,
   Meta,
-  Scroll,
   SearchIconSlot,
   SearchInput,
   SearchRow,
@@ -180,24 +179,22 @@ export function CourseSidebar({
         </SearchRow>
       )}
 
-      <Scroll>
-        <CourseTree
-          nodes={nodes}
-          query={query}
-          selectedId={selectedId}
-          expandedIds={expandedIds}
-          renamingId={renamingId}
-          onSelect={handleSelect}
-          onToggle={handleToggle}
-          onExpand={handleExpand}
-          onMove={draggable ? onMove : undefined}
-          onRenameStart={(id) => onRenameStart?.(id)}
-          onRenameCommit={(name) => onRenameCommit?.(name)}
-          onRenameCancel={() => onRenameCancel?.()}
-          onDeleteRequest={(node) => onDeleteRequest?.(node)}
-          onNodeContextMenu={(node, event) => onNodeContextMenu?.(node, event)}
-        />
-      </Scroll>
+      <CourseTree
+        nodes={nodes}
+        query={query}
+        selectedId={selectedId}
+        expandedIds={expandedIds}
+        renamingId={renamingId}
+        onSelect={handleSelect}
+        onToggle={handleToggle}
+        onExpand={handleExpand}
+        onMove={draggable ? onMove : undefined}
+        onRenameStart={(id) => onRenameStart?.(id)}
+        onRenameCommit={(name) => onRenameCommit?.(name)}
+        onRenameCancel={() => onRenameCancel?.()}
+        onDeleteRequest={(node) => onDeleteRequest?.(node)}
+        onNodeContextMenu={(node, event) => onNodeContextMenu?.(node, event)}
+      />
     </Aside>
   )
 }

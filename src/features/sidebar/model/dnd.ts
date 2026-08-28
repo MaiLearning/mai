@@ -30,6 +30,12 @@ export const EDGE_ZONE = 0.25
 /** id дропабельного контейнера дерева: дроп мимо строк = append в корень. */
 export const ROOT_DROP_ID = '__drop_root__'
 
+/**
+ * id постоянной зоны «в корень» под списком (под скроллом): гарантирует
+ * место для дропа в корень, когда строки заполняют всю высоту панели.
+ */
+export const ROOT_ZONE_ID = '__drop_root_zone__'
+
 interface FlatLocation {
   node: CourseNode
   parentId: string | null
@@ -112,8 +118,8 @@ export function resolveDropTarget(input: {
 
   const { byId, childrenOf } = indexTree(nodes)
 
-  // Дроп мимо строк — контейнер дерева: append в корень.
-  if (overId === ROOT_DROP_ID) {
+  // Дроп мимо строк (контейнер дерева или нижняя зона) — append в корень.
+  if (overId === ROOT_DROP_ID || overId === ROOT_ZONE_ID) {
     return {
       kind: 'inside',
       parentId: null,

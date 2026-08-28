@@ -9,6 +9,7 @@ import {
   PointerSensor,
   pointerWithin,
   TouchSensor,
+  useDndContext,
   useDraggable,
   useDroppable,
   useSensor,
@@ -26,7 +27,13 @@ import {
 } from 'react'
 import { createPortal } from 'react-dom'
 import { useTreeKeyboardNav } from '../hooks/useTreeKeyboardNav'
-import { type DropTarget, findNodeTitle, ROOT_DROP_ID, resolveDropTarget } from '../model/dnd'
+import {
+  type DropTarget,
+  findNodeTitle,
+  ROOT_DROP_ID,
+  ROOT_ZONE_ID,
+  resolveDropTarget,
+} from '../model/dnd'
 import {
   computeGuideLevels,
   type FlattenedItem,
@@ -40,7 +47,9 @@ import {
   EmptyTitle,
   OverlayCard,
   OverlayHint,
+  RootZone,
   RowSlot,
+  Scroll,
   Tree,
 } from './CourseTree.style'
 import { TreeRow } from './TreeRow'
@@ -255,10 +264,17 @@ export function CourseTree({
     )
   }
 
-  const overlayFolderTitle =
+  const overlayHintTitle =
     dropTarget?.kind === 'inside' && dropTarget.targetId
       ? findNodeTitle(nodes, dropTarget.targetId)
       : null
+  // Цель «внутрь» без папки — это дроп в корень (свободная зона/нижняя зона).
+  const overlayHint =
+    dropTarget?.kind === 'inside' && dropTarget.parentId === null
+      ? 'Переместить в корень'
+      : overlayHintTitle
+        ? `Переместить в «${overlayHintTitle}»`
+        : null
 
   return (
     <DndContext
@@ -271,31 +287,34 @@ export function CourseTree({
       onDragEnd={handleDragEnd}
       onDragCancel={resetDragState}
     >
-      <TreeCanvas disabled={!dndEnabled} dragging={Boolean(dragId)} onKeyDown={handleKeyDown}>
-        {rows.map((item, index) => (
-          <TreeRowItem
-            key={item.id}
-            item={item}
-            guideLevels={guideLevels[index]}
-            dropKind={dropTarget?.targetId === item.id ? dropTarget.kind : null}
-            disabled={!dndEnabled}
-            expanded={isExpanded(item)}
-            selected={selectedId === item.id}
-            focused={activeId === item.id}
-            dimmed={item.id === dragId}
-            isRenaming={renamingId === item.id}
-            onToggle={() => onToggle(item.id)}
-            onSelect={() => onSelect(toDisplayNode(item))}
-            onFocusRow={() => markFocused(item.id)}
-            onRenameStart={() => onRenameStart(item.id)}
-            onRenameCommit={onRenameCommit}
-            onRenameCancel={onRenameCancel}
-            onDeleteRequest={() => onDeleteRequest(toDisplayNode(item))}
-            onNodeContextMenu={(event) => onNodeContextMenu?.(toDisplayNode(item), event)}
-            registerRef={registerRef}
-          />
-        ))}
-      </TreeCanvas>
+      <Scroll>
+        <TreeCanvas disabled={!dndEnabled} dragging={Boolean(dragId)} onKeyDown={handleKeyDown}>
+          {rows.map((item, index) => (
+            <TreeRowItem
+              key={item.id}
+              item={item}
+              guideLevels={guideLevels[index]}
+              dropKind={dropTarget?.targetId === item.id ? dropTarget.kind : null}
+              disabled={!dndEnabled}
+              expanded={isExpanded(item)}
+              selected={selectedId === item.id}
+              focused={activeId === item.id}
+              dimmed={item.id === dragId}
+              isRenaming={renamingId === item.id}
+              onToggle={() => onToggle(item.id)}
+              onSelect={() => onSelect(toDisplayNode(item))}
+              onFocusRow={() => markFocused(item.id)}
+              onRenameStart={() => onRenameStart(item.id)}
+              onRenameCommit={onRenameCommit}
+              onRenameCancel={onRenameCancel}
+              onDeleteRequest={() => onDeleteRequest(toDisplayNode(item))}
+              onNodeContextMenu={(event) => onNodeContextMenu?.(toDisplayNode(item), event)}
+              registerRef={registerRef}
+            />
+          ))}
+        </TreeCanvas>
+      </Scroll>
+      <RootDropZone disabled={!dndEnabled} />
 
       {typeof document !== 'undefined' &&
         createPortal(
@@ -319,9 +338,7 @@ export function CourseTree({
                   onRenameCancel={() => {}}
                   onDeleteRequest={() => {}}
                 />
-                {overlayFolderTitle && (
-                  <OverlayHint>Переместить в «{overlayFolderTitle}»</OverlayHint>
-                )}
+                {overlayHint && <OverlayHint>{overlayHint}</OverlayHint>}
               </OverlayCard>
             ) : null}
           </DragOverlay>,
@@ -336,6 +353,22 @@ interface TreeCanvasProps {
   dragging: boolean
   onKeyDown: (event: KeyboardEvent<HTMLDivElement>) => void
   children: ReactNode
+}
+
+/**
+ * Постоянная зона дропа «в корень» под скроллом: дроп сюда всегда доступен,
+ * даже когда строки заполняют всю высоту панели. Видима только во время
+ * перетаскивания.
+ */
+function RootDropZone({ disabled }: { disabled: boolean }) {
+  const { isOver, setNodeRef } = useDroppable({ id: ROOT_ZONE_ID, disabled })
+  const { active } = useDndContext()
+
+  return (
+    <RootZone ref={setNodeRef} $visible={Boolean(active) && !disabled} $over={isOver}>
+      Переместить в корень
+    </RootZone>
+  )
 }
 
 /** Контейнер дерева; сам является дропабельной зоной «append в корень». */

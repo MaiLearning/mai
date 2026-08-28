@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest'
-import { EDGE_ZONE, findNodeTitle, isDescendant, ROOT_DROP_ID, resolveDropTarget } from './dnd'
+import {
+  EDGE_ZONE,
+  findNodeTitle,
+  isDescendant,
+  ROOT_DROP_ID,
+  ROOT_ZONE_ID,
+  resolveDropTarget,
+} from './dnd'
 import type { CourseNode } from './types'
 
 const tree: CourseNode[] = [
@@ -122,6 +129,15 @@ describe('resolveDropTarget', () => {
 
   it('дроп мимо строк — append в корень без учёта перетаскиваемого', () => {
     expect(resolve('res-top1', ROOT_DROP_ID, 0.5)).toEqual({
+      kind: 'inside',
+      parentId: null,
+      position: 4,
+      targetId: null,
+    })
+  })
+
+  it('нижняя зона «в корень» — тот же append в корень', () => {
+    expect(resolve('folder-a', ROOT_ZONE_ID, 0.5)).toEqual({
       kind: 'inside',
       parentId: null,
       position: 4,

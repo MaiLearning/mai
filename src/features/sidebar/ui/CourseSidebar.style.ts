@@ -141,21 +141,3 @@ export const ClearButton = styled.button`
     color: ${({ theme }) => theme.colors.text};
   }
 `
-
-export const Scroll = styled.div`
-  flex: 1;
-  min-height: 0;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-
-  &::-webkit-scrollbar {
-    width: 8px;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    border: 2px solid transparent;
-    border-radius: ${({ theme }) => theme.radii.pill};
-    background: ${({ theme }) => theme.colors.borderStrong};
-    background-clip: content-box;
-  }
-`

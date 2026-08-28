@@ -22,6 +22,61 @@ export const RowSlot = styled.div`
   position: relative;
 `
 
+/**
+ * Скролл-контейнер дерева. `flex: 0 1 auto` (а не `flex: 1`): свободное
+ * место уходит нижней зоне дропа в корень, а при переполнении контейнер
+ * сжимается, оставляя ей минимум 24px.
+ *
+ * `app-scroll` — общий стиль тонкого скроллбара (global-style).
+ * `data-lenis-prevent` — ReactLenis root перехватывает wheel на window,
+ * без маркера колесо над деревом не работает (см. app.tsx).
+ */
+export const Scroll = styled.div.attrs({ className: 'app-scroll', 'data-lenis-prevent': 'true' })`
+  flex: 0 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+`
+
+/**
+ * Постоянная зона дропа «в корень» под скроллом: растягивается на всё
+ * свободное место, но не меньше 24px. Вне перетаскивания прозрачна.
+ */
+export const RootZone = styled.div<{ $visible: boolean; $over: boolean }>`
+  display: flex;
+  flex: 1 0 auto;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-height: 24px;
+  margin: 0 ${({ theme }) => theme.spacing.sm} ${({ theme }) => theme.spacing.sm};
+  border: 1px dashed transparent;
+  border-radius: ${({ theme }) => theme.radii.md};
+  color: transparent;
+  font-size: 11px;
+  letter-spacing: -0.005em;
+  user-select: none;
+  transition:
+    border-color ${({ theme }) => theme.transitions.fast},
+    background ${({ theme }) => theme.transitions.fast},
+    color ${({ theme }) => theme.transitions.fast};
+
+  ${({ $visible, theme }) =>
+    $visible &&
+    css`
+      border-color: ${theme.colors.border};
+      color: ${theme.colors.textMuted};
+    `}
+
+  ${({ $over, theme }) =>
+    $over &&
+    css`
+      border-color: ${theme.colors.primary};
+      background: ${theme.colors.primarySurface};
+      color: ${theme.colors.text};
+    `}
+`
+
 /** Плавающая карточка под курсором: копия строки + подпись цели дропа. */
 export const OverlayCard = styled.div`
   display: flex;
