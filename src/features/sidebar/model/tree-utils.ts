@@ -1,10 +1,9 @@
-import { arrayMove } from '@dnd-kit/sortable'
 import type { CourseNode, CourseNodeType } from './types'
 
 /**
- * Утилиты для drag-and-drop иерархического дерева (подход dnd-kit «flatten + projection»):
- * дерево разворачивается в плоский список, во время перетаскивания по горизонтальному
- * смещению вычисляется целевая глубина/родитель, а затем список снова собирается в дерево.
+ * Утилиты для drag-and-drop иерархического дерева: дерево разворачивается
+ * в плоский список строк, во время перетаскивания дети свёрнутых папок и
+ * перетаскиваемого узла скрываются (см. model/dnd.ts — расчёт цели дропа).
  */
 export interface FlattenedItem {
   id: string
@@ -17,13 +16,6 @@ export interface FlattenedItem {
   index: number
   /** У folder есть дети (после сборки). Используется для ограничения вложенности. */
   hasChildren: boolean
-}
-
-export interface Projection {
-  depth: number
-  maxDepth: number
-  minDepth: number
-  parentId: string | null
 }
 
 function flatten(items: CourseNode[], parentId: string | null = null, depth = 0): FlattenedItem[] {
@@ -68,8 +60,9 @@ export function removeChildrenOf(items: FlattenedItem[], ids: string[]): Flatten
   })
 }
 
-/** Собирает плоский список обратно в дерево, сохраняя порядок и вложенность. */
-export function buildTree(flattenedItems: FlattenedItem[]): CourseNode[] {
+/** Собирает плоский список обратно в дерево, сохраняя порядок и вложенность. */ export function buildTree(
+  flattenedItems: FlattenedItem[],
+): CourseNode[] {
   const root: CourseNode & { children: CourseNode[] } = {
     id: '__root__',
     type: 'folder',
@@ -111,52 +104,4 @@ export function buildTree(flattenedItems: FlattenedItem[]): CourseNode[] {
     })
 
   return clean(root.children)
-}
-
-function getMaxDepth(previousItem?: FlattenedItem): number {
-  if (!previousItem) return 0
-
-  // Вложить внутрь можно только в папку. Ресурс — только сосед того же уровня.
-  return previousItem.type === 'folder' ? previousItem.depth + 1 : previousItem.depth
-}
-function getMinDepth(nextItem?: FlattenedItem): number {
-  return nextItem ? nextItem.depth : 0
-}
-
-/**
- * Вычисляет проекцию: на какой глубине и под каким родителем окажется узел,
- * если бросить его сейчас. `dragOffset` — горизонтальное смещение курсора.
- */
-export function getProjection(
-  items: FlattenedItem[],
-  activeId: string,
-  overId: string,
-  dragOffset: number,
-  indentationWidth: number,
-): Projection {
-  const overItemIndex = items.findIndex((item) => item.id === overId)
-  const activeItemIndex = items.findIndex((item) => item.id === activeId)
-  const activeItem = items[activeItemIndex]
-  const newItems = arrayMove(items, activeItemIndex, overItemIndex)
-  const previousItem = newItems[overItemIndex - 1]
-  const nextItem = newItems[overItemIndex + 1]
-  const dragDepth = Math.round(dragOffset / indentationWidth)
-  const projectedDepth = activeItem.depth + dragDepth
-  const maxDepth = getMaxDepth(previousItem)
-  const minDepth = getMinDepth(nextItem)
-  const depth = Math.min(Math.max(projectedDepth, minDepth), maxDepth)
-
-  function getParentId(): string | null {
-    if (depth === 0 || !previousItem) return null
-    if (depth === previousItem.depth) return previousItem.parentId
-    if (depth > previousItem.depth) return previousItem.id
-    const parent = newItems
-      .slice(0, overItemIndex)
-      .reverse()
-      .find((item) => item.depth === depth)?.parentId
-
-    return parent ?? null
-  }
-
-  return { depth, maxDepth, minDepth, parentId: getParentId() }
 }

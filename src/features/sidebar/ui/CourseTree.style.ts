@@ -1,16 +1,26 @@
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { ROW_INDENT } from './TreeRow'
+import { Row } from './TreeRow.style'
 
-export const Tree = styled.div`
+export const Tree = styled.div<{ $dragging?: boolean }>`
   display: flex;
   flex-direction: column;
   gap: 1px;
   padding: ${({ theme }) => `${theme.spacing.sm} ${theme.spacing.sm}`};
+
+  /* Во время перетаскивания обычный :hover строк вводит в заблуждение:
+     подсвечивается только реальная цель дропа. */
+  ${({ $dragging }) =>
+    $dragging &&
+    css`
+      ${Row}:hover {
+        background: transparent;
+      }
+    `}
 `
 
-export const RowSlot = styled.div<{ $level: number; $ghost?: boolean }>`
+export const RowSlot = styled.div<{ $level: number }>`
   position: relative;
-  z-index: ${({ $ghost }) => ($ghost ? 1 : 'auto')};
 
   --guide-offset: ${({ $level, theme }) =>
     `calc(${theme.spacing.sm} + ${($level - 1) * ROW_INDENT}px + 17px)`};
@@ -26,35 +36,28 @@ export const Guide = styled.span`
   pointer-events: none;
 `
 
-export const Indicator = styled.div<{ $indent: number }>`
-  position: relative;
-  height: 28px;
-  margin-left: ${({ $indent, theme }) => `calc(${theme.spacing.sm} + ${$indent}px)`};
+/** Плавающая карточка под курсором: копия строки + подпись цели дропа. */
+export const OverlayCard = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 240px;
+  box-sizing: border-box;
+  padding: ${({ theme }) => theme.spacing.xs};
+  background: ${({ theme }) => theme.colors.surface};
+  border: 1px solid ${({ theme }) => theme.colors.borderStrong};
+  border-radius: ${({ theme }) => theme.radii.md};
+  box-shadow: ${({ theme }) => theme.shadows.lg};
+`
 
-  &::after {
-    content: '';
-    position: absolute;
-    left: 10px;
-    right: ${({ theme }) => theme.spacing.sm};
-    top: 50%;
-    height: 2px;
-    transform: translateY(-50%);
-    border-radius: ${({ theme }) => theme.radii.pill};
-    background: ${({ theme }) => theme.colors.primary};
-  }
-
-  &::before {
-    content: '';
-    position: absolute;
-    left: 3px;
-    top: 50%;
-    width: 9px;
-    height: 9px;
-    transform: translateY(-50%);
-    border-radius: 50%;
-    border: 2px solid ${({ theme }) => theme.colors.primary};
-    background: ${({ theme }) => theme.colors.surface};
-  }
+export const OverlayHint = styled.div`
+  overflow: hidden;
+  padding: 1px 4px;
+  color: ${({ theme }) => theme.colors.textMuted};
+  font-size: 11px;
+  letter-spacing: -0.005em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `
 
 export const Empty = styled.div`

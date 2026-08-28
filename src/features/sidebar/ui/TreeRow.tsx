@@ -1,11 +1,5 @@
-import {
-  forwardRef,
-  type HTMLAttributes,
-  type MouseEvent,
-  useEffect,
-  useRef,
-  useState,
-} from 'react'
+import { forwardRef, type MouseEvent, useEffect, useRef, useState } from 'react'
+import type { DropKind } from '../model/dnd'
 import type { CourseNode } from '../model/types'
 import { ChevronIcon, FolderIcon, FolderOpenIcon, ResourceIcon, TrashIcon } from './icons'
 import { Badge, DeleteButton, NodeIcon, RenameInput, Row, Title, Twisty } from './TreeRow.style'
@@ -34,8 +28,8 @@ interface TreeRowProps {
   overlay?: boolean
   /** Приглушить исходную строку, пока идёт перетаскивание. */
   dimmed?: boolean
-  /** Слушатели/атрибуты перетаскивания от useSortable. */
-  dragProps?: HTMLAttributes<HTMLDivElement>
+  /** Активная зона дропа на этой строке: линия вставки или подсветка папки. */
+  dropKind?: DropKind | null
 }
 
 /**
@@ -64,7 +58,7 @@ export const TreeRow = forwardRef<HTMLDivElement, TreeRowProps>(function TreeRow
     onNodeContextMenu,
     overlay = false,
     dimmed = false,
-    dragProps,
+    dropKind = null,
   },
   ref,
 ) {
@@ -94,13 +88,14 @@ export const TreeRow = forwardRef<HTMLDivElement, TreeRowProps>(function TreeRow
       $indent={level * ROW_INDENT}
       $overlay={overlay}
       $dimmed={dimmed}
+      $dropInside={dropKind === 'inside'}
+      $dropLine={dropKind === 'before' || dropKind === 'after' ? dropKind : null}
       onFocus={onFocusRow}
       onContextMenu={!overlay && !isRenaming ? onNodeContextMenu : undefined}
       onClick={() => {
         onSelect()
         if (isFolder) onToggle()
       }}
-      {...dragProps}
     >
       <Twisty
         as="span"

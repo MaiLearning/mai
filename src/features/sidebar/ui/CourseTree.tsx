@@ -1,5 +1,4 @@
 import {
-  closestCenter,
   DndContext,
   type DragEndEvent,
   type DragMoveEvent,
@@ -8,31 +7,39 @@ import {
   type DragStartEvent,
   MeasuringStrategy,
   PointerSensor,
+  pointerWithin,
   TouchSensor,
+  useDraggable,
+  useDroppable,
   useSensor,
   useSensors,
 } from '@dnd-kit/core'
 import {
-  type AnimateLayoutChanges,
-  arrayMove,
-  SortableContext,
-  useSortable,
-  verticalListSortingStrategy,
-} from '@dnd-kit/sortable'
-import { CSS } from '@dnd-kit/utilities'
-import { type MouseEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+  type KeyboardEvent,
+  type MouseEvent,
+  type ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 import { createPortal } from 'react-dom'
 import { useTreeKeyboardNav } from '../hooks/useTreeKeyboardNav'
-import { siblingPositionOf } from '../model/convert'
-import {
-  type FlattenedItem,
-  flattenTree,
-  getProjection,
-  removeChildrenOf,
-} from '../model/tree-utils'
+import { type DropTarget, findNodeTitle, ROOT_DROP_ID, resolveDropTarget } from '../model/dnd'
+import { type FlattenedItem, flattenTree, removeChildrenOf } from '../model/tree-utils'
 import type { CourseNode } from '../model/types'
-import { Empty, EmptyHint, EmptyTitle, Guide, Indicator, RowSlot, Tree } from './CourseTree.style'
-import { ROW_INDENT, TreeRow } from './TreeRow'
+import {
+  Empty,
+  EmptyHint,
+  EmptyTitle,
+  Guide,
+  OverlayCard,
+  OverlayHint,
+  RowSlot,
+  Tree,
+} from './CourseTree.style'
+import { TreeRow } from './TreeRow'
 
 interface CourseTreeProps {
   nodes: CourseNode[]
@@ -59,8 +66,17 @@ interface CourseTreeProps {
 const MEASURING = {
   droppable: { strategy: MeasuringStrategy.Always },
 }
-const animateLayoutChanges: AnimateLayoutChanges = ({ isSorting, wasDragging }) =>
-  isSorting || wasDragging ? false : true
+
+/** Y-координата активатора перетаскивания (pointer/touch); для клавиатуры — 0. */
+function activatorPointY(event: Event): number {
+  if ('clientY' in event) return (event as PointerEvent).clientY
+  if ('touches' in event) {
+    const touch = (event as TouchEvent).touches[0]
+    if (touch) return touch.clientY
+  }
+
+  return 0
+}
 
 /** Плоский элемент в отображение узла для TreeRow. */
 function toDisplayNode(item: FlattenedItem): CourseNode {
@@ -105,8 +121,8 @@ export function CourseTree({
   const normalizedQuery = query.trim().toLowerCase()
   const dndEnabled = Boolean(onMove) && !normalizedQuery
   const [dragId, setDragId] = useState<string | null>(null)
-  const [overId, setOverId] = useState<string | null>(null)
-  const [offsetLeft, setOffsetLeft] = useState(0)
+  const [dropTarget, setDropTarget] = useState<DropTarget | null>(null)
+  const dragStartY = useRef(0)
   const expandTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const pendingExpandId = useRef<string | null>(null)
   const visibleIds = useMemo(() => {
@@ -135,11 +151,6 @@ export function CourseTree({
       item.type === 'folder' && (Boolean(visibleIds) || expandedIds.has(item.id)),
     [visibleIds, expandedIds],
   )
-  const projected =
-    dndEnabled && dragId && overId
-      ? getProjection(rows, dragId, overId, offsetLeft, ROW_INDENT)
-      : null
-  const sortedIds = useMemo(() => rows.map((item) => item.id), [rows])
   const dragItem = dragId ? (rows.find((item) => item.id === dragId) ?? null) : null
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 4 } }),
@@ -165,25 +176,33 @@ export function CourseTree({
   // ── DnD-обработчики ───────────────────────────────────────────────────────
   const resetDragState = useCallback(() => {
     setDragId(null)
-    setOverId(null)
-    setOffsetLeft(0)
+    setDropTarget(null)
     clearExpandTimer()
     document.body.style.cursor = ''
   }, [clearExpandTimer])
-  const handleDragStart = ({ active }: DragStartEvent) => {
+  const handleDragStart = ({ active, activatorEvent }: DragStartEvent) => {
     setDragId(String(active.id))
-    setOverId(String(active.id))
+    dragStartY.current = activatorPointY(activatorEvent)
     document.body.style.cursor = 'grabbing'
   }
-  const handleDragMove = ({ delta }: DragMoveEvent) => {
-    setOffsetLeft(delta.x)
+  // Цель дропа пересчитывается на каждый ход указателя: строка под курсором
+  // + доля высоты строки определяют зону (перед / внутрь / после).
+  const handleDragMove = ({ delta, over }: DragMoveEvent) => {
+    if (!dragId) return
+    if (!over) {
+      setDropTarget(null)
+
+      return
+    }
+    const pointerY = dragStartY.current + delta.y
+    const ratioY = over.rect.height > 0 ? (pointerY - over.rect.top) / over.rect.height : 0
+    setDropTarget(resolveDropTarget({ nodes, dragId, overId: String(over.id), ratioY }))
   }
   const handleDragOver = ({ over }: DragOverEvent) => {
     const nextOverId = over ? String(over.id) : null
-    setOverId(nextOverId)
 
     // Авто-раскрытие свёрнутой папки при наведении, как в Obsidian.
-    if (!nextOverId || nextOverId === dragId) {
+    if (!nextOverId || nextOverId === dragId || nextOverId === ROOT_DROP_ID) {
       clearExpandTimer()
 
       return
@@ -205,28 +224,15 @@ export function CourseTree({
       clearExpandTimer()
     }
   }
-  const handleDragEnd = ({ active, over }: DragEndEvent) => {
-    const currentProjected = projected
+  const handleDragEnd = ({ active }: DragEndEvent) => {
+    const target = dropTarget
     resetDragState()
 
-    if (!currentProjected || !over || !onMove) return
-
-    const { depth, parentId } = currentProjected
-    const clonedItems = flattenTree(nodes)
-    const overIndex = clonedItems.findIndex((item) => item.id === over.id)
-    const activeIndex = clonedItems.findIndex((item) => item.id === active.id)
-    if (overIndex === -1 || activeIndex === -1) return
-
-    clonedItems[activeIndex] = { ...clonedItems[activeIndex], depth, parentId }
-    const sorted = arrayMove(clonedItems, activeIndex, overIndex)
-    // Вычисляем sibling-position перемещённого узла среди детей нового родителя.
-    const movedItem = sorted[overIndex]
-    const position = siblingPositionOf(sorted, movedItem.id)
-
-    onMove({ id: String(active.id), parentId, position })
+    if (!target || !onMove) return
+    onMove({ id: String(active.id), parentId: target.parentId, position: target.position })
 
     // Раскрываем папку-приёмник, чтобы перемещённый узел был виден.
-    if (parentId) onExpand?.(parentId)
+    if (target.parentId) onExpand?.(target.parentId)
   }
 
   if (rows.length === 0) {
@@ -242,10 +248,15 @@ export function CourseTree({
     )
   }
 
+  const overlayFolderTitle =
+    dropTarget?.kind === 'inside' && dropTarget.targetId
+      ? findNodeTitle(nodes, dropTarget.targetId)
+      : null
+
   return (
     <DndContext
       sensors={sensors}
-      collisionDetection={closestCenter}
+      collisionDetection={pointerWithin}
       measuring={MEASURING}
       onDragStart={handleDragStart}
       onDragMove={handleDragMove}
@@ -253,59 +264,57 @@ export function CourseTree({
       onDragEnd={handleDragEnd}
       onDragCancel={resetDragState}
     >
-      <SortableContext items={sortedIds} strategy={verticalListSortingStrategy}>
-        <Tree role="tree" aria-label="Структура курса" onKeyDown={handleKeyDown}>
-          {rows.map((item) => {
-            const ghost = item.id === dragId
-            const depth = ghost && projected ? projected.depth : item.depth
-
-            return (
-              <SortableTreeItem
-                key={item.id}
-                item={item}
-                depth={depth}
-                ghost={ghost}
-                disabled={!dndEnabled}
-                expanded={isExpanded(item)}
-                selected={selectedId === item.id}
-                focused={activeId === item.id}
-                isRenaming={renamingId === item.id}
-                onToggle={() => onToggle(item.id)}
-                onSelect={() => onSelect(toDisplayNode(item))}
-                onFocusRow={() => markFocused(item.id)}
-                onRenameStart={() => onRenameStart(item.id)}
-                onRenameCommit={onRenameCommit}
-                onRenameCancel={onRenameCancel}
-                onDeleteRequest={() => onDeleteRequest(toDisplayNode(item))}
-                onNodeContextMenu={(event) => onNodeContextMenu?.(toDisplayNode(item), event)}
-                registerRef={registerRef}
-              />
-            )
-          })}
-        </Tree>
-      </SortableContext>
+      <TreeCanvas disabled={!dndEnabled} dragging={Boolean(dragId)} onKeyDown={handleKeyDown}>
+        {rows.map((item) => (
+          <TreeRowItem
+            key={item.id}
+            item={item}
+            dropKind={dropTarget?.targetId === item.id ? dropTarget.kind : null}
+            disabled={!dndEnabled}
+            expanded={isExpanded(item)}
+            selected={selectedId === item.id}
+            focused={activeId === item.id}
+            dimmed={item.id === dragId}
+            isRenaming={renamingId === item.id}
+            onToggle={() => onToggle(item.id)}
+            onSelect={() => onSelect(toDisplayNode(item))}
+            onFocusRow={() => markFocused(item.id)}
+            onRenameStart={() => onRenameStart(item.id)}
+            onRenameCommit={onRenameCommit}
+            onRenameCancel={onRenameCancel}
+            onDeleteRequest={() => onDeleteRequest(toDisplayNode(item))}
+            onNodeContextMenu={(event) => onNodeContextMenu?.(toDisplayNode(item), event)}
+            registerRef={registerRef}
+          />
+        ))}
+      </TreeCanvas>
 
       {typeof document !== 'undefined' &&
         createPortal(
           <DragOverlay dropAnimation={null}>
             {dragItem ? (
-              <TreeRow
-                overlay
-                node={toDisplayNode(dragItem)}
-                level={0}
-                expanded={isExpanded(dragItem)}
-                hasChildren={dragItem.hasChildren}
-                selected={false}
-                focused={false}
-                isRenaming={false}
-                onToggle={() => {}}
-                onSelect={() => {}}
-                onFocusRow={() => {}}
-                onRenameStart={() => {}}
-                onRenameCommit={() => {}}
-                onRenameCancel={() => {}}
-                onDeleteRequest={() => {}}
-              />
+              <OverlayCard>
+                <TreeRow
+                  overlay
+                  node={toDisplayNode(dragItem)}
+                  level={0}
+                  expanded={isExpanded(dragItem)}
+                  hasChildren={dragItem.hasChildren}
+                  selected={false}
+                  focused={false}
+                  isRenaming={false}
+                  onToggle={() => {}}
+                  onSelect={() => {}}
+                  onFocusRow={() => {}}
+                  onRenameStart={() => {}}
+                  onRenameCommit={() => {}}
+                  onRenameCancel={() => {}}
+                  onDeleteRequest={() => {}}
+                />
+                {overlayFolderTitle && (
+                  <OverlayHint>Переместить в «{overlayFolderTitle}»</OverlayHint>
+                )}
+              </OverlayCard>
             ) : null}
           </DragOverlay>,
           document.body,
@@ -314,14 +323,40 @@ export function CourseTree({
   )
 }
 
-interface SortableTreeItemProps {
+interface TreeCanvasProps {
+  disabled: boolean
+  dragging: boolean
+  onKeyDown: (event: KeyboardEvent<HTMLDivElement>) => void
+  children: ReactNode
+}
+
+/** Контейнер дерева; сам является дропабельной зоной «append в корень». */
+function TreeCanvas({ disabled, dragging, onKeyDown, children }: TreeCanvasProps) {
+  const { setNodeRef } = useDroppable({ id: ROOT_DROP_ID, disabled })
+
+  return (
+    <Tree
+      ref={setNodeRef}
+      role="tree"
+      aria-label="Структура курса"
+      $dragging={dragging}
+      onKeyDown={onKeyDown}
+    >
+      {children}
+    </Tree>
+  )
+}
+
+interface TreeRowItemProps {
   item: FlattenedItem
-  depth: number
-  ghost: boolean
+  /** Активная зона дропа на этой строке (линия вставки или подсветка папки). */
+  dropKind: 'before' | 'inside' | 'after' | null
   disabled: boolean
   expanded: boolean
   selected: boolean
   focused: boolean
+  /** Строка — источник перетаскивания: затемняется на время драга. */
+  dimmed: boolean
   isRenaming: boolean
   onToggle: () => void
   onSelect: () => void
@@ -333,14 +368,14 @@ interface SortableTreeItemProps {
   onNodeContextMenu?: (event: MouseEvent<HTMLDivElement>) => void
   registerRef: (id: string, element: HTMLDivElement | null) => void
 }
-function SortableTreeItem({
+function TreeRowItem({
   item,
-  depth,
-  ghost,
+  dropKind,
   disabled,
   expanded,
   selected,
   focused,
+  dimmed,
   isRenaming,
   onToggle,
   onSelect,
@@ -351,43 +386,44 @@ function SortableTreeItem({
   onDeleteRequest,
   onNodeContextMenu,
   registerRef,
-}: SortableTreeItemProps) {
-  const { setNodeRef, listeners, transform, transition } = useSortable({
+}: TreeRowItemProps) {
+  const dragDisabled = disabled || isRenaming
+  const {
+    attributes,
+    listeners,
+    setNodeRef: setDragRef,
+  } = useDraggable({
     id: item.id,
-    animateLayoutChanges,
-    disabled: disabled || isRenaming,
+    disabled: dragDisabled,
   })
-  const style = {
-    transform: CSS.Translate.toString(transform),
-    transition,
-  }
+  const { setNodeRef: setDropRef } = useDroppable({ id: item.id, disabled: dragDisabled })
 
   return (
-    <RowSlot ref={setNodeRef} style={style} $level={depth} $ghost={ghost}>
-      {depth > 0 && !ghost && <Guide aria-hidden="true" />}
-      {ghost ? (
-        <Indicator $indent={depth * ROW_INDENT} aria-hidden="true" />
-      ) : (
-        <TreeRow
-          ref={(element) => registerRef(item.id, element)}
-          node={toDisplayNode(item)}
-          level={depth}
-          expanded={expanded}
-          hasChildren={item.hasChildren}
-          selected={selected}
-          focused={focused}
-          isRenaming={isRenaming}
-          onToggle={onToggle}
-          onSelect={onSelect}
-          onFocusRow={onFocusRow}
-          onRenameStart={onRenameStart}
-          onRenameCommit={onRenameCommit}
-          onRenameCancel={onRenameCancel}
-          onDeleteRequest={onDeleteRequest}
-          onNodeContextMenu={onNodeContextMenu}
-          dragProps={disabled || isRenaming ? undefined : listeners}
-        />
-      )}
+    <RowSlot ref={setDragRef} $level={item.depth} {...attributes} {...listeners}>
+      {item.depth > 0 && <Guide aria-hidden="true" />}
+      <TreeRow
+        ref={(element) => {
+          registerRef(item.id, element)
+          setDropRef(element)
+        }}
+        node={toDisplayNode(item)}
+        level={item.depth}
+        dropKind={dropKind}
+        expanded={expanded}
+        hasChildren={item.hasChildren}
+        selected={selected}
+        focused={focused}
+        dimmed={dimmed}
+        isRenaming={isRenaming}
+        onToggle={onToggle}
+        onSelect={onSelect}
+        onFocusRow={onFocusRow}
+        onRenameStart={onRenameStart}
+        onRenameCommit={onRenameCommit}
+        onRenameCancel={onRenameCancel}
+        onDeleteRequest={onDeleteRequest}
+        onNodeContextMenu={onNodeContextMenu}
+      />
     </RowSlot>
   )
 }

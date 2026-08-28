@@ -5,6 +5,10 @@ export const Row = styled.div<{
   $indent: number
   $overlay?: boolean
   $dimmed?: boolean
+  /** Строка — цель дропа «внутрь»: подсветка папки-приёмника. */
+  $dropInside?: boolean
+  /** Строка — цель вставки до/после: линия на соответствующем крае строки. */
+  $dropLine?: 'before' | 'after' | null
 }>`
   position: relative;
   display: flex;
@@ -33,18 +37,40 @@ export const Row = styled.div<{
       opacity: 0.4;
     `}
 
-  ${({ $overlay, theme }) =>
+  ${({ $dropInside, theme }) =>
+    $dropInside &&
+    css`
+      background: ${theme.colors.primarySurface};
+      box-shadow: inset 0 0 0 1px ${theme.colors.primary};
+
+      &:hover {
+        background: ${theme.colors.primarySurface};
+      }
+    `}
+
+  ${({ $dropLine, $indent, theme }) =>
+    $dropLine &&
+    css`
+      &::after {
+        content: '';
+        position: absolute;
+        left: calc(${theme.spacing.sm} + ${$indent}px - 4px);
+        right: ${({ theme }) => theme.spacing.sm};
+        ${$dropLine === 'before' ? 'top: -3px;' : 'bottom: -3px;'}
+        height: 2px;
+        border-radius: ${({ theme }) => theme.radii.pill};
+        background: ${({ theme }) => theme.colors.primary};
+        pointer-events: none;
+      }
+    `}
+
+  ${({ $overlay }) =>
     $overlay &&
     css`
       cursor: grabbing;
-      background: ${theme.colors.surface};
-      color: ${theme.colors.text};
-      box-shadow: ${theme.shadows.lg};
-      border: 1px solid ${theme.colors.borderStrong};
-      width: 240px;
 
       &:hover {
-        background: ${theme.colors.surface};
+        background: transparent;
       }
     `}
 

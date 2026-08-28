@@ -32,19 +32,3 @@ export function toCourseNodes(nodes: StructureNodeFlat[]): CourseNode[] {
 
   return build(null)
 }
-
-/**
- * Вычислить sibling-position узла в плоском списке после dnd.
- * Перебирает плоский список до позиции перемещённого узла и считает
- * сколько элементов с тем же parentId встретилось до него.
- */
-export function siblingPositionOf(
-  flat: { id: string; parentId: string | null }[],
-  id: string,
-): number {
-  const index = flat.findIndex((item) => item.id === id)
-  if (index === -1) return 0
-  const target = flat[index]
-
-  return flat.slice(0, index).filter((item) => item.parentId === target.parentId).length
-}
