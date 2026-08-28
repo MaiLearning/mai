@@ -40,10 +40,12 @@ WYSIWYG-редактор теоретических материалов на Ti
 
 ### task
 Задачи семи типов: single choice, multiple choice, true/false, matching,
-ordering, fill-in-blank, open answer. В активной разработке: визуальная фаза
-готова (Storybook: `Plugins/Task/TaskViewer`); контракт данных, механизм
-проверки ответов и подключение к `INTERNAL_VIEWERS` — следующие фазы.
-typeKey пока не закреплён.
+ordering, fill-in-blank, open answer. typeKey: `task`.
+Backend-регистрация выполнена (internal-плагин `internal-task` в
+`src-tauri/src/plugins/registry.rs` — при старте регистрируется в БД
+вместе с типом ресурса `task`). Следующие фазы: wire-контракт данных в
+сущности `@/entities/task-plugin`, подключение `TaskViewer` к
+`INTERNAL_VIEWERS`, механизм проверки ответов.
 
 ## В планах
 
