@@ -90,6 +90,7 @@ function collectLevel(node: ReactNode): MenuItem[] {
     // Фрагменты и условная сборка (<>...</>) разворачиваются прозрачно.
     if (child.type === Fragment) {
       out.push(...collectLevel((child.props as { children?: ReactNode }).children))
+
       return
     }
 
@@ -146,6 +147,7 @@ function NestedMenu({ items, onSelectLeaf }: { items: MenuItem[]; onSelectLeaf: 
             return <MenuSeparator key={`sep-${index}`} role="separator" />
           if (item.type === 'label')
             return <SectionLabel key={`label-${index}`}>{item.label}</SectionLabel>
+
           return (
             <li key={item.id}>
               <MenuItemButton
@@ -266,6 +268,7 @@ function ContextMenuRoot({
       if (event.key === 'Escape') {
         event.preventDefault()
         onClose()
+
         return
       }
 
@@ -281,6 +284,7 @@ function ContextMenuRoot({
             : (current + dir + focusableIndexes.length) % focusableIndexes.length
         const next = focusableIndexes[nextPos]
         if (next !== undefined) setActiveIndex(next)
+
         return
       }
 
@@ -306,6 +310,7 @@ function ContextMenuRoot({
   function runItem(item: Extract<MenuItem, { type: 'item' }>) {
     if (item.children?.length) {
       setOpenSubmenu((prev) => (prev === item.id ? null : item.id))
+
       return
     }
     item.onSelect?.()
@@ -330,6 +335,7 @@ function ContextMenuRoot({
             return <SectionLabel key={`label-${index}`}>{item.label}</SectionLabel>
 
           const hasChildren = !!item.children?.length
+
           return (
             <li key={item.id} style={{ position: 'relative' }}>
               <MenuItemButton

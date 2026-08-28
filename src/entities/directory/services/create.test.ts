@@ -5,6 +5,7 @@ import { createDirectory } from './create'
 vi.mock('../api/create', () => ({ sendCreateDirectory: vi.fn() }))
 
 const invokeCreate = vi.mocked(sendCreateDirectory)
+
 const node = {
   id: 'dir-1',
   courseId: 'course-1',
