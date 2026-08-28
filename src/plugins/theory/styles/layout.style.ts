@@ -119,21 +119,6 @@ export const MetaDot = styled.span`
   background: ${({ theme }) => theme.colors.borderStrong};
 `
 
-/** Точка внутри Badge «Теория». */
-export const Dot = styled.span`
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: currentColor;
-`
-
-export const HeaderActions = styled.div`
-  display: flex;
-  align-items: center;
-  gap: ${({ theme }) => theme.spacing.sm};
-  flex: none;
-`
-
 // ─────────────────────────  Layout: Canvas + Aside  ─────────────────────────
 
 export const Body = styled.div`
@@ -181,6 +166,15 @@ export const StatusItem = styled.span`
   display: inline-flex;
   align-items: center;
   gap: 6px;
+`
+
+/**
+ * Элемент автосохранения: ширина зарезервирована под самый длинный лейбл
+ * («Автосохранение включено»), чтобы соседние элементы не смещались
+ * при смене статуса. Шрифт монospace — ширина в ch детерминирована.
+ */
+export const StatusAutosave = styled(StatusItem)`
+  min-width: 25ch;
 `
 
 export const StatusSpacer = styled.span`

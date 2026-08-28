@@ -1,3 +1,4 @@
+import { info, error as logError } from '@tauri-apps/plugin-log'
 import Highlight from '@tiptap/extension-highlight'
 import Image from '@tiptap/extension-image'
 import { Table, TableCell, TableHeader, TableRow } from '@tiptap/extension-table'
@@ -10,7 +11,6 @@ import { i18next, useTranslation } from '@/app/i18n'
 import { updateResource } from '@/entities/resource/services'
 import { fetchTheoryContent, saveTheoryContent } from '@/entities/theory-plugin/services'
 import type { PluginRenderProps } from '@/features/plugin/core/types'
-import { info, error as logError } from '@/utils/logger'
 import { notifyError, notifySuccess } from '@/utils/notifications'
 import { TheoryAside } from './components/TheoryAside'
 import { TheoryHeader } from './components/TheoryHeader'
@@ -35,6 +35,16 @@ const EMPTY_DOC: JSONContent = { type: 'doc', content: [{ type: 'paragraph' }] }
 /** Задержка дебаунса автосохранения. */
 const SAVE_DEBOUNCE_MS = 500
 
+/** Минимальное время показа статуса «Сохранение…» — локальное сохранение быстрее, и статус не должен мелькать. */
+const SAVE_STATE_MIN_MS = 800
+
+/** Держит статус «Сохранение…» не меньше SAVE_STATE_MIN_MS от момента его показа. */
+function holdMinSavingDuration(savingStartedAt: number): Promise<void> {
+  const rest = SAVE_STATE_MIN_MS - (Date.now() - savingStartedAt)
+
+  return rest > 0 ? new Promise((resolve) => setTimeout(resolve, rest)) : Promise.resolve()
+}
+
 /** Проверяет, что распарсенный контент выглядит как документ TipTap. */
 function isTipTapDoc(value: unknown): value is JSONContent {
   if (typeof value !== 'object' || value === null) return false
@@ -54,8 +64,6 @@ export function TheoryViewer({ resourceId, courseId, data, onReady }: PluginRend
   const { t } = useTranslation('theory')
 
   const [title, setTitle] = useState(data?.name ?? '')
-  const [preview, setPreview] = useState(false)
-  const [dirty, setDirty] = useState(false)
   const [saveState, setSaveState] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle')
   const [updatedAt, setUpdatedAt] = useState<number | null>(null)
   const [dialog, setDialog] = useState<UrlDialogState | null>(null)
@@ -83,13 +91,15 @@ export function TheoryViewer({ resourceId, courseId, data, onReady }: PluginRend
     if (!content) return
 
     setSaveState('saving')
+    const savingStartedAt = Date.now()
     try {
       await saveTheoryContent({ resourceId, content })
+      await holdMinSavingDuration(savingStartedAt)
       setSaveState('saved')
-      setDirty(false)
       setUpdatedAt(Date.now())
       info(`plugins/theory: autosave success (${resourceId})`)
     } catch (e) {
+      await holdMinSavingDuration(savingStartedAt)
       logError(`plugins/theory: save content failed: ${e instanceof Error ? e.message : String(e)}`)
       setSaveState('error')
       // Возвращаем контент в очередь — следующее изменение или «Сохранить» повторят попытку.
@@ -100,8 +110,9 @@ export function TheoryViewer({ resourceId, courseId, data, onReady }: PluginRend
   const scheduleSave = useCallback(
     (content: JSONContent) => {
       pendingRef.current = content
-      if (saveState !== 'error') setSaveState('idle')
-      setDirty(true)
+      // Статус «Сохранение…» при печати во время сохранения не сбрасываем —
+      // сбрасываем только «Ошибка» (следующее изменение повторяет попытку).
+      if (saveState === 'error') setSaveState('idle')
 
       if (timerRef.current) clearTimeout(timerRef.current)
       timerRef.current = setTimeout(() => void flushSave(), SAVE_DEBOUNCE_MS)
@@ -184,10 +195,10 @@ export function TheoryViewer({ resourceId, courseId, data, onReady }: PluginRend
     loadedRef.current = true
   }, [editor, initialDoc])
 
-  // Режим предпросмотра переключает editable.
+  // При смене ресурса возвращаем прокрутку документа наверх.
   useEffect(() => {
-    editor?.setEditable(!preview)
-  }, [editor, preview])
+    canvasRef.current?.scrollTo({ top: 0 })
+  }, [resourceId])
 
   // Финальное сохранение при размонтировании / смене ресурса.
   useEffect(() => {
@@ -233,24 +244,19 @@ export function TheoryViewer({ resourceId, courseId, data, onReady }: PluginRend
     handleCanvasScroll()
   }, [outline, handleCanvasScroll])
 
-  // ── Счётчики для шапки ───────────────────────────────────────────────────
+  // ── Счётчик слов для шапки (время чтения) ────────────────────────────────
 
-  const rawCounts = useEditorState({
+  const rawWords = useEditorState({
     editor,
     selector: ({ editor: e }) => {
-      if (!e) return { words: 0, chars: 0 }
+      if (!e) return 0
 
-      const characterCount = e.storage.characterCount as
-        | { words: () => number; characters: () => number }
-        | undefined
+      const characterCount = e.storage.characterCount as { words: () => number } | undefined
 
-      return {
-        words: characterCount?.words() ?? 0,
-        chars: characterCount?.characters() ?? 0,
-      }
+      return characterCount?.words() ?? 0
     },
   })
-  const counts = rawCounts ?? { words: 0, chars: 0 }
+  const words = rawWords ?? 0
 
   // ── Название ресурса ─────────────────────────────────────────────────────
 
@@ -338,13 +344,7 @@ export function TheoryViewer({ resourceId, courseId, data, onReady }: PluginRend
         title={title}
         onTitleChange={setTitle}
         onTitleCommit={() => void commitTitle()}
-        preview={preview}
-        onTogglePreview={() => setPreview((v) => !v)}
-        onSave={() => void flushSave()}
-        dirty={dirty}
-        saving={saveState === 'saving'}
-        words={counts.words}
-        chars={counts.chars}
+        words={words}
         updatedAt={updatedAt}
       />
 

@@ -1,5 +1,11 @@
 import { useTranslation } from '@/app/i18n'
-import { SaveDot, StatusBar, StatusItem, StatusSpacer } from '../styles/layout.style'
+import {
+  SaveDot,
+  StatusAutosave,
+  StatusBar,
+  StatusItem,
+  StatusSpacer,
+} from '../styles/layout.style'
 
 export interface TheoryStatusBarProps {
   /** Состояние автосохранения — управляет точкой и подписью. */
@@ -7,8 +13,9 @@ export interface TheoryStatusBarProps {
 }
 
 /**
- * Строка состояния под документом: индикатор автосохранения,
- * версия (заглушка) и формат. Правая часть — язык интерфейса.
+ * Строка состояния под документом: индикатор автосохранения и язык интерфейса.
+ * Ширина блока автосохранения зарезервирована, поэтому соседние элементы
+ * не смещаются при смене статуса.
  */
 export function TheoryStatusBar({ saveState }: TheoryStatusBarProps) {
   const { t, i18n } = useTranslation('theory')
@@ -23,13 +30,11 @@ export function TheoryStatusBar({ saveState }: TheoryStatusBarProps) {
 
   return (
     <StatusBar>
-      <StatusItem>
+      <StatusAutosave>
         <SaveDot $tone={tone} /> {autosaveLabel}
-      </StatusItem>
-      <StatusItem>{t('status_version', { version: 1 })}</StatusItem>
-      <StatusItem>theory · tiptap</StatusItem>
+      </StatusAutosave>
       <StatusSpacer />
-      <StatusItem>{t('status_page')}</StatusItem>
+      {/* TODO: определять язык текста документа и показывать его вместо языка интерфейса */}
       <StatusItem>{i18n.language.toUpperCase()}</StatusItem>
     </StatusBar>
   )

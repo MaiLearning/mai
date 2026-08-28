@@ -1,19 +1,15 @@
-import { ChevronRight, Clock3, Eye, FileText, Save, Sparkles, Users } from 'lucide-react'
+import { warn } from '@tauri-apps/plugin-log'
+import { ChevronRight, Clock3, Users } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from '@/app/i18n'
-import { Badge } from '@/app/theme/components/Badge'
-import { Button } from '@/app/theme/components/Button'
 import { fetchCourseById } from '@/entities/course/services'
 import type { Resource } from '@/entities/resource'
 import type { StructureNode } from '@/entities/structure'
 import { fetchStructure } from '@/entities/structure/services'
-import { warn } from '@/utils/logger'
 import {
   Breadcrumbs,
   Crumb,
-  Dot,
   Header,
-  HeaderActions,
   HeaderTop,
   MetaDot,
   MetaItem,
@@ -24,20 +20,15 @@ import {
 
 export interface TheoryHeaderProps {
   courseId: string
-  /** Ресурс (для имени и типа). Может отсутствовать при прямом рендере. */
+  /** Ресурс (для имени и breadcrumbs). Может отсутствовать при прямом рендере. */
   resource?: Resource
   /** Текущее значение названия (управляется родителем). */
   title: string
   onTitleChange: (value: string) => void
   /** Коммит названия (blur / Enter) — сохранение на backend. */
   onTitleCommit: () => void
-  preview: boolean
-  onTogglePreview: () => void
-  onSave: () => void
-  dirty: boolean
-  saving: boolean
+  /** Количество слов в документе — для оценки времени чтения. */
   words: number
-  chars: number
   /** Время последнего изменения контента (unix ms). */
   updatedAt: number | null
 }
@@ -50,8 +41,8 @@ interface CrumbEntry {
 const WORDS_PER_MINUTE = 200
 
 /**
- * Шапка viewer-а: breadcrumbs (курс → папки → ресурс), редактируемое название,
- * бейдж типа, мета-строка (чтение/слова/черновик) и действия.
+ * Шапка viewer-а: breadcrumbs (курс → папки → ресурс), редактируемое название
+ * и мета-строка (чтение/черновик).
  */
 export function TheoryHeader({
   courseId,
@@ -59,13 +50,7 @@ export function TheoryHeader({
   title,
   onTitleChange,
   onTitleCommit,
-  preview,
-  onTogglePreview,
-  onSave,
-  dirty,
-  saving,
   words,
-  chars,
   updatedAt,
 }: TheoryHeaderProps) {
   const { t, i18n } = useTranslation('theory')
@@ -116,7 +101,6 @@ export function TheoryHeader({
     }
   }, [courseId, resource, title])
 
-  const numberFormat = useMemo(() => new Intl.NumberFormat(i18n.language), [i18n])
   const dateFormat = useMemo(
     () =>
       new Intl.DateTimeFormat(i18n.language, {
@@ -157,24 +141,11 @@ export function TheoryHeader({
               aria-label={t('title_label')}
               placeholder={t('title_placeholder')}
             />
-            {resource?.typeKey && (
-              <Badge variant="primary">
-                <Dot /> {t('badge_theory')}
-              </Badge>
-            )}
           </TitleRow>
 
           <MetaRow>
             <MetaItem>
               <Clock3 size={13} /> {t('meta_reading', { minutes })}
-            </MetaItem>
-            <MetaDot />
-            <MetaItem>
-              <FileText size={13} />{' '}
-              {t('meta_words', {
-                words: numberFormat.format(words),
-                chars: numberFormat.format(chars),
-              })}
             </MetaItem>
             <MetaDot />
             <MetaItem>
@@ -185,18 +156,6 @@ export function TheoryHeader({
             </MetaItem>
           </MetaRow>
         </div>
-
-        <HeaderActions>
-          <Button type="button" variant="ghost" onClick={onTogglePreview}>
-            <Eye size={15} /> {preview ? t('action_edit') : t('action_preview')}
-          </Button>
-          <Button type="button" variant="ghost" disabled title={t('assistant_soon')}>
-            <Sparkles size={15} /> {t('action_assistant')}
-          </Button>
-          <Button type="button" variant="primary" disabled={!dirty || saving} onClick={onSave}>
-            <Save size={15} /> {t('action_save')}
-          </Button>
-        </HeaderActions>
       </HeaderTop>
     </Header>
   )

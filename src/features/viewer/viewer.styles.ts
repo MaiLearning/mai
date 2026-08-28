@@ -8,6 +8,18 @@ export const Center = styled.div`
   padding: 32px;
 `
 
+/**
+ * Контейнер просмотра ресурса: занимает ровно высоту экрана, поэтому
+ * внутренние области viewer-а (документ, структура) скроллятся сами,
+ * а панели шапки и статуса остаются закреплёнными.
+ */
+export const Bounded = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  height: 100dvh;
+`
+
 export const MessageBlock = styled.div`
   padding: 32px;
   text-align: center;

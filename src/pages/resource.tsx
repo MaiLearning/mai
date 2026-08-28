@@ -1,9 +1,12 @@
 import { useParams } from 'react-router-dom'
-import { Viewer } from '@/features/viewer'
+import { Bounded, Viewer } from '@/features/viewer'
 
 /**
  * ResourcePage — страница просмотра ресурса курса.
  * Роут: /course/:courseId/resource/:resourceId
+ *
+ * Bounded ограничивает высоту экраном: viewer скроллит внутренние области,
+ * а не страницу целиком (панели остаются закреплёнными).
  */
 export function ResourcePage() {
   const { courseId, resourceId } = useParams<{ courseId: string; resourceId: string }>()
@@ -12,5 +15,9 @@ export function ResourcePage() {
     return null
   }
 
-  return <Viewer resourceId={resourceId} courseId={courseId} />
+  return (
+    <Bounded>
+      <Viewer resourceId={resourceId} courseId={courseId} />
+    </Bounded>
+  )
 }
