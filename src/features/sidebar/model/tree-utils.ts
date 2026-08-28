@@ -60,6 +60,47 @@ export function removeChildrenOf(items: FlattenedItem[], ids: string[]): Flatten
   })
 }
 
+/**
+ * Уровни направляющих линий для каждой строки видимого списка.
+ *
+ * Направляющая уровня k — вертикальная линия от первой до последней дочерней
+ * строки уровня k; на строке самой папки-родителя она не рисуется. Сегмент
+ * уровня k рисуется на строке i, если:
+ * - depth(i) === k — свой уровень (включая последнего ребёнка списка), либо
+ * - k < depth(i) и первая строка после i с depth <= k имеет depth === k —
+ *   линия продолжается ниже: через поддерево вложенной папки к следующим
+ *   братьям.
+ *
+ * Строки идут в DFS-порядке, поэтому «первая строка с depth <= k» всегда
+ * принадлежит тому же прогону уровня k, что и строка i.
+ */
+export function computeGuideLevels(items: FlattenedItem[]): number[][] {
+  const maxDepth = items.reduce((max, item) => Math.max(max, item.depth), 0)
+  // nextAtOrBelow[k][i] — индекс первой строки после i с depth <= k (-1 если нет).
+  const nextAtOrBelow: number[][] = Array.from({ length: maxDepth + 1 }, () => [])
+  for (let k = 0; k <= maxDepth; k++) {
+    let next = -1
+    for (let i = items.length - 1; i >= 0; i--) {
+      nextAtOrBelow[k][i] = next
+      if (items[i].depth <= k) next = i
+    }
+  }
+
+  return items.map((item, i) => {
+    const levels: number[] = []
+    for (let k = 1; k <= item.depth; k++) {
+      if (item.depth === k) {
+        levels.push(k)
+        continue
+      }
+      const j = nextAtOrBelow[k][i]
+      if (j !== -1 && items[j].depth === k) levels.push(k)
+    }
+
+    return levels
+  })
+}
+
 /** Собирает плоский список обратно в дерево, сохраняя порядок и вложенность. */ export function buildTree(
   flattenedItems: FlattenedItem[],
 ): CourseNode[] {

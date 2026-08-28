@@ -2,9 +2,17 @@ import { forwardRef, type MouseEvent, useEffect, useRef, useState } from 'react'
 import type { DropKind } from '../model/dnd'
 import type { CourseNode } from '../model/types'
 import { ChevronIcon, FolderIcon, FolderOpenIcon, ResourceIcon, TrashIcon } from './icons'
-import { Badge, DeleteButton, NodeIcon, RenameInput, Row, Title, Twisty } from './TreeRow.style'
-
-export const ROW_INDENT = 16
+import {
+  Badge,
+  DeleteButton,
+  Guide,
+  NodeIcon,
+  RenameInput,
+  ROW_INDENT,
+  Row,
+  Title,
+  Twisty,
+} from './TreeRow.style'
 
 interface TreeRowProps {
   node: CourseNode
@@ -30,6 +38,8 @@ interface TreeRowProps {
   dimmed?: boolean
   /** Активная зона дропа на этой строке: линия вставки или подсветка папки. */
   dropKind?: DropKind | null
+  /** Уровни направляющих линий этой строки (см. computeGuideLevels). */
+  guideLevels?: number[]
 }
 
 /**
@@ -59,6 +69,7 @@ export const TreeRow = forwardRef<HTMLDivElement, TreeRowProps>(function TreeRow
     overlay = false,
     dimmed = false,
     dropKind = null,
+    guideLevels = [],
   },
   ref,
 ) {
@@ -97,6 +108,12 @@ export const TreeRow = forwardRef<HTMLDivElement, TreeRowProps>(function TreeRow
         if (isFolder) onToggle()
       }}
     >
+      {/* Направляющие — первый контент строки: фон красится под линией,
+          шеврон и иконки — над ней. */}
+      {guideLevels.map((level) => (
+        <Guide key={level} $level={level} aria-hidden="true" />
+      ))}
+
       <Twisty
         as="span"
         role="presentation"

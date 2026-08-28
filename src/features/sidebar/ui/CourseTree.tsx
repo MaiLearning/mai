@@ -27,13 +27,17 @@ import {
 import { createPortal } from 'react-dom'
 import { useTreeKeyboardNav } from '../hooks/useTreeKeyboardNav'
 import { type DropTarget, findNodeTitle, ROOT_DROP_ID, resolveDropTarget } from '../model/dnd'
-import { type FlattenedItem, flattenTree, removeChildrenOf } from '../model/tree-utils'
+import {
+  computeGuideLevels,
+  type FlattenedItem,
+  flattenTree,
+  removeChildrenOf,
+} from '../model/tree-utils'
 import type { CourseNode } from '../model/types'
 import {
   Empty,
   EmptyHint,
   EmptyTitle,
-  Guide,
   OverlayCard,
   OverlayHint,
   RowSlot,
@@ -146,6 +150,9 @@ export function CourseTree({
 
     return removeChildrenOf(flattened, exclude)
   }, [nodes, visibleIds, expandedIds, dragId])
+  // Уровни направляющих для каждой строки: линия уровня продолжается
+  // через поддеревья вложенных папок к следующим братьям.
+  const guideLevels = useMemo(() => computeGuideLevels(rows), [rows])
   const isExpanded = useCallback(
     (item: FlattenedItem) =>
       item.type === 'folder' && (Boolean(visibleIds) || expandedIds.has(item.id)),
@@ -265,10 +272,11 @@ export function CourseTree({
       onDragCancel={resetDragState}
     >
       <TreeCanvas disabled={!dndEnabled} dragging={Boolean(dragId)} onKeyDown={handleKeyDown}>
-        {rows.map((item) => (
+        {rows.map((item, index) => (
           <TreeRowItem
             key={item.id}
             item={item}
+            guideLevels={guideLevels[index]}
             dropKind={dropTarget?.targetId === item.id ? dropTarget.kind : null}
             disabled={!dndEnabled}
             expanded={isExpanded(item)}
@@ -349,6 +357,8 @@ function TreeCanvas({ disabled, dragging, onKeyDown, children }: TreeCanvasProps
 
 interface TreeRowItemProps {
   item: FlattenedItem
+  /** Уровни направляющих линий этой строки (см. computeGuideLevels). */
+  guideLevels: number[]
   /** Активная зона дропа на этой строке (линия вставки или подсветка папки). */
   dropKind: 'before' | 'inside' | 'after' | null
   disabled: boolean
@@ -370,6 +380,7 @@ interface TreeRowItemProps {
 }
 function TreeRowItem({
   item,
+  guideLevels,
   dropKind,
   disabled,
   expanded,
@@ -399,8 +410,7 @@ function TreeRowItem({
   const { setNodeRef: setDropRef } = useDroppable({ id: item.id, disabled: dragDisabled })
 
   return (
-    <RowSlot ref={setDragRef} $level={item.depth} {...attributes} {...listeners}>
-      {item.depth > 0 && <Guide aria-hidden="true" />}
+    <RowSlot ref={setDragRef} {...attributes} {...listeners}>
       <TreeRow
         ref={(element) => {
           registerRef(item.id, element)
@@ -408,6 +418,7 @@ function TreeRowItem({
         }}
         node={toDisplayNode(item)}
         level={item.depth}
+        guideLevels={guideLevels}
         dropKind={dropKind}
         expanded={expanded}
         hasChildren={item.hasChildren}

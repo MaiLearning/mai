@@ -1,5 +1,4 @@
 import styled, { css } from 'styled-components'
-import { ROW_INDENT } from './TreeRow'
 import { Row } from './TreeRow.style'
 
 export const Tree = styled.div<{ $dragging?: boolean }>`
@@ -19,21 +18,8 @@ export const Tree = styled.div<{ $dragging?: boolean }>`
     `}
 `
 
-export const RowSlot = styled.div<{ $level: number }>`
+export const RowSlot = styled.div`
   position: relative;
-
-  --guide-offset: ${({ $level, theme }) =>
-    `calc(${theme.spacing.sm} + ${($level - 1) * ROW_INDENT}px + 17px)`};
-`
-
-export const Guide = styled.span`
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: var(--guide-offset);
-  width: 1px;
-  background: ${({ theme }) => theme.colors.border};
-  pointer-events: none;
 `
 
 /** Плавающая карточка под курсором: копия строки + подпись цели дропа. */

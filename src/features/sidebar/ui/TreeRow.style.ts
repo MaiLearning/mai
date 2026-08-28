@@ -1,5 +1,22 @@
 import styled, { css } from 'styled-components'
 
+export const ROW_INDENT = 16
+
+/** Направляющая уровня вложенности: вертикальная линия «из шеврона» родителя. */
+export const Guide = styled.span<{ $level: number }>`
+  position: absolute;
+  top: 0;
+  /* Перекрытие на 1px вниз: строки разделены зазором gap: 1px у Tree,
+     без этого направляющая была бы пунктирной. */
+  bottom: -1px;
+  /* Центр колонки twisty (14px / 2) родительского уровня: линия выровнена
+     под шевроном папки-родителя и идёт слева от шевронов дочерних строк. */
+  left: ${({ $level, theme }) => `calc(${theme.spacing.sm} + ${($level - 1) * ROW_INDENT}px + 7px)`};
+  width: 1px;
+  background: ${({ theme }) => theme.colors.border};
+  pointer-events: none;
+`
+
 export const Row = styled.div<{
   $selected: boolean
   $indent: number
