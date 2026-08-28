@@ -29,3 +29,7 @@ storybook-static
 # Прочее
 coverage
 .yarn
+
+# graphify: граф кодовой базы (артефакт сборки) и его локальный конфиг
+graphify-out
+.graphifyignore
