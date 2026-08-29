@@ -105,14 +105,22 @@ directory-сервис для любых узлов. Из корня экспо�
 **с неймспейсом**.
 
 ### task-plugin
-Содержимое заданий, привязанное к ресурсу (формат task-плагина).
-`Task` — discriminated union по `type`:
-`choice` (single/multiple, `options[]`, `correctOptionIds`),
-`text` (опциональный `expectedAnswer`),
-`ordering` (`correctOrderIds`); все варианты могут нести `explanation`.
-`TaskContent {version: 1, title, tasks[]}`;
-`TaskContentData {resourceId, content, createdAt, updatedAt}`.
-State: `taskContentsAtom` (зарезервирован под store заданий).
+Контент заданий, привязанный к ресурсу (wire-контракт in-app плагина
+`src/plugins/task`). `AnyTask` — discriminated union по `kind` (7 типов:
+`SingleChoice`, `MultipleChoice`, `TrueFalse`, `Matching`, `Ordering`,
+`FillInBlank`, `OpenAnswer`); база — `id`, `prompt`, `difficulty`
+(`easy|medium|hard`). Типы задач: выбор (`choices[]` с флагом `correct`),
+`TrueFalse` (`answer`), сопоставление (`pairs[]`), порядок (`items[]`),
+пропуски (`segments[]` с `blank: string | null`), свободный ответ
+(`sampleAnswer`, `placeholder`).
+`TaskContent {tasks: AnyTask[]}` (дефолт backend — `{}` → `{tasks: []}`),
+`TaskContentData {resourceId, content, createdAt, updatedAt}`,
+`SaveTaskContentInput`. Zod-схемы (`core/schema.ts`) — источник
+истины; плагин реэкспортирует типы из сущности. API — Tauri IPC
+`get/save/clear/delete_task_content`, без fake-ветки (как theory).
+State: `taskContentsAtom`; операции `loadTaskContentAtom`,
+`saveTaskContentAtom`, `clearTaskContentAtom`, `deleteTaskContentAtom`
+(подробности в `TASK-PLUGIN.md`).
 
 ### theory-plugin
 Теория, привязанная к ресурсу:
