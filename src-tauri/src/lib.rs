@@ -92,6 +92,10 @@ pub fn run() {
             plugins::theory::client::commands::save_theory_content,
             plugins::theory::client::commands::clear_theory_content,
             plugins::theory::client::commands::delete_theory_content,
+            plugins::task::client::commands::get_task_content,
+            plugins::task::client::commands::save_task_content,
+            plugins::task::client::commands::clear_task_content,
+            plugins::task::client::commands::delete_task_content,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

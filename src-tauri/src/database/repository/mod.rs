@@ -5,6 +5,7 @@ pub mod plugin;
 pub mod resource;
 pub mod resource_type;
 pub mod structure;
+pub mod task;
 pub mod theory;
 
 pub type RepoResult<T> = Result<T, RepoError>;
