@@ -14,6 +14,29 @@ export const Viewer = styled.section`
   color: ${({ theme }) => theme.colors.text};
 `
 
+/** Центрированная зона загрузки / пустого состояния. */
+export const SpinnerWrap = styled.div`
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`
+
+export const EmptyState = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+`
+
+export const EmptyText = styled.p`
+  margin: 0;
+  font-size: 1rem;
+  color: ${({ theme }) => theme.colors.textMuted};
+`
+
 export const Body = styled.div`
   flex: 1;
   min-height: 0;

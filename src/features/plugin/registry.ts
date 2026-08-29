@@ -1,5 +1,5 @@
 import type { ComponentType } from 'react'
-import { TheoryViewer } from '@/plugins'
+import { TaskViewer, TheoryViewer } from '@/plugins'
 import type { PluginRenderProps } from './core/types'
 
 /**
@@ -16,4 +16,5 @@ import type { PluginRenderProps } from './core/types'
  */
 export const INTERNAL_VIEWERS: Record<string, ComponentType<PluginRenderProps>> = {
   theory: TheoryViewer,
+  task: TaskViewer,
 }

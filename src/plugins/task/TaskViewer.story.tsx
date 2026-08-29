@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { TaskRenderer } from './core/registry'
 import type { AnyTask, CheckStatus, TaskKind, ViewMode } from './core/types'
 import { sampleTasks } from './dev/sample-data'
-import { TaskViewer } from './viewer'
+import { TaskViewerTasks } from './viewer'
 
 /** Рамка с фиксированным размером: вьюер рассчитан на заполнение контейнера. */
 const Frame = styled.div`
@@ -47,10 +47,13 @@ const KINDS: TaskKind[] = [
 
 const meta = {
   title: 'Plugins/Task/TaskViewer',
-  component: TaskViewer,
+  component: TaskViewerTasks,
   tags: ['autodocs'],
   args: {
     tasks: sampleTasks,
+    initialMode: 'solve' as const,
+    saveState: 'idle' as const,
+    onSave: () => {},
   },
   parameters: {
     layout: 'centered',
@@ -63,7 +66,7 @@ const meta = {
       },
     },
   },
-} satisfies Meta<typeof TaskViewer>
+} satisfies Meta<typeof TaskViewerTasks>
 
 export default meta
 type Story = StoryObj<typeof meta>
@@ -72,7 +75,7 @@ type Story = StoryObj<typeof meta>
 export const Solve: Story = {
   render: (args) => (
     <Frame>
-      <TaskViewer {...args} />
+      <TaskViewerTasks {...args} />
     </Frame>
   ),
 }

@@ -41,11 +41,17 @@ WYSIWYG-редактор теоретических материалов на Ti
 ### task
 Задачи семи типов: single choice, multiple choice, true/false, matching,
 ordering, fill-in-blank, open answer. typeKey: `task`.
-Backend-регистрация выполнена (internal-плагин `internal-task` в
-`src-tauri/src/plugins/registry.rs` — при старте регистрируется в БД
-вместе с типом ресурса `task`). Следующие фазы: wire-контракт данных в
-сущности `@/entities/task-plugin`, подключение `TaskViewer` к
-`INTERNAL_VIEWERS`, механизм проверки ответов.
+Полный цикл данных: internal-плагин `internal-task` регистрируется в БД
+вместе с типом ресурса `task`; контент — opaque JSON в таблице `task`
+(миграция V18), Tauri IPC `get/save/clear/delete_task_content`
+(`src-tauri/src/plugins/task/`). Wire-контракт — Zod-схемы в
+`@/entities/task-plugin` (источник истины, плагин реэкспортирует типы),
+сущность даёт сервисы и store-атомы, fake-ветки нет.
+`TaskViewer` подключён к `INTERNAL_VIEWERS` (typeKey `task`):
+загрузка/сохранение набора через сущность (`lib/useTaskContent`),
+пустой контент предлагает создать первую задачу; проверка ответов —
+визуальная заглушка. Осталось: привязка правок edit-режима к состоянию
+(полноценный редактор задач) и механизм проверки ответов.
 
 ## В планах
 

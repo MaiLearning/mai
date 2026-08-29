@@ -1,5 +1,7 @@
-import { Check, ChevronLeft, ChevronRight, CircleCheck, Eye, Pencil, X } from 'lucide-react'
-import { useState } from 'react'
+import { Check, ChevronLeft, ChevronRight, CircleCheck, Eye, Pencil, Plus, X } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
+import { Spinner } from '@/app/theme/components/Spinner'
+import type { PluginRenderProps } from '@/features/plugin/core/types'
 import { TaskRenderer } from './core/registry'
 import {
   type AnyTask,
@@ -8,10 +10,13 @@ import {
   TASK_KIND_LABEL,
   type ViewMode,
 } from './core/types'
+import { type TaskSaveState, useTaskContent } from './lib/useTaskContent'
 import {
   Badge,
   Body,
   BodyInner,
+  EmptyState,
+  EmptyText,
   Footer,
   FooterSide,
   GhostButton,
@@ -24,24 +29,33 @@ import {
   ModeToggle,
   PrimaryButton,
   Result,
+  SpinnerWrap,
   Step,
   StepStrip,
   TaskNo,
   Viewer,
 } from './viewer.style'
 
-interface TaskViewerProps {
+interface TaskViewerTasksProps {
   tasks: AnyTask[]
+  initialMode?: ViewMode
+  saveState: TaskSaveState
+  onSave: () => void
 }
 
 /**
- * TaskViewer — оболочка просмотра задач: степ-полоса навигации, метаданные
+ * Оболочка просмотра набора задач: степ-полоса навигации, метаданные
  * (тип/сложность), переключатель «Прохождение/Редактор» и футер с проверкой.
  * Проверка ответов — визуальная заглушка, механизм проверки вне зоны дизайна.
  */
-export function TaskViewer({ tasks }: TaskViewerProps) {
+export function TaskViewerTasks({
+  tasks,
+  initialMode = 'solve',
+  saveState,
+  onSave,
+}: TaskViewerTasksProps) {
   const [index, setIndex] = useState(0)
-  const [mode, setMode] = useState<ViewMode>('solve')
+  const [mode, setMode] = useState<ViewMode>(initialMode)
   const [statuses, setStatuses] = useState<Record<string, CheckStatus>>({})
 
   const task = tasks[index]
@@ -136,8 +150,8 @@ export function TaskViewer({ tasks }: TaskViewerProps) {
             </Result>
           )}
           {editing ? (
-            <IconButton $active type="button">
-              <Check size={15} /> Сохранить задачу
+            <IconButton $active type="button" disabled={saveState === 'saving'} onClick={onSave}>
+              <Check size={15} /> {saveState === 'saving' ? 'Сохранение…' : 'Сохранить'}
             </IconButton>
           ) : (
             <PrimaryButton type="button" onClick={check} disabled={status !== 'idle'}>
@@ -150,5 +164,66 @@ export function TaskViewer({ tasks }: TaskViewerProps) {
         </FooterSide>
       </Footer>
     </Viewer>
+  )
+}
+
+/**
+ * TaskViewer — viewer плагина task: тянет контент ресурса через сущность
+ * `task-plugin`, пустой набор предлагает начать с первой задачи.
+ */
+export function TaskViewer({ resourceId, onReady }: PluginRenderProps) {
+  const { loading, tasks, setTasks, saveState, save } = useTaskContent(resourceId)
+
+  const onReadyRef = useRef(onReady)
+  onReadyRef.current = onReady
+
+  useEffect(() => {
+    if (!loading) onReadyRef.current?.()
+  }, [loading])
+
+  if (loading) {
+    return (
+      <Viewer>
+        <SpinnerWrap>
+          <Spinner label="Загрузка задач" />
+        </SpinnerWrap>
+      </Viewer>
+    )
+  }
+
+  if (tasks.length === 0) {
+    return (
+      <Viewer>
+        <EmptyState>
+          <EmptyText>В этом наборе пока нет задач</EmptyText>
+          <GhostButton
+            type="button"
+            onClick={() =>
+              setTasks([
+                {
+                  id: crypto.randomUUID(),
+                  kind: 'SingleChoice',
+                  prompt: '',
+                  difficulty: 'easy',
+                  choices: [{ id: 'a', text: '', correct: false }],
+                },
+              ])
+            }
+          >
+            <Plus size={16} /> Добавить задачу
+          </GhostButton>
+        </EmptyState>
+      </Viewer>
+    )
+  }
+
+  return (
+    <TaskViewerTasks
+      key={resourceId}
+      tasks={tasks}
+      initialMode={tasks.length === 1 && tasks[0].prompt === '' ? 'edit' : 'solve'}
+      saveState={saveState}
+      onSave={() => void save()}
+    />
   )
 }
