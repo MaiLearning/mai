@@ -72,8 +72,10 @@ export function OrderingDnd({ ids, onReorder, overlayFor, children }: OrderingDn
 interface SortableRowProps {
   id: string
   wholeRowDrag: boolean
+  /** Заперт: пропсы драг-хэндла не отдаются ни строке, ни грипу. */
+  disabled?: boolean
   /** handle — пропсы драг-хэндла для грипа строки. */
-  children: (handle: DragHandleProps) => ReactNode
+  children: (handle?: DragHandleProps) => ReactNode
 }
 
 /**
@@ -81,16 +83,17 @@ interface SortableRowProps {
  * Transform возвращённый dnd-kit применяется как есть: при DragOverlay источник
  * сам сдвигается к целевой позиции (поведение sortable), копия летит за курсором.
  */
-export function SortableRow({ id, wholeRowDrag, children }: SortableRowProps) {
+export function SortableRow({ id, wholeRowDrag, disabled, children }: SortableRowProps) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id,
+    disabled,
   })
-  const handle = { ...attributes, ...listeners } as DragHandleProps
+  const handle = disabled ? undefined : ({ ...attributes, ...listeners } as DragHandleProps)
 
   return (
     <div
       ref={setNodeRef}
-      {...(wholeRowDrag ? handle : undefined)}
+      {...(wholeRowDrag && handle ? handle : undefined)}
       style={{
         transform: CSS.Translate.toString(transform),
         transition,

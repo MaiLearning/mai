@@ -10,7 +10,11 @@ export const List = styled.div`
   gap: 10px;
 `
 
-export const Item = styled.div<{ $state?: RowState; $editing?: boolean }>`
+export const Item = styled.div<{
+  $state?: RowState
+  $editing?: boolean
+  $locked?: boolean
+}>`
   display: flex;
   align-items: center;
   gap: 14px;
@@ -19,11 +23,12 @@ export const Item = styled.div<{ $state?: RowState; $editing?: boolean }>`
   border: 1px solid ${({ theme }) => theme.colors.border};
   background: ${({ theme }) => theme.colors.surface};
   color: ${({ theme }) => theme.colors.text};
-  cursor: ${({ $editing }) => ($editing ? 'default' : 'grab')};
+  cursor: ${({ $editing, $locked }) => ($editing || $locked ? 'default' : 'grab')};
   transition: all ${({ theme }) => theme.transitions.fast};
 
   &:hover {
-    border-color: ${({ theme }) => theme.colors.borderStrong};
+    border-color: ${({ theme, $editing, $locked }) =>
+      $editing || $locked ? theme.colors.border : theme.colors.borderStrong};
   }
 
   /* Текст тянется на всё свободное место строки */
@@ -62,8 +67,8 @@ export const Index = styled.span`
   font-weight: 600;
 `
 
-export const Grip = styled(GripVertical)`
+export const Grip = styled(GripVertical)<{ $locked?: boolean }>`
   flex-shrink: 0;
   color: ${({ theme }) => theme.colors.textMuted};
-  cursor: grab;
+  cursor: ${({ $locked }) => ($locked ? 'default' : 'grab')};
 `

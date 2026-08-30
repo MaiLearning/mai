@@ -7,14 +7,21 @@ interface DraggableChipProps {
   text: string
   /** Чип — источник активного перетаскивания: гаснет. */
   dimmed: boolean
+  /** Ответ зафиксирован: dnd-kit listeners/attributes не подключаются. */
+  locked?: boolean
 }
 
 /** Фишка-определение: draggable-обёртка над презентационным Chip. */
-export function DraggableChip({ pairId, text, dimmed }: DraggableChipProps) {
+export function DraggableChip({ pairId, text, dimmed, locked }: DraggableChipProps) {
   const { attributes, listeners, setNodeRef } = useDraggable({ id: chipDndId(pairId) })
 
   return (
-    <Chip ref={setNodeRef} {...attributes} {...listeners} $dragging={dimmed}>
+    <Chip
+      ref={setNodeRef}
+      {...(locked ? {} : { ...attributes, ...listeners })}
+      $dragging={dimmed}
+      $locked={locked}
+    >
       {text}
     </Chip>
   )

@@ -12,6 +12,8 @@ interface SortableItemRowProps {
   /** Подсветка результата проверки (solve). */
   state?: RowState
   editing: boolean
+  /** Ответ зафиксирован (solve, статус не idle): курсоры и hover-акценты выключены. */
+  locked?: boolean
   /** Элемент справа: драг-хэндл (edit) или просто иконка (solve / оверлей). */
   handle?: ReactNode
   onTextChange?: (text: string) => void
@@ -27,12 +29,13 @@ export function SortableItemRow({
   text,
   state = 'idle',
   editing,
+  locked,
   handle,
   onTextChange,
   onRemove,
 }: SortableItemRowProps) {
   return (
-    <Item $state={state} $editing={editing}>
+    <Item $state={state} $editing={editing} $locked={locked}>
       <Index>{index + 1}</Index>
       <EditableText
         className="item-text"
@@ -43,7 +46,7 @@ export function SortableItemRow({
         offset={false}
         onChange={onTextChange}
       />
-      {handle ?? <Grip size={17} />}
+      {handle ?? <Grip size={17} $locked={locked} />}
       {editing && onRemove && (
         <RemoveButton type="button" aria-label="Удалить элемент" onClick={onRemove}>
           <Trash2 size={15} />

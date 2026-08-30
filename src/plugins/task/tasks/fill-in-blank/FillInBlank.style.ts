@@ -31,7 +31,10 @@ const Paragraph = styled.div<{ $editable?: boolean }>`
 `
 
 /** Поле ввода пропуска в режиме прохождения. */
-const Blank = styled.input<{ $state?: 'idle' | 'correct' | 'incorrect' }>`
+const Blank = styled.input<{
+  $state?: 'idle' | 'correct' | 'incorrect'
+  $locked?: boolean
+}>`
   display: inline-block;
   min-width: 120px;
   width: 120px;
@@ -46,6 +49,7 @@ const Blank = styled.input<{ $state?: 'idle' | 'correct' | 'incorrect' }>`
   font-size: 1rem;
   text-align: center;
   transition: all ${({ theme }) => theme.transitions.fast};
+  cursor: ${({ $locked }) => ($locked ? 'default' : 'text')};
 
   &::placeholder {
     color: ${({ theme }) => theme.colors.textMuted};
@@ -53,9 +57,17 @@ const Blank = styled.input<{ $state?: 'idle' | 'correct' | 'incorrect' }>`
 
   &:focus {
     outline: none;
-    border-bottom-color: ${({ theme }) => theme.colors.primary};
-    background: ${({ theme }) => theme.colors.primarySurface};
   }
+
+  /* Активное поле — акцентные подчёркивание и подсветка; у зафиксированного ввода акцентов нет. */
+  ${({ $locked, theme }) =>
+    !$locked &&
+    css`
+      &:focus {
+        border-bottom-color: ${theme.colors.primary};
+        background: ${theme.colors.primarySurface};
+      }
+    `}
 
   ${({ $state, theme }) =>
     $state === 'correct' &&

@@ -58,6 +58,8 @@ const meta = {
     setDifficulties: () => {},
     setAnswer: () => {},
     setResult: () => {},
+    editTask: () => {},
+    restartTask: () => {},
     initialMode: 'solve' as const,
     saveState: 'idle' as const,
   },

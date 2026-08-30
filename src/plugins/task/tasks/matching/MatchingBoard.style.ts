@@ -65,8 +65,8 @@ export const SlotPlaceholder = styled.span`
   font-size: 0.8125rem;
 `
 
-/** Фишка-определение; гаснущий источник перетаскивания — opacity 0.4. */
-export const Chip = styled.div<{ $dragging?: boolean }>`
+/** Фишка-определение; гаснущий источник перетаскивания — opacity 0.4; при locked — без grab и hover-акцента. */
+export const Chip = styled.div<{ $dragging?: boolean; $locked?: boolean }>`
   display: inline-flex;
   align-items: center;
   max-width: 100%;
@@ -76,7 +76,7 @@ export const Chip = styled.div<{ $dragging?: boolean }>`
   background: ${({ theme }) => theme.colors.surfaceElevated};
   color: ${({ theme }) => theme.colors.text};
   font-size: 0.875rem;
-  cursor: grab;
+  cursor: ${({ $locked }) => ($locked ? 'default' : 'grab')};
   user-select: none;
   touch-action: none;
   transition:
@@ -84,7 +84,8 @@ export const Chip = styled.div<{ $dragging?: boolean }>`
     border-color ${({ theme }) => theme.transitions.fast};
 
   &:hover {
-    border-color: ${({ theme }) => theme.colors.primary};
+    border-color: ${({ theme, $locked }) =>
+      $locked ? theme.colors.borderStrong : theme.colors.primary};
   }
 
   ${({ $dragging, theme }) =>

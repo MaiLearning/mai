@@ -9,6 +9,8 @@ const Pair = styled.div`
 const Block = styled.button<{
   $selected?: boolean
   $state?: 'idle' | 'correct' | 'incorrect'
+  $editing?: boolean
+  $locked?: boolean
 }>`
   display: flex;
   flex-direction: column;
@@ -24,6 +26,7 @@ const Block = styled.button<{
   font-size: 1.125rem;
   font-weight: 600;
   transition: all ${({ theme }) => theme.transitions.fast};
+  cursor: ${({ $editing, $locked }) => ($editing || $locked ? 'default' : 'pointer')};
 
   svg {
     color: ${({ theme }) => theme.colors.textMuted};
@@ -31,7 +34,8 @@ const Block = styled.button<{
   }
 
   &:hover {
-    border-color: ${({ theme }) => theme.colors.borderStrong};
+    border-color: ${({ theme, $editing, $locked }) =>
+      $editing || $locked ? theme.colors.border : theme.colors.borderStrong};
   }
 
   ${({ $selected, theme }) =>

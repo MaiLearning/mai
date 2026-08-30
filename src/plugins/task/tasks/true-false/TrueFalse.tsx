@@ -13,6 +13,8 @@ export function TrueFalse({
   onAnswer,
 }: TaskComponentProps<TrueFalseTask, TrueFalseAnswer>) {
   const editing = mode === 'edit'
+  /** После проверки ответ зафиксирован; правка задачи или «Пройти заново» открывают его снова. */
+  const locked = !editing && status !== 'idle'
   const choice = answer?.kind === 'TrueFalse' ? answer.value : null
 
   const stateFor = (value: boolean): 'idle' | 'correct' | 'incorrect' => {
@@ -38,7 +40,12 @@ export function TrueFalse({
           type="button"
           $selected={!editing && choice === true}
           $state={stateFor(true)}
-          onClick={() => !editing && onAnswer?.({ kind: 'TrueFalse', value: true })}
+          $editing={editing}
+          $locked={locked}
+          onClick={() => {
+            if (editing || locked) return
+            onAnswer?.({ kind: 'TrueFalse', value: true })
+          }}
         >
           <ThumbsUp size={26} />
           Верно
@@ -47,7 +54,12 @@ export function TrueFalse({
           type="button"
           $selected={!editing && choice === false}
           $state={stateFor(false)}
-          onClick={() => !editing && onAnswer?.({ kind: 'TrueFalse', value: false })}
+          $editing={editing}
+          $locked={locked}
+          onClick={() => {
+            if (editing || locked) return
+            onAnswer?.({ kind: 'TrueFalse', value: false })
+          }}
         >
           <ThumbsDown size={26} />
           Неверно

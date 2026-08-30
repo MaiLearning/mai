@@ -25,6 +25,8 @@ export function MultipleChoice({
   onAnswer,
 }: TaskComponentProps<MultipleChoiceTask, MultipleChoiceAnswer>) {
   const editing = mode === 'edit'
+  /** После проверки ответ зафиксирован; правка задачи или «Пройти заново» открывают его снова. */
+  const locked = !editing && status !== 'idle'
   const selected = new Set(answer?.kind === 'MultipleChoice' ? answer.choiceIds : [])
 
   const updateChoices = (choices: Choice[]) => onChange?.({ ...task, choices })
@@ -44,7 +46,7 @@ export function MultipleChoice({
       task.choices.map((c) => ({ ...c, correct: c.id === choiceId ? !c.correct : c.correct })),
     )
 
-  /** Тоггл варианта в наборе выбранных; перепрохождение разрешено. */
+  /** Тоггл варианта в наборе выбранных. */
   const toggleSelect = (choiceId: string) => {
     const next = new Set(selected)
     if (next.has(choiceId)) {
@@ -83,7 +85,11 @@ export function MultipleChoice({
               $selected={!editing && isSelected}
               $state={editing ? 'idle' : state}
               $editing={editing}
-              onClick={() => !editing && toggleSelect(choice.id)}
+              $locked={locked}
+              onClick={() => {
+                if (editing || locked) return
+                toggleSelect(choice.id)
+              }}
             >
               {!editing && (
                 <Marker $shape="square" $checked={isSelected} $state={state}>

@@ -29,6 +29,8 @@ interface MatchingBoardProps {
 
 /** Доска прохождения: строки «термин → слот» + пул свободных фишек, dnd-kit. */
 export function MatchingBoard({ task, status, answer, onAnswer }: MatchingBoardProps) {
+  // Доска рисуется только в solve; после проверки ответ зафиксирован.
+  const locked = status !== 'idle'
   const mapping = useMemo(() => (answer?.kind === 'Matching' ? answer.mapping : {}), [answer])
   const [dragPairId, setDragPairId] = useState<string | null>(null)
   const sensors = useSensors(
@@ -52,7 +54,8 @@ export function MatchingBoard({ task, status, answer, onAnswer }: MatchingBoardP
   const handleDragEnd = ({ active, over }: DragEndEvent) => {
     const chipPairId = parseChipPairId(String(active.id))
     resetDrag()
-    if (!over) return
+    // Защита: при зафиксированном ответе переназначений быть не должно.
+    if (locked || !over) return
 
     const slotPairId = parseSlotPairId(String(over.id))
     if (slotPairId) {
@@ -91,10 +94,11 @@ export function MatchingBoard({ task, status, answer, onAnswer }: MatchingBoardP
               held={held}
               state={state}
               dragPairId={dragPairId}
+              locked={locked}
             />
           )
         })}
-        <MatchingPool pairs={poolPairs} dragPairId={dragPairId} />
+        <MatchingPool pairs={poolPairs} dragPairId={dragPairId} locked={locked} />
       </Field>
       {typeof document !== 'undefined' &&
         createPortal(

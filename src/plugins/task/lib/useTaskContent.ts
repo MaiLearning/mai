@@ -9,11 +9,18 @@ import type {
 } from '@/entities/task-plugin'
 import { fetchTaskContent, saveTaskContent } from '@/entities/task-plugin/services'
 import { notifyError } from '@/utils/notifications'
+import { backfillCompleted, withRestart, withResult, withTaskEdited } from './content'
 import { useAutosave } from './useAutosave'
 
 export type TaskSaveState = 'idle' | 'saving' | 'saved' | 'error'
 
-const EMPTY_CONTENT: TaskContent = { tasks: [], difficulties: [], answers: {}, results: {} }
+const EMPTY_CONTENT: TaskContent = {
+  tasks: [],
+  difficulties: [],
+  answers: {},
+  results: {},
+  completed: {},
+}
 
 /**
  * Контент задач ресурса: задачи, сложности, ответы и результаты прохождения.
@@ -37,8 +44,9 @@ export function useTaskContent(resourceId: string) {
     fetchTaskContent(resourceId)
       .then((data) => {
         if (cancelled) return
-        contentRef.current = data.content
-        setContent(data.content)
+        const next = backfillCompleted(data.content)
+        contentRef.current = next
+        setContent(next)
       })
       .catch((e) => {
         logError(
@@ -85,11 +93,33 @@ export function useTaskContent(resourceId: string) {
     [applyChange],
   )
 
+  /** Проверка: результат + факт прохождения (неважно, верно или нет). */
   const setResult = useCallback(
-    (taskId: string, result: TaskResult) =>
-      applyChange((prev) => ({ ...prev, results: { ...prev.results, [taskId]: result } })),
+    (taskId: string, result: TaskResult) => applyChange((prev) => withResult(prev, taskId, result)),
     [applyChange],
   )
 
-  return { loading, content, setTasks, setDifficulties, setAnswer, setResult, saveState }
+  /** Правка содержания задачи: ответ, результат и факт прохождения сбрасываются. */
+  const editTask = useCallback(
+    (taskId: string, next: AnyTask) => applyChange((prev) => withTaskEdited(prev, taskId, next)),
+    [applyChange],
+  )
+
+  /** «Пройти заново»: ответ и результат стираются; факт прохождения остаётся. */
+  const restartTask = useCallback(
+    (taskId: string) => applyChange((prev) => withRestart(prev, taskId)),
+    [applyChange],
+  )
+
+  return {
+    loading,
+    content,
+    setTasks,
+    setDifficulties,
+    setAnswer,
+    setResult,
+    editTask,
+    restartTask,
+    saveState,
+  }
 }

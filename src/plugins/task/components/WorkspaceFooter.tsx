@@ -1,4 +1,4 @@
-import { Check, ChevronLeft, ChevronRight, CircleCheck } from 'lucide-react'
+import { Check, ChevronLeft, ChevronRight, CircleCheck, RotateCcw } from 'lucide-react'
 import type { CheckStatus } from '../core/types'
 import type { TaskSaveState } from '../lib/useTaskContent'
 import { Footer, FooterSide, GhostButton, PrimaryButton, Result } from '../viewer.style'
@@ -13,6 +13,7 @@ interface WorkspaceFooterProps {
   onPrev: () => void
   onNext: () => void
   onCheck: () => void
+  onRestart: () => void
 }
 
 /** Футер воркспейса: навигация, индикатор автосохранения, результат проверки. */
@@ -25,6 +26,7 @@ export function WorkspaceFooter({
   onPrev,
   onNext,
   onCheck,
+  onRestart,
 }: WorkspaceFooterProps) {
   return (
     <Footer>
@@ -37,12 +39,17 @@ export function WorkspaceFooter({
 
       <FooterSide>
         {!editing && status !== 'idle' && (
-          <Result $status={status}>
-            <CircleCheck size={17} />
-            {status === 'correct' ? 'Верно' : 'Есть ошибки'}
-          </Result>
+          <>
+            <Result $status={status}>
+              <CircleCheck size={17} />
+              {status === 'correct' ? 'Верно' : 'Есть ошибки'}
+            </Result>
+            <GhostButton type="button" onClick={onRestart}>
+              <RotateCcw size={16} /> Пройти заново
+            </GhostButton>
+          </>
         )}
-        {!editing && (
+        {!editing && status === 'idle' && (
           <PrimaryButton type="button" onClick={onCheck}>
             <Check size={18} /> Проверить
           </PrimaryButton>

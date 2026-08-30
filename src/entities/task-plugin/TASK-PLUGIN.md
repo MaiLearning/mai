@@ -20,9 +20,9 @@
   `TaskContent.difficulties: CustomDifficulty[]` (`{id, label, color}`).
   Ссылка на удалённую сложность не ломает парсинг — viewer рисует
   fallback-бейдж.
-- **Контент ресурса** — `TaskContent { tasks, difficulties, answers, results }`. Backend держит
+- **Контент ресурса** — `TaskContent { tasks, difficulties, answers, results, completed }`. Backend держит
   его как opaque JSON; дефолт `{}` разворачивается в
-  `{ tasks: [], difficulties: [], answers: {}, results: {} }` через `.default(...)`.
+  `{ tasks: [], difficulties: [], answers: {}, results: {}, completed: {} }` через `.default(...)`.
 - **Ответы и результаты** — прохождение живёт в том же контенте:
   `answers: Record<id задачи, TaskAnswer>` (форма ответа — union по `kind`
   задачи: выбор/набор/да-нет/сопоставление/порядок/пропуски/текст) и
@@ -70,6 +70,25 @@ Viewer-использование (прецедент): `TaskViewer` в `src/plu
 хук `lib/useAutosave` (debounce ~800 мс, финальный сейв при уходе,
 индикатор-точка в футере воркспейса). Проверка ответов — `lib/check.ts`
 плагина, по union-форме ответа.
+
+## Жизненный цикл прохождения
+
+Чистые редьюсеры — `src/plugins/task/lib/content.ts` (с тестами);
+проводка — `useTaskContent` + `TaskWorkspace`:
+
+| Событие | Ответ | Результат | `completed` |
+|---|---|---|---|
+| Проверка (`withResult`) | фиксируется | ставится | `true` (верно/неверно — неважно) |
+| «Пройти заново» (`withRestart`) | стирается — снова «не решалась» | удаляется | **остаётся** |
+| Правка содержания задачи (`withTaskEdited`) | удаляется | удаляется | **сброс** — задача снова непройдена |
+| Правка только сложности | не трогается | не трогается | не трогается (метаданные) |
+
+Пока стоит результат, ответ зафиксирован: интеракции компонента задачи
+заблокированы (гард `locked = !editing && status !== 'idle'`, у dnd —
+отключение listeners), в футере вместо «Проверить» — «Пройти заново».
+Старый контент без флагов дополняется при загрузке: `backfillCompleted`
+(есть `results[taskId]` ⇒ `completed[taskId] = true`, на диск попадает со
+следующей мутацией).
 
 ## Как расширять
 

@@ -1,6 +1,9 @@
 import styled, { css } from 'styled-components'
 
-const TextArea = styled.textarea<{ $state?: 'idle' | 'correct' | 'incorrect' }>`
+const TextArea = styled.textarea<{
+  $state?: 'idle' | 'correct' | 'incorrect'
+  $locked?: boolean
+}>`
   width: 100%;
   min-height: 150px;
   resize: vertical;
@@ -13,6 +16,7 @@ const TextArea = styled.textarea<{ $state?: 'idle' | 'correct' | 'incorrect' }>`
   font-size: 1rem;
   line-height: 1.6;
   transition: all ${({ theme }) => theme.transitions.fast};
+  cursor: ${({ $locked }) => ($locked ? 'default' : 'text')};
 
   &::placeholder {
     color: ${({ theme }) => theme.colors.textMuted};
@@ -20,9 +24,17 @@ const TextArea = styled.textarea<{ $state?: 'idle' | 'correct' | 'incorrect' }>`
 
   &:focus {
     outline: none;
-    border-color: ${({ theme }) => theme.colors.primary};
-    box-shadow: 0 0 0 3px ${({ theme }) => theme.colors.primarySurface};
   }
+
+  /* Активное поле — акцентная рамка; у зафиксированного ввода акцентов нет. */
+  ${({ $locked, theme }) =>
+    !$locked &&
+    css`
+      &:focus {
+        border-color: ${theme.colors.primary};
+        box-shadow: 0 0 0 3px ${theme.colors.primarySurface};
+      }
+    `}
 
   ${({ $state, theme }) =>
     $state === 'correct' &&

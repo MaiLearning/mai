@@ -168,6 +168,12 @@ export const TaskContentSchema = z.object({
   answers: z.record(z.string(), TaskAnswerSchema).default({}),
   /** Результаты проверки: id задачи → исход. */
   results: z.record(z.string(), TaskResultSchema).default({}),
+  /**
+   * Факт прохождения: id задачи → true. Ставится при любой проверке (верно
+   * или нет) и не сбрасывается «Пройти заново»; сбрасывается правкой
+   * содержания задачи — задача считается непройденной до новой проверки.
+   */
+  completed: z.record(z.string(), z.boolean()).default({}),
 })
 
 export const TaskContentDataSchema = z.object({

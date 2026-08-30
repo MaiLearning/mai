@@ -13,6 +13,8 @@ export function OpenAnswer({
   onAnswer,
 }: TaskComponentProps<OpenAnswerTask, OpenAnswerAnswer>) {
   const editing = mode === 'edit'
+  /** После проверки ответ зафиксирован; правка задачи или «Пройти заново» открывают его снова. */
+  const locked = !editing && status !== 'idle'
   const value = answer?.kind === 'OpenAnswer' ? answer.text : ''
 
   return (
@@ -58,7 +60,12 @@ export function OpenAnswer({
             placeholder={task.placeholder}
             value={value}
             $state={status}
-            onChange={(e) => onAnswer?.({ kind: 'OpenAnswer', text: e.target.value })}
+            $locked={locked}
+            readOnly={locked}
+            onChange={(e) => {
+              if (locked) return
+              onAnswer?.({ kind: 'OpenAnswer', text: e.target.value })
+            }}
           />
           {status === 'correct' && (
             <SampleCard>

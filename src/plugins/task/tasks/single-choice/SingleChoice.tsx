@@ -25,6 +25,8 @@ export function SingleChoice({
   onAnswer,
 }: TaskComponentProps<SingleChoiceTask, SingleChoiceAnswer>) {
   const editing = mode === 'edit'
+  /** После проверки ответ зафиксирован; правка задачи или «Пройти заново» открывают его снова. */
+  const locked = !editing && status !== 'idle'
   const selected = answer?.kind === 'SingleChoice' ? answer.choiceId : null
 
   const updateChoices = (choices: Choice[]) => onChange?.({ ...task, choices })
@@ -69,7 +71,11 @@ export function SingleChoice({
               $selected={!editing && isSelected}
               $state={editing ? 'idle' : state}
               $editing={editing}
-              onClick={() => !editing && onAnswer?.({ kind: 'SingleChoice', choiceId: choice.id })}
+              $locked={locked}
+              onClick={() => {
+                if (editing || locked) return
+                onAnswer?.({ kind: 'SingleChoice', choiceId: choice.id })
+              }}
             >
               {!editing && (
                 <Marker $shape="circle" $checked={isSelected} $state={state}>

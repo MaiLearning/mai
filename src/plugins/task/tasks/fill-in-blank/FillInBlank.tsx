@@ -15,6 +15,9 @@ export function FillInBlank({
   if (mode === 'edit')
     return <FillInBlankEditor task={task} onChange={(next) => onChange?.(next)} />
 
+  /** После проверки ответ зафиксирован; «Пройти заново» открывает пропуска снова. */
+  const locked = status !== 'idle'
+
   /** id сегмента с пропуском → введённый текст. */
   const values = answer?.kind === 'FillInBlank' ? answer.values : {}
 
@@ -39,12 +42,15 @@ export function FillInBlank({
                 placeholder="…"
                 value={values[seg.id] ?? ''}
                 $state={blankState(seg.id, seg.blank)}
-                onChange={(e) =>
+                $locked={locked}
+                readOnly={locked}
+                onChange={(e) => {
+                  if (locked) return
                   onAnswer?.({
                     kind: 'FillInBlank',
                     values: { ...values, [seg.id]: e.target.value },
                   })
-                }
+                }}
               />
             )}
           </span>

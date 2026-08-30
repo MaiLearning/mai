@@ -18,6 +18,8 @@ interface TaskWorkspaceProps {
   setDifficulties: (updater: (prev: CustomDifficulty[]) => CustomDifficulty[]) => void
   setAnswer: (taskId: string, answer: TaskAnswer) => void
   setResult: (taskId: string, result: TaskResult) => void
+  editTask: (taskId: string, next: AnyTask) => void
+  restartTask: (taskId: string) => void
   initialMode: ViewMode
   saveState: TaskSaveState
 }
@@ -36,6 +38,8 @@ export function TaskWorkspace({
   setDifficulties,
   setAnswer,
   setResult,
+  editTask,
+  restartTask,
   initialMode,
   saveState,
 }: TaskWorkspaceProps) {
@@ -56,8 +60,15 @@ export function TaskWorkspace({
     return 'idle'
   }
 
+  /** Правка сложности — метаданные; правка содержания сбрасывает прогресс задачи. */
   const updateTask = (id: string, patch: Partial<AnyTask>) => {
-    setTasks((prev) => prev.map((t) => (t.id === id ? ({ ...t, ...patch } as AnyTask) : t)))
+    const current = tasks.find((t) => t.id === id)
+    if (!current) return
+
+    const next = { ...current, ...patch } as AnyTask
+    const metadataOnly = Object.keys(patch).length === 1 && 'difficulty' in patch
+    if (metadataOnly) setTasks((prev) => prev.map((t) => (t.id === id ? next : t)))
+    else editTask(id, next)
   }
 
   const addTask = (kind: TaskKind) => {
@@ -66,10 +77,13 @@ export function TaskWorkspace({
     setMode('edit')
   }
 
-  /** Проверка по типу задачи; ответ можно менять и проверять заново. */
+  /** Проверка по типу задачи; повторная проверка — через «Пройти заново». */
   const check = () => {
     setResult(task.id, checkTask(task, answers[task.id]))
   }
+
+  /** Перезапуск прохождения: ответ и результат стираются. */
+  const restart = () => restartTask(task.id)
 
   const go = (dir: -1 | 1) => {
     setIndex((i) => Math.min(tasks.length - 1, Math.max(0, i + dir)))
@@ -113,6 +127,7 @@ export function TaskWorkspace({
         onPrev={() => go(-1)}
         onNext={() => go(1)}
         onCheck={check}
+        onRestart={restart}
       />
     </Viewer>
   )

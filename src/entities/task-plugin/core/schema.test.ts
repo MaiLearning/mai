@@ -28,7 +28,7 @@ describe('task content schema', () => {
   it('парсит пустой контент backend-дефолта {} в пустые списки и словари', () => {
     const parsed = TaskContentSchema.parse({})
 
-    expect(parsed).toEqual({ tasks: [], difficulties: [], answers: {}, results: {} })
+    expect(parsed).toEqual({ tasks: [], difficulties: [], answers: {}, results: {}, completed: {} })
   })
 
   it.each(samples.map((task) => [task.kind, task] as const))(
@@ -62,6 +62,7 @@ describe('task content schema', () => {
         difficulties: [{ id: 'd-1', label: 'Дьявольская', color: '#ff0044' }],
         answers: {},
         results: {},
+        completed: { t1: true },
       },
       createdAt: 1,
       updatedAt: 2,
@@ -75,7 +76,7 @@ describe('task content schema', () => {
 
     expect(SaveTaskContentInputSchema.parse(input)).toEqual({
       ...input,
-      content: { ...input.content, difficulties: [], answers: {}, results: {} },
+      content: { ...input.content, difficulties: [], answers: {}, results: {}, completed: {} },
     })
   })
 
@@ -105,6 +106,7 @@ describe('task content schema', () => {
         tasks: [samples[0]],
         answers: { t1: { kind: 'SingleChoice', choiceId: 'a' } },
         results: { t1: 'correct' },
+        completed: { t1: true },
         difficulties: [],
       },
       createdAt: 1,

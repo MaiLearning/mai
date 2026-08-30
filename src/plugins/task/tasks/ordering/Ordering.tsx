@@ -25,12 +25,15 @@ export function Ordering({
   onAnswer,
 }: TaskComponentProps<OrderingTask, OrderingAnswer>) {
   const editing = mode === 'edit'
+  /** После проверки порядок зафиксирован; правка задачи или «Пройти заново» открывают его снова. */
+  const locked = !editing && status !== 'idle'
 
   // Порядок отображения: edit — сам массив задачи (он и есть правильный),
-  // solve — ответ ученика, а если его нет — перемешивание, стабильное между сессиями.
+  // solve — ответ ученика, а если его нет (в т.ч. пустой после сброса) —
+  // перемешивание, стабильное между сессиями.
   const displayedIds = useMemo(() => {
     if (editing) return task.items.map((item) => item.id)
-    if (answer?.kind === 'Ordering') return answer.itemIds
+    if (answer?.kind === 'Ordering' && answer.itemIds.length > 0) return answer.itemIds
 
     return seededShuffle(task.items, task.id).map((item) => item.id)
   }, [editing, task.items, task.id, answer])
@@ -50,13 +53,15 @@ export function Ordering({
   const updateItem = (id: string, text: string) =>
     updateItems(task.items.map((item) => (item.id === id ? { ...item, text } : item)))
 
-  // edit — правим порядок массива задачи; solve — записываем ответ (только по дропу).
+  // edit — правим порядок массива задачи; solve — записываем ответ (только по дропу),
+  // после проверки порядок зафиксирован и не переписывается.
   const reorder = (from: number, to: number) => {
     if (editing) {
       onChange?.({ ...task, items: arrayMove(task.items, from, to) })
 
       return
     }
+    if (locked) return
     onAnswer?.({ kind: 'Ordering', itemIds: arrayMove(displayedIds, from, to) })
   }
 
@@ -70,9 +75,16 @@ export function Ordering({
         text={item.text}
         state={rowState(index)}
         editing={editing}
+        locked={locked}
         onTextChange={editing ? (text) => updateItem(id, text) : undefined}
         onRemove={editing ? () => removeItem(id) : undefined}
-        handle={editing && !overlay && handle ? <Grip size={17} {...handle} /> : <Grip size={17} />}
+        handle={
+          editing && !overlay && handle ? (
+            <Grip size={17} {...handle} />
+          ) : (
+            <Grip size={17} $locked={locked} />
+          )
+        }
       />
     )
   }
@@ -95,7 +107,7 @@ export function Ordering({
       >
         <List>
           {displayedIds.map((id, index) => (
-            <SortableRow key={id} id={id} wholeRowDrag={!editing}>
+            <SortableRow key={id} id={id} wholeRowDrag={!editing} disabled={locked}>
               {(handle) => renderRow(id, index, false, handle)}
             </SortableRow>
           ))}

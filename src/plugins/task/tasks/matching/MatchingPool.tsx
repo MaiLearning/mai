@@ -8,10 +8,12 @@ interface MatchingPoolProps {
   /** Свободные фишки: определения, не приставленные ни к одному термину. */
   pairs: MatchPair[]
   dragPairId: string | null
+  /** Ответ зафиксирован: фишки в пуле не перетаскиваются. */
+  locked?: boolean
 }
 
 /** Пул: droppable-зона свободных фишек-определений. */
-export function MatchingPool({ pairs, dragPairId }: MatchingPoolProps) {
+export function MatchingPool({ pairs, dragPairId, locked }: MatchingPoolProps) {
   const { isOver, setNodeRef } = useDroppable({ id: POOL_ID })
 
   return (
@@ -22,6 +24,7 @@ export function MatchingPool({ pairs, dragPairId }: MatchingPoolProps) {
           pairId={pair.id}
           text={pair.right}
           dimmed={dragPairId === pair.id}
+          locked={locked}
         />
       ))}
       {pairs.length === 0 && <PoolHint>Все определения распределены</PoolHint>}

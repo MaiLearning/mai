@@ -8,6 +8,7 @@ export const OptionRow = styled.div<{
   $selected?: boolean
   $state?: 'idle' | 'correct' | 'incorrect'
   $editing?: boolean
+  $locked?: boolean
 }>`
   display: flex;
   align-items: center;
@@ -18,11 +19,11 @@ export const OptionRow = styled.div<{
   background: ${({ theme }) => theme.colors.surface};
   color: ${({ theme }) => theme.colors.text};
   transition: all ${({ theme }) => theme.transitions.fast};
-  cursor: ${({ $editing }) => ($editing ? 'default' : 'pointer')};
+  cursor: ${({ $editing, $locked }) => ($editing || $locked ? 'default' : 'pointer')};
 
   &:hover {
-    border-color: ${({ theme, $editing }) =>
-      $editing ? theme.colors.border : theme.colors.borderStrong};
+    border-color: ${({ theme, $editing, $locked }) =>
+      $editing || $locked ? theme.colors.border : theme.colors.borderStrong};
   }
 
   /* Поле варианта занимает всё свободное место строки */
