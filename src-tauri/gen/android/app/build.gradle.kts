@@ -1,4 +1,12 @@
 import java.util.Properties
+// >>> mai-signing (управляется scripts/android-signing-setup.sh)
+val maiKeystoreProperties = Properties().apply {
+    val propFile = rootProject.file("keystore.properties")
+    if (propFile.exists()) {
+        propFile.inputStream().use { load(it) }
+    }
+}
+// <<< mai-signing
 
 plugins {
     id("com.android.application")
@@ -14,6 +22,16 @@ val tauriProperties = Properties().apply {
 }
 
 android {
+    // >>> mai-signing (управляется scripts/android-signing-setup.sh)
+    signingConfigs {
+        create("maiRelease") {
+            keyAlias = maiKeystoreProperties.getProperty("keyAlias")
+            keyPassword = maiKeystoreProperties.getProperty("keyPassword")
+            storeFile = maiKeystoreProperties.getProperty("storeFile")?.let { file(it) }
+            storePassword = maiKeystoreProperties.getProperty("storePassword")
+        }
+    }
+    // <<< mai-signing
     compileSdk = 36
     namespace = "com.anton.mai"
     defaultConfig {
@@ -37,6 +55,11 @@ android {
             }
         }
         getByName("release") {
+            // >>> mai-signing (управляется scripts/android-signing-setup.sh)
+            if (maiKeystoreProperties.getProperty("storeFile") != null) {
+                signingConfig = signingConfigs.getByName("maiRelease")
+            }
+            // <<< mai-signing
             isMinifyEnabled = true
             proguardFiles(
                 *fileTree(".") { include("**/*.pro") }
