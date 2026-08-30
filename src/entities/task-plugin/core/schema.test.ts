@@ -1,12 +1,13 @@
 import { describe, expect, it } from 'vitest'
 import {
+  CustomDifficultySchema,
   SaveTaskContentInputSchema,
   TaskContentDataSchema,
   TaskContentSchema,
   TaskSchema,
 } from './schema'
 
-const base = { id: 't1', prompt: 'Вопрос?', difficulty: 'easy' as const }
+const base = { id: 't1', prompt: 'Вопрос?', difficulty: 'easy' }
 
 const samples = [
   { ...base, kind: 'SingleChoice' as const, choices: [{ id: 'a', text: 'A', correct: true }] },
@@ -23,10 +24,10 @@ const samples = [
 ]
 
 describe('task content schema', () => {
-  it('парсит пустой контент backend-дефолта {} в пустой список задач', () => {
+  it('парсит пустой контент backend-дефолта {} в пустые списки', () => {
     const parsed = TaskContentSchema.parse({})
 
-    expect(parsed).toEqual({ tasks: [] })
+    expect(parsed).toEqual({ tasks: [], difficulties: [] })
   })
 
   it.each(samples.map((task) => [task.kind, task] as const))(
@@ -36,14 +37,29 @@ describe('task content schema', () => {
     },
   )
 
+  it('валидирует задачу со своей сложностью (произвольный id)', () => {
+    const task = { ...base, difficulty: 'd-1', kind: 'TrueFalse' as const, answer: false }
+
+    expect(TaskSchema.parse(task)).toEqual(task)
+  })
+
+  it('валидирует свою сложность', () => {
+    const difficulty = { id: 'd-1', label: 'Дьявольская', color: '#ff0044' }
+
+    expect(CustomDifficultySchema.parse(difficulty)).toEqual(difficulty)
+  })
+
   it('отвергает неизвестный тип задачи', () => {
     expect(() => TaskSchema.parse({ ...base, kind: 'Puzzle', choices: [] })).toThrow()
   })
 
-  it('валидирует полный контент ресурса', () => {
+  it('валидирует полный контент ресурса со своими сложностями', () => {
     const data = {
       resourceId: 'r1',
-      content: { tasks: [samples[0]] },
+      content: {
+        tasks: [samples[0]],
+        difficulties: [{ id: 'd-1', label: 'Дьявольская', color: '#ff0044' }],
+      },
       createdAt: 1,
       updatedAt: 2,
     }
@@ -51,9 +67,12 @@ describe('task content schema', () => {
     expect(TaskContentDataSchema.parse(data)).toEqual(data)
   })
 
-  it('валидирует вход сохранения', () => {
+  it('валидирует вход сохранения: difficulties разворачиваются дефолтом', () => {
     const input = { resourceId: 'r1', content: { tasks: [samples[2]] } }
 
-    expect(SaveTaskContentInputSchema.parse(input)).toEqual(input)
+    expect(SaveTaskContentInputSchema.parse(input)).toEqual({
+      ...input,
+      content: { ...input.content, difficulties: [] },
+    })
   })
 })

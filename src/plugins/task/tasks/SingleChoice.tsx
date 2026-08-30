@@ -19,7 +19,12 @@ export function SingleChoice({ task, mode, status }: TaskComponentProps<SingleCh
 
   return (
     <Field>
-      <EditableText editing={editing} value={task.prompt} className="prompt" />
+      <EditableText
+        editing={editing}
+        value={task.prompt}
+        className="prompt"
+        placeholder="Введите условие задачи…"
+      />
       <SectionLabel>Выберите один вариант</SectionLabel>
       <OptionList>
         {task.choices.map((choice) => {
@@ -46,7 +51,11 @@ export function SingleChoice({ task, mode, status }: TaskComponentProps<SingleCh
               >
                 {(state === 'correct' || (!editing && isSelected)) && <Check size={13} />}
               </Marker>
-              <EditableText editing={editing} value={choice.text} />
+              <EditableText
+                editing={editing}
+                value={choice.text}
+                placeholder="Введите вариант ответа…"
+              />
               {editing && (
                 <>
                   <CorrectBadge $on={choice.correct} type="button">

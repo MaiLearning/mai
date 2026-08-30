@@ -10,7 +10,19 @@ export const TaskKindSchema = z.enum([
   'OpenAnswer',
 ])
 
-export const DifficultySchema = z.enum(['easy', 'medium', 'hard'])
+/**
+ * Сложность задачи — id: либо пресетный (`easy`/`medium`/`hard`, пресеты
+ * фиксированы на стороне плагина), либо id своей сложности из
+ * `TaskContentSchema.difficulties`.
+ */
+export const DifficultySchema = z.string()
+
+/** Своя сложность, задаваемая автором: название + цвет (hex). */
+export const CustomDifficultySchema = z.object({
+  id: z.string(),
+  label: z.string(),
+  color: z.string(),
+})
 
 export const ChoiceSchema = z.object({
   id: z.string(),
@@ -97,6 +109,8 @@ export const TaskSchema = z.discriminatedUnion('kind', [
 
 export const TaskContentSchema = z.object({
   tasks: z.array(TaskSchema).default([]),
+  /** Свои сложности набора; пресетные (`easy`/`medium`/`hard`) сюда не входят. */
+  difficulties: z.array(CustomDifficultySchema).default([]),
 })
 
 export const TaskContentDataSchema = z.object({

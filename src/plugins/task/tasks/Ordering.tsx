@@ -16,13 +16,18 @@ export function Ordering({ task, mode, status }: TaskComponentProps<OrderingTask
 
   return (
     <Field>
-      <EditableText editing={editing} value={task.prompt} className="prompt" />
+      <EditableText
+        editing={editing}
+        value={task.prompt}
+        className="prompt"
+        placeholder="Введите условие задачи…"
+      />
       <SectionLabel>Расставьте элементы в правильном порядке</SectionLabel>
       <List>
         {task.items.map((item, i) => (
           <Item key={item.id} $state={state} $editing={editing}>
             <Index>{i + 1}</Index>
-            <EditableText editing={editing} value={item.text} />
+            <EditableText editing={editing} value={item.text} placeholder="Введите элемент…" />
             {editing ? (
               <RemoveButton
                 type="button"

@@ -1,29 +1,34 @@
 import { error as logError } from '@tauri-apps/plugin-log'
 import { useCallback, useEffect, useState } from 'react'
-import type { AnyTask } from '@/entities/task-plugin'
+import type { AnyTask, CustomDifficulty } from '@/entities/task-plugin'
 import { fetchTaskContent, saveTaskContent } from '@/entities/task-plugin/services'
 import { notifyError, notifySuccess } from '@/utils/notifications'
 
 export type TaskSaveState = 'idle' | 'saving' | 'saved' | 'error'
 
 /**
- * Контент задач ресурса: загрузка при монтировании и смене ресурса,
- * явное сохранение набора. Логирование и уведомления — здесь, viewer
- * только отображает состояние.
+ * Контент задач ресурса: задачи и свои сложности. Загрузка при монтировании
+ * и смене ресурса, явное сохранение набора. Логирование и уведомления — здесь,
+ * viewer только отображает состояние.
  */
 export function useTaskContent(resourceId: string) {
   const [loading, setLoading] = useState(true)
   const [tasks, setTasks] = useState<AnyTask[]>([])
+  const [difficulties, setDifficulties] = useState<CustomDifficulty[]>([])
   const [saveState, setSaveState] = useState<TaskSaveState>('idle')
 
   useEffect(() => {
     let cancelled = false
     setLoading(true)
     setTasks([])
+    setDifficulties([])
 
     fetchTaskContent(resourceId)
       .then((data) => {
-        if (!cancelled) setTasks(data.content.tasks)
+        if (!cancelled) {
+          setTasks(data.content.tasks)
+          setDifficulties(data.content.difficulties)
+        }
       })
       .catch((e) => {
         logError(
@@ -43,7 +48,7 @@ export function useTaskContent(resourceId: string) {
   const save = useCallback(async () => {
     setSaveState('saving')
     try {
-      await saveTaskContent({ resourceId, content: { tasks } })
+      await saveTaskContent({ resourceId, content: { tasks, difficulties } })
       setSaveState('saved')
       notifySuccess('Сохранено', 'Набор задач обновлён')
     } catch (e) {
@@ -53,7 +58,7 @@ export function useTaskContent(resourceId: string) {
       setSaveState('error')
       notifyError('Не удалось сохранить', 'Попробуйте ещё раз')
     }
-  }, [resourceId, tasks])
+  }, [resourceId, tasks, difficulties])
 
-  return { loading, tasks, setTasks, saveState, save }
+  return { loading, tasks, difficulties, setTasks, setDifficulties, saveState, save }
 }

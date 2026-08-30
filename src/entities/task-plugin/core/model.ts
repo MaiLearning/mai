@@ -2,6 +2,7 @@ import type { z } from 'zod'
 import type {
   BlankSegmentSchema,
   ChoiceSchema,
+  CustomDifficultySchema,
   DifficultySchema,
   FillInBlankTaskSchema,
   MatchingTaskSchema,
@@ -21,6 +22,7 @@ import type {
 
 export type TaskKind = z.infer<typeof TaskKindSchema>
 export type Difficulty = z.infer<typeof DifficultySchema>
+export type CustomDifficulty = z.infer<typeof CustomDifficultySchema>
 export type Choice = z.infer<typeof ChoiceSchema>
 export type MatchPair = z.infer<typeof MatchPairSchema>
 export type OrderingItem = z.infer<typeof OrderingItemSchema>

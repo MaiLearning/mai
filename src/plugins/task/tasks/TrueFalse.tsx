@@ -19,7 +19,12 @@ export function TrueFalse({ task, mode, status }: TaskComponentProps<TrueFalseTa
 
   return (
     <Field>
-      <EditableText editing={editing} value={task.prompt} className="prompt" />
+      <EditableText
+        editing={editing}
+        value={task.prompt}
+        className="prompt"
+        placeholder="Введите утверждение…"
+      />
       <SectionLabel>Выберите верное утверждение</SectionLabel>
       <Pair>
         <Block

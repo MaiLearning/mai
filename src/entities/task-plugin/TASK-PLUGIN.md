@@ -15,8 +15,13 @@
   `FillInBlank`, `OpenAnswer`), discriminated union по полю `kind`.
   Плагин (`src/plugins/task/core/types.ts`) реэкспортирует типы отсюда —
   дублирования контракта нет.
-- **Контент ресурса** — `TaskContent { tasks: AnyTask[] }`. Backend держит
-  его как opaque JSON; дефолт `{}` разворачивается в `{ tasks: [] }`
+- **Сложности**: `task.difficulty` — id (строка). Пресеты `easy`/`medium`/
+  `hard` фиксированы на стороне плагина; свои сложности автор задаёт в
+  `TaskContent.difficulties: CustomDifficulty[]` (`{id, label, color}`).
+  Ссылка на удалённую сложность не ломает парсинг — viewer рисует
+  fallback-бейдж.
+- **Контент ресурса** — `TaskContent { tasks: AnyTask[], difficulties: CustomDifficulty[] }`. Backend держит
+  его как opaque JSON; дефолт `{}` разворачивается в `{ tasks: [], difficulties: [] }`
   через `.default([])`.
 - **Транспорт** — Tauri IPC (`get/save/clear/delete_task_content`),
   fake-ветки нет (контент осмыслен только с backend'ом).

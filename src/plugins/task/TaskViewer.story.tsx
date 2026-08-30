@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import styled from 'styled-components'
+import { TaskWorkspace } from './components/TaskWorkspace'
 import { TaskRenderer } from './core/registry'
 import type { AnyTask, CheckStatus, TaskKind, ViewMode } from './core/types'
 import { sampleTasks } from './dev/sample-data'
-import { TaskViewerTasks } from './viewer'
 
 /** Рамка с фиксированным размером: вьюер рассчитан на заполнение контейнера. */
 const Frame = styled.div`
@@ -47,10 +47,13 @@ const KINDS: TaskKind[] = [
 
 const meta = {
   title: 'Plugins/Task/TaskViewer',
-  component: TaskViewerTasks,
+  component: TaskWorkspace,
   tags: ['autodocs'],
   args: {
     tasks: sampleTasks,
+    difficulties: [],
+    setTasks: () => {},
+    setDifficulties: () => {},
     initialMode: 'solve' as const,
     saveState: 'idle' as const,
     onSave: () => {},
@@ -60,13 +63,14 @@ const meta = {
     docs: {
       description: {
         component:
-          'Просмотр задач: степ-полоса навигации, метаданные (тип/сложность), режимы ' +
-          '«Прохождение/Редактор», футер с навигацией и проверкой. Проверка ответов — ' +
-          'визуальная заглушка; реальные 7 типов задач отрисовываются через TaskRenderer.',
+          'Просмотр задач: степ-полоса навигации с шагом «создать задачу», метаданные ' +
+          '(тип/сложность с редактором своих сложностей), режимы «Прохождение/Редактор», ' +
+          'футер с навигацией и проверкой. Проверка ответов — визуальная заглушка; ' +
+          'реальные 7 типов задач отрисовываются через TaskRenderer.',
       },
     },
   },
-} satisfies Meta<typeof TaskViewerTasks>
+} satisfies Meta<typeof TaskWorkspace>
 
 export default meta
 type Story = StoryObj<typeof meta>
@@ -75,7 +79,7 @@ type Story = StoryObj<typeof meta>
 export const Solve: Story = {
   render: (args) => (
     <Frame>
-      <TaskViewerTasks {...args} />
+      <TaskWorkspace {...args} />
     </Frame>
   ),
 }

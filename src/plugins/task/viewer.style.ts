@@ -1,4 +1,5 @@
 import styled, { css } from 'styled-components'
+import { readableOn } from '@/features/course-modal'
 import type { CheckStatus } from './core/types'
 
 // ─────────────────────────  Корневая зона  ─────────────────────────
@@ -124,6 +125,18 @@ export const MetaRow = styled.div`
   flex-wrap: wrap;
 `
 
+/** Спец-квадратик в конце степ-полосы: создание новой задачи. */
+export const StepAdd = styled(Step).attrs({ $state: 'idle' as const })`
+  border-style: dashed;
+  background: transparent;
+
+  &:hover {
+    border-color: ${({ theme }) => theme.colors.primary};
+    color: ${({ theme }) => theme.colors.primary};
+    background: ${({ theme }) => theme.colors.primarySurface};
+  }
+`
+
 export const MetaLeft = styled.div`
   display: flex;
   align-items: center;
@@ -138,9 +151,13 @@ export const TaskNo = styled.span`
   color: ${({ theme }) => theme.colors.text};
 `
 
-export const Badge = styled.span<{ $tone?: 'default' | 'easy' | 'medium' | 'hard' }>`
+export const Badge = styled.span<{
+  $tone?: 'default' | 'easy' | 'medium' | 'hard'
+  $color?: string
+}>`
   display: inline-flex;
   align-items: center;
+  gap: 5px;
   height: 26px;
   padding: 0 12px;
   border-radius: ${({ theme }) => theme.radii.pill};
@@ -169,6 +186,15 @@ export const Badge = styled.span<{ $tone?: 'default' | 'easy' | 'medium' | 'hard
     css`
       color: ${theme.colors.danger};
       background: ${theme.colors.dangerSurface};
+      border-color: transparent;
+    `}
+
+  /* Своя сложность: цвет автора, текст — контрастный. Перекрывает тон. */
+  ${({ $color }) =>
+    $color &&
+    css`
+      color: ${readableOn($color)};
+      background: ${$color};
       border-color: transparent;
     `}
 `

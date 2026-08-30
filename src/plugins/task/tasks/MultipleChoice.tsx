@@ -34,7 +34,12 @@ export function MultipleChoice({ task, mode, status }: TaskComponentProps<Multip
 
   return (
     <Field>
-      <EditableText editing={editing} value={task.prompt} className="prompt" />
+      <EditableText
+        editing={editing}
+        value={task.prompt}
+        className="prompt"
+        placeholder="Введите условие задачи…"
+      />
       <SectionLabel>Выберите все подходящие варианты</SectionLabel>
       <OptionList>
         {task.choices.map((choice) => {
@@ -61,7 +66,11 @@ export function MultipleChoice({ task, mode, status }: TaskComponentProps<Multip
               >
                 {(state === 'correct' || (!editing && isSelected)) && <Check size={13} />}
               </Marker>
-              <EditableText editing={editing} value={choice.text} />
+              <EditableText
+                editing={editing}
+                value={choice.text}
+                placeholder="Введите вариант ответа…"
+              />
               {editing && (
                 <>
                   <CorrectBadge $on={choice.correct} type="button">

@@ -1,9 +1,10 @@
-import type { AnyTask, Difficulty, TaskKind } from '@/entities/task-plugin'
+import type { AnyTask, TaskKind } from '@/entities/task-plugin'
 
 export type {
   AnyTask,
   BlankSegment,
   Choice,
+  CustomDifficulty,
   Difficulty,
   FillInBlankTask,
   MatchingTask,
@@ -40,10 +41,4 @@ export const TASK_KIND_LABEL: Record<TaskKind, string> = {
   Ordering: 'Порядок',
   FillInBlank: 'Пропуски',
   OpenAnswer: 'Свободный ответ',
-}
-
-export const DIFFICULTY_LABEL: Record<Difficulty, string> = {
-  easy: 'Лёгкая',
-  medium: 'Средняя',
-  hard: 'Сложная',
 }

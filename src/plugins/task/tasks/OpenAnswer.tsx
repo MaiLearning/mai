@@ -11,14 +11,24 @@ export function OpenAnswer({ task, mode, status }: TaskComponentProps<OpenAnswer
 
   return (
     <Field>
-      <EditableText editing={editing} value={task.prompt} className="prompt" />
+      <EditableText
+        editing={editing}
+        value={task.prompt}
+        className="prompt"
+        placeholder="Введите условие задачи…"
+      />
       <SectionLabel>Развёрнутый ответ</SectionLabel>
       {editing ? (
         <SampleCard>
           <Lightbulb size={20} />
           <SampleBody>
             <span className="label">Эталонный ответ (для автора)</span>
-            <EditableText editing value={task.sampleAnswer} className="text" />
+            <EditableText
+              editing
+              value={task.sampleAnswer}
+              className="text"
+              placeholder="Введите эталонный ответ…"
+            />
           </SampleBody>
         </SampleCard>
       ) : (

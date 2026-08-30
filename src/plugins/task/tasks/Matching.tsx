@@ -16,18 +16,23 @@ export function Matching({ task, mode, status }: TaskComponentProps<MatchingTask
 
   return (
     <Field>
-      <EditableText editing={editing} value={task.prompt} className="prompt" />
+      <EditableText
+        editing={editing}
+        value={task.prompt}
+        className="prompt"
+        placeholder="Введите условие задачи…"
+      />
       <SectionLabel>Сопоставьте пары: перетащите определения к терминам</SectionLabel>
       <Rows>
         {task.pairs.map((pair) => (
           <Row key={pair.id}>
             <Cell $variant="term">
-              <EditableText editing={editing} value={pair.left} />
+              <EditableText editing={editing} value={pair.left} placeholder="Термин…" />
             </Cell>
             <Connector>↔</Connector>
             <Cell $variant="def" $state={state}>
               {!editing && <GripVertical className="grip" size={16} />}
-              <EditableText editing={editing} value={pair.right} />
+              <EditableText editing={editing} value={pair.right} placeholder="Определение…" />
             </Cell>
             {editing ? (
               <RemoveButton type="button" aria-label="Удалить пару">

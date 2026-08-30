@@ -18,6 +18,7 @@ export const Editable = styled.div<{ $editing: boolean; $muted?: boolean }>`
   ${({ $editing, theme }) =>
     $editing &&
     css`
+      min-width: 160px;
       cursor: text;
       box-shadow: inset 0 0 0 1px ${theme.colors.border};
 
@@ -25,9 +26,19 @@ export const Editable = styled.div<{ $editing: boolean; $muted?: boolean }>`
         box-shadow: inset 0 0 0 1px ${theme.colors.borderStrong};
       }
 
-      &:focus {
+      /* Гасим глобальный :focus-visible — иначе вокруг собственного
+         внутреннего кольца рисуется второй контур. */
+      &:focus,
+      &:focus-visible {
+        outline: none;
         background: ${theme.colors.body};
         box-shadow: inset 0 0 0 1px ${theme.colors.primary};
+      }
+
+      &:empty::before {
+        content: attr(data-placeholder);
+        color: ${theme.colors.textMuted};
+        pointer-events: none;
       }
     `}
 `
