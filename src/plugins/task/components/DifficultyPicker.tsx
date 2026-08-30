@@ -1,3 +1,4 @@
+import { debug, info } from '@tauri-apps/plugin-log'
 import { ChevronDown } from 'lucide-react'
 import { useState } from 'react'
 import type { CustomDifficulty } from '../core/types'
@@ -40,10 +41,19 @@ export function DifficultyPicker({
       onChangeDifficulties(
         difficulties.map((d) => (d.id === editing.id ? { ...d, label, color } : d)),
       )
+      debug(`Своя сложность ${editing.id} изменена`)
     } else {
       onChangeDifficulties([...difficulties, { id: crypto.randomUUID(), label, color }])
+      info(`Создана своя сложность «${label}»`)
     }
     close()
+  }
+
+  /** Удаление своей сложности — из меню или из формы правки. */
+  const deleteDifficulty = (id: string) => {
+    const label = difficulties.find((d) => d.id === id)?.label
+    onChangeDifficulties(difficulties.filter((d) => d.id !== id))
+    info(`Своя сложность «${label ?? id}» удалена`)
   }
 
   return (
@@ -73,7 +83,7 @@ export function DifficultyPicker({
           onDelete={
             editing
               ? () => {
-                  onChangeDifficulties(difficulties.filter((d) => d.id !== editing.id))
+                  deleteDifficulty(editing.id)
                   close()
                 }
               : undefined
@@ -88,7 +98,7 @@ export function DifficultyPicker({
             close()
           }}
           onEdit={setEditing}
-          onDelete={(id) => onChangeDifficulties(difficulties.filter((d) => d.id !== id))}
+          onDelete={(id) => deleteDifficulty(id)}
           onCreate={() => setCreating(true)}
         />
       )}

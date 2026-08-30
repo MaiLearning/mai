@@ -1,3 +1,4 @@
+import { info } from '@tauri-apps/plugin-log'
 import { useState } from 'react'
 import type { CustomDifficulty, TaskAnswer, TaskResult } from '@/entities/task-plugin'
 import { TaskRenderer } from '../core/registry'
@@ -67,14 +68,17 @@ export function TaskWorkspace({
 
     const next = { ...current, ...patch } as AnyTask
     const metadataOnly = Object.keys(patch).length === 1 && 'difficulty' in patch
-    if (metadataOnly) setTasks((prev) => prev.map((t) => (t.id === id ? next : t)))
-    else editTask(id, next)
+    if (metadataOnly) {
+      setTasks((prev) => prev.map((t) => (t.id === id ? next : t)))
+      info(`Сложность задачи ${id} изменена`)
+    } else editTask(id, next)
   }
 
   const addTask = (kind: TaskKind) => {
     setTasks((prev) => [...prev, createTask(kind)])
     setIndex(tasks.length)
     setMode('edit')
+    info(`Создана задача: ${kind}`)
   }
 
   /** Проверка по типу задачи; повторная проверка — через «Пройти заново». */

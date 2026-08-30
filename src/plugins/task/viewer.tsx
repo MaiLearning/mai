@@ -1,3 +1,4 @@
+import { info } from '@tauri-apps/plugin-log'
 import { Plus } from 'lucide-react'
 import { useEffect, useRef } from 'react'
 import { Spinner } from '@/app/theme/components/Spinner'
@@ -47,7 +48,13 @@ export function TaskViewer({ resourceId, onReady }: PluginRenderProps) {
       <Viewer>
         <EmptyState>
           <EmptyText>В этом наборе пока нет задач</EmptyText>
-          <GhostButton type="button" onClick={() => setTasks(() => [createTask('SingleChoice')])}>
+          <GhostButton
+            type="button"
+            onClick={() => {
+              setTasks(() => [createTask('SingleChoice')])
+              info('Создана задача: SingleChoice')
+            }}
+          >
             <Plus size={16} /> Добавить задачу
           </GhostButton>
         </EmptyState>

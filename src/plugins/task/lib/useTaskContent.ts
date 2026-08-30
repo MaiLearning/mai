@@ -1,4 +1,4 @@
-import { error as logError } from '@tauri-apps/plugin-log'
+import { info, error as logError } from '@tauri-apps/plugin-log'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type {
   AnyTask,
@@ -47,6 +47,7 @@ export function useTaskContent(resourceId: string) {
         const next = backfillCompleted(data.content)
         contentRef.current = next
         setContent(next)
+        info(`Задачи ресурса ${resourceId} загружены: ${data.content.tasks.length} шт.`)
       })
       .catch((e) => {
         logError(
@@ -95,19 +96,28 @@ export function useTaskContent(resourceId: string) {
 
   /** Проверка: результат + факт прохождения (неважно, верно или нет). */
   const setResult = useCallback(
-    (taskId: string, result: TaskResult) => applyChange((prev) => withResult(prev, taskId, result)),
+    (taskId: string, result: TaskResult) => {
+      applyChange((prev) => withResult(prev, taskId, result))
+      info(`Задача ${taskId} проверена: ${result === 'correct' ? 'верно' : 'есть ошибки'}`)
+    },
     [applyChange],
   )
 
   /** Правка содержания задачи: ответ, результат и факт прохождения сбрасываются. */
   const editTask = useCallback(
-    (taskId: string, next: AnyTask) => applyChange((prev) => withTaskEdited(prev, taskId, next)),
+    (taskId: string, next: AnyTask) => {
+      applyChange((prev) => withTaskEdited(prev, taskId, next))
+      info(`Содержание задачи ${taskId} изменено, прогресс прохождения сброшен`)
+    },
     [applyChange],
   )
 
   /** «Пройти заново»: ответ и результат стираются; факт прохождения остаётся. */
   const restartTask = useCallback(
-    (taskId: string) => applyChange((prev) => withRestart(prev, taskId)),
+    (taskId: string) => {
+      applyChange((prev) => withRestart(prev, taskId))
+      info(`Задача ${taskId} запущена заново, ответ и результат сброшены`)
+    },
     [applyChange],
   )
 
