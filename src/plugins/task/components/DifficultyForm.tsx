@@ -1,17 +1,15 @@
-import { Check, Pipette } from 'lucide-react'
+import { Check, Pipette, Trash2 } from 'lucide-react'
 import { useState } from 'react'
 import { ColorPicker, readableOn, SWATCHES } from '@/features/course-modal'
 import type { CustomDifficulty } from '../core/types'
 import {
-  Actions,
-  CancelButton,
   CustomButton,
   FormFooter,
+  FormIcon,
   FormInput,
   FormRoot,
   PickerAnchor,
   Popup,
-  SaveButton,
   Swatch,
   SwatchGrid,
 } from './DifficultyForm.style'
@@ -21,13 +19,17 @@ interface DifficultyFormProps {
   initial?: CustomDifficulty
   onSubmit: (label: string, color: string) => void
   onCancel: () => void
+  /** Удаление редактируемой сложности; без него мусорка работает как отмена. */
+  onDelete?: () => void
 }
 
 /** Форма своей сложности: название + цвет (палитра или ColorPicker). */
-export function DifficultyForm({ initial, onSubmit, onCancel }: DifficultyFormProps) {
+export function DifficultyForm({ initial, onSubmit, onCancel, onDelete }: DifficultyFormProps) {
   const [label, setLabel] = useState(initial?.label ?? '')
   const [color, setColor] = useState(initial?.color ?? SWATCHES[0])
   const [pickerOpen, setPickerOpen] = useState(false)
+
+  const canSubmit = label.trim().length > 0
 
   return (
     <FormRoot>
@@ -71,19 +73,22 @@ export function DifficultyForm({ initial, onSubmit, onCancel }: DifficultyFormPr
             </Popup>
           )}
         </PickerAnchor>
-        <Actions>
-          <CancelButton type="button" onClick={onCancel}>
-            Отмена
-          </CancelButton>
-          <SaveButton
-            type="button"
-            disabled={label.trim().length === 0}
-            onClick={() => onSubmit(label.trim(), color)}
-          >
-            <Check size={13} aria-hidden="true" />
-            {initial ? 'Сохранить' : 'Создать'}
-          </SaveButton>
-        </Actions>
+        <FormIcon
+          type="button"
+          $danger
+          aria-label={initial ? 'Удалить сложность' : 'Отменить'}
+          onClick={initial && onDelete ? onDelete : onCancel}
+        >
+          <Trash2 size={15} />
+        </FormIcon>
+        <FormIcon
+          type="button"
+          disabled={!canSubmit}
+          aria-label={initial ? 'Сохранить' : 'Создать'}
+          onClick={() => onSubmit(label.trim(), color)}
+        >
+          <Check size={15} />
+        </FormIcon>
       </FormFooter>
     </FormRoot>
   )

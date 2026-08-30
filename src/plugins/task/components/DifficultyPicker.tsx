@@ -66,7 +66,19 @@ export function DifficultyPicker({
       }
     >
       {creating || editing ? (
-        <DifficultyForm initial={editing ?? undefined} onSubmit={submitForm} onCancel={close} />
+        <DifficultyForm
+          initial={editing ?? undefined}
+          onSubmit={submitForm}
+          onCancel={close}
+          onDelete={
+            editing
+              ? () => {
+                  onChangeDifficulties(difficulties.filter((d) => d.id !== editing.id))
+                  close()
+                }
+              : undefined
+          }
+        />
       ) : (
         <DifficultyMenu
           value={value}

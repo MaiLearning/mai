@@ -87,7 +87,12 @@ export function TaskWorkspace({
 
       <Body className="app-scroll">
         <BodyInner>
-          <TaskRenderer task={task} mode={mode} status={editing ? 'idle' : status} />
+          <TaskRenderer
+            task={task}
+            mode={mode}
+            status={editing ? 'idle' : status}
+            onChange={(next) => updateTask(task.id, next)}
+          />
         </BodyInner>
       </Body>
 

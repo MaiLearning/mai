@@ -31,6 +31,8 @@ export interface TaskComponentProps<T extends AnyTask = AnyTask> {
   task: T
   mode: ViewMode
   status: CheckStatus
+  /** Правка задачи в режиме edit: компонент отдаёт обновлённую задачу целиком. */
+  onChange?: (next: T) => void
 }
 
 export const TASK_KIND_LABEL: Record<TaskKind, string> = {

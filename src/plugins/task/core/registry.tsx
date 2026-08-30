@@ -4,7 +4,7 @@ import { Matching } from '../tasks/Matching'
 import { MultipleChoice } from '../tasks/MultipleChoice'
 import { OpenAnswer } from '../tasks/OpenAnswer'
 import { Ordering } from '../tasks/Ordering'
-import { SingleChoice } from '../tasks/SingleChoice'
+import { SingleChoice } from '../tasks/single-choice/SingleChoice'
 import { TrueFalse } from '../tasks/TrueFalse'
 import type { AnyTask, TaskComponentProps, TaskKind } from './types'
 

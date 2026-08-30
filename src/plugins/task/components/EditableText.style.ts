@@ -5,10 +5,16 @@ import styled, { css } from 'styled-components'
  * В режиме solve — обычный текст. В режиме edit — при наведении подсвечивается
  * рамкой и превращается в contentEditable-подобное поле.
  */
-export const Editable = styled.div<{ $editing: boolean; $muted?: boolean }>`
+export const Editable = styled.div<{
+  $editing: boolean
+  $muted?: boolean
+  $grow: boolean
+  $offset: boolean
+}>`
   border-radius: ${({ theme }) => theme.radii.sm};
   padding: ${({ $editing }) => ($editing ? '6px 10px' : '0')};
-  margin: ${({ $editing }) => ($editing ? '-6px -10px' : '0')};
+  /* Компенсация padding: текст не сдвигается между режимами; в строках отключается */
+  margin: ${({ $editing, $offset }) => ($editing && $offset ? '-6px -10px' : '0')};
   color: ${({ theme, $muted }) => ($muted ? theme.colors.textMuted : 'inherit')};
   transition:
     background ${({ theme }) => theme.transitions.fast},
@@ -40,5 +46,15 @@ export const Editable = styled.div<{ $editing: boolean; $muted?: boolean }>`
         color: ${theme.colors.textMuted};
         pointer-events: none;
       }
+    `}
+
+  /* Авто-рост на всю ширину: длинный текст виден целиком при редактировании */
+  ${({ $editing, $grow }) =>
+    $editing &&
+    $grow &&
+    css`
+      width: 100%;
+      white-space: pre-wrap;
+      overflow-wrap: break-word;
     `}
 `

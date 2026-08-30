@@ -5,7 +5,8 @@ export const FormRoot = styled.div`
   display: flex;
   flex-direction: column;
   gap: 10px;
-  width: 252px;
+  width: 100%;
+  min-width: 240px;
   padding: 6px;
 `
 
@@ -61,6 +62,8 @@ export const Swatch = styled.button<{ $color: string; $selected: boolean }>`
 export const PickerAnchor = styled.div`
   position: relative;
   display: inline-flex;
+  flex: 1;
+  min-width: 0;
 `
 
 export const CustomButton = styled.button<{ $open: boolean }>`
@@ -103,45 +106,27 @@ export const Popup = styled.div`
 export const FormFooter = styled.div`
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-`
-
-export const Actions = styled.div`
-  display: flex;
   gap: 6px;
 `
 
-export const CancelButton = styled.button`
+/** Иконки-действия формы справа: отменить/удалить и сохранить/создать. */
+export const FormIcon = styled.button<{ $danger?: boolean }>`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
   height: 30px;
-  padding: 0 10px;
+  flex-shrink: 0;
   border: none;
   border-radius: ${({ theme }) => theme.radii.sm};
   background: transparent;
   color: ${({ theme }) => theme.colors.textMuted};
-  font-size: 0.75rem;
-  font-weight: 600;
-
-  &:hover {
-    color: ${({ theme }) => theme.colors.text};
-  }
-`
-
-export const SaveButton = styled.button`
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  height: 30px;
-  padding: 0 12px;
-  border: none;
-  border-radius: ${({ theme }) => theme.radii.sm};
-  background: ${({ theme }) => theme.colors.primary};
-  color: ${({ theme }) => theme.colors.textOnPrimary};
-  font-size: 0.75rem;
-  font-weight: 600;
+  transition: all ${({ theme }) => theme.transitions.fast};
 
   &:hover:not(:disabled) {
-    background: ${({ theme }) => theme.colors.primaryHover};
+    color: ${({ theme, $danger }) => ($danger ? theme.colors.danger : theme.colors.primary)};
+    background: ${({ theme, $danger }) =>
+      $danger ? theme.colors.dangerSurface : theme.colors.primarySurface};
   }
 
   &:disabled {
