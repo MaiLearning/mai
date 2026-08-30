@@ -11,7 +11,7 @@ export default defineConfig({
   },
   test: {
     environment: 'node',
-    include: ['src/entities/**/*.test.ts', 'src/features/**/*.test.ts'],
+    include: ['src/entities/**/*.test.ts', 'src/features/**/*.test.ts', 'src/plugins/**/*.test.ts'],
     restoreMocks: true,
     clearMocks: true,
   },

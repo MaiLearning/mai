@@ -1,8 +1,8 @@
-import type { Dispatch, SetStateAction } from 'react'
 import { useState } from 'react'
-import type { CustomDifficulty } from '@/entities/task-plugin'
+import type { CustomDifficulty, TaskAnswer, TaskResult } from '@/entities/task-plugin'
 import { TaskRenderer } from '../core/registry'
-import type { AnyTask, CheckStatus, TaskKind, ViewMode } from '../core/types'
+import type { AnyTask, TaskKind, ViewMode } from '../core/types'
+import { checkTask } from '../lib/check'
 import { createTask } from '../lib/task-factory'
 import type { TaskSaveState } from '../lib/useTaskContent'
 import { Body, BodyInner, Viewer } from '../viewer.style'
@@ -12,39 +12,44 @@ import { WorkspaceHeader } from './WorkspaceHeader'
 interface TaskWorkspaceProps {
   tasks: AnyTask[]
   difficulties: CustomDifficulty[]
-  setTasks: Dispatch<SetStateAction<AnyTask[]>>
-  setDifficulties: Dispatch<SetStateAction<CustomDifficulty[]>>
+  answers: Record<string, TaskAnswer>
+  results: Record<string, TaskResult>
+  setTasks: (updater: (prev: AnyTask[]) => AnyTask[]) => void
+  setDifficulties: (updater: (prev: CustomDifficulty[]) => CustomDifficulty[]) => void
+  setAnswer: (taskId: string, answer: TaskAnswer) => void
+  setResult: (taskId: string, result: TaskResult) => void
   initialMode: ViewMode
   saveState: TaskSaveState
-  onSave: () => void
 }
 
 /**
  * Оболочка работы с набором задач: степ-полоса (навигация + создание),
  * метаданные с редактором сложности, режимы «Прохождение/Редактор» и футер.
- * Проверка ответов — визуальная заглушка, механизм проверки вне зоны дизайна.
+ * Ответы и результаты живут в контенте ресурса, автосохранение — в useTaskContent.
  */
 export function TaskWorkspace({
   tasks,
   difficulties,
+  answers,
+  results,
   setTasks,
   setDifficulties,
+  setAnswer,
+  setResult,
   initialMode,
   saveState,
-  onSave,
 }: TaskWorkspaceProps) {
   const [index, setIndex] = useState(0)
   const [mode, setMode] = useState<ViewMode>(initialMode)
-  const [statuses, setStatuses] = useState<Record<string, CheckStatus>>({})
 
   const task = tasks[index]
-  const status = statuses[task.id] ?? 'idle'
+  const status = results[task.id] ?? 'idle'
   const editing = mode === 'edit'
 
   const stepState = (i: number): 'idle' | 'current' | 'correct' | 'incorrect' => {
     if (i === index) return 'current'
 
-    const s = statuses[tasks[i].id]
+    const s = results[tasks[i].id]
     if (s === 'correct') return 'correct'
     if (s === 'incorrect') return 'incorrect'
 
@@ -61,8 +66,9 @@ export function TaskWorkspace({
     setMode('edit')
   }
 
+  /** Проверка по типу задачи; ответ можно менять и проверять заново. */
   const check = () => {
-    setStatuses((prev) => ({ ...prev, [task.id]: 'correct' }))
+    setResult(task.id, checkTask(task, answers[task.id]))
   }
 
   const go = (dir: -1 | 1) => {
@@ -81,7 +87,7 @@ export function TaskWorkspace({
         onSelect={setIndex}
         onSetMode={setMode}
         onUpdateTask={updateTask}
-        onSetDifficulties={setDifficulties}
+        onSetDifficulties={(next) => setDifficulties(() => next)}
         onCreate={addTask}
       />
 
@@ -92,6 +98,8 @@ export function TaskWorkspace({
             mode={mode}
             status={editing ? 'idle' : status}
             onChange={(next) => updateTask(task.id, next)}
+            answer={answers[task.id]}
+            onAnswer={(answer) => setAnswer(task.id, answer)}
           />
         </BodyInner>
       </Body>
@@ -105,7 +113,6 @@ export function TaskWorkspace({
         onPrev={() => go(-1)}
         onNext={() => go(1)}
         onCheck={check}
-        onSave={onSave}
       />
     </Viewer>
   )

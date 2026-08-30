@@ -12,8 +12,9 @@ import { EmptyState, EmptyText, GhostButton, SpinnerWrap, Viewer } from './viewe
  * `task-plugin`, пустой набор предлагает создать первую задачу.
  */
 export function TaskViewer({ resourceId, onReady }: PluginRenderProps) {
-  const { loading, tasks, difficulties, setTasks, setDifficulties, saveState, save } =
+  const { loading, content, setTasks, setDifficulties, setAnswer, setResult, saveState } =
     useTaskContent(resourceId)
+  const { tasks, difficulties, answers, results } = content
 
   const onReadyRef = useRef(onReady)
   onReadyRef.current = onReady
@@ -37,7 +38,7 @@ export function TaskViewer({ resourceId, onReady }: PluginRenderProps) {
       <Viewer>
         <EmptyState>
           <EmptyText>В этом наборе пока нет задач</EmptyText>
-          <GhostButton type="button" onClick={() => setTasks([createTask('SingleChoice')])}>
+          <GhostButton type="button" onClick={() => setTasks(() => [createTask('SingleChoice')])}>
             <Plus size={16} /> Добавить задачу
           </GhostButton>
         </EmptyState>
@@ -50,11 +51,14 @@ export function TaskViewer({ resourceId, onReady }: PluginRenderProps) {
       key={resourceId}
       tasks={tasks}
       difficulties={difficulties}
+      answers={answers}
+      results={results}
       setTasks={setTasks}
       setDifficulties={setDifficulties}
+      setAnswer={setAnswer}
+      setResult={setResult}
       initialMode={tasks.length === 1 && tasks[0].prompt === '' ? 'edit' : 'solve'}
       saveState={saveState}
-      onSave={() => void save()}
     />
   )
 }

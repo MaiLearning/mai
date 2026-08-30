@@ -1,7 +1,8 @@
 import { Check, ChevronLeft, ChevronRight, CircleCheck } from 'lucide-react'
 import type { CheckStatus } from '../core/types'
 import type { TaskSaveState } from '../lib/useTaskContent'
-import { Footer, FooterSide, GhostButton, IconButton, PrimaryButton, Result } from '../viewer.style'
+import { Footer, FooterSide, GhostButton, PrimaryButton, Result } from '../viewer.style'
+import { SaveIndicator } from './SaveIndicator'
 
 interface WorkspaceFooterProps {
   index: number
@@ -12,10 +13,9 @@ interface WorkspaceFooterProps {
   onPrev: () => void
   onNext: () => void
   onCheck: () => void
-  onSave: () => void
 }
 
-/** Футер воркспейса: навигация, результат проверки, «Сохранить»/«Проверить». */
+/** Футер воркспейса: навигация, индикатор автосохранения, результат проверки. */
 export function WorkspaceFooter({
   index,
   count,
@@ -25,7 +25,6 @@ export function WorkspaceFooter({
   onPrev,
   onNext,
   onCheck,
-  onSave,
 }: WorkspaceFooterProps) {
   return (
     <Footer>
@@ -33,6 +32,7 @@ export function WorkspaceFooter({
         <GhostButton type="button" disabled={index === 0} onClick={onPrev}>
           <ChevronLeft size={18} /> Назад
         </GhostButton>
+        <SaveIndicator state={saveState} />
       </FooterSide>
 
       <FooterSide>
@@ -42,12 +42,8 @@ export function WorkspaceFooter({
             {status === 'correct' ? 'Верно' : 'Есть ошибки'}
           </Result>
         )}
-        {editing ? (
-          <IconButton $active type="button" disabled={saveState === 'saving'} onClick={onSave}>
-            <Check size={15} /> {saveState === 'saving' ? 'Сохранение…' : 'Сохранить'}
-          </IconButton>
-        ) : (
-          <PrimaryButton type="button" onClick={onCheck} disabled={status !== 'idle'}>
+        {!editing && (
+          <PrimaryButton type="button" onClick={onCheck}>
             <Check size={18} /> Проверить
           </PrimaryButton>
         )}

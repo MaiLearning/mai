@@ -4,19 +4,28 @@ import type {
   ChoiceSchema,
   CustomDifficultySchema,
   DifficultySchema,
+  FillInBlankAnswerSchema,
   FillInBlankTaskSchema,
+  MatchingAnswerSchema,
   MatchingTaskSchema,
   MatchPairSchema,
+  MultipleChoiceAnswerSchema,
   MultipleChoiceTaskSchema,
+  OpenAnswerAnswerSchema,
   OpenAnswerTaskSchema,
+  OrderingAnswerSchema,
   OrderingItemSchema,
   OrderingTaskSchema,
   SaveTaskContentInputSchema,
+  SingleChoiceAnswerSchema,
   SingleChoiceTaskSchema,
+  TaskAnswerSchema,
   TaskContentDataSchema,
   TaskContentSchema,
   TaskKindSchema,
+  TaskResultSchema,
   TaskSchema,
+  TrueFalseAnswerSchema,
   TrueFalseTaskSchema,
 } from './schema'
 
@@ -35,6 +44,17 @@ export type MatchingTask = z.infer<typeof MatchingTaskSchema>
 export type OrderingTask = z.infer<typeof OrderingTaskSchema>
 export type FillInBlankTask = z.infer<typeof FillInBlankTaskSchema>
 export type OpenAnswerTask = z.infer<typeof OpenAnswerTaskSchema>
+
+export type SingleChoiceAnswer = z.infer<typeof SingleChoiceAnswerSchema>
+export type MultipleChoiceAnswer = z.infer<typeof MultipleChoiceAnswerSchema>
+export type TrueFalseAnswer = z.infer<typeof TrueFalseAnswerSchema>
+export type MatchingAnswer = z.infer<typeof MatchingAnswerSchema>
+export type OrderingAnswer = z.infer<typeof OrderingAnswerSchema>
+export type FillInBlankAnswer = z.infer<typeof FillInBlankAnswerSchema>
+export type OpenAnswerAnswer = z.infer<typeof OpenAnswerAnswerSchema>
+
+export type TaskAnswer = z.infer<typeof TaskAnswerSchema>
+export type TaskResult = z.infer<typeof TaskResultSchema>
 
 export type AnyTask = z.infer<typeof TaskSchema>
 export type TaskContent = z.infer<typeof TaskContentSchema>

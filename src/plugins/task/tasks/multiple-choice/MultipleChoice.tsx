@@ -2,8 +2,8 @@ import { Check, Plus, Trash2 } from 'lucide-react'
 import { EditableText } from '../../components/EditableText'
 import type {
   Choice,
-  SingleChoiceAnswer,
-  SingleChoiceTask,
+  MultipleChoiceAnswer,
+  MultipleChoiceTask,
   TaskComponentProps,
 } from '../../core/types'
 import { Field, SectionLabel } from '../shared.style'
@@ -14,18 +14,18 @@ import {
   OptionList,
   OptionRow,
   RemoveButton,
-} from './SingleChoice.style'
+} from './MultipleChoice.style'
 
-export function SingleChoice({
+export function MultipleChoice({
   task,
   mode,
   status,
   onChange,
   answer,
   onAnswer,
-}: TaskComponentProps<SingleChoiceTask, SingleChoiceAnswer>) {
+}: TaskComponentProps<MultipleChoiceTask, MultipleChoiceAnswer>) {
   const editing = mode === 'edit'
-  const selected = answer?.kind === 'SingleChoice' ? answer.choiceId : null
+  const selected = new Set(answer?.kind === 'MultipleChoice' ? answer.choiceIds : [])
 
   const updateChoices = (choices: Choice[]) => onChange?.({ ...task, choices })
 
@@ -38,9 +38,23 @@ export function SingleChoice({
   const removeChoice = (choiceId: string) =>
     updateChoices(task.choices.filter((c) => c.id !== choiceId))
 
-  /** Единственный верный вариант: выбор сбрасывает отметку у остальных. */
+  /** Несколько верных вариантов: отметка не сбрасывает отметки у остальных. */
   const toggleCorrect = (choiceId: string) =>
-    updateChoices(task.choices.map((c) => ({ ...c, correct: c.id === choiceId })))
+    updateChoices(
+      task.choices.map((c) => ({ ...c, correct: c.id === choiceId ? !c.correct : c.correct })),
+    )
+
+  /** Тоггл варианта в наборе выбранных; перепрохождение разрешено. */
+  const toggleSelect = (choiceId: string) => {
+    const next = new Set(selected)
+    if (next.has(choiceId)) {
+      next.delete(choiceId)
+    } else {
+      next.add(choiceId)
+    }
+
+    onAnswer?.({ kind: 'MultipleChoice', choiceIds: [...next] })
+  }
 
   return (
     <Field>
@@ -52,10 +66,10 @@ export function SingleChoice({
         placeholder="Введите условие задачи…"
         onChange={(prompt) => onChange?.({ ...task, prompt })}
       />
-      <SectionLabel>Выберите один вариант</SectionLabel>
+      <SectionLabel>Выберите все подходящие варианты</SectionLabel>
       <OptionList>
         {task.choices.map((choice) => {
-          const isSelected = selected === choice.id
+          const isSelected = selected.has(choice.id)
           const state =
             status !== 'idle' && (choice.correct || isSelected)
               ? choice.correct
@@ -69,10 +83,10 @@ export function SingleChoice({
               $selected={!editing && isSelected}
               $state={editing ? 'idle' : state}
               $editing={editing}
-              onClick={() => !editing && onAnswer?.({ kind: 'SingleChoice', choiceId: choice.id })}
+              onClick={() => !editing && toggleSelect(choice.id)}
             >
               {!editing && (
-                <Marker $shape="circle" $checked={isSelected} $state={state}>
+                <Marker $shape="square" $checked={isSelected} $state={state}>
                   {(state === 'correct' || isSelected) && <Check size={13} />}
                 </Marker>
               )}

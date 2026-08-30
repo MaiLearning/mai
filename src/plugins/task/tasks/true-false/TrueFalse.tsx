@@ -1,13 +1,19 @@
 import { Check, ThumbsDown, ThumbsUp, X } from 'lucide-react'
-import { useState } from 'react'
-import { EditableText } from '../components/EditableText'
-import type { TaskComponentProps, TrueFalseTask } from '../core/types'
-import { CorrectBadge, Field, SectionLabel } from './shared.style'
+import { EditableText } from '../../components/EditableText'
+import type { TaskComponentProps, TrueFalseAnswer, TrueFalseTask } from '../../core/types'
+import { CorrectBadge, Field, SectionLabel } from '../shared.style'
 import { Block, EditRow, Pair } from './TrueFalse.style'
 
-export function TrueFalse({ task, mode, status }: TaskComponentProps<TrueFalseTask>) {
+export function TrueFalse({
+  task,
+  mode,
+  status,
+  onChange,
+  answer,
+  onAnswer,
+}: TaskComponentProps<TrueFalseTask, TrueFalseAnswer>) {
   const editing = mode === 'edit'
-  const [choice, setChoice] = useState<boolean | null>(null)
+  const choice = answer?.kind === 'TrueFalse' ? answer.value : null
 
   const stateFor = (value: boolean): 'idle' | 'correct' | 'incorrect' => {
     if (editing || status === 'idle') return 'idle'
@@ -24,6 +30,7 @@ export function TrueFalse({ task, mode, status }: TaskComponentProps<TrueFalseTa
         value={task.prompt}
         className="prompt"
         placeholder="Введите утверждение…"
+        onChange={(prompt) => onChange?.({ ...task, prompt })}
       />
       <SectionLabel>Выберите верное утверждение</SectionLabel>
       <Pair>
@@ -31,7 +38,7 @@ export function TrueFalse({ task, mode, status }: TaskComponentProps<TrueFalseTa
           type="button"
           $selected={!editing && choice === true}
           $state={stateFor(true)}
-          onClick={() => !editing && status === 'idle' && setChoice(true)}
+          onClick={() => !editing && onAnswer?.({ kind: 'TrueFalse', value: true })}
         >
           <ThumbsUp size={26} />
           Верно
@@ -40,7 +47,7 @@ export function TrueFalse({ task, mode, status }: TaskComponentProps<TrueFalseTa
           type="button"
           $selected={!editing && choice === false}
           $state={stateFor(false)}
-          onClick={() => !editing && status === 'idle' && setChoice(false)}
+          onClick={() => !editing && onAnswer?.({ kind: 'TrueFalse', value: false })}
         >
           <ThumbsDown size={26} />
           Неверно
@@ -49,10 +56,20 @@ export function TrueFalse({ task, mode, status }: TaskComponentProps<TrueFalseTa
       {editing && (
         <EditRow>
           Правильный ответ:
-          <CorrectBadge $on={task.answer} type="button">
+          <CorrectBadge
+            $on={task.answer}
+            type="button"
+            aria-label="Отметить верным"
+            onClick={() => onChange?.({ ...task, answer: true })}
+          >
             <Check size={12} /> Верно
           </CorrectBadge>
-          <CorrectBadge $on={!task.answer} type="button">
+          <CorrectBadge
+            $on={!task.answer}
+            type="button"
+            aria-label="Отметить верным"
+            onClick={() => onChange?.({ ...task, answer: false })}
+          >
             <X size={12} /> Неверно
           </CorrectBadge>
         </EditRow>

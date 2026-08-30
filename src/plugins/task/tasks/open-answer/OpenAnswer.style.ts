@@ -65,4 +65,20 @@ const SampleBody = styled.div`
   }
 `
 
-export { SampleBody, SampleCard, TextArea }
+/** Строка правки подсказки поля ввода в режиме редактирования. */
+const EditRow = styled.div`
+  display: flex;
+  align-items: center;
+  padding: 14px 16px;
+  border-radius: ${({ theme }) => theme.radii.md};
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  background: ${({ theme }) => theme.colors.surface};
+  color: ${({ theme }) => theme.colors.text};
+  transition: all ${({ theme }) => theme.transitions.fast};
+
+  &:hover {
+    border-color: ${({ theme }) => theme.colors.borderStrong};
+  }
+`
+
+export { EditRow, SampleBody, SampleCard, TextArea }

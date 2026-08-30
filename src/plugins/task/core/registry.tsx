@@ -1,18 +1,18 @@
 import type { ComponentType } from 'react'
-import { FillInBlank } from '../tasks/FillInBlank'
-import { Matching } from '../tasks/Matching'
-import { MultipleChoice } from '../tasks/MultipleChoice'
-import { OpenAnswer } from '../tasks/OpenAnswer'
-import { Ordering } from '../tasks/Ordering'
+import { FillInBlank } from '../tasks/fill-in-blank/FillInBlank'
+import { Matching } from '../tasks/matching/Matching'
+import { MultipleChoice } from '../tasks/multiple-choice/MultipleChoice'
+import { OpenAnswer } from '../tasks/open-answer/OpenAnswer'
+import { Ordering } from '../tasks/ordering/Ordering'
 import { SingleChoice } from '../tasks/single-choice/SingleChoice'
-import { TrueFalse } from '../tasks/TrueFalse'
+import { TrueFalse } from '../tasks/true-false/TrueFalse'
 import type { AnyTask, TaskComponentProps, TaskKind } from './types'
 
 /**
  * Внутренний реестр TaskViewer.
  * По типу задачи выбирает нужный компонент для отображения тела.
  */
-const TASK_REGISTRY: Record<TaskKind, ComponentType<TaskComponentProps<any>>> = {
+const TASK_REGISTRY: Record<TaskKind, ComponentType<TaskComponentProps<any, any>>> = {
   SingleChoice,
   MultipleChoice,
   TrueFalse,

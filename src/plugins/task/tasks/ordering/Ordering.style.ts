@@ -1,13 +1,16 @@
 import { GripVertical } from 'lucide-react'
 import styled, { css } from 'styled-components'
 
-const List = styled.div`
+/** Визуальное состояние строки: подсветка результата проверки (solve). */
+export type RowState = 'idle' | 'correct' | 'incorrect'
+
+export const List = styled.div`
   display: flex;
   flex-direction: column;
   gap: 10px;
 `
 
-const Item = styled.div<{ $state?: 'idle' | 'correct' | 'incorrect'; $editing?: boolean }>`
+export const Item = styled.div<{ $state?: RowState; $editing?: boolean }>`
   display: flex;
   align-items: center;
   gap: 14px;
@@ -21,6 +24,12 @@ const Item = styled.div<{ $state?: 'idle' | 'correct' | 'incorrect'; $editing?: 
 
   &:hover {
     border-color: ${({ theme }) => theme.colors.borderStrong};
+  }
+
+  /* Текст тянется на всё свободное место строки */
+  > .item-text {
+    flex: 1;
+    min-width: 0;
   }
 
   ${({ $state, theme }) =>
@@ -38,7 +47,7 @@ const Item = styled.div<{ $state?: 'idle' | 'correct' | 'incorrect'; $editing?: 
     `}
 `
 
-const Index = styled.span`
+export const Index = styled.span`
   flex-shrink: 0;
   display: inline-flex;
   align-items: center;
@@ -53,10 +62,8 @@ const Index = styled.span`
   font-weight: 600;
 `
 
-const Grip = styled(GripVertical)`
-  color: ${({ theme }) => theme.colors.textMuted};
+export const Grip = styled(GripVertical)`
   flex-shrink: 0;
-  margin-left: auto;
+  color: ${({ theme }) => theme.colors.textMuted};
+  cursor: grab;
 `
-
-export { Grip, Index, Item, List }

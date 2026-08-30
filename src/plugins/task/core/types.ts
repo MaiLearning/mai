@@ -1,4 +1,4 @@
-import type { AnyTask, TaskKind } from '@/entities/task-plugin'
+import type { AnyTask, TaskAnswer, TaskKind } from '@/entities/task-plugin'
 
 export type {
   AnyTask,
@@ -6,17 +6,26 @@ export type {
   Choice,
   CustomDifficulty,
   Difficulty,
+  FillInBlankAnswer,
   FillInBlankTask,
+  MatchingAnswer,
   MatchingTask,
   MatchPair,
+  MultipleChoiceAnswer,
   MultipleChoiceTask,
+  OpenAnswerAnswer,
   OpenAnswerTask,
+  OrderingAnswer,
   OrderingItem,
   OrderingTask,
+  SingleChoiceAnswer,
   SingleChoiceTask,
+  TaskAnswer,
   TaskContent,
   TaskContentData,
   TaskKind,
+  TaskResult,
+  TrueFalseAnswer,
   TrueFalseTask,
 } from '@/entities/task-plugin'
 
@@ -27,12 +36,19 @@ export type ViewMode = 'solve' | 'edit'
 export type CheckStatus = 'idle' | 'correct' | 'incorrect'
 
 /** Пропсы, которые получает каждый компонент варианта задачи из реестра. */
-export interface TaskComponentProps<T extends AnyTask = AnyTask> {
+export interface TaskComponentProps<
+  T extends AnyTask = AnyTask,
+  A extends TaskAnswer = TaskAnswer,
+> {
   task: T
   mode: ViewMode
   status: CheckStatus
   /** Правка задачи в режиме edit: компонент отдаёт обновлённую задачу целиком. */
   onChange?: (next: T) => void
+  /** Сохранённый ответ прохождения; undefined — задача ещё не решалась. */
+  answer?: A
+  /** Выбор в режиме прохождения: компонент отдаёт ответ своего типа. */
+  onAnswer?: (answer: A) => void
 }
 
 export const TASK_KIND_LABEL: Record<TaskKind, string> = {

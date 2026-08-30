@@ -26,7 +26,6 @@ export const Editable = styled.div<{
     css`
       min-width: 160px;
       cursor: text;
-      box-shadow: inset 0 0 0 1px ${theme.colors.border};
 
       &:hover {
         box-shadow: inset 0 0 0 1px ${theme.colors.borderStrong};

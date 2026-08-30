@@ -52,11 +52,14 @@ const meta = {
   args: {
     tasks: sampleTasks,
     difficulties: [],
+    answers: {},
+    results: {},
     setTasks: () => {},
     setDifficulties: () => {},
+    setAnswer: () => {},
+    setResult: () => {},
     initialMode: 'solve' as const,
     saveState: 'idle' as const,
-    onSave: () => {},
   },
   parameters: {
     layout: 'centered',
@@ -65,8 +68,8 @@ const meta = {
         component:
           'Просмотр задач: степ-полоса навигации с шагом «создать задачу», метаданные ' +
           '(тип/сложность с редактором своих сложностей), режимы «Прохождение/Редактор», ' +
-          'футер с навигацией и проверкой. Проверка ответов — визуальная заглушка; ' +
-          'реальные 7 типов задач отрисовываются через TaskRenderer.',
+          'футер с навигацией, проверкой и индикатором автосохранения. ' +
+          'Реальные 7 типов задач отрисовываются через TaskRenderer.',
       },
     },
   },

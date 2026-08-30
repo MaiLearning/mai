@@ -20,9 +20,14 @@
   `TaskContent.difficulties: CustomDifficulty[]` (`{id, label, color}`).
   Ссылка на удалённую сложность не ломает парсинг — viewer рисует
   fallback-бейдж.
-- **Контент ресурса** — `TaskContent { tasks: AnyTask[], difficulties: CustomDifficulty[] }`. Backend держит
-  его как opaque JSON; дефолт `{}` разворачивается в `{ tasks: [], difficulties: [] }`
-  через `.default([])`.
+- **Контент ресурса** — `TaskContent { tasks, difficulties, answers, results }`. Backend держит
+  его как opaque JSON; дефолт `{}` разворачивается в
+  `{ tasks: [], difficulties: [], answers: {}, results: {} }` через `.default(...)`.
+- **Ответы и результаты** — прохождение живёт в том же контенте:
+  `answers: Record<id задачи, TaskAnswer>` (форма ответа — union по `kind`
+  задачи: выбор/набор/да-нет/сопоставление/порядок/пропуски/текст) и
+  `results: Record<id задачи, 'correct' | 'incorrect'>`. Отсутствие записи
+  = задача не решалась. Backend не знает про форму ответов (opaque JSON).
 - **Транспорт** — Tauri IPC (`get/save/clear/delete_task_content`),
   fake-ветки нет (контент осмыслен только с backend'ом).
 
@@ -59,16 +64,22 @@ await remove(resourceId)                         // строка удалена
 
 Viewer-использование (прецедент): `TaskViewer` в `src/plugins/task`
 тянет контент напрямую через сервис `fetchTaskContent` в хуке
-`lib/useTaskContent` (как theory: редактируемое состояние — локальное,
-сохранение — явное действие пользователя).
+`lib/useTaskContent` (как theory: редактируемое состояние — локальное).
+Кнопки «Сохранить» нет: любое изменение (задачи, сложности, ответы,
+результаты) ставит отложенное автосохранение всего контента — обобщённый
+хук `lib/useAutosave` (debounce ~800 мс, финальный сейв при уходе,
+индикатор-точка в футере воркспейса). Проверка ответов — `lib/check.ts`
+плагина, по union-форме ответа.
 
 ## Как расширять
 
 - **Новый тип задачи**: добавить схему в `core/schema.ts`
   (объект с `kind: z.literal(...)` поверх `BaseTaskShape`) → включить в
-  `TaskSchema`; тип в `core/model.ts`; реэкспорт в
-  `src/plugins/task/core/types.ts`; компонент тела — в реестр
-  `src/plugins/task/core/registry.tsx`. Backend не меняется (opaque JSON).
+  `TaskSchema`; схему ответа — в `TaskAnswerSchema`; типы в `core/model.ts`;
+  реэкспорт в `src/plugins/task/core/types.ts`; компонент тела — в
+  директорию `src/plugins/task/tasks/<имя-типа>/` и реестр
+  `src/plugins/task/core/registry.tsx`; ветка проверки — `lib/check.ts`
+  плагина. Backend не меняется (opaque JSON).
 - **Новое поле у задач**: дополнить `BaseTaskShape` или конкретную схему;
   Zod-схема — единственное место правки контракта.
 - **Новая операция**: api (`invoke`) → service (Zod-parse входа/выхода) →
