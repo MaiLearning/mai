@@ -1,8 +1,18 @@
-import { Check, ChevronLeft, ChevronRight, CircleCheck, RotateCcw } from 'lucide-react'
+import { Check, ChevronLeft, ChevronRight, CircleAlert, CircleCheck, RotateCcw } from 'lucide-react'
+import { Tooltip } from '@/app/theme/components/Tooltip'
 import type { CheckStatus } from '../core/types'
 import type { SaveState } from '../lib/useSavePipeline'
-import { Footer, FooterSide, GhostButton, PrimaryButton, Result } from '../viewer.style'
 import { SaveIndicator } from './SaveIndicator'
+import {
+  ActionButton,
+  ActionLabel,
+  Footer,
+  FooterEnd,
+  FooterStart,
+  NavButton,
+  Result,
+  ResultLabel,
+} from './WorkspaceFooter.style'
 
 interface WorkspaceFooterProps {
   index: number
@@ -16,7 +26,7 @@ interface WorkspaceFooterProps {
   onRestart: () => void
 }
 
-/** Футер воркспейса: навигация, индикатор автосохранения, результат проверки. */
+/** Футер воркспейса: иконная навигация, статусы слева, действия справа. */
 export function WorkspaceFooter({
   index,
   count,
@@ -28,36 +38,53 @@ export function WorkspaceFooter({
   onCheck,
   onRestart,
 }: WorkspaceFooterProps) {
+  const checked = !editing && status !== 'idle'
+
   return (
     <Footer>
-      <FooterSide>
-        <GhostButton type="button" disabled={index === 0} onClick={onPrev}>
-          <ChevronLeft size={18} /> Назад
-        </GhostButton>
+      <FooterStart>
+        <Tooltip content="Назад">
+          <NavButton type="button" disabled={index === 0} onClick={onPrev} aria-label="Назад">
+            <ChevronLeft size={18} />
+          </NavButton>
+        </Tooltip>
         <SaveIndicator state={saveState} />
-      </FooterSide>
+        {checked && (
+          <Result $status={status}>
+            {status === 'correct' ? <CircleCheck size={17} /> : <CircleAlert size={17} />}
+            <ResultLabel>{status === 'correct' ? 'Верно' : 'Есть ошибки'}</ResultLabel>
+          </Result>
+        )}
+      </FooterStart>
 
-      <FooterSide>
-        {!editing && status !== 'idle' && (
-          <>
-            <Result $status={status}>
-              <CircleCheck size={17} />
-              {status === 'correct' ? 'Верно' : 'Есть ошибки'}
-            </Result>
-            <GhostButton type="button" onClick={onRestart}>
-              <RotateCcw size={16} /> Пройти заново
-            </GhostButton>
-          </>
-        )}
+      <FooterEnd>
         {!editing && status === 'idle' && (
-          <PrimaryButton type="button" onClick={onCheck}>
-            <Check size={18} /> Проверить
-          </PrimaryButton>
+          <Tooltip content="Проверить">
+            <ActionButton type="button" onClick={onCheck}>
+              <Check size={18} />
+              <ActionLabel>Проверить</ActionLabel>
+            </ActionButton>
+          </Tooltip>
         )}
-        <GhostButton type="button" disabled={index === count - 1} onClick={onNext}>
-          Вперёд <ChevronRight size={18} />
-        </GhostButton>
-      </FooterSide>
+        {checked && (
+          <Tooltip content="Пройти заново">
+            <ActionButton type="button" onClick={onRestart}>
+              <RotateCcw size={16} />
+              <ActionLabel>Пройти заново</ActionLabel>
+            </ActionButton>
+          </Tooltip>
+        )}
+        <Tooltip content="Вперёд">
+          <NavButton
+            type="button"
+            disabled={index === count - 1}
+            onClick={onNext}
+            aria-label="Вперёд"
+          >
+            <ChevronRight size={18} />
+          </NavButton>
+        </Tooltip>
+      </FooterEnd>
     </Footer>
   )
 }

@@ -1,5 +1,5 @@
 import type { SaveState } from '../lib/useSavePipeline'
-import { Dot, IndicatorRoot } from './SaveIndicator.style'
+import { Dot, IndicatorRoot, Label } from './SaveIndicator.style'
 
 const LABEL: Record<SaveState, string> = {
   idle: 'Автосохранение включено',
@@ -20,7 +20,7 @@ export function SaveIndicator({ state }: { state: SaveState }) {
   return (
     <IndicatorRoot>
       <Dot $tone={TONE[state]} />
-      {LABEL[state]}
+      <Label>{LABEL[state]}</Label>
     </IndicatorRoot>
   )
 }

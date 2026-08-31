@@ -1,11 +1,11 @@
 import styled, { css } from 'styled-components'
 import { readableOn } from '@/features/course-modal'
-import type { CheckStatus } from './core/types'
 
 // ─────────────────────────  Корневая зона  ─────────────────────────
 
-/** Корень вьюера задач — занимает всё доступное пространство. */
+/** Корень вьюера задач — занимает всё доступное пространство; источник container query для футера. */
 export const Viewer = styled.section`
+  container: task-viewer / inline-size;
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -38,7 +38,11 @@ export const EmptyText = styled.p`
   color: ${({ theme }) => theme.colors.textMuted};
 `
 
-export const Body = styled.div`
+/**
+ * Скролл-зона задач. `data-lenis-prevent` — ReactLenis root перехватывает wheel
+ * на window, вложенный скролл должен крутиться нативно.
+ */
+export const Body = styled.div.attrs({ className: 'app-scroll', 'data-lenis-prevent': 'true' })`
   flex: 1;
   min-height: 0;
   overflow-y: auto;
@@ -233,92 +237,8 @@ export const ModeButton = styled.button<{ $active: boolean }>`
   }
 `
 
-// ─────────────────────────  Footer  ─────────────────────────
-
-export const Footer = styled.footer`
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 18px 32px;
-  border-top: 1px solid ${({ theme }) => theme.colors.border};
-  background: ${({ theme }) => theme.colors.surface};
-`
-
-export const FooterSide = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 10px;
-`
-
-export const Result = styled.span<{ $status: CheckStatus }>`
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  font-size: 0.9375rem;
-  font-weight: 600;
-  color: ${({ theme, $status }) =>
-    $status === 'correct'
-      ? theme.colors.success
-      : $status === 'incorrect'
-        ? theme.colors.danger
-        : theme.colors.textMuted};
-`
-
-export const IconButton = styled.button<{ $active?: boolean }>`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  height: 36px;
-  min-width: 36px;
-  padding: 0 10px;
-  border: 1px solid
-    ${({ theme, $active }) => ($active ? theme.colors.primary : theme.colors.border)};
-  border-radius: ${({ theme }) => theme.radii.md};
-  background: ${({ theme, $active }) => ($active ? theme.colors.primarySurface : 'transparent')};
-  color: ${({ theme, $active }) => ($active ? theme.colors.primary : theme.colors.textMuted)};
-  font-size: 0.8125rem;
-  font-weight: 600;
-  transition: all ${({ theme }) => theme.transitions.fast};
-
-  &:hover {
-    color: ${({ theme }) => theme.colors.text};
-    border-color: ${({ theme }) => theme.colors.borderStrong};
-  }
-`
-
-export const PrimaryButton = styled.button`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  height: 44px;
-  padding: 0 22px;
-  border: none;
-  border-radius: ${({ theme }) => theme.radii.md};
-  background: ${({ theme }) => theme.colors.primary};
-  color: ${({ theme }) => theme.colors.textOnPrimary};
-  font-size: 0.9375rem;
-  font-weight: 600;
-  transition:
-    background ${({ theme }) => theme.transitions.fast},
-    transform ${({ theme }) => theme.transitions.fast};
-
-  &:hover:not(:disabled) {
-    background: ${({ theme }) => theme.colors.primaryHover};
-  }
-
-  &:active:not(:disabled) {
-    transform: translateY(1px);
-  }
-
-  &:disabled {
-    opacity: 0.45;
-    cursor: not-allowed;
-  }
-`
+// ─────────────────────────  Кнопки  ─────────────────────────
+// Стили футера — в components/WorkspaceFooter.style.ts.
 
 export const GhostButton = styled.button`
   display: inline-flex;

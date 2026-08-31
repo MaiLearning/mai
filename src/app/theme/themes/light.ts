@@ -28,6 +28,8 @@ export const lightTheme: AppTheme = {
     body: '#f6f6fb',
     surface: '#ffffff',
     surfaceElevated: '#ffffff',
+    btn: '#f1f4f7',
+    btnHover: '#e8edf2',
     border: '#e7e6f0',
     borderStrong: '#d0cfe0',
     text: '#171528',

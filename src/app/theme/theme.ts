@@ -15,6 +15,8 @@ export interface AppTheme {
     body: string
     surface: string
     surfaceElevated: string
+    btn: string
+    btnHover: string
     border: string
     borderStrong: string
     text: string

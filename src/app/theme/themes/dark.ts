@@ -32,6 +32,8 @@ export const darkTheme: AppTheme = {
     body: '#111118',
     surface: '#191922',
     surfaceElevated: '#232330',
+    btn: '#1b2430',
+    btnHover: '#242f3e',
     border: '#373744',
     borderStrong: '#505060',
     text: '#f2f2f8',

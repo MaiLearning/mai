@@ -72,7 +72,7 @@ export function TaskWorkspace({
     // Clamp-effect держит индекс в границах; guard — крайняя защита от рассинхрона.
     return (
       <Viewer aria-label="Просмотр задач">
-        <Body className="app-scroll">
+        <Body>
           <BodyInner />
         </Body>
       </Viewer>

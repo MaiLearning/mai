@@ -4,10 +4,17 @@ import styled from 'styled-components'
 export const IndicatorRoot = styled.div`
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  font-size: 0.75rem;
-  font-weight: 500;
+  gap: 9px;
+  font-size: 0.8125rem;
+  font-weight: 400;
   color: ${({ theme }) => theme.colors.textMuted};
+`
+
+/** Подпись состояния: на узком вьюере скрывается, остаётся только точка. */
+export const Label = styled.span`
+  @container task-viewer (max-width: 479px) {
+    display: none;
+  }
 `
 
 export const Dot = styled.span<{ $tone: 'muted' | 'primary' | 'success' | 'danger' }>`
