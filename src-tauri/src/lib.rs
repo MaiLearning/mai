@@ -92,10 +92,16 @@ pub fn run() {
             plugins::theory::client::commands::save_theory_content,
             plugins::theory::client::commands::clear_theory_content,
             plugins::theory::client::commands::delete_theory_content,
-            plugins::task::client::commands::get_task_content,
-            plugins::task::client::commands::save_task_content,
-            plugins::task::client::commands::clear_task_content,
-            plugins::task::client::commands::delete_task_content,
+            plugins::task::client::commands::task_snapshot,
+            plugins::task::client::commands::create_task,
+            plugins::task::client::commands::update_task_content,
+            plugins::task::client::commands::update_task_difficulty,
+            plugins::task::client::commands::delete_task,
+            plugins::task::client::commands::set_task_difficulties,
+            plugins::task::client::commands::submit_task_answer,
+            plugins::task::client::commands::set_task_result,
+            plugins::task::client::commands::restart_task,
+            plugins::task::client::commands::list_task_attempts,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
