@@ -2,10 +2,13 @@ import type { z } from 'zod'
 import type {
   BlankSegmentSchema,
   ChoiceSchema,
+  CreateTaskInputSchema,
   CustomDifficultySchema,
+  DeleteTaskInputSchema,
   DifficultySchema,
   FillInBlankAnswerSchema,
   FillInBlankTaskSchema,
+  ListTaskAttemptsInputSchema,
   MatchingAnswerSchema,
   MatchingTaskSchema,
   MatchPairSchema,
@@ -16,17 +19,23 @@ import type {
   OrderingAnswerSchema,
   OrderingItemSchema,
   OrderingTaskSchema,
-  SaveTaskContentInputSchema,
+  RestartTaskInputSchema,
+  SetTaskDifficultiesInputSchema,
+  SetTaskResultInputSchema,
   SingleChoiceAnswerSchema,
   SingleChoiceTaskSchema,
+  SubmitTaskAnswerInputSchema,
   TaskAnswerSchema,
-  TaskContentDataSchema,
+  TaskAttemptSchema,
   TaskContentSchema,
   TaskKindSchema,
   TaskResultSchema,
   TaskSchema,
+  TaskSnapshotDataSchema,
   TrueFalseAnswerSchema,
   TrueFalseTaskSchema,
+  UpdateTaskContentInputSchema,
+  UpdateTaskDifficultyInputSchema,
 } from './schema'
 
 export type TaskKind = z.infer<typeof TaskKindSchema>
@@ -58,5 +67,15 @@ export type TaskResult = z.infer<typeof TaskResultSchema>
 
 export type AnyTask = z.infer<typeof TaskSchema>
 export type TaskContent = z.infer<typeof TaskContentSchema>
-export type TaskContentData = z.infer<typeof TaskContentDataSchema>
-export type SaveTaskContentInput = z.infer<typeof SaveTaskContentInputSchema>
+export type TaskSnapshotData = z.infer<typeof TaskSnapshotDataSchema>
+export type TaskAttempt = z.infer<typeof TaskAttemptSchema>
+
+export type CreateTaskInput = z.infer<typeof CreateTaskInputSchema>
+export type UpdateTaskContentInput = z.infer<typeof UpdateTaskContentInputSchema>
+export type UpdateTaskDifficultyInput = z.infer<typeof UpdateTaskDifficultyInputSchema>
+export type DeleteTaskInput = z.infer<typeof DeleteTaskInputSchema>
+export type SetTaskDifficultiesInput = z.infer<typeof SetTaskDifficultiesInputSchema>
+export type SubmitTaskAnswerInput = z.infer<typeof SubmitTaskAnswerInputSchema>
+export type SetTaskResultInput = z.infer<typeof SetTaskResultInputSchema>
+export type RestartTaskInput = z.infer<typeof RestartTaskInputSchema>
+export type ListTaskAttemptsInput = z.infer<typeof ListTaskAttemptsInputSchema>

@@ -1,3 +1,9 @@
-export { saveTaskContent } from './create'
-export { clearTaskContent, deleteTaskContent } from './delete'
-export { fetchTaskContent } from './fetch'
+export { setTaskDifficulties } from './difficulties'
+export {
+  listTaskAttempts,
+  restartTask,
+  setTaskResult,
+  submitTaskAnswer,
+} from './progress'
+export { fetchTaskSnapshot } from './snapshot'
+export { createTask, deleteTask, updateTaskContent, updateTaskDifficulty } from './tasks'

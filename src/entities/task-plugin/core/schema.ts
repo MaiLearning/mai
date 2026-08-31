@@ -176,14 +176,64 @@ export const TaskContentSchema = z.object({
   completed: z.record(z.string(), z.boolean()).default({}),
 })
 
-export const TaskContentDataSchema = z.object({
+export const TaskSnapshotDataSchema = z.object({
   resourceId: z.string(),
   content: TaskContentSchema,
   createdAt: z.number(),
   updatedAt: z.number(),
 })
 
-export const SaveTaskContentInputSchema = z.object({
+/** Попытка прохождения: ответ, исход и момент проверки (мс). */
+export const TaskAttemptSchema = z.object({
+  id: z.string(),
+  taskId: z.string(),
+  seq: z.number(),
+  answer: TaskAnswerSchema.nullable(),
+  result: TaskResultSchema,
+  checkedAt: z.number(),
+})
+
+// ─────────────────────────  Входы команд  ─────────────────────────
+
+export const CreateTaskInputSchema = z.object({
   resourceId: z.string(),
-  content: TaskContentSchema,
+  kind: TaskKindSchema,
+})
+
+export const UpdateTaskContentInputSchema = z.object({
+  taskId: z.string(),
+  task: TaskSchema,
+})
+
+export const UpdateTaskDifficultyInputSchema = z.object({
+  taskId: z.string(),
+  difficulty: DifficultySchema,
+})
+
+export const DeleteTaskInputSchema = z.object({
+  taskId: z.string(),
+})
+
+export const SetTaskDifficultiesInputSchema = z.object({
+  resourceId: z.string(),
+  difficulties: z.array(CustomDifficultySchema),
+})
+
+export const SubmitTaskAnswerInputSchema = z.object({
+  taskId: z.string(),
+  answer: TaskAnswerSchema,
+})
+
+export const SetTaskResultInputSchema = z.object({
+  taskId: z.string(),
+  answer: TaskAnswerSchema.nullable(),
+  result: TaskResultSchema,
+})
+
+export const RestartTaskInputSchema = z.object({
+  taskId: z.string(),
+})
+
+export const ListTaskAttemptsInputSchema = z.object({
+  taskId: z.string(),
 })

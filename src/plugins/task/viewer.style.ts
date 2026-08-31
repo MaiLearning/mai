@@ -345,3 +345,17 @@ export const GhostButton = styled.button`
     cursor: not-allowed;
   }
 `
+
+/** Кнопка удаления задачи в шапке: компактный ghost-вариант с danger-откликом. */
+export const DeleteTaskButton = styled(GhostButton)`
+  height: 30px;
+  width: 30px;
+  padding: 0;
+  color: ${({ theme }) => theme.colors.textMuted};
+
+  &:hover:not(:disabled) {
+    color: ${({ theme }) => theme.colors.danger};
+    border-color: ${({ theme }) => theme.colors.danger};
+    background: ${({ theme }) => theme.colors.dangerSurface};
+  }
+`

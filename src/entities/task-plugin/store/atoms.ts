@@ -1,4 +1,5 @@
 import { atom } from 'jotai'
-import type { TaskContentData } from '../core/model'
+import type { TaskSnapshotData } from '../core/model'
 
-export const taskContentsAtom = atom<TaskContentData[]>([])
+/** Снапшоты контента задач по id ресурса. */
+export const taskSnapshotsAtom = atom<Record<string, TaskSnapshotData>>({})

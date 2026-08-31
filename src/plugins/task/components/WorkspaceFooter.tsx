@@ -1,6 +1,6 @@
 import { Check, ChevronLeft, ChevronRight, CircleCheck, RotateCcw } from 'lucide-react'
 import type { CheckStatus } from '../core/types'
-import type { TaskSaveState } from '../lib/useTaskContent'
+import type { SaveState } from '../lib/useSavePipeline'
 import { Footer, FooterSide, GhostButton, PrimaryButton, Result } from '../viewer.style'
 import { SaveIndicator } from './SaveIndicator'
 
@@ -9,7 +9,7 @@ interface WorkspaceFooterProps {
   count: number
   editing: boolean
   status: CheckStatus
-  saveState: TaskSaveState
+  saveState: SaveState
   onPrev: () => void
   onNext: () => void
   onCheck: () => void

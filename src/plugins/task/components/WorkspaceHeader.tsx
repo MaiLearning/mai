@@ -1,9 +1,10 @@
-import { Eye, Pencil } from 'lucide-react'
+import { Eye, Pencil, Trash2 } from 'lucide-react'
 import type { AnyTask, CustomDifficulty, TaskKind, ViewMode } from '../core/types'
 import { TASK_KIND_LABEL } from '../core/types'
 import { difficultyColor, difficultyTone, resolveDifficulty } from '../lib/difficulties'
 import {
   Badge,
+  DeleteTaskButton,
   Header,
   KindBadge,
   MetaLeft,
@@ -26,10 +27,11 @@ interface WorkspaceHeaderProps {
   onSetMode: (mode: ViewMode) => void
   onUpdateTask: (id: string, patch: Partial<AnyTask>) => void
   onSetDifficulties: (next: CustomDifficulty[]) => void
+  onDelete: (taskId: string) => void
   onCreate: (kind: TaskKind) => void
 }
 
-/** Шапка воркспейса: степ-полоса, метаданные (тип/сложность), режимы. */
+/** Шапка воркспейса: степ-полоса, метаданные (тип/сложность/удаление), режимы. */
 export function WorkspaceHeader({
   tasks,
   index,
@@ -41,6 +43,7 @@ export function WorkspaceHeader({
   onSetMode,
   onUpdateTask,
   onSetDifficulties,
+  onDelete,
   onCreate,
 }: WorkspaceHeaderProps) {
   const editing = mode === 'edit'
@@ -64,12 +67,22 @@ export function WorkspaceHeader({
           </TaskNo>
           <KindBadge>{TASK_KIND_LABEL[task.kind]}</KindBadge>
           {editing ? (
-            <DifficultyPicker
-              value={task.difficulty}
-              difficulties={difficulties}
-              onChange={(id) => onUpdateTask(task.id, { difficulty: id })}
-              onChangeDifficulties={onSetDifficulties}
-            />
+            <>
+              <DifficultyPicker
+                value={task.difficulty}
+                difficulties={difficulties}
+                onChange={(id) => onUpdateTask(task.id, { difficulty: id })}
+                onChangeDifficulties={onSetDifficulties}
+              />
+              <DeleteTaskButton
+                type="button"
+                aria-label="Удалить задачу"
+                title="Удалить задачу"
+                onClick={() => onDelete(task.id)}
+              >
+                <Trash2 size={15} />
+              </DeleteTaskButton>
+            </>
           ) : (
             <Badge $tone={difficultyTone(view) ?? 'default'} $color={difficultyColor(view)}>
               {view?.label ?? 'Без сложности'}

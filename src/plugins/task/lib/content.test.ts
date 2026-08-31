@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { AnyTask, TaskContent } from '../core/types'
-import { backfillCompleted, withRestart, withResult, withTaskEdited } from './content'
+import { withRestart, withResult, withTaskDeleted, withTaskEdited } from './content'
 
 const content: TaskContent = {
   tasks: [
@@ -54,14 +54,21 @@ describe('withTaskEdited', () => {
   })
 })
 
-describe('backfillCompleted', () => {
-  it('дополняет флаг по существующим результатам', () => {
-    const legacy: TaskContent = { ...content, completed: {} }
+describe('withTaskDeleted', () => {
+  it('убирает задачу вместе с её ответом, результатом и флагом прохождения', () => {
+    const next = withTaskDeleted(content, 't2')
 
-    expect(backfillCompleted(legacy).completed).toEqual({ t2: true })
+    expect(next.tasks).toEqual([content.tasks[0]])
+    expect(next.answers.t2).toBeUndefined()
+    expect(next.results.t2).toBeUndefined()
+    expect(next.completed.t2).toBeUndefined()
   })
 
-  it('не меняет контент, если флаги уже проставлены', () => {
-    expect(backfillCompleted(content)).toBe(content)
+  it('не задевает другие задачи и их прогресс', () => {
+    const next = withTaskDeleted(withResult(content, 't1', 'correct'), 't2')
+
+    expect(next.tasks).toHaveLength(1)
+    expect(next.results.t1).toBe('correct')
+    expect(next.completed.t1).toBe(true)
   })
 })

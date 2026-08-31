@@ -43,13 +43,20 @@ export function withTaskEdited(content: TaskContent, taskId: string, next: AnyTa
   }
 }
 
-/** Бэкфилл старого контента: результат без флага означает, что задача проходилась. */
-export function backfillCompleted(content: TaskContent): TaskContent {
-  const missing = Object.keys(content.results).filter((id) => !content.completed[id])
-  if (missing.length === 0) return content
-
+/** Удаление задачи: убирается вместе со своим ответом, результатом и флагом прохождения. */
+export function withTaskDeleted(content: TaskContent, taskId: string): TaskContent {
+  const answers = { ...content.answers }
+  const results = { ...content.results }
   const completed = { ...content.completed }
-  for (const id of missing) completed[id] = true
+  delete answers[taskId]
+  delete results[taskId]
+  delete completed[taskId]
 
-  return { ...content, completed }
+  return {
+    ...content,
+    tasks: content.tasks.filter((task) => task.id !== taskId),
+    answers,
+    results,
+    completed,
+  }
 }

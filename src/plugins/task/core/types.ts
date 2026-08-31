@@ -21,10 +21,11 @@ export type {
   SingleChoiceAnswer,
   SingleChoiceTask,
   TaskAnswer,
+  TaskAttempt,
   TaskContent,
-  TaskContentData,
   TaskKind,
   TaskResult,
+  TaskSnapshotData,
   TrueFalseAnswer,
   TrueFalseTask,
 } from '@/entities/task-plugin'

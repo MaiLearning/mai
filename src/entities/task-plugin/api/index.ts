@@ -1,3 +1,14 @@
-export { sendSaveTaskContent } from './create'
-export { sendClearTaskContent, sendDeleteTaskContent } from './delete'
-export { fetchTaskContent } from './fetch'
+export { sendSetTaskDifficulties } from './difficulties'
+export {
+  sendListTaskAttempts,
+  sendRestartTask,
+  sendSetTaskResult,
+  sendSubmitTaskAnswer,
+} from './progress'
+export { fetchTaskSnapshot } from './snapshot'
+export {
+  sendCreateTask,
+  sendDeleteTask,
+  sendUpdateTaskContent,
+  sendUpdateTaskDifficulty,
+} from './tasks'

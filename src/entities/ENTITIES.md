@@ -106,21 +106,26 @@ directory-сервис для любых узлов. Из корня экспо�
 
 ### task-plugin
 Контент заданий, привязанный к ресурсу (wire-контракт in-app плагина
-`src/plugins/task`). `AnyTask` — discriminated union по `kind` (7 типов:
+`src/plugins/task`); backend хранит его реляционно, команды —
+гранулярные. `AnyTask` — discriminated union по `kind` (7 типов:
 `SingleChoice`, `MultipleChoice`, `TrueFalse`, `Matching`, `Ordering`,
 `FillInBlank`, `OpenAnswer`); база — `id`, `prompt`, `difficulty`
 (`easy|medium|hard`). Типы задач: выбор (`choices[]` с флагом `correct`),
 `TrueFalse` (`answer`), сопоставление (`pairs[]`), порядок (`items[]`),
 пропуски (`segments[]` с `blank: string | null`), свободный ответ
 (`sampleAnswer`, `placeholder`).
-`TaskContent {tasks: AnyTask[]}` (дефолт backend — `{}` → `{tasks: []}`),
-`TaskContentData {resourceId, content, createdAt, updatedAt}`,
-`SaveTaskContentInput`. Zod-схемы (`core/schema.ts`) — источник
+`TaskContent {tasks, difficulties, answers, results, completed}`,
+снапшот `TaskSnapshotData {resourceId, content, createdAt, updatedAt}`,
+попытки `TaskAttempt {id, taskId, seq, answer|null, result, checkedAt}`,
+входы команд (`*InputSchema`). Zod-схемы (`core/schema.ts`) — источник
 истины; плагин реэкспортирует типы из сущности. API — Tauri IPC
-`get/save/clear/delete_task_content`, без fake-ветки (как theory).
-State: `taskContentsAtom`; операции `loadTaskContentAtom`,
-`saveTaskContentAtom`, `clearTaskContentAtom`, `deleteTaskContentAtom`
-(подробности в `TASK-PLUGIN.md`).
+`task_snapshot`, `create/update/delete_task`, `update_task_difficulty`,
+`set_task_difficulties`, `submit_task_answer`, `set_task_result`,
+`restart_task`, `list_task_attempts`, без fake-ветки (как theory).
+State: `taskSnapshotsAtom` (по id ресурса); операции `loadTaskSnapshotAtom`,
+`createTaskAtom`, `updateTaskContentAtom`, `updateTaskDifficultyAtom`,
+`deleteTaskAtom`, `setTaskDifficultiesAtom`, `submitTaskAnswerAtom`,
+`setTaskResultAtom`, `restartTaskAtom` (подробности в `TASK-PLUGIN.md`).
 
 ### theory-plugin
 Теория, привязанная к ресурсу:
