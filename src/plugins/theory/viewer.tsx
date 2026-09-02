@@ -4,19 +4,19 @@ import { useTranslation } from '@/app/i18n'
 import { updateResource } from '@/entities/resource/services'
 import type { PluginRenderProps } from '@/features/plugin/core/types'
 import { notifyError, notifySuccess } from '@/utils/notifications'
-import { TheoryAside } from './components/TheoryAside'
+// [Aside отключён] import { TheoryAside } from './components/TheoryAside'
 import { TheoryHeader } from './components/TheoryHeader'
 import { TheoryStatusBar } from './components/TheoryStatusBar'
 import { type InsertDialogKind, TheoryToolbar } from './components/TheoryToolbar'
 import { useWordCount } from './components/toolbar-state'
 import { UrlDialog, type UrlDialogState } from './components/UrlDialog'
 import { applyInsertDialog } from './lib/insert-dialog'
-import {
-  extractOutline,
-  type OutlineEntry,
-  resolveActiveOutlineIndex,
-  scrollToOutlineIndex,
-} from './lib/outline'
+// [Aside отключён] import {
+//   extractOutline,
+//   type OutlineEntry,
+//   resolveActiveOutlineIndex,
+//   scrollToOutlineIndex,
+// } from './lib/outline'
 import { useTheoryAutosave } from './lib/useTheoryAutosave'
 import { useTheoryEditor } from './lib/useTheoryEditor'
 import {
@@ -42,8 +42,8 @@ export function TheoryViewer({ resourceId, courseId, data, onReady }: PluginRend
 
   const [title, setTitle] = useState(data?.name ?? '')
   const [dialog, setDialog] = useState<UrlDialogState | null>(null)
-  const [outline, setOutline] = useState<OutlineEntry[]>([])
-  const [activeOutline, setActiveOutline] = useState(-1)
+  // [Aside отключён] const [outline, setOutline] = useState<OutlineEntry[]>([])
+  // [Aside отключён] const [activeOutline, setActiveOutline] = useState(-1)
 
   const savedTitleRef = useRef(data?.name ?? '')
   const canvasRef = useRef<HTMLDivElement>(null)
@@ -64,34 +64,34 @@ export function TheoryViewer({ resourceId, courseId, data, onReady }: PluginRend
     canvasRef.current?.scrollTo({ top: 0 })
   }, [resourceId])
 
-  // ── Структура документа (outline) ────────────────────────────────────────
+  // ── Aside (outline) отключён — компоненты сохранены: components/TheoryAside.tsx ──
 
-  useEffect(() => {
-    if (!editor) return
-
-    const update = () => setOutline(extractOutline(editor.state.doc))
-    update()
-    editor.on('update', update)
-
-    return () => {
-      editor.off('update', update)
-    }
-  }, [editor])
-
-  const handleCanvasScroll = useCallback(() => {
-    const el = canvasRef.current
-    if (el) setActiveOutline(resolveActiveOutlineIndex(el))
-  }, [])
-
-  const handleSelectOutline = useCallback((index: number) => {
-    const el = canvasRef.current
-    if (el) scrollToOutlineIndex(el, index)
-  }, [])
-
-  // Пересчитываем активный раздел после изменения структуры.
-  useEffect(() => {
-    handleCanvasScroll()
-  }, [outline, handleCanvasScroll])
+  // useEffect(() => {
+  //   if (!editor) return
+  //
+  //   const update = () => setOutline(extractOutline(editor.state.doc))
+  //   update()
+  //   editor.on('update', update)
+  //
+  //   return () => {
+  //     editor.off('update', update)
+  //   }
+  // }, [editor])
+  //
+  // const handleCanvasScroll = useCallback(() => {
+  //   const el = canvasRef.current
+  //   if (el) setActiveOutline(resolveActiveOutlineIndex(el))
+  // }, [])
+  //
+  // const handleSelectOutline = useCallback((index: number) => {
+  //   const el = canvasRef.current
+  //   if (el) scrollToOutlineIndex(el, index)
+  // }, [])
+  //
+  // // Пересчитываем активный раздел после изменения структуры.
+  // useEffect(() => {
+  //   handleCanvasScroll()
+  // }, [outline, handleCanvasScroll])
 
   // ── Название ресурса ─────────────────────────────────────────────────────
 
@@ -160,7 +160,7 @@ export function TheoryViewer({ resourceId, courseId, data, onReady }: PluginRend
       <TheoryToolbar editor={editor} onRequestDialog={openDialog} />
 
       <Body>
-        <Canvas ref={canvasRef} onScroll={handleCanvasScroll}>
+        <Canvas ref={canvasRef}>
           <Sheet>
             <Prose editor={editor} />
 
@@ -180,7 +180,8 @@ export function TheoryViewer({ resourceId, courseId, data, onReady }: PluginRend
           </Sheet>
         </Canvas>
 
-        <TheoryAside entries={outline} activeIndex={activeOutline} onSelect={handleSelectOutline} />
+        {/* Aside отключён — см. components/TheoryAside.tsx */}
+        {/* <TheoryAside entries={outline} activeIndex={activeOutline} onSelect={handleSelectOutline} /> */}
       </Body>
 
       <TheoryStatusBar saveState={saveState} />
