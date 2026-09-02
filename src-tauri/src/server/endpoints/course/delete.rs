@@ -4,11 +4,10 @@ use axum::extract::{Path, State};
 use axum::http::StatusCode;
 use axum::response::IntoResponse;
 use axum::Json;
-use sqlx::SqlitePool;
 
 use crate::database::sqlite::repositories::course::SqliteCourseRepository;
+use crate::server::state::AppState;
 use crate::services::course::{CourseData, CourseService, CourseServiceError};
-use crate::utils::paths::AppPaths;
 
 #[utoipa::path(
     delete,
@@ -20,12 +19,9 @@ use crate::utils::paths::AppPaths;
         (status = 404, description = "Course not found")
     )
 )]
-pub async fn handler(
-    State((pool, app_paths)): State<(SqlitePool, AppPaths)>,
-    Path(id): Path<String>,
-) -> impl IntoResponse {
-    let repo = Arc::new(SqliteCourseRepository::new(pool));
-    let service = CourseService::new(app_paths, repo);
+pub async fn handler(State(state): State<AppState>, Path(id): Path<String>) -> impl IntoResponse {
+    let repo = Arc::new(SqliteCourseRepository::new(state.pool));
+    let service = CourseService::new(state.app_paths.clone(), repo, state.publisher.clone());
 
     match service.delete(&id).await {
         Ok(course) => (StatusCode::OK, Json(serde_json::json!(course))),

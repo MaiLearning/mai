@@ -5,12 +5,11 @@ use axum::http::StatusCode;
 use axum::response::IntoResponse;
 use axum::Json;
 use serde::Deserialize;
-use sqlx::SqlitePool;
 use utoipa::ToSchema;
 
 use crate::database::sqlite::repositories::course::SqliteCourseRepository;
+use crate::server::state::AppState;
 use crate::services::course::{CourseData, CourseService, CourseServiceError};
-use crate::utils::paths::AppPaths;
 
 #[derive(Deserialize, ToSchema)]
 #[serde(rename_all = "camelCase")]
@@ -38,12 +37,12 @@ pub struct UpdateCourseRequest {
     )
 )]
 pub async fn handler(
-    State((pool, app_paths)): State<(SqlitePool, AppPaths)>,
+    State(state): State<AppState>,
     Path(id): Path<String>,
     Json(body): Json<UpdateCourseRequest>,
 ) -> impl IntoResponse {
-    let repo = Arc::new(SqliteCourseRepository::new(pool));
-    let service = CourseService::new(app_paths, repo);
+    let repo = Arc::new(SqliteCourseRepository::new(state.pool));
+    let service = CourseService::new(state.app_paths.clone(), repo, state.publisher.clone());
 
     let data = CourseData {
         id,

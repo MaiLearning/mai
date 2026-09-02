@@ -8,17 +8,30 @@ use tauri::AppHandle;
 use tokio::net::TcpListener;
 
 use super::router;
+use super::state::AppState;
+use crate::services::events::SharedChangePublisher;
+use crate::utils::paths::AppPaths;
 use sqlx::SqlitePool;
 
-use crate::utils::paths::AppPaths;
-
-pub async fn run(pool: SqlitePool, app_paths: AppPaths, start_port: u16, app_handle: AppHandle) {
+pub async fn run(
+    pool: SqlitePool,
+    app_paths: AppPaths,
+    start_port: u16,
+    app_handle: AppHandle,
+    publisher: SharedChangePublisher,
+) {
     let (listener, addr) = bind_available(start_port).await;
 
     println!("  ➜  HTTP:       http://{}", addr);
     println!("  ➜  API docs:  http://{}/docs", addr);
 
-    axum::serve(listener, router::router(pool, app_paths))
+    let state = AppState {
+        pool,
+        app_paths,
+        publisher,
+    };
+
+    axum::serve(listener, router::router(state))
         .with_graceful_shutdown(shutdown_signal(app_handle))
         .await
         .expect("server error");
@@ -55,10 +68,10 @@ async fn shutdown_signal(app_handle: AppHandle) {
 
         tokio::select! {
             _ = ctrl_c => {
-                let _ = app_handle.exit(0);
+                app_handle.exit(0);
             },
             _ = term.recv() => {
-                let _ = app_handle.exit(0);
+                app_handle.exit(0);
             },
         }
     }
@@ -68,6 +81,6 @@ async fn shutdown_signal(app_handle: AppHandle) {
         tokio::signal::ctrl_c()
             .await
             .expect("failed to listen for Ctrl+C");
-        let _ = app_handle.exit(0);
+        app_handle.exit(0);
     }
 }

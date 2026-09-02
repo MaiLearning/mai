@@ -31,6 +31,10 @@ pub fn run() {
         )
         .plugin(tauri_plugin_opener::init())
         .setup(|app| {
+            use std::sync::Arc;
+
+            use crate::services::events::ChangeOrigin;
+
             let app_handle = app.handle().clone();
 
             let app_paths = utils::paths::AppPaths::new(&app_handle)
@@ -43,12 +47,26 @@ pub fn run() {
             let db_config =
                 database::sqlite::settings::DatabaseConfig::for_prod(app_paths.app_data_dir());
 
+            let publishers = crate::utils::events::ChangePublishers {
+                ipc: Arc::new(crate::utils::events::TauriChangePublisher::new(
+                    app_handle.clone(),
+                    ChangeOrigin::Ipc,
+                )),
+                http: Arc::new(crate::utils::events::TauriChangePublisher::new(
+                    app_handle.clone(),
+                    ChangeOrigin::Http,
+                )),
+            };
+            let http_publisher = publishers.http.clone();
+            app.manage(publishers);
+
             let pool = tauri::async_runtime::block_on(async {
                 startup::init(
                     db_config,
                     app_paths.clone(),
                     startup::ServerConfig::default(),
                     app_handle.clone(),
+                    http_publisher,
                 )
                 .await
             });

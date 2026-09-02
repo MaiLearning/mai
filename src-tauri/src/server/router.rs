@@ -1,15 +1,13 @@
 use axum::{routing::get, Router};
-use sqlx::SqlitePool;
 use utoipa_swagger_ui::SwaggerUi;
 
 use utoipa::OpenApi;
 
-use crate::utils::paths::AppPaths;
-
 use super::endpoints;
 use super::openapi::ApiDoc;
+use super::state::AppState;
 
-pub fn router(pool: SqlitePool, app_paths: AppPaths) -> Router {
+pub fn router(state: AppState) -> Router {
     Router::new()
         .merge(SwaggerUi::new("/docs").url("/api-docs/openapi.json", ApiDoc::openapi()))
         .route("/health", get(endpoints::health::health))
@@ -18,5 +16,5 @@ pub fn router(pool: SqlitePool, app_paths: AppPaths) -> Router {
         .nest("/structures", endpoints::structure::router())
         .nest("/resources", endpoints::resource::router())
         .nest("/resource-types", endpoints::resource_type::router())
-        .with_state((pool, app_paths))
+        .with_state(state)
 }

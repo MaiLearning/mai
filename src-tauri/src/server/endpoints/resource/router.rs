@@ -1,10 +1,10 @@
+use crate::server::state::AppState;
 use crate::services::resource::ResourceServiceError;
-use crate::utils::paths::AppPaths;
 use axum::http::StatusCode;
 use axum::response::IntoResponse;
 use axum::Json;
 
-pub fn router() -> axum::Router<(sqlx::SqlitePool, AppPaths)> {
+pub fn router() -> axum::Router<AppState> {
     use axum::routing::get;
     axum::Router::new()
         .route("/", get(super::get::handler))

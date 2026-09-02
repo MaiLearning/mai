@@ -26,6 +26,7 @@ use sqlx::SqlitePool;
 use tauri::AppHandle;
 
 use crate::database::sqlite::{Database, DatabaseConfig};
+use crate::services::events::SharedChangePublisher;
 use crate::utils::paths::AppPaths;
 
 /// Конфигурация HTTP-сервера.
@@ -50,10 +51,11 @@ pub async fn init(
     app_paths: AppPaths,
     server_config: ServerConfig,
     app_handle: AppHandle,
+    publisher: SharedChangePublisher,
 ) -> SqlitePool {
     let pool = init_database(db_config).await;
     init_internal_plugins(&pool, &app_paths).await;
-    init_http_server(&pool, &app_paths, server_config, app_handle).await;
+    init_http_server(&pool, &app_paths, server_config, app_handle, publisher).await;
     pool
 }
 
@@ -88,10 +90,18 @@ async fn init_http_server(
     app_paths: &AppPaths,
     server_config: ServerConfig,
     app_handle: AppHandle,
+    publisher: SharedChangePublisher,
 ) {
     let pool = pool.clone();
     let app_paths = app_paths.clone();
     tokio::spawn(async move {
-        crate::server::run(pool, app_paths, server_config.start_port, app_handle).await;
+        crate::server::run(
+            pool,
+            app_paths,
+            server_config.start_port,
+            app_handle,
+            publisher,
+        )
+        .await;
     });
 }

@@ -1,9 +1,8 @@
 use axum::routing::patch;
 use axum::Router;
-use sqlx::SqlitePool;
 
-use crate::utils::paths::AppPaths;
+use crate::server::state::AppState;
 
-pub fn router() -> Router<(SqlitePool, AppPaths)> {
+pub fn router() -> Router<AppState> {
     Router::new().route("/{id}", patch(super::rename::handler))
 }

@@ -7,16 +7,18 @@ use crate::database::sqlite::repositories::directory::SqliteDirectoryRepository;
 use crate::database::sqlite::repositories::resource::SqliteResourceRepository;
 use crate::database::sqlite::repositories::structure::SqliteStructureRepository;
 use crate::services::structure::{DirectoryData, StructureNodeFlat, StructureService};
+use crate::utils::events::ChangePublishers;
 
 #[tauri::command]
 pub async fn get_structure(
     pool: State<'_, SqlitePool>,
+    publishers: State<'_, ChangePublishers>,
     course_id: String,
 ) -> Result<Vec<StructureNodeFlat>, String> {
     let repo = Arc::new(SqliteStructureRepository::new(pool.inner().clone()));
     let dir_repo = Arc::new(SqliteDirectoryRepository::new(pool.inner().clone()));
     let resource_repo = Arc::new(SqliteResourceRepository::new(pool.inner().clone()));
-    let service = StructureService::new(repo, dir_repo, resource_repo);
+    let service = StructureService::new(repo, dir_repo, resource_repo, publishers.ipc.clone());
     service
         .get_structure(&course_id)
         .await
@@ -26,6 +28,7 @@ pub async fn get_structure(
 #[tauri::command]
 pub async fn create_directory(
     pool: State<'_, SqlitePool>,
+    publishers: State<'_, ChangePublishers>,
     course_id: String,
     name: String,
     parent_id: Option<String>,
@@ -33,7 +36,7 @@ pub async fn create_directory(
     let repo = Arc::new(SqliteStructureRepository::new(pool.inner().clone()));
     let dir_repo = Arc::new(SqliteDirectoryRepository::new(pool.inner().clone()));
     let resource_repo = Arc::new(SqliteResourceRepository::new(pool.inner().clone()));
-    let service = StructureService::new(repo, dir_repo, resource_repo);
+    let service = StructureService::new(repo, dir_repo, resource_repo, publishers.ipc.clone());
     service
         .create_directory(&course_id, &name, parent_id.as_deref())
         .await
@@ -41,11 +44,15 @@ pub async fn create_directory(
 }
 
 #[tauri::command]
-pub async fn delete_node(pool: State<'_, SqlitePool>, node_id: String) -> Result<(), String> {
+pub async fn delete_node(
+    pool: State<'_, SqlitePool>,
+    publishers: State<'_, ChangePublishers>,
+    node_id: String,
+) -> Result<(), String> {
     let repo = Arc::new(SqliteStructureRepository::new(pool.inner().clone()));
     let dir_repo = Arc::new(SqliteDirectoryRepository::new(pool.inner().clone()));
     let resource_repo = Arc::new(SqliteResourceRepository::new(pool.inner().clone()));
-    let service = StructureService::new(repo, dir_repo, resource_repo);
+    let service = StructureService::new(repo, dir_repo, resource_repo, publishers.ipc.clone());
     service
         .delete_node(&node_id)
         .await
@@ -55,13 +62,14 @@ pub async fn delete_node(pool: State<'_, SqlitePool>, node_id: String) -> Result
 #[tauri::command]
 pub async fn rename_node(
     pool: State<'_, SqlitePool>,
+    publishers: State<'_, ChangePublishers>,
     node_id: String,
     name: String,
 ) -> Result<(), String> {
     let repo = Arc::new(SqliteStructureRepository::new(pool.inner().clone()));
     let dir_repo = Arc::new(SqliteDirectoryRepository::new(pool.inner().clone()));
     let resource_repo = Arc::new(SqliteResourceRepository::new(pool.inner().clone()));
-    let service = StructureService::new(repo, dir_repo, resource_repo);
+    let service = StructureService::new(repo, dir_repo, resource_repo, publishers.ipc.clone());
     service
         .rename_node(&node_id, &name)
         .await
@@ -71,6 +79,7 @@ pub async fn rename_node(
 #[tauri::command]
 pub async fn move_node(
     pool: State<'_, SqlitePool>,
+    publishers: State<'_, ChangePublishers>,
     node_id: String,
     new_parent_id: Option<String>,
     position: i64,
@@ -78,7 +87,7 @@ pub async fn move_node(
     let repo = Arc::new(SqliteStructureRepository::new(pool.inner().clone()));
     let dir_repo = Arc::new(SqliteDirectoryRepository::new(pool.inner().clone()));
     let resource_repo = Arc::new(SqliteResourceRepository::new(pool.inner().clone()));
-    let service = StructureService::new(repo, dir_repo, resource_repo);
+    let service = StructureService::new(repo, dir_repo, resource_repo, publishers.ipc.clone());
     service
         .move_node(&node_id, new_parent_id.as_deref(), position)
         .await
@@ -88,12 +97,13 @@ pub async fn move_node(
 #[tauri::command]
 pub async fn get_directories(
     pool: State<'_, SqlitePool>,
+    publishers: State<'_, ChangePublishers>,
     course_id: String,
 ) -> Result<Vec<DirectoryData>, String> {
     let repo = Arc::new(SqliteStructureRepository::new(pool.inner().clone()));
     let dir_repo = Arc::new(SqliteDirectoryRepository::new(pool.inner().clone()));
     let resource_repo = Arc::new(SqliteResourceRepository::new(pool.inner().clone()));
-    let service = StructureService::new(repo, dir_repo, resource_repo);
+    let service = StructureService::new(repo, dir_repo, resource_repo, publishers.ipc.clone());
     service
         .get_directories(&course_id)
         .await

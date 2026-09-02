@@ -6,6 +6,7 @@ use tauri::State;
 
 use crate::database::sqlite::repositories::course::SqliteCourseRepository;
 use crate::services::course::{CourseData, CourseService, CourseTagStat};
+use crate::utils::events::ChangePublishers;
 use crate::utils::paths::AppPaths;
 
 #[derive(Deserialize)]
@@ -31,9 +32,10 @@ fn now_millis() -> i64 {
 pub async fn all_courses(
     pool: State<'_, SqlitePool>,
     app_paths: State<'_, AppPaths>,
+    publishers: State<'_, ChangePublishers>,
 ) -> Result<Vec<CourseData>, String> {
     let repo = Arc::new(SqliteCourseRepository::new(pool.inner().clone()));
-    let service = CourseService::new(app_paths.inner().clone(), repo);
+    let service = CourseService::new(app_paths.inner().clone(), repo, publishers.ipc.clone());
     service.all().await.map_err(|e| e.to_string())
 }
 
@@ -41,9 +43,10 @@ pub async fn all_courses(
 pub async fn all_tags(
     pool: State<'_, SqlitePool>,
     app_paths: State<'_, AppPaths>,
+    publishers: State<'_, ChangePublishers>,
 ) -> Result<Vec<CourseTagStat>, String> {
     let repo = Arc::new(SqliteCourseRepository::new(pool.inner().clone()));
-    let service = CourseService::new(app_paths.inner().clone(), repo);
+    let service = CourseService::new(app_paths.inner().clone(), repo, publishers.ipc.clone());
     service.all_tags().await.map_err(|e| e.to_string())
 }
 
@@ -51,10 +54,11 @@ pub async fn all_tags(
 pub async fn create_course(
     pool: State<'_, SqlitePool>,
     app_paths: State<'_, AppPaths>,
+    publishers: State<'_, ChangePublishers>,
     request: CreateCourseRequest,
 ) -> Result<CourseData, String> {
     let repo = Arc::new(SqliteCourseRepository::new(pool.inner().clone()));
-    let service = CourseService::new(app_paths.inner().clone(), repo);
+    let service = CourseService::new(app_paths.inner().clone(), repo, publishers.ipc.clone());
 
     let now = now_millis();
     let data = CourseData {
@@ -76,10 +80,11 @@ pub async fn create_course(
 pub async fn get_course(
     pool: State<'_, SqlitePool>,
     app_paths: State<'_, AppPaths>,
+    publishers: State<'_, ChangePublishers>,
     id: String,
 ) -> Result<CourseData, String> {
     let repo = Arc::new(SqliteCourseRepository::new(pool.inner().clone()));
-    let service = CourseService::new(app_paths.inner().clone(), repo);
+    let service = CourseService::new(app_paths.inner().clone(), repo, publishers.ipc.clone());
     service.get(&id).await.map_err(|e| e.to_string())
 }
 
@@ -99,11 +104,12 @@ pub struct UpdateCourseRequest {
 pub async fn update_course(
     pool: State<'_, SqlitePool>,
     app_paths: State<'_, AppPaths>,
+    publishers: State<'_, ChangePublishers>,
     id: String,
     request: UpdateCourseRequest,
 ) -> Result<CourseData, String> {
     let repo = Arc::new(SqliteCourseRepository::new(pool.inner().clone()));
-    let service = CourseService::new(app_paths.inner().clone(), repo);
+    let service = CourseService::new(app_paths.inner().clone(), repo, publishers.ipc.clone());
 
     let existing = service.get(&id).await.map_err(|e| e.to_string())?;
     let data = CourseData {
@@ -125,9 +131,10 @@ pub async fn update_course(
 pub async fn delete_course(
     pool: State<'_, SqlitePool>,
     app_paths: State<'_, AppPaths>,
+    publishers: State<'_, ChangePublishers>,
     id: String,
 ) -> Result<CourseData, String> {
     let repo = Arc::new(SqliteCourseRepository::new(pool.inner().clone()));
-    let service = CourseService::new(app_paths.inner().clone(), repo);
+    let service = CourseService::new(app_paths.inner().clone(), repo, publishers.ipc.clone());
     service.delete(&id).await.map_err(|e| e.to_string())
 }

@@ -9,12 +9,14 @@ use crate::database::sqlite::repositories::resource_type::SqliteResourceTypeRepo
 use crate::database::sqlite::repositories::structure::SqliteStructureRepository;
 use crate::services::resource::{ResourceData, ResourceService};
 use crate::services::structure::{StructureNodeFlat, StructureService};
+use crate::utils::events::ChangePublishers;
 use crate::utils::paths::AppPaths;
 
 #[tauri::command]
 pub async fn create_resource(
     pool: State<'_, SqlitePool>,
     app_paths: State<'_, AppPaths>,
+    publishers: State<'_, ChangePublishers>,
     course_id: String,
     name: String,
     parent_id: Option<String>,
@@ -49,7 +51,8 @@ pub async fn create_resource(
         let repo = Arc::new(SqliteStructureRepository::new(pool.inner().clone()));
         let dir_repo = Arc::new(SqliteDirectoryRepository::new(pool.inner().clone()));
         let res_repo = Arc::new(SqliteResourceRepository::new(pool.inner().clone()));
-        let structure_service = StructureService::new(repo, dir_repo, res_repo);
+        let structure_service =
+            StructureService::new(repo, dir_repo, res_repo, publishers.ipc.clone());
         structure_service
             .move_node(&resource_id, Some(pid.as_str()), 0)
             .await
@@ -60,7 +63,7 @@ pub async fn create_resource(
     let repo = Arc::new(SqliteStructureRepository::new(pool.inner().clone()));
     let dir_repo = Arc::new(SqliteDirectoryRepository::new(pool.inner().clone()));
     let res_repo = Arc::new(SqliteResourceRepository::new(pool.inner().clone()));
-    let structure_service = StructureService::new(repo, dir_repo, res_repo);
+    let structure_service = StructureService::new(repo, dir_repo, res_repo, publishers.ipc.clone());
     structure_service
         .get_structure_node_by_resource(&resource_id)
         .await

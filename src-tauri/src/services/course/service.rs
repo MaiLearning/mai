@@ -6,6 +6,7 @@ use std::sync::Arc;
 use crate::database::repository::course::CourseRepository;
 use crate::database::repository::RepoError;
 use crate::services::course::{CourseData, CourseTagStat};
+use crate::services::events::{ChangeAction, EntityChanged, EntityKind, SharedChangePublisher};
 use crate::utils::paths::{AppPaths, FsError};
 
 use super::exceptions::CourseServiceError;
@@ -24,11 +25,20 @@ fn map_fs_error(e: FsError, context: &str) -> CourseServiceError {
 pub struct CourseService {
     app_paths: AppPaths,
     repo: Arc<dyn CourseRepository>,
+    publisher: SharedChangePublisher,
 }
 
 impl CourseService {
-    pub fn new(app_paths: AppPaths, repo: Arc<dyn CourseRepository>) -> Self {
-        Self { app_paths, repo }
+    pub fn new(
+        app_paths: AppPaths,
+        repo: Arc<dyn CourseRepository>,
+        publisher: SharedChangePublisher,
+    ) -> Self {
+        Self {
+            app_paths,
+            repo,
+            publisher,
+        }
     }
 
     // ------------------------------------------------------------------
@@ -107,6 +117,13 @@ impl CourseService {
             .create_course_resources_dir(&resolved_id)
             .map_err(|e| map_fs_error(e, "create course resources dir"))?;
 
+        self.publisher.publish(EntityChanged {
+            entity: EntityKind::Course,
+            action: ChangeAction::Created,
+            id: resolved_id.clone(),
+            course_id: None,
+        });
+
         Ok(result)
     }
 
@@ -139,10 +156,20 @@ impl CourseService {
             updated_at: data.updated_at,
         };
 
-        self.repo
+        let result = self
+            .repo
             .update_course(normalized)
             .await
-            .map_err(|e| map_repo_error(e, "update course"))
+            .map_err(|e| map_repo_error(e, "update course"))?;
+
+        self.publisher.publish(EntityChanged {
+            entity: EntityKind::Course,
+            action: ChangeAction::Updated,
+            id: result.id.clone(),
+            course_id: None,
+        });
+
+        Ok(result)
     }
 
     // ------------------------------------------------------------------
@@ -161,6 +188,13 @@ impl CourseService {
         self.app_paths
             .remove_course_dir(&resolved_id)
             .map_err(|e| map_fs_error(e, "remove course dir"))?;
+
+        self.publisher.publish(EntityChanged {
+            entity: EntityKind::Course,
+            action: ChangeAction::Deleted,
+            id: resolved_id.clone(),
+            course_id: None,
+        });
 
         Ok(result)
     }

@@ -4,11 +4,10 @@ use axum::extract::State;
 use axum::http::StatusCode;
 use axum::response::IntoResponse;
 use axum::Json;
-use sqlx::SqlitePool;
 
 use crate::database::sqlite::repositories::course::SqliteCourseRepository;
+use crate::server::state::AppState;
 use crate::services::course::{CourseService, CourseServiceError, CourseTagStat};
-use crate::utils::paths::AppPaths;
 
 #[utoipa::path(
     get,
@@ -19,11 +18,9 @@ use crate::utils::paths::AppPaths;
         (status = 200, description = "List all tags with course counts", body = [CourseTagStat])
     )
 )]
-pub async fn handler(
-    State((pool, _app_paths)): State<(SqlitePool, AppPaths)>,
-) -> impl IntoResponse {
-    let repo = Arc::new(SqliteCourseRepository::new(pool));
-    let service = CourseService::new(_app_paths, repo);
+pub async fn handler(State(state): State<AppState>) -> impl IntoResponse {
+    let repo = Arc::new(SqliteCourseRepository::new(state.pool));
+    let service = CourseService::new(state.app_paths.clone(), repo, state.publisher.clone());
 
     match service.all_tags().await {
         Ok(tags) => (StatusCode::OK, Json(serde_json::json!(tags))),

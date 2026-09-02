@@ -4,6 +4,7 @@ use crate::database::repository::directory::DirectoryRepository;
 use crate::database::repository::resource::ResourceRepository;
 use crate::database::repository::structure::StructureRepository;
 use crate::database::repository::RepoError;
+use crate::services::events::{ChangeAction, EntityChanged, EntityKind, SharedChangePublisher};
 use crate::services::structure::{DirectoryData, StructureNodeFlat};
 
 use super::exceptions::StructureServiceError;
@@ -13,6 +14,7 @@ pub struct StructureService {
     repo: Arc<dyn StructureRepository>,
     dir_repo: Arc<dyn DirectoryRepository>,
     resource_repo: Arc<dyn ResourceRepository>,
+    publisher: SharedChangePublisher,
 }
 
 impl StructureService {
@@ -20,11 +22,13 @@ impl StructureService {
         repo: Arc<dyn StructureRepository>,
         dir_repo: Arc<dyn DirectoryRepository>,
         resource_repo: Arc<dyn ResourceRepository>,
+        publisher: SharedChangePublisher,
     ) -> Self {
         Self {
             repo,
             dir_repo,
             resource_repo,
+            publisher,
         }
     }
 
@@ -87,6 +91,14 @@ impl StructureService {
             .transpose()?;
         let resolved_position = StructureRules::validate_position(position)?;
 
+        let node_course_id = self
+            .repo
+            .get_node_course_id(&resolved_node_id)
+            .await
+            .map_err(|e| {
+                map_repo_error(e, &format!("get course_id for node '{}'", resolved_node_id))
+            })?;
+
         if let Some(ref parent_id) = resolved_parent_id {
             let parent = self
                 .repo
@@ -99,14 +111,6 @@ impl StructureService {
                     "Only directory nodes can have children.".into(),
                 ));
             }
-
-            let node_course_id = self
-                .repo
-                .get_node_course_id(&resolved_node_id)
-                .await
-                .map_err(|e| {
-                    map_repo_error(e, &format!("get course_id for node '{}'", resolved_node_id))
-                })?;
 
             let parent_course_id = self.repo.get_node_course_id(parent_id).await.map_err(|e| {
                 map_repo_error(e, &format!("get course_id for parent '{}'", parent_id))
@@ -139,7 +143,16 @@ impl StructureService {
                 resolved_position,
             )
             .await
-            .map_err(|e| map_repo_error(e, &format!("move node '{}'", resolved_node_id)))
+            .map_err(|e| map_repo_error(e, &format!("move node '{}'", resolved_node_id)))?;
+
+        self.publisher.publish(EntityChanged {
+            entity: EntityKind::Structure,
+            action: ChangeAction::Updated,
+            id: resolved_node_id.clone(),
+            course_id: Some(node_course_id),
+        });
+
+        Ok(())
     }
 
     // ------------------------------------------------------------------
@@ -192,7 +205,8 @@ impl StructureService {
 
         let position = 0;
 
-        self.repo
+        let node = self
+            .repo
             .create_node(
                 &node_id,
                 &resolved_course,
@@ -202,7 +216,22 @@ impl StructureService {
                 Some(&dir_id),
             )
             .await
-            .map_err(|e| map_repo_error(e, "create directory node"))
+            .map_err(|e| map_repo_error(e, "create directory node"))?;
+
+        self.publisher.publish(EntityChanged {
+            entity: EntityKind::Structure,
+            action: ChangeAction::Created,
+            id: node_id,
+            course_id: Some(resolved_course.clone()),
+        });
+        self.publisher.publish(EntityChanged {
+            entity: EntityKind::Directory,
+            action: ChangeAction::Created,
+            id: dir_id,
+            course_id: Some(resolved_course),
+        });
+
+        Ok(node)
     }
 
     // ------------------------------------------------------------------
@@ -222,6 +251,12 @@ impl StructureService {
                 resolved_id
             )));
         }
+
+        let course_id = self
+            .repo
+            .get_node_course_id(&resolved_id)
+            .await
+            .map_err(|e| map_repo_error(e, &format!("get course_id for node '{}'", resolved_id)))?;
 
         let resource_ids = self
             .repo
@@ -261,6 +296,21 @@ impl StructureService {
 
         let _ = self.repo.delete_node(&resolved_id).await;
 
+        self.publisher.publish(EntityChanged {
+            entity: EntityKind::Structure,
+            action: ChangeAction::Deleted,
+            id: resolved_id.clone(),
+            course_id: Some(course_id.clone()),
+        });
+        for did in &directory_ids {
+            self.publisher.publish(EntityChanged {
+                entity: EntityKind::Directory,
+                action: ChangeAction::Deleted,
+                id: did.clone(),
+                course_id: Some(course_id.clone()),
+            });
+        }
+
         Ok(())
     }
 
@@ -281,6 +331,7 @@ impl StructureService {
             .get_node(&resolved_node_id)
             .await
             .map_err(|e| map_repo_error(e, &format!("get node '{}'", resolved_node_id)))?;
+        let course_id = node.course_id.clone();
 
         if node.is_directory {
             let resolved_name = StructureRules::validate_directory_name(new_name)?;
@@ -289,7 +340,14 @@ impl StructureService {
             self.dir_repo
                 .update_name(&dir_id, &resolved_name)
                 .await
-                .map_err(|e| map_repo_error(e, &format!("rename directory '{}'", dir_id)))
+                .map_err(|e| map_repo_error(e, &format!("rename directory '{}'", dir_id)))?;
+
+            self.publisher.publish(EntityChanged {
+                entity: EntityKind::Directory,
+                action: ChangeAction::Updated,
+                id: dir_id,
+                course_id: Some(course_id.clone()),
+            });
         } else {
             let resolved_name = StructureRules::validate_resource_name(new_name)?;
             let resource = node.resource.ok_or_else(|| {
@@ -299,8 +357,17 @@ impl StructureService {
             self.resource_repo
                 .update_name(&resource.id, &resolved_name)
                 .await
-                .map_err(|e| map_repo_error(e, &format!("rename resource '{}'", resource.id)))
+                .map_err(|e| map_repo_error(e, &format!("rename resource '{}'", resource.id)))?;
         }
+
+        self.publisher.publish(EntityChanged {
+            entity: EntityKind::Structure,
+            action: ChangeAction::Updated,
+            id: resolved_node_id.clone(),
+            course_id: Some(course_id),
+        });
+
+        Ok(())
     }
 
     /// Получить directory_id для узла структуры (если это директория).

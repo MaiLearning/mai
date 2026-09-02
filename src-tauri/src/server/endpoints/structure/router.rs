@@ -1,16 +1,15 @@
 use axum::routing::{get, patch};
 use axum::Router;
 use axum::{http::StatusCode, Json};
-use sqlx::SqlitePool;
 
+use crate::server::state::AppState;
 use crate::services::structure::StructureServiceError;
-use crate::utils::paths::AppPaths;
 
 use super::directory::router as directory_router;
 use super::node::router as node_router;
 use super::{get_by_course, get_by_resource, move_node};
 
-pub fn router() -> Router<(SqlitePool, AppPaths)> {
+pub fn router() -> Router<AppState> {
     Router::new()
         .route("/by-course/{course_id}", get(get_by_course::handler))
         .route("/by-resource/{resource_id}", get(get_by_resource::handler))

@@ -5,12 +5,11 @@ use axum::http::StatusCode;
 use axum::response::IntoResponse;
 use axum::Json;
 use serde::Deserialize;
-use sqlx::SqlitePool;
 
 use crate::database::sqlite::repositories::resource::SqliteResourceRepository;
 use crate::database::sqlite::repositories::resource_type::SqliteResourceTypeRepository;
+use crate::server::state::AppState;
 use crate::services::resource::{ResourceData, ResourceService};
-use crate::utils::paths::AppPaths;
 
 use super::router::map_error;
 
@@ -36,12 +35,12 @@ pub struct CreateResourceRequest {
     )
 )]
 pub async fn handler(
-    State((pool, app_paths)): State<(SqlitePool, AppPaths)>,
+    State(state): State<AppState>,
     Json(body): Json<CreateResourceRequest>,
 ) -> impl IntoResponse {
-    let repo = Arc::new(SqliteResourceRepository::new(pool.clone()));
-    let resource_type_repo = Arc::new(SqliteResourceTypeRepository::new(pool));
-    let service = ResourceService::new(app_paths, repo, resource_type_repo);
+    let repo = Arc::new(SqliteResourceRepository::new(state.pool.clone()));
+    let resource_type_repo = Arc::new(SqliteResourceTypeRepository::new(state.pool));
+    let service = ResourceService::new(state.app_paths.clone(), repo, resource_type_repo);
 
     let data = ResourceData {
         id: body.id,

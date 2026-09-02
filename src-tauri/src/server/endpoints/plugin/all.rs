@@ -4,11 +4,10 @@ use axum::extract::State;
 use axum::http::StatusCode;
 use axum::response::IntoResponse;
 use axum::Json;
-use sqlx::SqlitePool;
 
 use crate::database::sqlite::repositories::plugin::SqlitePluginRepository;
+use crate::server::state::AppState;
 use crate::services::plugin::{PluginData, PluginService};
-use crate::utils::paths::AppPaths;
 
 use super::router::map_error;
 
@@ -21,9 +20,9 @@ use super::router::map_error;
         (status = 200, description = "All plugins", body = [PluginData])
     )
 )]
-pub async fn handler(State((pool, app_paths)): State<(SqlitePool, AppPaths)>) -> impl IntoResponse {
-    let plugin_repo = Arc::new(SqlitePluginRepository::new(pool));
-    let service = PluginService::new(app_paths, plugin_repo);
+pub async fn handler(State(state): State<AppState>) -> impl IntoResponse {
+    let plugin_repo = Arc::new(SqlitePluginRepository::new(state.pool));
+    let service = PluginService::new(state.app_paths.clone(), plugin_repo);
 
     match service.list().await {
         Ok(plugins) => (StatusCode::OK, Json(serde_json::json!(plugins))).into_response(),

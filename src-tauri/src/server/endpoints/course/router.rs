@@ -1,11 +1,10 @@
 use axum::{routing::delete, routing::get, routing::post, routing::put, Router};
-use sqlx::SqlitePool;
 
-use crate::utils::paths::AppPaths;
+use crate::server::state::AppState;
 
 use super::{all, create, delete as delete_course, get, tags, update};
 
-pub fn router() -> Router<(SqlitePool, AppPaths)> {
+pub fn router() -> Router<AppState> {
     Router::new()
         .route("/", get(all::handler))
         .route("/tags", get(tags::handler))

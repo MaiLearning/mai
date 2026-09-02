@@ -5,11 +5,10 @@ use axum::http::StatusCode;
 use axum::response::IntoResponse;
 use axum::Json;
 use serde::Deserialize;
-use sqlx::SqlitePool;
 
 use crate::database::sqlite::repositories::plugin::SqlitePluginRepository;
+use crate::server::state::AppState;
 use crate::services::plugin::{PluginData, PluginManifest, PluginService};
-use crate::utils::paths::AppPaths;
 
 use super::router::map_error;
 
@@ -38,11 +37,11 @@ pub struct RegisterPluginRequest {
     )
 )]
 pub async fn handler(
-    State((pool, app_paths)): State<(SqlitePool, AppPaths)>,
+    State(state): State<AppState>,
     Json(body): Json<RegisterPluginRequest>,
 ) -> impl IntoResponse {
-    let plugin_repo = Arc::new(SqlitePluginRepository::new(pool));
-    let service = PluginService::new(app_paths, plugin_repo);
+    let plugin_repo = Arc::new(SqlitePluginRepository::new(state.pool));
+    let service = PluginService::new(state.app_paths.clone(), plugin_repo);
 
     let manifest = PluginManifest {
         id: body.id,
