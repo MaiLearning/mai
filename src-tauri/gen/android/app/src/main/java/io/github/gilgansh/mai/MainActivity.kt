@@ -1,4 +1,4 @@
-package com.anton.mai
+package io.github.gilgansh.mai
 
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge

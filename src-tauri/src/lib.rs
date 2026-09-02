@@ -13,7 +13,7 @@ pub fn run() {
     use tauri::Manager;
     let builder = tauri::Builder::default();
 
-    #[cfg(debug_assertions)]
+    #[cfg(feature = "pilot")]
     let builder = builder.plugin(tauri_plugin_pilot::init());
 
     builder

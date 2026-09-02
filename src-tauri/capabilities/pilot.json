@@ -1,0 +1,7 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "pilot",
+  "description": "Capability для tauri-pilot (dev-инструмент AI-тестирования; cargo-фича `pilot`)",
+  "windows": ["main"],
+  "permissions": ["pilot:default"]
+}

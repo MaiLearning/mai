@@ -1,8 +1,8 @@
 [package]
 name = "mai"
 version = "0.1.0"
-description = "A Tauri App"
-authors = ["you"]
+description = "The backend for the Mai application uses Tauri as the main framework."
+authors = ["GILGANSH"]
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
@@ -14,12 +14,17 @@ edition = "2021"
 name = "mai_lib"
 crate-type = ["staticlib", "cdylib", "rlib"]
 
+[features]
+# tauri-plugin-pilot — dev-инструмент AI-тестирования UI (tauri-pilot).
+# Собирается только с фичей: `tauri dev --features pilot`.
+pilot = ["dep:tauri-plugin-pilot"]
+
 [build-dependencies]
 tauri-build = { version = "2", features = [] }
 
 [dependencies]
 tauri = { version = "2", features = [] }
-tauri-plugin-pilot = { git = "https://github.com/mpiton/tauri-pilot" }
+tauri-plugin-pilot = { git = "https://github.com/mpiton/tauri-pilot", optional = true }
 tauri-plugin-opener = "2"
 tauri-plugin-log = "2"
 log = "0.4"

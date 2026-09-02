@@ -33,10 +33,10 @@ android {
     }
     // <<< mai-signing
     compileSdk = 36
-    namespace = "com.anton.mai"
+    namespace = "io.github.gilgansh.mai"
     defaultConfig {
         manifestPlaceholders["usesCleartextTraffic"] = "false"
-        applicationId = "com.anton.mai"
+        applicationId = "io.github.gilgansh.mai"
         minSdk = 24
         targetSdk = 36
         versionCode = tauriProperties.getProperty("tauri.android.versionCode", "1").toInt()

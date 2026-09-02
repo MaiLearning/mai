@@ -8,6 +8,7 @@
   ],
   "scripts": {
     "dev": "vite",
+    "dev:pilot": "tauri dev --features pilot",
     "build": "tsc && vite build",
     "test": "vitest run",
     "test:watch": "vitest",
