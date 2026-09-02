@@ -2,7 +2,7 @@ use utoipa::OpenApi;
 
 use super::endpoints::{
     course, health, plugin, resource, resource_type,
-    structure::{self, directory, move_node},
+    structure::{self, directory, move_node, node},
 };
 
 #[derive(OpenApi)]
@@ -24,7 +24,7 @@ use super::endpoints::{
         directory::create::handler,
         directory::list::handler,
         directory::get::handler,
-        directory::rename::handler,
+        node::rename::handler,
         directory::delete::handler,
         // Plugins
         plugin::all::handler,
@@ -55,7 +55,7 @@ use super::endpoints::{
         structure::move_node::MoveNodeResponse,
         structure::directory::create::CreateDirectoryRequest,
         structure::directory::list::ListDirectoriesQuery,
-        structure::directory::rename::RenameDirectoryRequest,
+        structure::node::rename::RenameNodeRequest,
         // Plugins
         crate::services::plugin::PluginData,
         crate::services::plugin::PluginKind,

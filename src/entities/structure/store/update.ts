@@ -1,7 +1,6 @@
 import { info, error as logError } from '@tauri-apps/plugin-log'
 import { atom } from 'jotai'
-import { renameDirectory as renameDirectoryService } from '../../directory/services'
-import { moveNode as moveNodeService } from '../services'
+import { moveNode as moveNodeService, renameNode as renameNodeService } from '../services'
 import { ROOT_ID } from '../tree'
 import { MoveAction, RenameAction } from './actions'
 import { structureTreeAtom } from './atoms'
@@ -49,10 +48,10 @@ export const moveNodeAtom = atom(
 )
 
 /**
- * renameNodeAtom — переименование узла.
+ * renameNodeAtom — переименование узла (директории или ресурса).
  *
- * Optimistic, как moveNodeAtom. Backend-контракт: переименование идёт
- * через renameDirectory (directory-сервис) для любых узлов.
+ * Optimistic, как moveNodeAtom. Backend-контракт: renameNode
+ * (structure-сервис) — сам ветвится по типу узла на бэкенде.
  * Если узел не найден — ничего не делает.
  */
 export const renameNodeAtom = atom(
@@ -65,7 +64,7 @@ export const renameNodeAtom = atom(
     executeAction(get, set, action)
 
     try {
-      await renameDirectoryService(input.nodeId, input.name)
+      await renameNodeService(input.nodeId, input.name)
       info(`Узел переименован: ${input.nodeId}`)
     } catch (e) {
       revertAction(get, set)

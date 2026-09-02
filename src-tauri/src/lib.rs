@@ -85,7 +85,7 @@ pub fn run() {
             client::command::structure::get_structure,
             client::command::structure::create_directory,
             client::command::structure::delete_node,
-            client::command::structure::rename_directory,
+            client::command::structure::rename_node,
             client::command::structure::move_node,
             client::command::structure::get_directories,
             plugins::theory::client::commands::get_theory_content,

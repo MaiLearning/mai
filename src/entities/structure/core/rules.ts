@@ -1,6 +1,7 @@
 import {
   InvalidDirectoryIdError,
   InvalidDirectoryNameError,
+  InvalidNodeNameError,
   InvalidParentError,
   InvalidPositionError,
   InvalidStructureNodeIdError,
@@ -17,6 +18,7 @@ function id(value: string, error: EntityError, label: string): string {
 }
 export const validateNodeId = (value: string) =>
   id(value, InvalidStructureNodeIdError, 'Идентификатор узла')
+export const validateNodeName = (value: string) => id(value, InvalidNodeNameError, 'Название узла')
 export const validateResourceId = (value: string) =>
   id(value, InvalidStructureResourceIdError, 'Идентификатор ресурса')
 export const validateDirectoryId = (value: string) =>

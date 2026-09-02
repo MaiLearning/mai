@@ -31,3 +31,8 @@ export const MoveStructureNodeInputSchema = z.object({
   newParentId: z.string().nullable(),
   position: z.number(),
 })
+
+export const RenameNodeInputSchema = z.object({
+  nodeId: z.string(),
+  name: z.string(),
+})

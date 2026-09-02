@@ -1,4 +1,5 @@
 export class InvalidStructureNodeIdError extends Error {}
+export class InvalidNodeNameError extends Error {}
 export class InvalidStructureResourceIdError extends Error {}
 export class InvalidDirectoryIdError extends Error {}
 export class InvalidDirectoryNameError extends Error {}

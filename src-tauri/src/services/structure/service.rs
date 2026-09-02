@@ -265,35 +265,42 @@ impl StructureService {
     }
 
     // ------------------------------------------------------------------
-    // rename_directory
+    // rename_node
     // ------------------------------------------------------------------
-    pub async fn rename_directory(
+    /// Переименовать узел структуры: директорию или ресурс.
+    pub async fn rename_node(
         &self,
         node_id: &str,
         new_name: &str,
     ) -> Result<(), StructureServiceError> {
         let resolved_node_id = StructureRules::validate_node_id(node_id)?;
-        let resolved_name = StructureRules::validate_directory_name(new_name)?;
 
-        // Найти узел и убедиться что это директория
+        // Найти узел и выбрать хранилище имени по типу узла.
         let node = self
             .repo
             .get_node(&resolved_node_id)
             .await
             .map_err(|e| map_repo_error(e, &format!("get node '{}'", resolved_node_id)))?;
 
-        if !node.is_directory {
-            return Err(StructureServiceError::Validation(
-                "Node is not a directory.".into(),
-            ));
+        if node.is_directory {
+            let resolved_name = StructureRules::validate_directory_name(new_name)?;
+            let dir_id = self.get_directory_id_for_node(&resolved_node_id).await?;
+
+            self.dir_repo
+                .update_name(&dir_id, &resolved_name)
+                .await
+                .map_err(|e| map_repo_error(e, &format!("rename directory '{}'", dir_id)))
+        } else {
+            let resolved_name = StructureRules::validate_resource_name(new_name)?;
+            let resource = node.resource.ok_or_else(|| {
+                StructureServiceError::Validation("Node has no resource data.".into())
+            })?;
+
+            self.resource_repo
+                .update_name(&resource.id, &resolved_name)
+                .await
+                .map_err(|e| map_repo_error(e, &format!("rename resource '{}'", resource.id)))
         }
-
-        let dir_id = self.get_directory_id_for_node(&resolved_node_id).await?;
-
-        self.dir_repo
-            .update_name(&dir_id, &resolved_name)
-            .await
-            .map_err(|e| map_repo_error(e, &format!("rename directory '{}'", dir_id)))
     }
 
     /// Получить directory_id для узла структуры (если это директория).

@@ -2,6 +2,7 @@ import type { z } from 'zod'
 import type {
   CreateStructureResourceInputSchema,
   MoveStructureNodeInputSchema,
+  RenameNodeInputSchema,
   StructureNodeFlatSchema,
   StructureSchema,
 } from './schema'
@@ -11,3 +12,4 @@ export type Structure = z.infer<typeof StructureSchema>
 export type StructureNodeFlat = StructureNode
 export type CreateStructureResourceInput = z.infer<typeof CreateStructureResourceInputSchema>
 export type MoveStructureNodeInput = z.infer<typeof MoveStructureNodeInputSchema>
+export type RenameNodeInput = z.infer<typeof RenameNodeInputSchema>

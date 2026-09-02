@@ -9,6 +9,13 @@ pub struct SqliteResourceRepository {
     pool: SqlitePool,
 }
 
+fn now_millis() -> i64 {
+    std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .expect("system time before unix epoch")
+        .as_millis() as i64
+}
+
 impl SqliteResourceRepository {
     pub fn new(pool: SqlitePool) -> Self {
         Self { pool }
@@ -106,6 +113,22 @@ impl ResourceRepository for SqliteResourceRepository {
         }
 
         Ok(data)
+    }
+
+    async fn update_name(&self, id: &str, name: &str) -> RepoResult<()> {
+        let result = sqlx::query("UPDATE resources SET name = ?, updated_at = ? WHERE id = ?")
+            .bind(name)
+            .bind(now_millis())
+            .bind(id)
+            .execute(&self.pool)
+            .await
+            .map_err(RepoError::Db)?;
+
+        if result.rows_affected() == 0 {
+            return Err(RepoError::NotFound(format!("Resource '{}' not found", id)));
+        }
+
+        Ok(())
     }
 
     async fn delete(&self, id: &str) -> RepoResult<ResourceData> {

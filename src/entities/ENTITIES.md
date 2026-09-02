@@ -51,9 +51,9 @@ State: `coursesAtom`, `selectedCourseIdAtom`, `coursesByIdAtom`
 ### directory
 Папка внутри курса, группирует узлы structure:
 `{id, courseId, name, createdAt, updatedAt}`.
-Входы: `CreateDirectoryInput` (с nullable `parentId`),
-`RenameDirectoryInput` (`nodeId` + `name`).
-State: `directoriesAtom` + операции create/delete/update/fetch.
+Вход: `CreateDirectoryInput` (с nullable `parentId`).
+State: `directoriesAtom` + операции create/delete/fetch. Переименование
+узлов (в т.ч. папок) — через сущность `structure` (`renameNodeAtom`).
 Из корня экспортируется **с неймспейсом**.
 
 ### kv

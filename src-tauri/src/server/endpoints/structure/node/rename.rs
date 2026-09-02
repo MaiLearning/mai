@@ -18,18 +18,19 @@ use super::super::router::map_error;
 
 #[derive(Deserialize, ToSchema)]
 #[serde(rename_all = "camelCase")]
-pub struct RenameDirectoryRequest {
+pub struct RenameNodeRequest {
     pub name: String,
 }
 
+/// Переименовать узел структуры: директорию или ресурс.
 #[utoipa::path(
     patch,
-    path = "/structures/directory/{id}",
-    request_body = RenameDirectoryRequest,
+    path = "/structures/node/{id}",
+    request_body = RenameNodeRequest,
     tag = "structures",
-    operation_id = "rename_directory",
+    operation_id = "rename_node",
     responses(
-        (status = 200, description = "Directory renamed"),
+        (status = 200, description = "Node renamed"),
         (status = 400, description = "Validation error"),
         (status = 404, description = "Not found")
     )
@@ -37,14 +38,14 @@ pub struct RenameDirectoryRequest {
 pub async fn handler(
     State((pool, _app_paths)): State<(SqlitePool, AppPaths)>,
     Path(node_id): Path<String>,
-    Json(body): Json<RenameDirectoryRequest>,
+    Json(body): Json<RenameNodeRequest>,
 ) -> impl IntoResponse {
     let repo = Arc::new(SqliteStructureRepository::new(pool.clone()));
     let dir_repo = Arc::new(SqliteDirectoryRepository::new(pool.clone()));
     let resource_repo = Arc::new(SqliteResourceRepository::new(pool));
     let service = StructureService::new(repo, dir_repo, resource_repo);
 
-    match service.rename_directory(&node_id, &body.name).await {
+    match service.rename_node(&node_id, &body.name).await {
         Ok(_) => (StatusCode::OK, Json(serde_json::json!({"status": "ok"}))),
         Err(err) => map_error(err),
     }

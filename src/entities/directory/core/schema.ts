@@ -13,8 +13,3 @@ export const CreateDirectoryInputSchema = z.object({
   name: z.string(),
   parentId: z.string().nullable(),
 })
-
-export const RenameDirectoryInputSchema = z.object({
-  nodeId: z.string(),
-  name: z.string(),
-})

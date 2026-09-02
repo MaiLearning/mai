@@ -1,11 +1,10 @@
 import { createStore } from 'jotai'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { createDirectory } from '../../directory/services/create'
-import { renameDirectory } from '../../directory/services/update'
 import { createResourceInStructure } from '../services/create'
 import { deleteNode } from '../services/delete'
 import { fetchStructure } from '../services/fetch'
-import { moveNode } from '../services/update'
+import { moveNode, renameNode } from '../services/update'
 import {
   canRedoAtom,
   canUndoAtom,
@@ -30,9 +29,8 @@ vi.mock('@tauri-apps/plugin-log', () => ({
 vi.mock('../services/fetch', () => ({ fetchStructure: vi.fn() }))
 vi.mock('../services/create', () => ({ createResourceInStructure: vi.fn() }))
 vi.mock('../services/delete', () => ({ deleteNode: vi.fn() }))
-vi.mock('../services/update', () => ({ moveNode: vi.fn() }))
+vi.mock('../services/update', () => ({ moveNode: vi.fn(), renameNode: vi.fn() }))
 vi.mock('../../directory/services/create', () => ({ createDirectory: vi.fn() }))
-vi.mock('../../directory/services/update', () => ({ renameDirectory: vi.fn() }))
 vi.mock('../../directory/services/delete', () => ({ deleteDirectory: vi.fn() }))
 vi.mock('../../directory/services/fetch', () => ({ fetchDirectories: vi.fn() }))
 
@@ -41,7 +39,7 @@ const invokeMove = vi.mocked(moveNode)
 const invokeDelete = vi.mocked(deleteNode)
 const invokeCreateResource = vi.mocked(createResourceInStructure)
 const invokeCreateDirectory = vi.mocked(createDirectory)
-const invokeRename = vi.mocked(renameDirectory)
+const invokeRename = vi.mocked(renameNode)
 
 const folder = {
   id: 'folder-1',

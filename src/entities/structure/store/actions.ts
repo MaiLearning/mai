@@ -1,4 +1,4 @@
-import { renameDirectory as renameDirectoryService } from '../../directory/services'
+import { renameNode as renameNodeService } from '../services'
 import { deleteNode as deleteNodeService } from '../services/delete'
 import { moveNode as moveNodeService } from '../services/update'
 import { type Node, ROOT_ID, type Tree } from '../tree'
@@ -64,9 +64,10 @@ export class MoveAction implements StructureAction {
 }
 
 /**
- * RenameAction — переименование узла.
+ * RenameAction — переименование узла (директории или ресурса).
  *
- * Хранит старое и новое имя для отката.
+ * Хранит старое и новое имя для отката. Backend-вызов — renameNode
+ * (structure-сервис), он сам ветвится по типу узла.
  */
 export class RenameAction implements StructureAction {
   constructor(
@@ -84,11 +85,11 @@ export class RenameAction implements StructureAction {
   }
 
   sendDo(): Promise<void> {
-    return renameDirectoryService(this.nodeId, this.newName)
+    return renameNodeService(this.nodeId, this.newName)
   }
 
   sendUndo(): Promise<void> {
-    return renameDirectoryService(this.nodeId, this.oldName)
+    return renameNodeService(this.nodeId, this.oldName)
   }
 }
 

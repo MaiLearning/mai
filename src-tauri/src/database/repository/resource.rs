@@ -9,5 +9,6 @@ pub trait ResourceRepository: Send + Sync {
     async fn get(&self, id: &str) -> RepoResult<ResourceData>;
     async fn create(&self, data: ResourceData) -> RepoResult<ResourceData>;
     async fn update(&self, data: ResourceData) -> RepoResult<ResourceData>;
+    async fn update_name(&self, id: &str, name: &str) -> RepoResult<()>;
     async fn delete(&self, id: &str) -> RepoResult<ResourceData>;
 }

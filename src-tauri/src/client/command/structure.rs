@@ -53,7 +53,7 @@ pub async fn delete_node(pool: State<'_, SqlitePool>, node_id: String) -> Result
 }
 
 #[tauri::command]
-pub async fn rename_directory(
+pub async fn rename_node(
     pool: State<'_, SqlitePool>,
     node_id: String,
     name: String,
@@ -63,7 +63,7 @@ pub async fn rename_directory(
     let resource_repo = Arc::new(SqliteResourceRepository::new(pool.inner().clone()));
     let service = StructureService::new(repo, dir_repo, resource_repo);
     service
-        .rename_directory(&node_id, &name)
+        .rename_node(&node_id, &name)
         .await
         .map_err(|e| e.to_string())
 }

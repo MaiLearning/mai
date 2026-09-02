@@ -27,7 +27,7 @@
 - `store/actions.ts` — реализации `StructureAction` (Move, Rename,
   Remove, Create): `do/undo` чисто применяются к `Tree`,
   `sendDo/sendUndo` синхронизируют с backend через entity-сервисы
-  (structure + directory).
+  (structure; создание папки — directory).
 - `store/history.ts` — цепочка действий в атомах + операции
   `execute/revert/commitUndo/commitRedo/clear`.
 
@@ -40,8 +40,10 @@
 | undo / redo | **backend-first**: sendUndo/sendDo → commit | дерево не трогается, ошибка пробрасывается |
 
 Ограничения (унаследованы): undo удаления восстанавливает только сам
-узел, без детей (backend не поддерживает restore); переименование любых
-узлов идёт через `renameDirectory` (directory-сервис).
+узел, без детей (backend не поддерживает restore). Переименование любых
+узлов (директорий и ресурсов) идёт через `renameNode` (structure-сервис);
+backend сам ветвится по типу узла — IPC `rename_node`,
+HTTP `PATCH /structures/node/{id}`.
 
 ## Как пользоваться
 
