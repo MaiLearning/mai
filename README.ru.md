@@ -26,7 +26,7 @@ Tauri v2 · Rust · React + TypeScript · SQLite · Jotai · TipTap
 На Linux дополнительно нужны [системные зависимости Tauri](https://v2.tauri.app/start/prerequisites/).
 
 ```bash
-git clone {{REPO_URL}}
+git clone https://github.com/MaiLearning/mai.git
 cd mai
 yarn install
 yarn tauri dev

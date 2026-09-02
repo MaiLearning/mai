@@ -26,7 +26,7 @@ Prerequisites: [Rust](https://rustup.rs), Node.js 20+, [Yarn](https://yarnpkg.co
 On Linux, the [Tauri system dependencies](https://v2.tauri.app/start/prerequisites/) are also required.
 
 ```bash
-git clone {{REPO_URL}}
+git clone https://github.com/MaiLearning/mai.git
 cd mai
 yarn install
 yarn tauri dev
