@@ -3,6 +3,7 @@ use std::sync::Arc;
 use crate::database::repository::resource::ResourceRepository;
 use crate::database::repository::resource_type::ResourceTypeRepository;
 use crate::database::repository::RepoError;
+use crate::services::events::{ChangeAction, EntityChanged, EntityKind, SharedChangePublisher};
 use crate::services::resource::data::{ResourceData, ResourceTypeData};
 use crate::utils::paths::{AppPaths, FsError};
 
@@ -40,6 +41,7 @@ pub struct ResourceService {
     app_paths: AppPaths,
     resource_repo: Arc<dyn ResourceRepository>,
     resource_type_repo: Arc<dyn ResourceTypeRepository>,
+    publisher: SharedChangePublisher,
 }
 
 impl ResourceService {
@@ -47,11 +49,13 @@ impl ResourceService {
         app_paths: AppPaths,
         resource_repo: Arc<dyn ResourceRepository>,
         resource_type_repo: Arc<dyn ResourceTypeRepository>,
+        publisher: SharedChangePublisher,
     ) -> Self {
         Self {
             app_paths,
             resource_repo,
             resource_type_repo,
+            publisher,
         }
     }
 
@@ -86,7 +90,7 @@ impl ResourceService {
 
         let now = now_millis();
         let normalized = ResourceTypeData {
-            key,
+            key: key.clone(),
             name,
             description,
             plugin_id: data.plugin_id,
@@ -95,10 +99,20 @@ impl ResourceService {
             updated_at: now,
         };
 
-        self.resource_type_repo
+        let result = self
+            .resource_type_repo
             .create(normalized)
             .await
-            .map_err(|e| map_repo_error(e, "create resource type"))
+            .map_err(|e| map_repo_error(e, "create resource type"))?;
+
+        self.publisher.publish(EntityChanged {
+            entity: EntityKind::ResourceType,
+            action: ChangeAction::Created,
+            id: key,
+            course_id: None,
+        });
+
+        Ok(result)
     }
 
     pub async fn update_type(
@@ -114,7 +128,7 @@ impl ResourceService {
         rules::validate_resource_type_extensions(&data.supported_extensions)?;
 
         let normalized = ResourceTypeData {
-            key,
+            key: key.clone(),
             name,
             description,
             plugin_id: data.plugin_id,
@@ -123,18 +137,38 @@ impl ResourceService {
             updated_at: now_millis(),
         };
 
-        self.resource_type_repo
+        let result = self
+            .resource_type_repo
             .update(normalized)
             .await
-            .map_err(|e| map_repo_error(e, "update resource type"))
+            .map_err(|e| map_repo_error(e, "update resource type"))?;
+
+        self.publisher.publish(EntityChanged {
+            entity: EntityKind::ResourceType,
+            action: ChangeAction::Updated,
+            id: key,
+            course_id: None,
+        });
+
+        Ok(result)
     }
 
     pub async fn delete_type(&self, key: &str) -> Result<ResourceTypeData, ResourceServiceError> {
         let resolved_key = rules::validate_resource_type_key(key)?;
-        self.resource_type_repo
+        let result = self
+            .resource_type_repo
             .delete(&resolved_key)
             .await
-            .map_err(|e| map_repo_error(e, &format!("delete resource type '{}'", resolved_key)))
+            .map_err(|e| map_repo_error(e, &format!("delete resource type '{}'", resolved_key)))?;
+
+        self.publisher.publish(EntityChanged {
+            entity: EntityKind::ResourceType,
+            action: ChangeAction::Deleted,
+            id: resolved_key,
+            course_id: None,
+        });
+
+        Ok(result)
     }
 
     // ── Ресурсы ────────────────────────────────────────
@@ -181,6 +215,13 @@ impl ResourceService {
             .create_resource_dir(&course_id, &id)
             .map_err(|e| map_fs_error(e, "create resource dir"))?;
 
+        self.publisher.publish(EntityChanged {
+            entity: EntityKind::Resource,
+            action: ChangeAction::Created,
+            id,
+            course_id: Some(course_id),
+        });
+
         Ok(result)
     }
 
@@ -201,10 +242,20 @@ impl ResourceService {
             updated_at: now_millis(),
         };
 
-        self.resource_repo
+        let result = self
+            .resource_repo
             .update(normalized)
             .await
-            .map_err(|e| map_repo_error(e, &format!("update resource '{}'", id_for_err)))
+            .map_err(|e| map_repo_error(e, &format!("update resource '{}'", id_for_err)))?;
+
+        self.publisher.publish(EntityChanged {
+            entity: EntityKind::Resource,
+            action: ChangeAction::Updated,
+            id: result.id.clone(),
+            course_id: Some(result.course_id.clone()),
+        });
+
+        Ok(result)
     }
 
     pub async fn delete(&self, id: &str) -> Result<ResourceData, ResourceServiceError> {
@@ -227,6 +278,13 @@ impl ResourceService {
         self.app_paths
             .remove_resource_dir(&data.course_id, &resolved_id)
             .map_err(|e| map_fs_error(e, "remove resource dir"))?;
+
+        self.publisher.publish(EntityChanged {
+            entity: EntityKind::Resource,
+            action: ChangeAction::Deleted,
+            id: resolved_id,
+            course_id: Some(data.course_id),
+        });
 
         Ok(result)
     }

@@ -36,7 +36,11 @@ pub async fn handler(
     Json(body): Json<SetPluginEnabledRequest>,
 ) -> impl IntoResponse {
     let plugin_repo = Arc::new(SqlitePluginRepository::new(state.pool));
-    let service = PluginService::new(state.app_paths.clone(), plugin_repo);
+    let service = PluginService::new(
+        state.app_paths.clone(),
+        plugin_repo,
+        state.publisher.clone(),
+    );
 
     match service.set_enabled(&id, body.enabled).await {
         Ok(()) => (StatusCode::NO_CONTENT).into_response(),

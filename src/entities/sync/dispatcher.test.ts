@@ -15,6 +15,9 @@ const spies = vi.hoisted(() => ({
   course: vi.fn(),
   structure: vi.fn(),
   directory: vi.fn(),
+  resource: vi.fn(),
+  resourceType: vi.fn(),
+  plugin: vi.fn(),
 }))
 
 vi.mock('@/entities/course', async () => {
@@ -32,6 +35,19 @@ vi.mock('@/entities/directory', async () => {
 
   return { applyDirectoryChangeAtom: atom(null, spies.directory) }
 })
+vi.mock('@/entities/resource', async () => {
+  const { atom } = await import('jotai')
+
+  return {
+    applyResourceChangeAtom: atom(null, spies.resource),
+    applyResourceTypeChangeAtom: atom(null, spies.resourceType),
+  }
+})
+vi.mock('@/entities/plugins', async () => {
+  const { atom } = await import('jotai')
+
+  return { applyPluginChangeAtom: atom(null, spies.plugin) }
+})
 
 const baseEvent = {
   entity: 'course',
@@ -46,6 +62,9 @@ beforeEach(() => {
   spies.course.mockClear()
   spies.structure.mockClear()
   spies.directory.mockClear()
+  spies.resource.mockClear()
+  spies.resourceType.mockClear()
+  spies.plugin.mockClear()
 })
 
 describe('dispatchChangedEvent', () => {
@@ -66,6 +85,23 @@ describe('dispatchChangedEvent', () => {
     expect(spies.structure).toHaveBeenCalledTimes(1)
     expect(spies.directory).toHaveBeenCalledTimes(1)
     expect(spies.course).not.toHaveBeenCalled()
+  })
+
+  it('маршрутизирует события resource, resourceType и plugin по entity', () => {
+    dispatchChangedEvent({ ...baseEvent, entity: 'resource', id: 'res-1', courseId: 'course-1' })
+    dispatchChangedEvent({ ...baseEvent, entity: 'resourceType', id: 'type-1' })
+    dispatchChangedEvent({ ...baseEvent, entity: 'plugin', id: 'plg-1' })
+
+    expect(spies.resource).toHaveBeenCalledTimes(1)
+    expect(spies.resourceType).toHaveBeenCalledTimes(1)
+    expect(spies.plugin).toHaveBeenCalledTimes(1)
+    expect(spies.course).not.toHaveBeenCalled()
+  })
+
+  it('маршрутизирует resource-событие и без courseId (guard — дело applier)', () => {
+    dispatchChangedEvent({ ...baseEvent, entity: 'resource', id: 'res-1', courseId: null })
+
+    expect(spies.resource).toHaveBeenCalledTimes(1)
   })
 
   it('игнорирует ipc-событие (фронт уже обновил сторы сам)', () => {

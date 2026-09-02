@@ -1,4 +1,5 @@
 export { resourcesAtom, resourceTypesAtom } from './atoms'
 export { createResourceTypeAtom } from './create'
 export { loadResourceTypesAtom } from './fetch'
+export { applyResourceChangeAtom, applyResourceTypeChangeAtom } from './sync'
 export { updateResourceAtom } from './update'

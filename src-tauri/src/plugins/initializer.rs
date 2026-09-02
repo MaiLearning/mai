@@ -5,11 +5,19 @@ use sqlx::SqlitePool;
 use crate::database::sqlite::repositories::plugin::SqlitePluginRepository;
 use crate::database::sqlite::repositories::resource::SqliteResourceRepository;
 use crate::database::sqlite::repositories::resource_type::SqliteResourceTypeRepository;
+use crate::services::events::{ChangePublisher, EntityChanged};
 use crate::services::plugin::PluginService;
 use crate::services::resource::ResourceService;
 use crate::utils::paths::AppPaths;
 
 use super::registry::register_internal_plugins;
+
+/// Заглушка паблишера: при старте слушателей ещё нет, события никуда не идут.
+struct NoopPublisher;
+
+impl ChangePublisher for NoopPublisher {
+    fn publish(&self, _event: EntityChanged) {}
+}
 
 /// Инициализация internal-плагинов при старте приложения.
 ///
@@ -26,9 +34,14 @@ pub async fn initialize(pool: &SqlitePool, app_paths: &AppPaths) {
     let resource_repo = Arc::new(SqliteResourceRepository::new(pool.clone()));
     let resource_type_repo = Arc::new(SqliteResourceTypeRepository::new(pool.clone()));
 
-    let plugin_service = PluginService::new(app_paths.clone(), plugin_repo);
-    let resource_service =
-        ResourceService::new(app_paths.clone(), resource_repo, resource_type_repo);
+    let publisher = Arc::new(NoopPublisher);
+    let plugin_service = PluginService::new(app_paths.clone(), plugin_repo, publisher.clone());
+    let resource_service = ResourceService::new(
+        app_paths.clone(),
+        resource_repo,
+        resource_type_repo,
+        publisher,
+    );
 
     // Получаем существующие плагины и типы ресурсов
     let existing_plugins = match plugin_service.list().await {

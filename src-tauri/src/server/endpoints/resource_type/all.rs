@@ -24,7 +24,12 @@ use super::router::map_error;
 pub async fn handler(State(state): State<AppState>) -> impl IntoResponse {
     let repo = Arc::new(SqliteResourceRepository::new(state.pool.clone()));
     let resource_type_repo = Arc::new(SqliteResourceTypeRepository::new(state.pool));
-    let service = ResourceService::new(state.app_paths.clone(), repo, resource_type_repo);
+    let service = ResourceService::new(
+        state.app_paths.clone(),
+        repo,
+        resource_type_repo,
+        state.publisher.clone(),
+    );
 
     match service.list_types().await {
         Ok(types) => (StatusCode::OK, Json(serde_json::json!(types))).into_response(),

@@ -2,6 +2,7 @@ use std::sync::Arc;
 
 use crate::database::repository::plugin::PluginRepository;
 use crate::database::repository::RepoError;
+use crate::services::events::{ChangeAction, EntityChanged, EntityKind, SharedChangePublisher};
 use crate::utils::paths::{AppPaths, FsError};
 
 use super::data::{PluginData, PluginKind, PluginManifest};
@@ -38,13 +39,19 @@ fn map_fs_error(e: FsError, context: &str) -> PluginServiceError {
 pub struct PluginService {
     app_paths: AppPaths,
     plugin_repo: Arc<dyn PluginRepository>,
+    publisher: SharedChangePublisher,
 }
 
 impl PluginService {
-    pub fn new(app_paths: AppPaths, plugin_repo: Arc<dyn PluginRepository>) -> Self {
+    pub fn new(
+        app_paths: AppPaths,
+        plugin_repo: Arc<dyn PluginRepository>,
+        publisher: SharedChangePublisher,
+    ) -> Self {
         Self {
             app_paths,
             plugin_repo,
+            publisher,
         }
     }
 
@@ -121,6 +128,13 @@ impl PluginService {
             .write_plugin_manifest(&id, &manifest_json)
             .map_err(|e| map_fs_error(e, "write plugin manifest"))?;
 
+        self.publisher.publish(EntityChanged {
+            entity: EntityKind::Plugin,
+            action: ChangeAction::Created,
+            id,
+            course_id: None,
+        });
+
         Ok(data)
     }
 
@@ -171,6 +185,13 @@ impl PluginService {
             .remove_plugin_dir(&resolved_id)
             .map_err(|e| map_fs_error(e, "remove plugin dir"))?;
 
+        self.publisher.publish(EntityChanged {
+            entity: EntityKind::Plugin,
+            action: ChangeAction::Deleted,
+            id: resolved_id,
+            course_id: None,
+        });
+
         Ok(data)
     }
     // Здесь был метод update но ИИ его удалил. В целом - в обновлении нуждается только external
@@ -181,7 +202,16 @@ impl PluginService {
         self.plugin_repo
             .set_enabled(&resolved_id, enabled)
             .await
-            .map_err(|e| map_repo_error(e, &format!("set_enabled '{}'", resolved_id)))
+            .map_err(|e| map_repo_error(e, &format!("set_enabled '{}'", resolved_id)))?;
+
+        self.publisher.publish(EntityChanged {
+            entity: EntityKind::Plugin,
+            action: ChangeAction::Updated,
+            id: resolved_id,
+            course_id: None,
+        });
+
+        Ok(())
     }
 
     // -- Файловые операции -------------------------------------------------

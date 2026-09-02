@@ -96,4 +96,21 @@ mod tests {
         assert_eq!(json["courseId"], serde_json::Value::Null);
         assert_eq!(json["timestamp"], 42);
     }
+
+    #[test]
+    fn entity_kind_resource_type_serializes_camel_case() {
+        let event = EntityChanged {
+            entity: EntityKind::ResourceType,
+            action: ChangeAction::Created,
+            id: "theory".to_string(),
+            course_id: None,
+        };
+
+        let json = serde_json::to_value(&event).unwrap();
+
+        assert_eq!(json["entity"], "resourceType");
+        assert_eq!(json["action"], "created");
+        assert_eq!(json["id"], "theory");
+        assert_eq!(json["courseId"], serde_json::Value::Null);
+    }
 }

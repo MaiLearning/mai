@@ -27,8 +27,12 @@ pub async fn create_resource(
     // 1. Создать ресурс (зеркалит Axum POST /resources)
     let resource_repo = Arc::new(SqliteResourceRepository::new(pool.inner().clone()));
     let resource_type_repo = Arc::new(SqliteResourceTypeRepository::new(pool.inner().clone()));
-    let resource_service =
-        ResourceService::new(app_paths.inner().clone(), resource_repo, resource_type_repo);
+    let resource_service = ResourceService::new(
+        app_paths.inner().clone(),
+        resource_repo,
+        resource_type_repo,
+        publishers.ipc.clone(),
+    );
 
     resource_service
         .create(ResourceData {
@@ -74,6 +78,7 @@ pub async fn create_resource(
 pub async fn update_resource(
     pool: State<'_, SqlitePool>,
     app_paths: State<'_, AppPaths>,
+    publishers: State<'_, ChangePublishers>,
     resource_id: String,
     course_id: String,
     type_key: Option<String>,
@@ -81,8 +86,12 @@ pub async fn update_resource(
 ) -> Result<ResourceData, String> {
     let resource_repo = Arc::new(SqliteResourceRepository::new(pool.inner().clone()));
     let resource_type_repo = Arc::new(SqliteResourceTypeRepository::new(pool.inner().clone()));
-    let resource_service =
-        ResourceService::new(app_paths.inner().clone(), resource_repo, resource_type_repo);
+    let resource_service = ResourceService::new(
+        app_paths.inner().clone(),
+        resource_repo,
+        resource_type_repo,
+        publishers.ipc.clone(),
+    );
 
     let existing = resource_service
         .get(&resource_id)

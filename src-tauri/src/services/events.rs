@@ -17,6 +17,9 @@ pub enum EntityKind {
     Course,
     Structure,
     Directory,
+    Resource,
+    ResourceType,
+    Plugin,
 }
 
 /// Тип изменения.

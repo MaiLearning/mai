@@ -41,7 +41,12 @@ pub async fn handler(
 ) -> impl IntoResponse {
     let repo = Arc::new(SqliteResourceRepository::new(state.pool.clone()));
     let resource_type_repo = Arc::new(SqliteResourceTypeRepository::new(state.pool));
-    let service = ResourceService::new(state.app_paths.clone(), repo, resource_type_repo);
+    let service = ResourceService::new(
+        state.app_paths.clone(),
+        repo,
+        resource_type_repo,
+        state.publisher.clone(),
+    );
 
     let data = ResourceTypeData {
         key: body.key,

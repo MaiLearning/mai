@@ -6,13 +6,24 @@ use tauri::State;
 
 use crate::database::sqlite::repositories::resource::SqliteResourceRepository;
 use crate::database::sqlite::repositories::resource_type::SqliteResourceTypeRepository;
+use crate::services::events::SharedChangePublisher;
 use crate::services::resource::{ResourceService, ResourceTypeData};
+use crate::utils::events::ChangePublishers;
 use crate::utils::paths::AppPaths;
 
-fn build_service(pool: &SqlitePool, app_paths: &AppPaths) -> ResourceService {
+fn build_service(
+    pool: &SqlitePool,
+    app_paths: &AppPaths,
+    publisher: SharedChangePublisher,
+) -> ResourceService {
     let resource_repo = Arc::new(SqliteResourceRepository::new(pool.clone()));
     let resource_type_repo = Arc::new(SqliteResourceTypeRepository::new(pool.clone()));
-    ResourceService::new(app_paths.clone(), resource_repo, resource_type_repo)
+    ResourceService::new(
+        app_paths.clone(),
+        resource_repo,
+        resource_type_repo,
+        publisher,
+    )
 }
 
 #[derive(Deserialize)]
@@ -29,8 +40,9 @@ pub struct CreateResourceTypeRequest {
 pub async fn list_resource_types(
     pool: State<'_, SqlitePool>,
     app_paths: State<'_, AppPaths>,
+    publishers: State<'_, ChangePublishers>,
 ) -> Result<Vec<ResourceTypeData>, String> {
-    build_service(pool.inner(), app_paths.inner())
+    build_service(pool.inner(), app_paths.inner(), publishers.ipc.clone())
         .list_types()
         .await
         .map_err(|e| e.to_string())
@@ -40,6 +52,7 @@ pub async fn list_resource_types(
 pub async fn create_resource_type(
     pool: State<'_, SqlitePool>,
     app_paths: State<'_, AppPaths>,
+    publishers: State<'_, ChangePublishers>,
     request: CreateResourceTypeRequest,
 ) -> Result<ResourceTypeData, String> {
     let data = ResourceTypeData {
@@ -52,7 +65,7 @@ pub async fn create_resource_type(
         updated_at: 0,
     };
 
-    build_service(pool.inner(), app_paths.inner())
+    build_service(pool.inner(), app_paths.inner(), publishers.ipc.clone())
         .create_type(data)
         .await
         .map_err(|e| e.to_string())

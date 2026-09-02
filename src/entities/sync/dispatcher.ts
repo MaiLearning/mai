@@ -2,6 +2,8 @@ import { warn } from '@tauri-apps/plugin-log'
 import { getDefaultStore } from 'jotai'
 import { applyCourseChangeAtom } from '@/entities/course'
 import { applyDirectoryChangeAtom } from '@/entities/directory'
+import { applyPluginChangeAtom } from '@/entities/plugins'
+import { applyResourceChangeAtom, applyResourceTypeChangeAtom } from '@/entities/resource'
 import { applyStructureChangeAtom } from '@/entities/structure'
 import { type ChangedEvent, ChangedEventSchema } from './protocol'
 
@@ -9,6 +11,9 @@ const appliers = {
   course: applyCourseChangeAtom,
   structure: applyStructureChangeAtom,
   directory: applyDirectoryChangeAtom,
+  resource: applyResourceChangeAtom,
+  resourceType: applyResourceTypeChangeAtom,
+  plugin: applyPluginChangeAtom,
 }
 
 // Атомы живут вне React — используем дефолтный jotai-store приложения

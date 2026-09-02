@@ -20,7 +20,7 @@
 
 ```json
 {
-  "entity": "course | structure | directory",
+  "entity": "course | structure | directory | resource | resourceType | plugin",
   "action": "created | updated | deleted",
   "id": "…",
   "courseId": "… | null",
@@ -33,7 +33,7 @@
 |------|-----|------|
 | Контракт | `src-tauri/src/services/events.rs` | типы + трейт `ChangePublisher` (сервисы не знают про Tauri) |
 | Доставка | `src-tauri/src/utils/events.rs` | `TauriChangePublisher` → `emit("entity://changed")` |
-| Публикация | сервисы `course`, `structure` | `publisher.publish(...)` после успешной мутации |
+| Публикация | сервисы `course`, `structure`, `resource` (ресурсы и их типы), `plugin` | `publisher.publish(...)` после успешной мутации |
 | Приём | `src/app/runner/task/init-events.ts` | одна подписка `listen('entity://changed')` на всё приложение |
 | Маршрутизация | `src/entities/sync/` | Zod-валидация payload, реестр «сущность → applier» |
 | Применение | `src/entities/<name>/store/sync.ts` | refetch через существующие load-атомы |
@@ -49,6 +49,11 @@
 - **Двойные события.** Операция над папкой публикует и `Directory`, и
   `Structure` (дерево и список папок — разные сторы). Два refetch вместо
   одного — приемлемая цена простоты v1.
+- **Ресурсы видны через дерево.** Список ресурсов (`resourcesAtom`) не
+  имеет загрузчика и потребителей — реакция на Resource-события:
+  refetch дерева structure курса (если оно открыто). Ресурс виден в UI
+  именно в узлах дерева (встроенный payload).
+- **Плагины/типы ресурсов** — глобальные списки, refetch без guard.
 - **Конфликты:** last-write-wins по `updatedAt`, как и раньше.
 - **Ошибки доставки** не влияют на результат мутации (fire-and-forget).
 - **Fake-режим** (`isFakeDataEnabled`): подписка не ставится — данные меняет
@@ -90,11 +95,19 @@ daemon-фазе (SSE-транспорт, см. TODO в `src-tauri/src/startup.rs
 
 ## Вне рамок v1
 
-- Домены `resource` / `resource_type` / `plugin` — следующая итерация
-  (каркас готов, добавляется по образцу course/structure).
 - `kv` / `task` / `theory` — по мере появления HTTP-эндпоинтов.
 - SSE/WebSocket-транспорт для daemon-сценария — TODO в
   `src-tauri/src/startup.rs`; шина (`ChangePublisher`) транспорт-агностична.
+
+## Известные ограничения
+
+- **Удаление ресурса через HTTP не удаляет его узел структуры**
+  (pre-existing поведение домена resource): `DELETE /resources/{id}`
+  удаляет запись и директорию ресурса, но узел дерева остаётся — после
+  refetch дерево покажет узел-сироту. Целостность structure↔resource
+  — отдельная задача, не событийная.
+- `add_internal` (регистрация internal-плагинов на старте) не публикует
+  событий — слушателей ещё нет.
 
 ## Открытые вопросы
 

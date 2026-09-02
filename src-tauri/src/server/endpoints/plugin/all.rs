@@ -22,7 +22,11 @@ use super::router::map_error;
 )]
 pub async fn handler(State(state): State<AppState>) -> impl IntoResponse {
     let plugin_repo = Arc::new(SqlitePluginRepository::new(state.pool));
-    let service = PluginService::new(state.app_paths.clone(), plugin_repo);
+    let service = PluginService::new(
+        state.app_paths.clone(),
+        plugin_repo,
+        state.publisher.clone(),
+    );
 
     match service.list().await {
         Ok(plugins) => (StatusCode::OK, Json(serde_json::json!(plugins))).into_response(),

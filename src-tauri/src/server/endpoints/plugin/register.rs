@@ -41,7 +41,11 @@ pub async fn handler(
     Json(body): Json<RegisterPluginRequest>,
 ) -> impl IntoResponse {
     let plugin_repo = Arc::new(SqlitePluginRepository::new(state.pool));
-    let service = PluginService::new(state.app_paths.clone(), plugin_repo);
+    let service = PluginService::new(
+        state.app_paths.clone(),
+        plugin_repo,
+        state.publisher.clone(),
+    );
 
     let manifest = PluginManifest {
         id: body.id,
