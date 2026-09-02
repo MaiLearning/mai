@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components'
 export const ROW_INDENT = 16
 
 /** Направляющая уровня вложенности: вертикальная линия «из шеврона» родителя. */
-export const Guide = styled.span<{ $level: number; $indent: number }>`
+export const Guide = styled.span<{ $level: number; $indent: number; $end?: boolean }>`
   position: absolute;
   top: 0;
   /* Перекрытие на 1px вниз: строки разделены зазором gap: 1px у Tree,
@@ -18,6 +18,23 @@ export const Guide = styled.span<{ $level: number; $indent: number }>`
   width: 1px;
   background: ${({ theme }) => theme.colors.border};
   pointer-events: none;
+
+  /* Конец линии (последняя строка поддерева): вместо обрыва — один
+     скруглённый поворот вправо у низа строки. Радиус — на стыке вертикали
+     и горизонтали (border-bottom-left-radius), хвост заканчивается плоским
+     срезом. Высота почти во всю строку: линия доведена до конца поддерева. */
+  ${({ $end, theme }) =>
+    $end &&
+    css`
+      bottom: auto;
+      box-sizing: border-box;
+      height: calc(100% - 2px);
+      width: 10px;
+      background: none;
+      border-left: 1px solid ${theme.colors.border};
+      border-bottom: 1px solid ${theme.colors.border};
+      border-bottom-left-radius: 4px;
+    `}
 `
 
 export const Row = styled.div<{

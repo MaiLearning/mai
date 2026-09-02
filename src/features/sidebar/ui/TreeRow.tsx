@@ -1,5 +1,6 @@
 import { forwardRef, type MouseEvent, useEffect, useRef, useState } from 'react'
 import type { DropKind } from '../model/dnd'
+import type { GuideSegment } from '../model/tree-utils'
 import type { CourseNode } from '../model/types'
 import { ChevronIcon, FolderIcon, FolderOpenIcon, ResourceIcon, TrashIcon } from './icons'
 import {
@@ -38,8 +39,8 @@ interface TreeRowProps {
   dimmed?: boolean
   /** Активная зона дропа на этой строке: линия вставки или подсветка папки. */
   dropKind?: DropKind | null
-  /** Уровни направляющих линий этой строки (см. computeGuideLevels). */
-  guideLevels?: number[]
+  /** Направляющие линии этой строки (см. computeGuideLevels). */
+  guideLevels?: GuideSegment[]
 }
 
 /**
@@ -110,10 +111,11 @@ export const TreeRow = forwardRef<HTMLDivElement, TreeRowProps>(function TreeRow
     >
       {/* Направляющие — первый контент строки: фон красится под линией,
           шеврон и иконки — над ней. */}
-      {guideLevels.map((guideLevel) => (
+      {guideLevels.map((segment) => (
         <Guide
-          key={guideLevel}
-          $level={guideLevel}
+          key={segment.level}
+          $level={segment.level}
+          $end={segment.end}
           $indent={level * ROW_INDENT}
           aria-hidden="true"
         />

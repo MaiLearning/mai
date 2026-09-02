@@ -60,21 +60,34 @@ export function removeChildrenOf(items: FlattenedItem[], ids: string[]): Flatten
   })
 }
 
+/** Сегмент направляющей линии на строке. */
+export interface GuideSegment {
+  /** Уровень вложенности линии (линия папки-предка на глубине level - 1). */
+  level: number
+  /**
+   * Строка — последняя в поддереве папки этого уровня: линия завершается
+   * скруглённым поворотом вправо у низа строки. Уголок рисует только самая
+   * внутренняя из заканчивающихся здесь линий; остальные тормозятся прямой.
+   */
+  end: boolean
+}
+
 /**
- * Уровни направляющих линий для каждой строки видимого списка.
+ * Направляющие линии для каждой строки видимого списка.
  *
- * Направляющая уровня k — вертикальная линия от первой до последней дочерней
- * строки уровня k; на строке самой папки-родителя она не рисуется. Сегмент
- * уровня k рисуется на строке i, если:
- * - depth(i) === k — свой уровень (включая последнего ребёнка списка), либо
- * - k < depth(i) и первая строка после i с depth <= k имеет depth === k —
- *   линия продолжается ниже: через поддерево вложенной папки к следующим
- *   братьям.
+ * Линия уровня k принадлежит папке-предку на глубине k - 1 и тянется по
+ * всем строкам её поддерева; на строке самой папки она не рисуется.
+ * Поддерево заканчивается перед первой строкой с depth <= k - 1, поэтому:
+ * - сегмент уровня k есть на каждой строке-потомке (level <= depth(i));
+ * - `end: true` — только на последней строке поддерева: следующая строка
+ *   с depth <= k - 1 идёт сразу за ней (или её нет вовсе и строка
+ *   последняя в списке). Если на строке заканчиваются несколько линий,
+ *   `end` получает только самая внутренняя (максимальный уровень).
  *
  * Строки идут в DFS-порядке, поэтому «первая строка с depth <= k» всегда
  * принадлежит тому же прогону уровня k, что и строка i.
  */
-export function computeGuideLevels(items: FlattenedItem[]): number[][] {
+export function computeGuideLevels(items: FlattenedItem[]): GuideSegment[][] {
   const maxDepth = items.reduce((max, item) => Math.max(max, item.depth), 0)
   // nextAtOrBelow[k][i] — индекс первой строки после i с depth <= k (-1 если нет).
   const nextAtOrBelow: number[][] = Array.from({ length: maxDepth + 1 }, () => [])
@@ -87,17 +100,17 @@ export function computeGuideLevels(items: FlattenedItem[]): number[][] {
   }
 
   return items.map((item, i) => {
-    const levels: number[] = []
-    for (let k = 1; k <= item.depth; k++) {
-      if (item.depth === k) {
-        levels.push(k)
-        continue
-      }
-      const j = nextAtOrBelow[k][i]
-      if (j !== -1 && items[j].depth === k) levels.push(k)
+    let innermostEnd = -1
+    for (let level = 1; level <= item.depth; level++) {
+      const terminator = nextAtOrBelow[level - 1][i]
+      const ends = terminator === -1 ? i === items.length - 1 : terminator === i + 1
+      if (ends) innermostEnd = level
     }
 
-    return levels
+    return Array.from({ length: item.depth }, (_, index) => ({
+      level: index + 1,
+      end: index + 1 === innermostEnd,
+    }))
   })
 }
 

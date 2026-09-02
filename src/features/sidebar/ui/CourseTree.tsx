@@ -38,6 +38,7 @@ import {
   computeGuideLevels,
   type FlattenedItem,
   flattenTree,
+  type GuideSegment,
   removeChildrenOf,
 } from '../model/tree-utils'
 import type { CourseNode } from '../model/types'
@@ -159,8 +160,8 @@ export function CourseTree({
 
     return removeChildrenOf(flattened, exclude)
   }, [nodes, visibleIds, expandedIds, dragId])
-  // Уровни направляющих для каждой строки: линия уровня продолжается
-  // через поддеревья вложенных папок к следующим братьям.
+  // Направляющие для каждой строки: линия уровня длится через поддеревья
+  // вложенных папок, на последней строке поддерева закругляется вправо.
   const guideLevels = useMemo(() => computeGuideLevels(rows), [rows])
   const isExpanded = useCallback(
     (item: FlattenedItem) =>
@@ -390,8 +391,8 @@ function TreeCanvas({ disabled, dragging, onKeyDown, children }: TreeCanvasProps
 
 interface TreeRowItemProps {
   item: FlattenedItem
-  /** Уровни направляющих линий этой строки (см. computeGuideLevels). */
-  guideLevels: number[]
+  /** Направляющие линии этой строки (см. computeGuideLevels). */
+  guideLevels: GuideSegment[]
   /** Активная зона дропа на этой строке (линия вставки или подсветка папки). */
   dropKind: 'before' | 'inside' | 'after' | null
   disabled: boolean
