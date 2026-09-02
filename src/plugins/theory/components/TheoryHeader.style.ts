@@ -19,6 +19,15 @@ export const HeaderTop = styled.div`
   flex-wrap: wrap;
 `
 
+/** Левая колонка шапки (breadcrumbs, название, мета) — занимает всю доступную ширину. */
+export const HeaderColumn = styled.div`
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+`
+
 export const Breadcrumbs = styled.nav`
   display: flex;
   align-items: center;
@@ -47,20 +56,15 @@ export const Crumb = styled.span<{ $current?: boolean }>`
     `}
 `
 
-export const TitleRow = styled.div`
-  display: flex;
-  align-items: center;
-  gap: ${({ theme }) => theme.spacing.md};
-  min-width: 0;
-`
-
-/** Безрамочное поле названия материала в стиле заголовка страницы. */
-export const TitleInput = styled.input`
-  flex: 1;
-  min-width: 0;
+/** Безрамочное поле названия материала (textarea с авто-высотой): во всю ширину, с переносом строк. */
+export const TitleTextarea = styled.textarea`
+  display: block;
+  width: 100%;
   border: none;
   background: transparent;
   padding: 0;
+  resize: none;
+  overflow: hidden;
   color: ${({ theme }) => theme.colors.text};
   font-family: ${({ theme }) => theme.font.display};
   font-size: ${({ theme }) => theme.typography.headings.h2.fontSize};

@@ -1,6 +1,6 @@
 import { warn } from '@tauri-apps/plugin-log'
 import { ChevronRight, Clock3, Users } from 'lucide-react'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from '@/app/i18n'
 import { fetchCourseById } from '@/entities/course/services'
 import type { Resource } from '@/entities/resource'
@@ -10,12 +10,12 @@ import {
   Breadcrumbs,
   Crumb,
   Header,
+  HeaderColumn,
   HeaderTop,
   MetaDot,
   MetaItem,
   MetaRow,
-  TitleInput,
-  TitleRow,
+  TitleTextarea,
 } from './TheoryHeader.style'
 
 export interface TheoryHeaderProps {
@@ -55,6 +55,15 @@ export function TheoryHeader({
 }: TheoryHeaderProps) {
   const { t, i18n } = useTranslation('theory')
   const [crumbs, setCrumbs] = useState<CrumbEntry[]>([])
+  const titleRef = useRef<HTMLTextAreaElement>(null)
+
+  // Высота поля названия подстраивается под содержимое (перенос длинных названий).
+  useEffect(() => {
+    const el = titleRef.current
+    if (!el) return
+    el.style.height = 'auto'
+    el.style.height = `${el.scrollHeight}px`
+  }, [title])
 
   // Breadcrumbs строим из курса и цепочки папок структуры; ошибка не критична.
   useEffect(() => {
@@ -118,7 +127,7 @@ export function TheoryHeader({
   return (
     <Header>
       <HeaderTop>
-        <div style={{ minWidth: 0, display: 'flex', flexDirection: 'column', gap: 10 }}>
+        <HeaderColumn>
           {crumbs.length > 0 && (
             <Breadcrumbs aria-label={t('breadcrumbs_label')}>
               {crumbs.map((crumb, index) => (
@@ -130,18 +139,21 @@ export function TheoryHeader({
             </Breadcrumbs>
           )}
 
-          <TitleRow>
-            <TitleInput
-              value={title}
-              onChange={(e) => onTitleChange(e.target.value)}
-              onBlur={onTitleCommit}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') e.currentTarget.blur()
-              }}
-              aria-label={t('title_label')}
-              placeholder={t('title_placeholder')}
-            />
-          </TitleRow>
+          <TitleTextarea
+            ref={titleRef}
+            rows={1}
+            value={title}
+            onChange={(e) => onTitleChange(e.target.value)}
+            onBlur={onTitleCommit}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                e.preventDefault()
+                e.currentTarget.blur()
+              }
+            }}
+            aria-label={t('title_label')}
+            placeholder={t('title_placeholder')}
+          />
 
           <MetaRow>
             <MetaItem>
@@ -155,7 +167,7 @@ export function TheoryHeader({
                 : t('meta_draft')}
             </MetaItem>
           </MetaRow>
-        </div>
+        </HeaderColumn>
       </HeaderTop>
     </Header>
   )
