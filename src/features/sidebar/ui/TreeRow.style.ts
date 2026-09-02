@@ -123,17 +123,6 @@ export const Row = styled.div<{
       &:hover {
         background: ${theme.colors.primarySurface};
       }
-
-      &::before {
-        content: '';
-        position: absolute;
-        top: 6px;
-        bottom: 6px;
-        left: 2px;
-        width: 2px;
-        border-radius: ${theme.radii.pill};
-        background: ${theme.colors.primary};
-      }
     `}
 `
 
