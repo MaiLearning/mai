@@ -2,6 +2,8 @@
 
 Как изменения данных доезжают до интерфейса без перезагрузки и ручных обновлений.
 Дополнение к [ENTITIES.md](./ENTITIES.md).
+Требования к авторам эндпоинтов/доменов (что обязан реализовать для синхронизации) —
+[`src-tauri/src/server/endpoints/ENDPOINTS.md`](../../src-tauri/src/server/endpoints/ENDPOINTS.md).
 
 ## Зачем
 
