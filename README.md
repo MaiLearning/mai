@@ -41,11 +41,6 @@ yarn test           # Vitest
 cargo clippy        # run from src-tauri/
 ```
 
-## Plugins
-
-Mai is extensible via plugins. The plugin SDK (`mai-lib`, `mai-cli`) will be
-published separately.
-
 ## Documentation
 
 Internal documentation (architecture, entities, plugin contract) is in Russian:
