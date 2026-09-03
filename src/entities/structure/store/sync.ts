@@ -1,7 +1,7 @@
 import { warn } from '@tauri-apps/plugin-log'
 import type { Getter, Setter } from 'jotai'
 import { atom } from 'jotai'
-import type { ChangedEvent } from '@/entities/sync/protocol'
+import type { ChangedEvent } from '@/utils/sync/protocol'
 import { structureFlatByIdAtom } from './atoms'
 import { loadStructureAtom } from './fetch'
 

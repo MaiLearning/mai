@@ -1,6 +1,7 @@
 import { warn } from '@tauri-apps/plugin-log'
+import { atom } from 'jotai'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { dispatchChangedEvent } from './dispatcher'
+import { type ChangedEventAppliers, createEventDispatcher } from './dispatcher'
 
 vi.mock('@tauri-apps/plugin-log', () => ({
   info: vi.fn(),
@@ -10,44 +11,26 @@ vi.mock('@tauri-apps/plugin-log', () => ({
   trace: vi.fn(),
 }))
 
-// Мок-атомы с шпионами вместо реальных appliers сущностей
-const spies = vi.hoisted(() => ({
+// Шпионы-аплаеры: диспетчер вызывает их через атомы-обёртки (defaultStore.set)
+const spies = {
   course: vi.fn(),
   structure: vi.fn(),
   directory: vi.fn(),
   resource: vi.fn(),
   resourceType: vi.fn(),
   plugin: vi.fn(),
-}))
+}
 
-vi.mock('@/entities/course', async () => {
-  const { atom } = await import('jotai')
+const appliers: ChangedEventAppliers = {
+  course: atom(null, spies.course),
+  structure: atom(null, spies.structure),
+  directory: atom(null, spies.directory),
+  resource: atom(null, spies.resource),
+  resourceType: atom(null, spies.resourceType),
+  plugin: atom(null, spies.plugin),
+}
 
-  return { applyCourseChangeAtom: atom(null, spies.course) }
-})
-vi.mock('@/entities/structure', async () => {
-  const { atom } = await import('jotai')
-
-  return { applyStructureChangeAtom: atom(null, spies.structure) }
-})
-vi.mock('@/entities/directory', async () => {
-  const { atom } = await import('jotai')
-
-  return { applyDirectoryChangeAtom: atom(null, spies.directory) }
-})
-vi.mock('@/entities/resource', async () => {
-  const { atom } = await import('jotai')
-
-  return {
-    applyResourceChangeAtom: atom(null, spies.resource),
-    applyResourceTypeChangeAtom: atom(null, spies.resourceType),
-  }
-})
-vi.mock('@/entities/plugins', async () => {
-  const { atom } = await import('jotai')
-
-  return { applyPluginChangeAtom: atom(null, spies.plugin) }
-})
+const dispatchChangedEvent = createEventDispatcher(appliers)
 
 const baseEvent = {
   entity: 'course',
@@ -67,7 +50,7 @@ beforeEach(() => {
   spies.plugin.mockClear()
 })
 
-describe('dispatchChangedEvent', () => {
+describe('createEventDispatcher', () => {
   it('маршрутизирует http-событие в applier нужной сущности', () => {
     dispatchChangedEvent(baseEvent)
 

@@ -1,7 +1,7 @@
 import { warn } from '@tauri-apps/plugin-log'
 import { atom } from 'jotai'
 import { refetchStructureIfLoaded } from '@/entities/structure'
-import type { ChangedEvent } from '@/entities/sync/protocol'
+import type { ChangedEvent } from '@/utils/sync/protocol'
 import { loadResourceTypesAtom } from './fetch'
 
 function formatError(e: unknown): string {

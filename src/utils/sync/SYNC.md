@@ -1,7 +1,8 @@
 # Sync — автоматическая синхронизация данных (frontend ↔ backend)
 
 Как изменения данных доезжают до интерфейса без перезагрузки и ручных обновлений.
-Дополнение к [ENTITIES.md](./ENTITIES.md).
+Механизм живёт в `src/utils/sync/` — это инфраструктура приёма событий, а не сущность.
+Связанный документ: [ENTITIES.md](../../entities/ENTITIES.md).
 Требования к авторам эндпоинтов/доменов (что обязан реализовать для синхронизации) —
 [`src-tauri/src/server/endpoints/ENDPOINTS.md`](../../src-tauri/src/server/endpoints/ENDPOINTS.md).
 
@@ -12,7 +13,7 @@
 сервисный слой Rust-бэкенда; сервис после успешной мутации публикует событие,
 фронтенд получает его и перечитывает затронутые данные. Вторая роль той же
 механики — согласованность внутри фронтенда: все фичи читают и пишут данные
-только через сторы сущностей (см. [ENTITIES.md](./ENTITIES.md)), поэтому
+только через сторы сущностей (см. [ENTITIES.md](../../entities/ENTITIES.md)), поэтому
 обновление атома автоматически перерисовывает все зависимые компоненты
 (например, дерево курса и редактор узла).
 
@@ -36,8 +37,8 @@
 | Контракт | `src-tauri/src/services/events.rs` | типы + трейт `ChangePublisher` (сервисы не знают про Tauri) |
 | Доставка | `src-tauri/src/utils/events.rs` | `TauriChangePublisher` → `emit("entity://changed")` |
 | Публикация | сервисы `course`, `structure`, `resource` (ресурсы и их типы), `plugin` | `publisher.publish(...)` после успешной мутации |
-| Приём | `src/app/runner/task/init-events.ts` | одна подписка `listen('entity://changed')` на всё приложение |
-| Маршрутизация | `src/entities/sync/` | Zod-валидация payload, реестр «сущность → applier» |
+| Приём + реестр | `src/app/runner/task/init-events.ts` | одна подписка `listen('entity://changed')`; собирает реестр «сущность → applier» из атомов сущностей |
+| Маршрутизация | `src/utils/sync/` | Zod-валидация payload, диспетчер `createEventDispatcher` без знаний о сущностях |
 | Применение | `src/entities/<name>/store/sync.ts` | refetch через существующие load-атомы |
 
 Правила v1:
@@ -60,6 +61,9 @@
 - **Ошибки доставки** не влияют на результат мутации (fire-and-forget).
 - **Fake-режим** (`isFakeDataEnabled`): подписка не ставится — данные меняет
   только фронт, SSOT консистентен и так.
+- **Механизм — инфраструктура, не сущность.** `utils/sync` не импортирует
+  сущности: реестр appliers передаётся снаружи (`createEventDispatcher`
+  в init-events). Новая сущность = её applier + одна запись в реестре.
 
 ## Лестница оптимизации (v1 → v2 → v3)
 
@@ -93,7 +97,7 @@ daemon-фазе (SSE-транспорт, см. TODO в `src-tauri/src/startup.rs
   и отбрасывать устаревшие.
 - **Парность схем** Rust serde ↔ Zod: контракт закреплён тестом с двух
   сторон — `utils/events.rs::payload_uses_camel_case_keys` (Rust) и
-  `entities/sync/protocol.ts` (Zod). Контракт менять только парно.
+  `utils/sync/protocol.ts` (Zod). Контракт менять только парно.
 
 ## Вне рамок v1
 

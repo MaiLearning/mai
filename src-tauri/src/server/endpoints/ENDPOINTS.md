@@ -62,7 +62,7 @@ pub async fn handler(
 ## Обязательно: события синхронизации
 
 Каждая мутация данных доезжает до UI через событийную шину — механизм описан в
-`app/mai/src/entities/SYNC.md`. Требования к эндпоинтам:
+`app/mai/src/utils/sync/SYNC.md`. Требования к эндпоинтам:
 
 1. **Любой мутирующий эндпоинт** передаёт `state.publisher.clone()` (origin=http)
    в конструктор сервиса. Публикация — **в сервисе после успешной мутации**,
@@ -72,11 +72,12 @@ pub async fn handler(
    до/после ФС-операций — по образцу существующих сервисов.
 4. **Новая сущность** = правка контракта парно:
    - `EntityKind` в `services/events.rs` + контрактный тест в `utils/events.rs`;
-   - Zod-enum в `app/mai/src/entities/sync/protocol.ts` + тест маршрута в
-     `app/mai/src/entities/sync/dispatcher.test.ts`.
+   - Zod-enum в `app/mai/src/utils/sync/protocol.ts` + тест маршрута в
+     `app/mai/src/utils/sync/dispatcher.test.ts`.
    Rust и Zod меняются одним коммитом — расхождение = потерянные события во фронте.
 5. **Фронт-часть новой сущности**: applier в `src/entities/<name>/store/sync.ts`
-   (refetch штатными load-атомами) + маршрут в `src/entities/sync/dispatcher.ts`.
+   (refetch штатными load-атомами) + запись в реестре appliers
+   `src/app/runner/task/init_events.ts`.
 6. Стартап-инициализация (когда слушателей ещё нет) публикует через `NoopPublisher`
    (см. `plugins/initializer.rs`) — события наружу не идут.
 
@@ -93,8 +94,8 @@ pub async fn handler(
 ## Чек-лист: новый домен
 
 - [ ] сервис: `data.rs` / `rules.rs` / `service.rs` / `exceptions.rs` (+ repository trait + sqlite impl)
-- [ ] `EntityKind` (`services/events.rs`) + Zod-enum (`entities/sync/protocol.ts`) — парно, тесты с двух сторон
+- [ ] `EntityKind` (`services/events.rs`) + Zod-enum (`utils/sync/protocol.ts`) — парно, тесты с двух сторон
 - [ ] `publisher: SharedChangePublisher` в конструкторе сервиса, publish после каждой мутации
-- [ ] фронт: applier `store/sync.ts` + маршрут `entities/sync/dispatcher.ts`
+- [ ] фронт: applier `store/sync.ts` + запись в реестре `app/runner/task/init_events.ts`
 - [ ] папка эндпоинтов: `router.rs` + операции + регистрация (см. «Структура каталога»)
 - [ ] тег в `openapi.rs`
