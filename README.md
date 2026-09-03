@@ -45,7 +45,6 @@ cargo clippy        # run from src-tauri/
 
 Internal documentation (architecture, entities, plugin contract) is in Russian:
 
-- `AGENTS.md` — project overview for contributors and agents
 - `src/entities/ENTITIES.md` — domain entities and data flow
 - `src/plugins/PLUGINS.md` — internal plugin contract
 
