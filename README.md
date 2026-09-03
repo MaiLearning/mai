@@ -10,11 +10,21 @@
 
 ## Screenshots
 
-| Home | Courses |
-| --- | --- |
-| ![Home](.github/assets/home.png) | ![Courses](.github/assets/courses.png) |
+<p align="center">
+  <a href=".github/assets/home.png"><img src=".github/assets/home.png" width="49%" alt="Home"></a>
+  <a href=".github/assets/courses.png"><img src=".github/assets/courses.png" width="49%" alt="Courses"></a>
+</p>
 
-![Course editor](.github/assets/course-editor.png)
+<p align="center">
+  <img src=".github/assets/course-editor.png" width="72%" alt="Course editor">
+</p>
+
+<p align="center">
+  <a href=".github/assets/task-editor-choice.png"><img src=".github/assets/task-editor-choice.png" width="49%" alt="Task editor — single choice"></a>
+  <a href=".github/assets/task-editor-multi-choice.png"><img src=".github/assets/task-editor-multi-choice.png" width="49%" alt="Task editor — multiple choice"></a>
+  <a href=".github/assets/task-passing-true-false.png"><img src=".github/assets/task-passing-true-false.png" width="49%" alt="Task passing — true/false"></a>
+  <a href=".github/assets/task-passing-matching.png"><img src=".github/assets/task-passing-matching.png" width="49%" alt="Task passing — matching"></a>
+</p>
 
 ## Tech stack
 
