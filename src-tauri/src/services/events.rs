@@ -20,6 +20,7 @@ pub enum EntityKind {
     Resource,
     ResourceType,
     Plugin,
+    Link,
 }
 
 /// Тип изменения.

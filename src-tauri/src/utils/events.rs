@@ -113,4 +113,21 @@ mod tests {
         assert_eq!(json["id"], "theory");
         assert_eq!(json["courseId"], serde_json::Value::Null);
     }
+
+    #[test]
+    fn entity_kind_link_serializes_camel_case() {
+        let event = EntityChanged {
+            entity: EntityKind::Link,
+            action: ChangeAction::Deleted,
+            id: "l-1".to_string(),
+            course_id: Some("c-1".to_string()),
+        };
+
+        let json = serde_json::to_value(&event).unwrap();
+
+        assert_eq!(json["entity"], "link");
+        assert_eq!(json["action"], "deleted");
+        assert_eq!(json["id"], "l-1");
+        assert_eq!(json["courseId"], "c-1");
+    }
 }

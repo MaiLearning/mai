@@ -1,6 +1,7 @@
 pub mod course;
 pub mod directory;
 pub mod kv;
+pub mod link;
 pub mod plugin;
 pub mod resource;
 pub mod resource_type;

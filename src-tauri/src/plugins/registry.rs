@@ -49,5 +49,19 @@ pub fn register_internal_plugins() -> Vec<InternalPluginEntry> {
             created_at: 0,
             updated_at: 0,
         }],
+    }, InternalPluginEntry {
+        id: "internal-link",
+        name: "Граф связей",
+        version: "0.1.0",
+        description: Some("Граф связей курса: рёбра между ресурсами, курсами и внешними URI"),
+        resource_types: vec![ResourceTypeData {
+            key: "link".into(),
+            name: "Граф связей".into(),
+            description: Some("Граф связей курса".into()),
+            plugin_id: None,
+            supported_extensions: vec![],
+            created_at: 0,
+            updated_at: 0,
+        }],
     }]
 }

@@ -5,7 +5,15 @@ import { z } from 'zod'
  * после мутаций. Источник истины приёмной стороны sync.
  */
 export const ChangedEventSchema = z.object({
-  entity: z.enum(['course', 'structure', 'directory', 'resource', 'resourceType', 'plugin']),
+  entity: z.enum([
+    'course',
+    'structure',
+    'directory',
+    'resource',
+    'resourceType',
+    'plugin',
+    'link',
+  ]),
   action: z.enum(['created', 'updated', 'deleted']),
   id: z.string(),
   courseId: z.string().nullable(),

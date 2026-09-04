@@ -1,5 +1,6 @@
 export * from './course'
 export * as directory from './directory'
+export * from './link'
 export * from './plugins'
 export * from './resource'
 export * as structure from './structure'

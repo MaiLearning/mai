@@ -10,12 +10,14 @@ import {
 import commonEn from './locales/en/common.json'
 import courseModalEn from './locales/en/courseModal.json'
 import homeEn from './locales/en/home.json'
+import linkEn from './locales/en/link.json'
 import settingsEn from './locales/en/settings.json'
 import theoryEn from './locales/en/theory.json'
 import viewerEn from './locales/en/viewer.json'
 import commonRu from './locales/ru/common.json'
 import courseModalRu from './locales/ru/courseModal.json'
 import homeRu from './locales/ru/home.json'
+import linkRu from './locales/ru/link.json'
 import settingsRu from './locales/ru/settings.json'
 import theoryRu from './locales/ru/theory.json'
 import viewerRu from './locales/ru/viewer.json'
@@ -45,6 +47,7 @@ export async function initI18n(): Promise<void> {
         common: commonRu,
         courseModal: courseModalRu,
         home: homeRu,
+        link: linkRu,
         settings: settingsRu,
         theory: theoryRu,
         viewer: viewerRu,
@@ -53,6 +56,7 @@ export async function initI18n(): Promise<void> {
         common: commonEn,
         courseModal: courseModalEn,
         home: homeEn,
+        link: linkEn,
         settings: settingsEn,
         theory: theoryEn,
         viewer: viewerEn,

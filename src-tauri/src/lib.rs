@@ -120,6 +120,14 @@ pub fn run() {
             plugins::task::client::commands::set_task_result,
             plugins::task::client::commands::restart_task,
             plugins::task::client::commands::list_task_attempts,
+            plugins::gateway::commands::plugin_gateway_call,
+            plugins::gateway::commands::plugin_gateway_manifests,
+            plugins::link::client::commands::list_links,
+            plugins::link::client::commands::list_backlinks,
+            plugins::link::client::commands::list_course_links,
+            plugins::link::client::commands::create_link,
+            plugins::link::client::commands::update_link,
+            plugins::link::client::commands::delete_link,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

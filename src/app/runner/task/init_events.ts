@@ -1,6 +1,7 @@
 import { listen } from '@tauri-apps/api/event'
 import { applyCourseChangeAtom } from '@/entities/course'
 import { applyDirectoryChangeAtom } from '@/entities/directory'
+import { applyLinkChangeAtom } from '@/entities/link'
 import { applyPluginChangeAtom } from '@/entities/plugins'
 import { applyResourceChangeAtom, applyResourceTypeChangeAtom } from '@/entities/resource'
 import { applyStructureChangeAtom } from '@/entities/structure'
@@ -26,6 +27,7 @@ export const initEventsTask: Task = {
       resource: applyResourceChangeAtom,
       resourceType: applyResourceTypeChangeAtom,
       plugin: applyPluginChangeAtom,
+      link: applyLinkChangeAtom,
     })
 
     await listen('entity://changed', (event) => {

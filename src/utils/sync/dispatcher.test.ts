@@ -19,6 +19,7 @@ const spies = {
   resource: vi.fn(),
   resourceType: vi.fn(),
   plugin: vi.fn(),
+  link: vi.fn(),
 }
 
 const appliers: ChangedEventAppliers = {
@@ -28,6 +29,7 @@ const appliers: ChangedEventAppliers = {
   resource: atom(null, spies.resource),
   resourceType: atom(null, spies.resourceType),
   plugin: atom(null, spies.plugin),
+  link: atom(null, spies.link),
 }
 
 const dispatchChangedEvent = createEventDispatcher(appliers)
@@ -48,6 +50,7 @@ beforeEach(() => {
   spies.resource.mockClear()
   spies.resourceType.mockClear()
   spies.plugin.mockClear()
+  spies.link.mockClear()
 })
 
 describe('createEventDispatcher', () => {
@@ -78,6 +81,13 @@ describe('createEventDispatcher', () => {
     expect(spies.resource).toHaveBeenCalledTimes(1)
     expect(spies.resourceType).toHaveBeenCalledTimes(1)
     expect(spies.plugin).toHaveBeenCalledTimes(1)
+    expect(spies.course).not.toHaveBeenCalled()
+  })
+
+  it('маршрутизирует событие link по entity', () => {
+    dispatchChangedEvent({ ...baseEvent, entity: 'link', id: 'link-1', courseId: 'course-1' })
+
+    expect(spies.link).toHaveBeenCalledTimes(1)
     expect(spies.course).not.toHaveBeenCalled()
   })
 

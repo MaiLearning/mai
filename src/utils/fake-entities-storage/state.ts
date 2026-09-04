@@ -1,6 +1,7 @@
 import { v4 as uuid } from 'uuid'
 import type { Course } from '../../entities/course/core/model'
 import type { Directory } from '../../entities/directory/core/model'
+import type { Link } from '../../entities/link/core/model'
 import type { Resource, ResourceType } from '../../entities/resource/core/model'
 import type { StructureNodeFlat } from '../../entities/structure/core/model'
 
@@ -15,6 +16,7 @@ export const fakeState: {
   resources: Resource[]
   resourceTypes: ResourceType[]
   nodes: StructureNodeFlat[]
+  links: Link[]
 } = {
   courses: [
     {
@@ -148,6 +150,7 @@ export const fakeState: {
       name: 'Практика',
     },
   ],
+  links: [],
 }
 
 export function fakeId(): string {
