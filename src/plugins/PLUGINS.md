@@ -18,8 +18,12 @@ Internal-плагин — модуль `src/plugins/<name>/`, поставляе
 - **Plugin Gateway** — шлюз с методами, который плагин (любого вида)
   открывает для взаимодействия с ним: так плагины обращаются между собой
   и вызывают функции друг друга. Интерфейс единый для internal и external.
-  Статус — в планах, P1 (`docs/roadmap/plugin-gateway.md`); HTTP-доступ
-  внешних клиентов к плагинам — не его скоуп, это HTTP-сервер.
+  Транспорт — Rust-брокер: ядро `src-tauri/src/plugins/gateway/` (манифесты,
+  диспетчер, дискавери через `plugin_gateway_manifests`), обработчики —
+  в `<plugin>/gateway.rs` на стороне Rust. Frontend-потребители зовут
+  `callGateway(Schema, pluginId, method, args)` из
+  `@/features/plugin/gateway`. HTTP-доступ внешних клиентов к плагинам —
+  не его скоуп, это HTTP-сервер. Детали: `docs/roadmap/plugin-gateway.md`.
 - **External Plugin API** — набор средств, через которые внешние плагины
   получают доступ к приложению (StorageAPI, CourseAPI, ResourceAPI,
   StructureAPI и т.д.); направление «плагин → приложение». В планах, P3
@@ -69,7 +73,9 @@ ordering, fill-in-blank, open answer. typeKey: `task`.
 сущность даёт сервисы и store-атомы, fake-ветки нет.
 `TaskViewer` подключён к `INTERNAL_VIEWERS` (typeKey `task`):
 загрузка набора через сущность (`lib/useTaskContent`), пустой контент
-предлагает создать первую задачу. Правки edit-режима привязаны к
+предлагает создать первую задачу. Через Gateway открывает read-методы
+`snapshot` и `attempts` (данные для аналитики) —
+`src-tauri/src/plugins/task/gateway.rs`. Правки edit-режима привязаны к
 состоянию: `onChange` каждого типа задачи → `updateTask`
 (`components/TaskWorkspace.tsx`) → `lib/useTaskMutations` —
 оптимистичное локальное зеркало + гранулярные backend-команды через
