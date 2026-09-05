@@ -1,18 +1,10 @@
-use std::sync::Arc;
-
 use sqlx::SqlitePool;
 use tauri::State;
 
-use crate::database::sqlite::repositories::task::SqliteTaskRepository;
+use crate::plugins::task::runtime::build_service;
 use crate::plugins::task::service::data::{
     CustomDifficultyData, TaskAnswerData, TaskAttemptData, TaskData, TaskSnapshotData,
 };
-use crate::plugins::task::service::TaskService;
-
-fn build_service(pool: &SqlitePool) -> TaskService {
-    let task_repo = Arc::new(SqliteTaskRepository::new(pool.clone()));
-    TaskService::new(task_repo)
-}
 
 /// Полный снапшот контента task-ресурса (корень создаётся при отсутствии).
 #[tauri::command]

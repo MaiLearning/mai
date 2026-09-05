@@ -26,6 +26,8 @@
 - `data.rs` — wire-контракт: `GatewayManifest` (перечень методов плагина),
   `GatewayCallRequest { pluginId, method, args, caller }`, структурированная
   ошибка `GatewayError { code, message }`.
+- `support.rs` — общие хелперы обработчиков (`parse_args`, `to_value`);
+  своих копий в плагинах не заводить.
 - `registry.rs` — статические манифесты всех плагинов (аналог
   `InternalPluginEntry`); источник для дискавери и различения
   `pluginNotFound` / `methodNotFound`.
@@ -41,7 +43,7 @@ Zod-схемой потребителя (wire-схемы переиспольз�
 
 ### Первый кейс — данные task для аналитики
 
-Task-плагин (`src-tauri/src/plugins/task/gateway.rs`) открывает read-методы:
+Task-плагин (`src-tauri/src/plugins/task/gateway/`) открывает read-методы:
 
 - `snapshot { resourceId }` → полный снапшот контента task-ресурса
   (`TaskSnapshotData`: задачи, сложности, ответы пользователя, результаты,
@@ -53,11 +55,21 @@ Task-плагин (`src-tauri/src/plugins/task/gateway.rs`) открывает r
 
 ### Открытие методов нового плагина
 
-1. Константы `PLUGIN_ID`, `METHOD_*` + манифест и обработчики в
-   `<plugin>/gateway.rs`.
-2. Манифест — в `gateway/registry.rs`, ветка маршрутизации — в
+Весь gateway-код плагина — в каталоге `plugins/<plugin>/gateway/`:
+
+1. `manifest.rs` — **стандартный файл у всех плагинов**: константа
+   `PLUGIN_ID`, константы `METHOD_*`, `manifest() -> GatewayManifest`.
+2. `handlers.rs` — обработчики методов, Args-структуры, маппинг ошибок
+   сервиса в `GatewayError`.
+3. `args.rs` — опционально, если Args-структур много (как у link).
+4. `mod.rs` — декларации + re-exports: `registry.rs`/`dispatch.rs` зовут
+   только `<plugin>::gateway::{PLUGIN_ID, METHOD_*, manifest, ...}` —
+   имена внутренних файлов не протекают.
+5. `runtime.rs` рядом с `gateway/` — `build_service`, единственная
+   фабрика сервиса плагина: её зовут и IPC-команды, и gateway-обработчики.
+6. Манифест — в `gateway/registry.rs`, ветки маршрутизации — в
    `gateway/dispatch.rs`.
-3. Frontend-потребители зовут `callGateway(Schema, pluginId, method, args)`.
+7. Frontend-потребители зовут `callGateway(Schema, pluginId, method, args)`.
 
 ## Решения по открытым вопросам
 
