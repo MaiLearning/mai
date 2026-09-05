@@ -5,6 +5,8 @@ mod ops_mutation;
 mod ops_sweep;
 pub mod rules;
 pub mod service;
+#[cfg(test)]
+mod tests;
 
 pub use data::{
     CreateLinkData, LinkData, LinkSourceRef, LinkStatus, LinkTargetData, UpdateLinkData,

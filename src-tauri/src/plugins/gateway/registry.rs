@@ -1,4 +1,5 @@
 use super::data::GatewayManifest;
+use crate::plugins::link::gateway as link_gateway;
 use crate::plugins::task::gateway;
 
 /// Манифесты gateway всех internal-плагинов.
@@ -6,7 +7,7 @@ use crate::plugins::task::gateway;
 /// Плагин с gateway-методами: добавь манифест сюда,
 /// обработчики — в `dispatch.rs`, константы — в `<plugin>/gateway.rs`.
 pub fn gateway_manifests() -> Vec<GatewayManifest> {
-    vec![gateway::manifest()]
+    vec![gateway::manifest(), link_gateway::manifest()]
 }
 
 /// Зарегистрирован ли плагин в gateway.

@@ -53,6 +53,23 @@ Task-плагин (`src-tauri/src/plugins/task/gateway/`) открывает rea
 Плагин в gateway: `internal-task`. Идентификатор caller'а — id плагина
 или `"app"`.
 
+### Link — первый провайдер мутаций
+
+Link-плагин (`src-tauri/src/plugins/link/gateway/`) открывает мутации
+и чтение графа (`internal-link`):
+
+- мутации: `create`, `update`, `delete`, контрактный `deleteBySource`
+  («удалил свою сущность — удали её рёбра»);
+- read: `listBySource`, `listBacklinks`, `courseGraph`;
+- правило идентичности: **`caller` = `ownerPluginId`** — владелец выводится
+  из caller'а, не из args; `"app"` мутации отклоняется (код `forbidden`,
+  добавлен в `GatewayErrorCode`).
+- Для мутаций диспетчер пробрасывает в обработчики publisher (события
+  изменений) и caller; команда `plugin_gateway_call` получает
+  `State<ChangePublishers>` и передаёт ipc-скоуп.
+
+Детали жизненного цикла рёбер: [link-plugin.md](./link-plugin.md).
+
 ### Открытие методов нового плагина
 
 Весь gateway-код плагина — в каталоге `plugins/<plugin>/gateway/`:
@@ -89,4 +106,6 @@ Task-плагин (`src-tauri/src/plugins/task/gateway/`) открывает rea
 - [x] Ядро `plugins/gateway/` (data, registry, dispatch, commands) + тесты
 - [x] Task-gateway: `snapshot`, `attempts`
 - [x] Frontend-клиент `features/plugin/gateway/` + тесты
-- [ ] Потребители (аналитика, Link) — по мере появления
+- [x] Link-провайдер: мутации + контрактный `deleteBySource` + read,
+      `caller` = `ownerPluginId`
+- [ ] Потребители (аналитика, панели ссылок) — по мере появления

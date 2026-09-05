@@ -49,6 +49,8 @@ pub enum GatewayErrorCode {
     MethodNotFound,
     BadArgs,
     NotFound,
+    /// Caller не имеет прав на операцию (не владелец, не зарегистрированный плагин).
+    Forbidden,
     HandlerError,
 }
 
@@ -91,6 +93,10 @@ mod tests {
         assert_eq!(
             serde_json::to_value(GatewayErrorCode::MethodNotFound).unwrap(),
             json!("methodNotFound")
+        );
+        assert_eq!(
+            serde_json::to_value(GatewayErrorCode::Forbidden).unwrap(),
+            json!("forbidden")
         );
     }
 

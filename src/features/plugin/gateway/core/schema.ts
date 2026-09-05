@@ -5,6 +5,7 @@ export const GatewayErrorCodeSchema = z.enum([
   'methodNotFound',
   'badArgs',
   'notFound',
+  'forbidden',
   'handlerError',
 ])
 

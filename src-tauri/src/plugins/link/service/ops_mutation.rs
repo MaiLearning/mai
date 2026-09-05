@@ -103,6 +103,45 @@ impl LinkService {
         Ok(())
     }
 
+    /// Контрактный метод gateway-клиентов: «удалил свою сущность —
+    /// удали её рёбра». Удаляет ВСЕ рёбра источника (любого владельца):
+    /// источник к моменту вызова обычно уже удалён, владение им не проверить.
+    /// Идемпотентен; caller должен быть зарегистрированным плагином.
+    pub async fn delete_source_links(
+        &self,
+        source_type: &str,
+        source_id: &str,
+        caller: &str,
+    ) -> Result<u64, LinkServiceError> {
+        let source_type = rules::validate_source_type(source_type)?;
+        let source_id = rules::validate_source_id(source_id)?;
+        self.ensure_registered_caller(caller).await?;
+
+        let links = self
+            .link_repo
+            .list_by_source(&source_type, &source_id)
+            .await?;
+        if links.is_empty() {
+            return Ok(0);
+        }
+
+        let ids: Vec<String> = links.iter().map(|l| l.id.clone()).collect();
+        let removed = self.link_repo.delete_by_ids(&ids).await?;
+
+        let course_id = self.resolve_course_id(&source_type, &source_id).await;
+        for link in &links {
+            self.publish(ChangeAction::Deleted, &link.id, course_id.clone());
+        }
+        log::info!(
+            "Удалены рёбра источника {}/{}: {} шт. (caller '{}')",
+            source_type,
+            source_id,
+            removed,
+            caller
+        );
+        Ok(removed)
+    }
+
     /// Ребро может менять только плагин-владелец.
     fn check_owner(
         &self,
@@ -116,6 +155,21 @@ impl LinkService {
             )));
         }
         Ok(())
+    }
+
+    /// Caller gateway-мутаций должен быть зарегистрированным плагином (не "app").
+    async fn ensure_registered_caller(&self, caller: &str) -> Result<(), LinkServiceError> {
+        self.plugin_repo
+            .get(caller)
+            .await
+            .map_err(|e| match e {
+                RepoError::NotFound(_) => LinkServiceError::Forbidden(format!(
+                    "Caller '{}' is not a registered plugin",
+                    caller
+                )),
+                other => map_repo_error(other, "check caller plugin"),
+            })
+            .map(|_| ())
     }
 
     /// Курс источника для события изменения: course → сам sourceId,
