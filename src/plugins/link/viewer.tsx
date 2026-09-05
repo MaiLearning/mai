@@ -1,4 +1,3 @@
-import '@xyflow/react/dist/style.css'
 import { error as logError } from '@tauri-apps/plugin-log'
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
@@ -14,9 +13,8 @@ import { CreateLinkModal } from './components/CreateLinkModal'
 import { EdgeDetailsPanel } from './components/EdgeDetailsPanel'
 import { LinkGraph } from './components/LinkGraph'
 import type { PickerResource } from './components/TargetPicker'
-import type { GraphFlowNode } from './core/types'
+import type { GraphEdge } from './core/types'
 import { buildGraph } from './lib/graph'
-import { applyLayout } from './lib/layout'
 import { openLinkTarget } from './lib/navigation'
 import {
   Body,
@@ -32,10 +30,11 @@ import {
 /**
  * LinkViewer — граф связей курса.
  *
- * Загружает рёбра курса и структуру (имена узлов), раскладывает граф
- * силовым алгоритмом ELK и отдаёт на холст @xyflow/react. Клик по узлу —
- * переход (роутер или системный обработчик URI), клик по ребру — панель
- * правки. Управление рёбрами — от имени плагина-владельца internal-link.
+ * Загружает рёбра курса и структуру (имена узлов), собирает граф и отдаёт
+ * на canvas-холст (живая физика d3-force + pan/zoom, см. lib/).
+ * Клик по узлу — переход (роутер или системный обработчик URI),
+ * клик по ребру — панель правки. Управление рёбрами — от имени
+ * плагина-владельца internal-link.
  */
 export function LinkViewer({ courseId, onReady }: PluginRenderProps) {
   const { t } = useTranslation('link')
@@ -48,7 +47,6 @@ export function LinkViewer({ courseId, onReady }: PluginRenderProps) {
   const loadCourses = useSetAtom(loadCoursesAtom)
 
   const [structureNodes, setStructureNodes] = useState<StructureNodeFlat[]>([])
-  const [layouted, setLayouted] = useState<GraphFlowNode[]>([])
   const [loading, setLoading] = useState(true)
   const [selectedLinkId, setSelectedLinkId] = useState<string | null>(null)
   const [creating, setCreating] = useState(false)
@@ -99,21 +97,10 @@ export function LinkViewer({ courseId, onReady }: PluginRenderProps) {
     return map
   }, [courses])
 
-  const { nodes: nodesRaw, edges } = useMemo(
+  const { nodes, edges } = useMemo(
     () => buildGraph({ courseId, links, structureNodes, courseNames }),
     [courseId, links, structureNodes, courseNames],
   )
-
-  useEffect(() => {
-    let cancelled = false
-    void applyLayout(nodesRaw, edges).then((positioned) => {
-      if (!cancelled) setLayouted(positioned)
-    })
-
-    return () => {
-      cancelled = true
-    }
-  }, [nodesRaw, edges])
 
   const selectedLink: Link | null = links.find((link) => link.id === selectedLinkId) ?? null
 
@@ -127,6 +114,10 @@ export function LinkViewer({ courseId, onReady }: PluginRenderProps) {
       navigate,
       t('open_failed'),
     )
+  }
+
+  const handleEdgeSelect = (edge: GraphEdge) => {
+    setSelectedLinkId(edge.link.id)
   }
 
   return (
@@ -154,10 +145,11 @@ export function LinkViewer({ courseId, onReady }: PluginRenderProps) {
             </EmptyState>
           ) : (
             <LinkGraph
-              nodes={layouted}
+              nodes={nodes}
               edges={edges}
-              onNodeActivate={(data) => handleNodeActivate(data.kind, data.nodeId)}
-              onEdgeSelect={(link) => setSelectedLinkId(link.id)}
+              selectedEdgeId={selectedLinkId}
+              onNodeActivate={(node) => handleNodeActivate(node.kind, node.nodeId)}
+              onEdgeSelect={handleEdgeSelect}
             />
           )}
         </GraphArea>

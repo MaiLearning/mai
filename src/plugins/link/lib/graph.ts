@@ -2,8 +2,8 @@ import type { Link, LinkTarget } from '@/entities/link'
 import type { StructureNodeFlat } from '@/entities/structure'
 import {
   COURSE_NODE_PREFIX,
-  type GraphFlowEdge,
-  type GraphFlowNode,
+  type GraphEdge,
+  type GraphNode,
   RESOURCE_NODE_PREFIX,
   URI_NODE_PREFIX,
 } from '../core/types'
@@ -28,44 +28,54 @@ function truncate(value: string, max: number): string {
   return value.length <= max ? value : `${value.slice(0, max - 1)}…`
 }
 
-function courseNode(courseId: string, courseName: string | undefined): GraphFlowNode {
-  return {
+function draftNode(node: Omit<GraphNode, 'degree'>): GraphNode {
+  return { ...node, degree: 0 }
+}
+
+function courseNode(
+  courseId: string,
+  courseName: string | undefined,
+  isCurrent: boolean,
+): GraphNode {
+  return draftNode({
     id: `${COURSE_NODE_PREFIX}${courseId}`,
-    position: { x: 0, y: 0 },
-    data: {
-      kind: 'course',
-      nodeId: courseId,
-      label: courseName ?? '…',
-      isCurrentCourse: true,
-    },
-  }
+    kind: 'course',
+    nodeId: courseId,
+    label: courseName ?? '…',
+    isCurrentCourse: isCurrent,
+  })
 }
 
-function resourceNode(resourceId: string, label: string): GraphFlowNode {
-  return {
+function resourceNode(resourceId: string, label: string): GraphNode {
+  return draftNode({
     id: `${RESOURCE_NODE_PREFIX}${resourceId}`,
-    position: { x: 0, y: 0 },
-    data: { kind: 'resource', nodeId: resourceId, label, isCurrentCourse: false },
-  }
+    kind: 'resource',
+    nodeId: resourceId,
+    label,
+    isCurrentCourse: false,
+  })
 }
 
-function uriNode(uri: string): GraphFlowNode {
-  return {
+function uriNode(uri: string): GraphNode {
+  return draftNode({
     id: `${URI_NODE_PREFIX}${uri}`,
-    position: { x: 0, y: 0 },
-    data: { kind: 'uri', nodeId: uri, label: truncate(uri, 32), isCurrentCourse: false },
-  }
+    kind: 'uri',
+    nodeId: uri,
+    label: truncate(uri, 32),
+    isCurrentCourse: false,
+  })
 }
 
 /**
  * Собирает узлы и рёбра графа курса из рёбер Link и структуры курса.
  *
  * Узлы — курс (всегда), ресурсы курса и URI-цели, участвовующие хотя бы
- * в одном ребре. Позиции проставляет раскладчик (lib/layout), здесь — нули.
+ * в одном ребре. Степень узла (число инцидентных рёбер) задаёт радиус точки;
+ * позиции расставляет симуляция (lib/simulation).
  */
 export function buildGraph(input: BuildGraphInput): {
-  nodes: GraphFlowNode[]
-  edges: GraphFlowEdge[]
+  nodes: GraphNode[]
+  edges: GraphEdge[]
 } {
   const { courseId, links, structureNodes, courseNames } = input
 
@@ -74,12 +84,12 @@ export function buildGraph(input: BuildGraphInput): {
     if (node.resource) resourceLabels.set(node.resource.id, node.resource.name)
   }
 
-  const nodes = new Map<string, GraphFlowNode>()
-  const addNode = (node: GraphFlowNode) => {
+  const nodes = new Map<string, GraphNode>()
+  const addNode = (node: GraphNode) => {
     if (!nodes.has(node.id)) nodes.set(node.id, node)
   }
 
-  const edges: GraphFlowEdge[] = links.map((link) => {
+  const edges: GraphEdge[] = links.map((link) => {
     const sourceId =
       link.sourceType === 'course'
         ? `${COURSE_NODE_PREFIX}${link.sourceId}`
@@ -87,7 +97,7 @@ export function buildGraph(input: BuildGraphInput): {
     const targetId = targetNodeId(link.target)
 
     if (link.sourceType === 'course') {
-      addNode(courseNode(link.sourceId, courseNames[link.sourceId]))
+      addNode(courseNode(link.sourceId, courseNames[link.sourceId], link.sourceId === courseId))
     } else {
       const label = resourceLabels.get(link.sourceId) ?? truncate(link.sourceId, 12)
       addNode(resourceNode(link.sourceId, label))
@@ -98,7 +108,7 @@ export function buildGraph(input: BuildGraphInput): {
         resourceLabels.get(link.target.resourceId) ?? truncate(link.target.resourceId, 12)
       addNode(resourceNode(link.target.resourceId, label))
     } else if (link.target.kind === 'course') {
-      addNode(courseNode(link.target.courseId, courseNames[link.target.courseId]))
+      addNode(courseNode(link.target.courseId, courseNames[link.target.courseId], false))
     } else {
       addNode(uriNode(link.target.uri))
     }
@@ -107,14 +117,22 @@ export function buildGraph(input: BuildGraphInput): {
       id: link.id,
       source: sourceId,
       target: targetId,
-      label: link.title ?? undefined,
-      data: { link },
+      link,
     }
   })
 
-  const currentCourse = courseNode(courseId, courseNames[courseId])
+  const currentCourse = courseNode(courseId, courseNames[courseId], true)
   if (edges.length === 0) return { nodes: [currentCourse], edges: [] }
   addNode(currentCourse)
 
-  return { nodes: [...nodes.values()], edges }
+  const degree = new Map<string, number>()
+  for (const edge of edges) {
+    degree.set(edge.source, (degree.get(edge.source) ?? 0) + 1)
+    degree.set(edge.target, (degree.get(edge.target) ?? 0) + 1)
+  }
+
+  return {
+    nodes: [...nodes.values()].map((node) => ({ ...node, degree: degree.get(node.id) ?? 0 })),
+    edges,
+  }
 }

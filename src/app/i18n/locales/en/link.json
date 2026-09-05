@@ -33,5 +33,13 @@
   "deleted_title": "Link deleted",
   "create_failed": "Failed to create link",
   "operation_failed": "Operation failed",
-  "open_failed": "Failed to open link"
+  "open_failed": "Failed to open link",
+  "zoom_in": "Zoom in",
+  "zoom_out": "Zoom out",
+  "fit_view": "Fit view",
+  "graph_settings": "Graph settings",
+  "settings_repulsion": "Repulsion",
+  "settings_link_distance": "Link distance",
+  "settings_center": "Center gravity",
+  "settings_reset": "Reset"
 }

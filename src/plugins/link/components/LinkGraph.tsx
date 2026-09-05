@@ -1,82 +1,71 @@
-import {
-  Background,
-  BackgroundVariant,
-  Controls,
-  type EdgeMouseHandler,
-  type NodeMouseHandler,
-  ReactFlow,
-} from '@xyflow/react'
-import { useMemo } from 'react'
+import { Scan, SlidersHorizontal, ZoomIn, ZoomOut } from 'lucide-react'
+import { useMemo, useState } from 'react'
 import { useTheme } from 'styled-components'
-import type { Link } from '@/entities/link'
-import type { GraphFlowEdge, GraphFlowNode, GraphNodeData } from '../core/types'
-import { CourseNode, ResourceNode, UriNode } from './nodes'
-
-const nodeTypes = { course: CourseNode, resource: ResourceNode, uri: UriNode }
+import { useTranslation } from '@/app/i18n'
+import { IconButton } from '@/app/theme/components'
+import { DEFAULT_PHYSICS, ZOOM_BUTTON_FACTOR } from '../core/constants'
+import type { GraphEdge, GraphNode, PhysicsParams } from '../core/types'
+import { toRenderTheme } from '../lib/render'
+import { useGraphCanvas } from '../lib/use-graph-canvas'
+import { GraphSettingsPanel } from './GraphSettingsPanel'
+import { CanvasWrap, ControlsBar, OverlayRail } from './LinkGraph.style'
 
 export interface LinkGraphProps {
-  nodes: GraphFlowNode[]
-  edges: GraphFlowEdge[]
-  onNodeActivate: (data: GraphNodeData) => void
-  onEdgeSelect: (link: Link) => void
+  nodes: GraphNode[]
+  edges: GraphEdge[]
+  selectedEdgeId: string | null
+  onNodeActivate: (node: GraphNode) => void
+  onEdgeSelect: (edge: GraphEdge) => void
 }
 
 /**
- * Холст графа на @xyflow/react: кастомные узлы, стили рёбер по теме,
- * битые цели — пунктиром danger-цвета.
+ * Холст графа: canvas + живая физика, оверлей управления (зум, вписать,
+ * настройки). Стили рёбер и битые цели — в canvas-рендере (lib/render).
  */
-export function LinkGraph({ nodes, edges, onNodeActivate, onEdgeSelect }: LinkGraphProps) {
+export function LinkGraph({
+  nodes,
+  edges,
+  selectedEdgeId,
+  onNodeActivate,
+  onEdgeSelect,
+}: LinkGraphProps) {
+  const { t } = useTranslation('link')
   const theme = useTheme()
+  const [params, setParams] = useState<PhysicsParams>(DEFAULT_PHYSICS)
+  const [settingsOpen, setSettingsOpen] = useState(false)
 
-  const styledEdges = useMemo(
-    () =>
-      edges.map((edge) => {
-        const broken = edge.data?.link.targetStatus === 'broken'
-
-        return {
-          ...edge,
-          animated: broken,
-          style: {
-            stroke: broken ? theme.colors.danger : theme.colors.borderStrong,
-            strokeWidth: 1.6,
-            strokeDasharray: broken ? '6 4' : undefined,
-          },
-          labelStyle: {
-            fill: theme.colors.textMuted,
-            fontSize: 11,
-            fontWeight: 500,
-          },
-          labelBgStyle: { fill: theme.colors.surface },
-        }
-      }),
-    [edges, theme],
-  )
-
-  const handleNodeClick: NodeMouseHandler<GraphFlowNode> = (_event, node) => {
-    onNodeActivate(node.data)
-  }
-  const handleEdgeClick: EdgeMouseHandler<GraphFlowEdge> = (_event, edge) => {
-    const link = edge.data?.link
-    if (link) onEdgeSelect(link)
-  }
+  const renderTheme = useMemo(() => toRenderTheme(theme), [theme])
+  const { canvasRef, controls } = useGraphCanvas({
+    nodes,
+    edges,
+    params,
+    renderTheme,
+    selectedEdgeId,
+    onNodeActivate,
+    onEdgeSelect,
+  })
 
   return (
-    <ReactFlow
-      nodes={nodes}
-      edges={styledEdges}
-      nodeTypes={nodeTypes}
-      onNodeClick={handleNodeClick}
-      onEdgeClick={handleEdgeClick}
-      fitView
-      fitViewOptions={{ padding: 0.25 }}
-      minZoom={0.15}
-      nodesDraggable
-      nodesConnectable={false}
-      elementsSelectable
-      proOptions={{ hideAttribution: true }}
-    >
-      <Background variant={BackgroundVariant.Dots} gap={22} size={1.5} />
-      <Controls showInteractive={false} />
-    </ReactFlow>
+    <CanvasWrap>
+      <canvas ref={canvasRef} />
+      <OverlayRail>
+        <ControlsBar>
+          <IconButton label={t('zoom_in')} onClick={() => controls.zoomBy(ZOOM_BUTTON_FACTOR)}>
+            <ZoomIn size={18} />
+          </IconButton>
+          <IconButton label={t('zoom_out')} onClick={() => controls.zoomBy(1 / ZOOM_BUTTON_FACTOR)}>
+            <ZoomOut size={18} />
+          </IconButton>
+          <IconButton label={t('fit_view')} onClick={() => controls.fitView()}>
+            <Scan size={18} />
+          </IconButton>
+          <IconButton label={t('graph_settings')} onClick={() => setSettingsOpen((open) => !open)}>
+            <SlidersHorizontal size={18} />
+          </IconButton>
+        </ControlsBar>
+
+        {settingsOpen && <GraphSettingsPanel params={params} onChange={setParams} />}
+      </OverlayRail>
+    </CanvasWrap>
   )
 }

@@ -33,5 +33,13 @@
   "deleted_title": "Связь удалена",
   "create_failed": "Не удалось создать связь",
   "operation_failed": "Не удалось выполнить операцию",
-  "open_failed": "Не удалось открыть ссылку"
+  "open_failed": "Не удалось открыть ссылку",
+  "zoom_in": "Приблизить",
+  "zoom_out": "Отдалить",
+  "fit_view": "Вписать в экран",
+  "graph_settings": "Настройки графа",
+  "settings_repulsion": "Отталкивание",
+  "settings_link_distance": "Длина связей",
+  "settings_center": "Притяжение к центру",
+  "settings_reset": "Сбросить"
 }
