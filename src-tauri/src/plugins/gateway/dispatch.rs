@@ -1,79 +1,38 @@
 use serde_json::Value;
 use sqlx::SqlitePool;
 
-use super::data::{GatewayCallRequest, GatewayError, GatewayErrorCode};
-use super::registry;
-use crate::plugins::link::gateway as link_gateway;
-use crate::plugins::task::gateway;
+use super::data::{GatewayCallRequest, GatewayError};
+use super::router::{router, unknown_route_error, GatewayCtx};
 use crate::services::events::SharedChangePublisher;
 
-/// Маршрутизация gateway-вызова к обработчику плагина.
+/// Маршрутизация gateway-вызова через реестр методов (`router.rs`).
 ///
-/// Плагины скомпилированы в приложение, поэтому роутинг статический:
-/// новая пара (плагин, метод) — новая ветка match. Мутационные обработчики
-/// получают publisher (публикация событий изменений) и caller (идентичность
-/// вызова: владелец рёбер выводится из него, не из args).
+/// Плагины объявляют `routes()` в своём `gateway/manifest.rs`; ядро не знает
+/// отдельных обработчиков. Обработчик получает контекст (пул, паблишер,
+/// caller) единообразно.
 pub async fn dispatch(
     pool: &SqlitePool,
     publisher: SharedChangePublisher,
     request: GatewayCallRequest,
 ) -> Result<Value, GatewayError> {
-    match (request.plugin_id.as_str(), request.method.as_str()) {
-        (gateway::PLUGIN_ID, gateway::METHOD_SNAPSHOT) => {
-            gateway::snapshot(request.args, pool).await
-        }
-        (gateway::PLUGIN_ID, gateway::METHOD_ATTEMPTS) => {
-            gateway::attempts(request.args, pool).await
-        }
-        (link_gateway::PLUGIN_ID, link_gateway::METHOD_CREATE) => {
-            link_gateway::create(request.args, request.caller.as_deref(), publisher, pool).await
-        }
-        (link_gateway::PLUGIN_ID, link_gateway::METHOD_UPDATE) => {
-            link_gateway::update(request.args, request.caller.as_deref(), publisher, pool).await
-        }
-        (link_gateway::PLUGIN_ID, link_gateway::METHOD_DELETE) => {
-            link_gateway::delete(request.args, request.caller.as_deref(), publisher, pool).await
-        }
-        (link_gateway::PLUGIN_ID, link_gateway::METHOD_DELETE_BY_SOURCE) => {
-            link_gateway::delete_by_source(request.args, request.caller.as_deref(), publisher, pool)
-                .await
-        }
-        (link_gateway::PLUGIN_ID, link_gateway::METHOD_LIST_BY_SOURCE) => {
-            link_gateway::list_by_source(request.args, request.caller.as_deref(), publisher, pool)
-                .await
-        }
-        (link_gateway::PLUGIN_ID, link_gateway::METHOD_LIST_BACKLINKS) => {
-            link_gateway::list_backlinks(request.args, request.caller.as_deref(), publisher, pool)
-                .await
-        }
-        (link_gateway::PLUGIN_ID, link_gateway::METHOD_COURSE_GRAPH) => {
-            link_gateway::course_graph(request.args, request.caller.as_deref(), publisher, pool)
-                .await
-        }
-        _ => {
-            if registry::has_plugin(&request.plugin_id) {
-                Err(GatewayError::new(
-                    GatewayErrorCode::MethodNotFound,
-                    format!(
-                        "Метод '{}' не открыт плагином '{}'",
-                        request.method, request.plugin_id
-                    ),
-                ))
-            } else {
-                Err(GatewayError::new(
-                    GatewayErrorCode::PluginNotFound,
-                    format!(
-                        "Плагин '{}' не зарегистрирован в gateway",
-                        request.plugin_id
-                    ),
-                ))
-            }
-        }
-    }
+    let Some(route) = router().lookup(&request.plugin_id, &request.method) else {
+        return Err(unknown_route_error(&request.plugin_id, &request.method));
+    };
+    let ctx = GatewayCtx {
+        pool: pool.clone(),
+        publisher,
+        caller: request.caller,
+    };
+    route.handler.call(request.args, ctx).await
 }
 
 #[cfg(test)]
 mod tests {
+    use std::collections::BTreeSet;
+
+    use super::super::data::GatewayErrorCode;
+    use super::super::registry;
+    use super::super::router::router;
     use super::*;
     use crate::services::events::{ChangePublisher, EntityChanged};
     use serde_json::json;
@@ -130,7 +89,11 @@ mod tests {
             dispatch(
                 &pool,
                 publisher(),
-                request(gateway::PLUGIN_ID, "no-such-method", json!({})),
+                request(
+                    crate::plugins::task::gateway::PLUGIN_ID,
+                    "no-such-method",
+                    json!({}),
+                ),
             )
             .await
             .unwrap_err()
@@ -145,7 +108,11 @@ mod tests {
             dispatch(
                 &pool,
                 publisher(),
-                request(link_gateway::PLUGIN_ID, "no-such-method", json!({})),
+                request(
+                    crate::plugins::link::gateway::PLUGIN_ID,
+                    "no-such-method",
+                    json!({}),
+                ),
             )
             .await
             .unwrap_err()
@@ -160,7 +127,11 @@ mod tests {
             dispatch(
                 &pool,
                 publisher(),
-                request(gateway::PLUGIN_ID, gateway::METHOD_SNAPSHOT, json!({})),
+                request(
+                    crate::plugins::task::gateway::PLUGIN_ID,
+                    crate::plugins::task::gateway::METHOD_SNAPSHOT,
+                    json!({}),
+                ),
             )
             .await
             .unwrap_err()
@@ -176,8 +147,8 @@ mod tests {
                 &pool,
                 publisher(),
                 request(
-                    link_gateway::PLUGIN_ID,
-                    link_gateway::METHOD_CREATE,
+                    crate::plugins::link::gateway::PLUGIN_ID,
+                    crate::plugins::link::gateway::METHOD_CREATE,
                     json!({}),
                 ),
             )
@@ -185,5 +156,24 @@ mod tests {
             .unwrap_err()
         });
         assert_eq!(error.code, GatewayErrorCode::BadArgs);
+    }
+
+    /// Манифест (дискавери) и реестр маршрутов обязаны совпадать по методам
+    /// у каждого плагина — в обе стороны.
+    #[test]
+    fn routes_match_manifests_for_every_plugin() {
+        for manifest in registry::gateway_manifests() {
+            let routes: BTreeSet<_> = router()
+                .methods_of(&manifest.plugin_id)
+                .into_iter()
+                .collect();
+            let documented: BTreeSet<_> =
+                manifest.methods.iter().map(|m| m.name.as_str()).collect();
+            assert_eq!(
+                routes, documented,
+                "manifest/routes расходятся у {}",
+                manifest.plugin_id
+            );
+        }
     }
 }

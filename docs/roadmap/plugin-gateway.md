@@ -28,11 +28,14 @@
   ошибка `GatewayError { code, message }`.
 - `support.rs` — общие хелперы обработчиков (`parse_args`, `to_value`);
   своих копий в плагинах не заводить.
-- `registry.rs` — статические манифесты всех плагинов (аналог
-  `InternalPluginEntry`); источник для дискавери и различения
-  `pluginNotFound` / `methodNotFound`.
-- `dispatch.rs` — маршрутизация: match `(plugin_id, method)` → обработчик;
-  аргументы разбираются типизированной структурой на каждый метод.
+- `registry.rs` — перечисление плагинов: их манифесты (дискавери) и
+  маршруты; единственное место в ядре, где плагины поименованы.
+- `router.rs` — реестр методов: `routes()` плагинов собираются в
+  `HashMap` (однократно, `OnceLock`); `GatewayCtx` (пул, паблишер, caller) —
+  единый контекст вызова; трейт `MethodHandler` с blanket-impl над
+  `async fn(Value, GatewayCtx)`.
+- `dispatch.rs` — тонкий вход: lookup по реестру → сборка `GatewayCtx` →
+  вызов обработчика; различение `pluginNotFound` / `methodNotFound`.
 - `commands.rs` — Tauri-команды `plugin_gateway_call` и
   `plugin_gateway_manifests` (дискавери).
 
@@ -64,8 +67,8 @@ Link-плагин (`src-tauri/src/plugins/link/gateway/`) открывает м�
 - правило идентичности: **`caller` = `ownerPluginId`** — владелец выводится
   из caller'а, не из args; `"app"` мутации отклоняется (код `forbidden`,
   добавлен в `GatewayErrorCode`).
-- Для мутаций диспетчер пробрасывает в обработчики publisher (события
-  изменений) и caller; команда `plugin_gateway_call` получает
+- Для мутаций в обработчики через `GatewayCtx` передаются publisher
+  (события изменений) и caller; команда `plugin_gateway_call` получает
   `State<ChangePublishers>` и передаёт ipc-скоуп.
 
 Детали жизненного цикла рёбер: [link-plugin.md](./link-plugin.md).
@@ -75,18 +78,26 @@ Link-плагин (`src-tauri/src/plugins/link/gateway/`) открывает м�
 Весь gateway-код плагина — в каталоге `plugins/<plugin>/gateway/`:
 
 1. `manifest.rs` — **стандартный файл у всех плагинов**: константа
-   `PLUGIN_ID`, константы `METHOD_*`, `manifest() -> GatewayManifest`.
-2. `handlers.rs` — обработчики методов, Args-структуры, маппинг ошибок
-   сервиса в `GatewayError`.
+   `PLUGIN_ID`, константы `METHOD_*`, `manifest() -> GatewayManifest`
+   (описания методов для дискавери) и `routes() -> Vec<GwRoute>` —
+   имя метода + обработчик в одной строке, единственный источник
+   маршрутизации. Новый метод — новая строка в `routes()`, ядро не трогается.
+2. `handlers.rs` — обработчики с единой сигнатурой
+   `async fn(Value, GatewayCtx)` (read-обработчики игнорируют ненужные
+   поля контекста), Args-структуры, маппинг ошибок сервиса в `GatewayError`.
 3. `args.rs` — опционально, если Args-структур много (как у link).
-4. `mod.rs` — декларации + re-exports: `registry.rs`/`dispatch.rs` зовут
-   только `<plugin>::gateway::{PLUGIN_ID, METHOD_*, manifest, ...}` —
-   имена внутренних файлов не протекают.
+4. `mod.rs` — декларации + re-exports: ядро (`registry.rs`) зовёт только
+   `<plugin>::gateway::{PLUGIN_ID, manifest, routes, ...}` — имена
+   внутренних файлов не протекают.
 5. `runtime.rs` рядом с `gateway/` — `build_service`, единственная
    фабрика сервиса плагина: её зовут и IPC-команды, и gateway-обработчики.
-6. Манифест — в `gateway/registry.rs`, ветки маршрутизации — в
-   `gateway/dispatch.rs`.
+6. Одна строка в `all_routes()` ядра (`gateway/registry.rs`) — перечисление
+   нового плагина.
 7. Frontend-потребители зовут `callGateway(Schema, pluginId, method, args)`.
+
+Консистентность манифеста и реестра маршрутов проверяется тестом
+(`routes_match_manifests_for_every_plugin`): расхождение в любую сторону —
+красный тест.
 
 ## Решения по открытым вопросам
 
@@ -103,7 +114,8 @@ Link-плагин (`src-tauri/src/plugins/link/gateway/`) открывает м�
 
 ## Прогресс
 
-- [x] Ядро `plugins/gateway/` (data, registry, dispatch, commands) + тесты
+- [x] Ядро `plugins/gateway/` (data, registry, router, dispatch, commands)
+      + тесты; роутинг — через реестр `routes()` (без match-диспетчера)
 - [x] Task-gateway: `snapshot`, `attempts`
 - [x] Frontend-клиент `features/plugin/gateway/` + тесты
 - [x] Link-провайдер: мутации + контрактный `deleteBySource` + read,

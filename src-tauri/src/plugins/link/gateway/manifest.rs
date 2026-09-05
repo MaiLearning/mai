@@ -1,7 +1,9 @@
 //! Манифест gateway link-плагина: мутации (владелец — caller), контрактный
 //! `deleteBySource` и read-методы для потребителей (панели, аналитика).
 
+use super::handlers;
 use crate::plugins::gateway::data::{GatewayManifest, GatewayMethodInfo};
+use crate::plugins::gateway::router::GwRoute;
 
 /// Идентификатор плагина в gateway.
 pub const PLUGIN_ID: &str = "internal-link";
@@ -12,6 +14,40 @@ pub const METHOD_DELETE_BY_SOURCE: &str = "deleteBySource";
 pub const METHOD_LIST_BY_SOURCE: &str = "listBySource";
 pub const METHOD_LIST_BACKLINKS: &str = "listBacklinks";
 pub const METHOD_COURSE_GRAPH: &str = "courseGraph";
+
+/// Маршруты методов: имя + обработчик (описания — в манифесте ниже).
+pub fn routes() -> Vec<GwRoute> {
+    vec![
+        GwRoute {
+            method: METHOD_CREATE,
+            handler: &handlers::create,
+        },
+        GwRoute {
+            method: METHOD_UPDATE,
+            handler: &handlers::update,
+        },
+        GwRoute {
+            method: METHOD_DELETE,
+            handler: &handlers::delete,
+        },
+        GwRoute {
+            method: METHOD_DELETE_BY_SOURCE,
+            handler: &handlers::delete_by_source,
+        },
+        GwRoute {
+            method: METHOD_LIST_BY_SOURCE,
+            handler: &handlers::list_by_source,
+        },
+        GwRoute {
+            method: METHOD_LIST_BACKLINKS,
+            handler: &handlers::list_backlinks,
+        },
+        GwRoute {
+            method: METHOD_COURSE_GRAPH,
+            handler: &handlers::course_graph,
+        },
+    ]
+}
 
 pub fn manifest() -> GatewayManifest {
     GatewayManifest {

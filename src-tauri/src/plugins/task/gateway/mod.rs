@@ -9,4 +9,4 @@ pub mod handlers;
 pub mod manifest;
 
 pub use handlers::{attempts, snapshot};
-pub use manifest::{manifest, METHOD_ATTEMPTS, METHOD_SNAPSHOT, PLUGIN_ID};
+pub use manifest::{manifest, routes, METHOD_ATTEMPTS, METHOD_SNAPSHOT, PLUGIN_ID};

@@ -17,6 +17,6 @@ pub use handlers::{
     course_graph, create, delete, delete_by_source, list_backlinks, list_by_source, update,
 };
 pub use manifest::{
-    manifest, METHOD_COURSE_GRAPH, METHOD_CREATE, METHOD_DELETE, METHOD_DELETE_BY_SOURCE,
+    manifest, routes, METHOD_COURSE_GRAPH, METHOD_CREATE, METHOD_DELETE, METHOD_DELETE_BY_SOURCE,
     METHOD_LIST_BACKLINKS, METHOD_LIST_BY_SOURCE, METHOD_UPDATE, PLUGIN_ID,
 };

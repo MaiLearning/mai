@@ -1,10 +1,13 @@
 //! Обработчики gateway-методов task-плагина.
+//!
+//! Единая сигнатура: `(args, ctx)`. Task-сервис событий не публикует,
+//! поэтому publisher из контекста не используется.
 
 use serde::Deserialize;
 use serde_json::Value;
-use sqlx::SqlitePool;
 
 use crate::plugins::gateway::data::{GatewayError, GatewayErrorCode};
+use crate::plugins::gateway::router::GatewayCtx;
 use crate::plugins::gateway::support::{parse_args, to_value};
 use crate::plugins::task::runtime::build_service;
 use crate::plugins::task::service::TaskServiceError;
@@ -30,9 +33,9 @@ fn map_service_error(e: TaskServiceError) -> GatewayError {
 }
 
 /// Снапшот контента task-ресурса (корень создаётся при отсутствии).
-pub async fn snapshot(args: Value, pool: &SqlitePool) -> Result<Value, GatewayError> {
+pub async fn snapshot(args: Value, ctx: GatewayCtx) -> Result<Value, GatewayError> {
     let args: SnapshotArgs = parse_args(args)?;
-    let data = build_service(pool)
+    let data = build_service(&ctx.pool)
         .snapshot(&args.resource_id)
         .await
         .map_err(map_service_error)?;
@@ -40,9 +43,9 @@ pub async fn snapshot(args: Value, pool: &SqlitePool) -> Result<Value, GatewayEr
 }
 
 /// История попыток задачи.
-pub async fn attempts(args: Value, pool: &SqlitePool) -> Result<Value, GatewayError> {
+pub async fn attempts(args: Value, ctx: GatewayCtx) -> Result<Value, GatewayError> {
     let args: AttemptsArgs = parse_args(args)?;
-    let data = build_service(pool)
+    let data = build_service(&ctx.pool)
         .list_task_attempts(&args.task_id)
         .await
         .map_err(map_service_error)?;
