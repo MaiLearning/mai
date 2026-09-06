@@ -13,12 +13,17 @@ import { fetchTheoryContent } from '@/entities/theory-plugin/services'
 import { CalloutNode } from '../nodes/CalloutNode'
 import { EmbedNode } from '../nodes/EmbedNode'
 import { FormulaNode } from '../nodes/FormulaNode'
+import { WikiLinkNode } from '../nodes/WikiLinkNode'
+import { openExternal } from './open-external'
+import { WikiSuggest } from './wiki-suggestions'
 
-/** Пустой документ TipTap — один абзац. */
-const EMPTY_DOC: JSONContent = { type: 'doc', content: [{ type: 'paragraph' }] }
+/** Пустой документ TipTap — один абзац (каждый вызов — новый объект). */
+function emptyDoc(): JSONContent {
+  return { type: 'doc', content: [{ type: 'paragraph' }] }
+}
 
 /** Проверяет, что распарсенный контент выглядит как документ TipTap. */
-function isTipTapDoc(value: unknown): value is JSONContent {
+export function isTipTapDoc(value: unknown): value is JSONContent {
   if (typeof value !== 'object' || value === null) return false
   const doc = value as { type?: unknown; content?: unknown }
 
@@ -37,7 +42,12 @@ interface UseTheoryEditorOptions {
   onLoadFailed: () => void
 }
 
-/** Создаёт редактор TipTap с расширениями теории и загружает контент ресурса. */
+/**
+ * Создаёт редактор TipTap с расширениями теории и загружает контент ресурса.
+ *
+ * До окончания загрузки редактор переведён в read-only (нельзя набрать текст,
+ * который затем молча перезатрётся контентом с backend).
+ */
 export function useTheoryEditor({
   resourceId,
   onDocChange,
@@ -54,6 +64,7 @@ export function useTheoryEditor({
   const onLoadFailedRef = useRef(onLoadFailed)
   onLoadFailedRef.current = onLoadFailed
   const loadedRef = useRef(false)
+  const [loading, setLoading] = useState(true)
 
   const editor = useEditor({
     extensions: [
@@ -75,10 +86,27 @@ export function useTheoryEditor({
       CalloutNode,
       FormulaNode,
       EmbedNode,
+      WikiLinkNode,
+      WikiSuggest,
     ],
-    content: EMPTY_DOC,
+    content: emptyDoc(),
     autofocus: false,
-    editorProps: { attributes: { spellcheck: 'false' } },
+    editable: false,
+    editorProps: {
+      attributes: { spellcheck: 'false' },
+      // Ctrl/Cmd+Click по инлайн-ссылке открывает её во внешнем браузере.
+      handleClick: (_view, _pos, event) => {
+        if (!(event.ctrlKey || event.metaKey)) return false
+
+        const anchor = (event.target as HTMLElement | null)?.closest('a')
+        const href = anchor?.getAttribute('href')
+        if (!href) return false
+
+        void openExternal(href)
+
+        return true
+      },
+    },
     onUpdate: ({ editor: current }) => {
       if (!loadedRef.current) return
 
@@ -91,13 +119,15 @@ export function useTheoryEditor({
 
   useEffect(() => {
     let cancelled = false
+    setLoading(true)
+    loadedRef.current = false
 
     async function load() {
       try {
         const record = await fetchTheoryContent(resourceId)
         if (cancelled) return
 
-        setInitialDoc(isTipTapDoc(record.content) ? record.content : EMPTY_DOC)
+        setInitialDoc(isTipTapDoc(record.content) ? record.content : emptyDoc())
         onContentLoadedRef.current(record)
       } catch (e) {
         logError(
@@ -105,7 +135,7 @@ export function useTheoryEditor({
         )
         if (cancelled) return
 
-        setInitialDoc(EMPTY_DOC)
+        setInitialDoc(emptyDoc())
         onLoadFailedRef.current()
       }
 
@@ -123,8 +153,10 @@ export function useTheoryEditor({
     if (!editor || !initialDoc) return
 
     editor.commands.setContent(initialDoc, { emitUpdate: false })
+    editor.setEditable(true)
     loadedRef.current = true
+    setLoading(false)
   }, [editor, initialDoc])
 
-  return { editor }
+  return { editor, loading }
 }

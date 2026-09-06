@@ -1,5 +1,14 @@
 import type { Editor } from '@tiptap/core'
-import { Code2, Image as ImageIcon, Link2, Minus, Sigma, Table2, Video } from 'lucide-react'
+import {
+  Code2,
+  Image as ImageIcon,
+  Link2,
+  Link2Off,
+  Minus,
+  Sigma,
+  Table2,
+  Video,
+} from 'lucide-react'
 import { useTranslation } from '@/app/i18n'
 import { Tooltip } from '@/app/theme/components/Tooltip'
 import type { InsertDialogKind } from './TheoryToolbar'
@@ -9,19 +18,28 @@ interface InsertGroupProps {
   editor: Editor | null
   /** Активность кнопки кода (курсор внутри код-блока). */
   codeActive: boolean
+  /** Активность кнопки ссылки (курсор внутри link-марки). */
+  linkActive: boolean
   onRequestDialog: (kind: InsertDialogKind) => void
 }
 
 /** Группа вставок: ссылки, медиа, код, формула, таблица, разделитель. */
-export function InsertGroup({ editor, codeActive, onRequestDialog }: InsertGroupProps) {
+export function InsertGroup({ editor, codeActive, linkActive, onRequestDialog }: InsertGroupProps) {
   const { t } = useTranslation('theory')
 
   const tools = [
     {
       icon: Link2,
       label: t('insert_link'),
-      active: false,
+      active: linkActive,
       onClick: () => onRequestDialog('link'),
+    },
+    {
+      icon: Link2Off,
+      label: t('insert_unlink'),
+      active: false,
+      disabled: !linkActive,
+      onClick: () => editor?.chain().focus().extendMarkRange('link').unsetLink().run(),
     },
     {
       icon: ImageIcon,
@@ -71,6 +89,7 @@ export function InsertGroup({ editor, codeActive, onRequestDialog }: InsertGroup
             label={tool.label}
             $active={tool.active}
             aria-pressed={tool.active}
+            disabled={tool.disabled}
             onClick={tool.onClick}
           >
             <tool.icon size={16} />

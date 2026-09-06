@@ -19,13 +19,15 @@ import { Tooltip } from '@/app/theme/components/Tooltip'
 import { BlockSelect } from './BlockSelect'
 import { InsertGroup } from './InsertGroup'
 import { ToolButton, ToolbarRoot, ToolbarSpacer, ToolGroup, WordCount } from './TheoryToolbar.style'
-import { ALIGN_CYCLE, useToolbarState } from './toolbar-state'
+import { ALIGN_CYCLE, type ToolbarState } from './toolbar-state'
 
 /** Типы диалогов вставки, открываемых из тулбара (реализованы в TheoryViewer). */
-export type InsertDialogKind = 'link' | 'image' | 'video'
+export type InsertDialogKind = 'link' | 'image'
 
 export interface TheoryToolbarProps {
   editor: Editor | null
+  /** Состояние редактора — один useEditorState на viewer (тут и в шапке). */
+  state: ToolbarState
   onRequestDialog: (kind: InsertDialogKind) => void
 }
 
@@ -34,6 +36,8 @@ interface ToolItem {
   label: string
   active: boolean
   disabled?: boolean
+  /** Подсказка горячей клавиши для тултипа (Ctrl+…). */
+  hint?: string
   onClick: () => void
 }
 
@@ -44,17 +48,17 @@ function tool(
   active: boolean,
   onClick: () => void,
   disabled?: boolean,
+  hint?: string,
 ): ToolItem {
-  return { icon, label, active, disabled, onClick }
+  return { icon, label, active, disabled, hint, onClick }
 }
 
 /**
  * Панель форматирования: undo/redo, тип блока, начертания, списки/цитата/
  * выравнивание, вставки и счётчик слов. Активные состояния читаются из редактора.
  */
-export function TheoryToolbar({ editor, onRequestDialog }: TheoryToolbarProps) {
+export function TheoryToolbar({ editor, state, onRequestDialog }: TheoryToolbarProps) {
   const { t } = useTranslation('theory')
-  const state = useToolbarState(editor)
   const focus = () => editor?.chain().focus()
 
   function cycleAlign() {
@@ -67,16 +71,44 @@ export function TheoryToolbar({ editor, onRequestDialog }: TheoryToolbarProps) {
   }
 
   const historyTools = [
-    tool(Undo2, t('undo'), false, () => focus()?.undo().run(), !state.canUndo),
-    tool(Redo2, t('redo'), false, () => focus()?.redo().run(), !state.canRedo),
+    tool(Undo2, t('undo'), false, () => focus()?.undo().run(), !state.canUndo, 'Ctrl+Z'),
+    tool(Redo2, t('redo'), false, () => focus()?.redo().run(), !state.canRedo, 'Ctrl+Y'),
   ]
 
   const markTools = [
-    tool(Bold, t('bold'), state.bold, () => focus()?.toggleBold().run()),
-    tool(Italic, t('italic'), state.italic, () => focus()?.toggleItalic().run()),
-    tool(Underline, t('underline'), state.underline, () => focus()?.toggleUnderline().run()),
-    tool(Strikethrough, t('strike'), state.strike, () => focus()?.toggleStrike().run()),
-    tool(Highlighter, t('highlight'), state.highlight, () => focus()?.toggleHighlight().run()),
+    tool(Bold, t('bold'), state.bold, () => focus()?.toggleBold().run(), undefined, 'Ctrl+B'),
+    tool(
+      Italic,
+      t('italic'),
+      state.italic,
+      () => focus()?.toggleItalic().run(),
+      undefined,
+      'Ctrl+I',
+    ),
+    tool(
+      Underline,
+      t('underline'),
+      state.underline,
+      () => focus()?.toggleUnderline().run(),
+      undefined,
+      'Ctrl+U',
+    ),
+    tool(
+      Strikethrough,
+      t('strike'),
+      state.strike,
+      () => focus()?.toggleStrike().run(),
+      undefined,
+      'Ctrl+Shift+S',
+    ),
+    tool(
+      Highlighter,
+      t('highlight'),
+      state.highlight,
+      () => focus()?.toggleHighlight().run(),
+      undefined,
+      'Ctrl+Shift+H',
+    ),
   ]
 
   const blockTools = [
@@ -90,7 +122,7 @@ export function TheoryToolbar({ editor, onRequestDialog }: TheoryToolbarProps) {
 
   function renderTools(tools: ToolItem[]) {
     return tools.map((item) => (
-      <Tooltip key={item.label} content={item.label}>
+      <Tooltip key={item.label} content={item.hint ? `${item.label} (${item.hint})` : item.label}>
         <ToolButton
           type="button"
           label={item.label}
@@ -115,7 +147,12 @@ export function TheoryToolbar({ editor, onRequestDialog }: TheoryToolbarProps) {
       <Divider vertical />
       <ToolGroup>{renderTools(blockTools)}</ToolGroup>
       <Divider vertical />
-      <InsertGroup editor={editor} codeActive={state.codeBlock} onRequestDialog={onRequestDialog} />
+      <InsertGroup
+        editor={editor}
+        codeActive={state.codeBlock}
+        linkActive={state.link}
+        onRequestDialog={onRequestDialog}
+      />
       <ToolbarSpacer />
       <WordCount aria-label={t('word_count_label')}>
         {t('word_count', { words: state.words ?? 0, chars: state.chars ?? 0 })}

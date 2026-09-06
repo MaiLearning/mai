@@ -36,11 +36,8 @@ export const ToolButton = styled(IconButton)<{ $active?: boolean }>`
   }
 `
 
-/** Липкая панель инструментов над листом документа. */
+/** Панель инструментов над листом документа (вне скролл-контейнера — sticky не нужен). */
 export const ToolbarRoot = styled.div`
-  position: sticky;
-  top: 0;
-  z-index: 5;
   display: flex;
   align-items: center;
   gap: ${({ theme }) => theme.spacing.xs};
@@ -129,7 +126,8 @@ export const BlockMenuItem = styled.button<{ $active?: boolean }>`
   text-align: left;
   cursor: pointer;
 
-  &:hover {
+  &:hover,
+  &[data-cursor='true'] {
     background: ${({ theme }) => theme.colors.surfaceElevated};
   }
 

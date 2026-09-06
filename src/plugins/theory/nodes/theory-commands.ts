@@ -15,6 +15,8 @@ declare module '@tiptap/core' {
       insertFormula: () => ReturnType
       /** Вставляет блок видео; при передаче url — сразу заполненный. */
       insertEmbed: (attrs?: { url?: string; caption?: string }) => ReturnType
+      /** Вставляет wiki-ссылку на материал курса (упоминание в духе Obsidian). */
+      insertWikiLink: (attrs: { resourceId: string; label: string }) => ReturnType
     }
   }
 }

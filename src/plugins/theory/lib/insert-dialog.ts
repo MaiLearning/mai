@@ -1,7 +1,7 @@
 import type { Editor } from '@tiptap/core'
 import type { InsertDialogKind } from '../components/TheoryToolbar'
 
-/** Применяет результат диалога вставки URL к редактору (link/image/video). */
+/** Применяет результат диалога вставки URL к редактору (link/image). */
 export function applyInsertDialog(editor: Editor, kind: InsertDialogKind, url: string) {
   if (kind === 'link') {
     const chain = editor.chain().focus()
@@ -23,11 +23,6 @@ export function applyInsertDialog(editor: Editor, kind: InsertDialogKind, url: s
     return
   }
 
-  if (kind === 'image') {
-    editor.chain().focus().setImage({ src: url }).run()
-
-    return
-  }
-
-  editor.chain().focus().insertEmbed({ url }).run()
+  // Пустой src не применяем — иначе в документе останется битое изображение.
+  if (url) editor.chain().focus().setImage({ src: url }).run()
 }

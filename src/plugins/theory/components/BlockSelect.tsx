@@ -15,10 +15,13 @@ interface BlockSelectProps {
   current: BlockKind
 }
 
-/** Селектор типа блока (абзац/заголовки) с выпадающим меню. */
+const BLOCK_KINDS: BlockKind[] = ['paragraph', 'h1', 'h2', 'h3']
+
+/** Селектор типа блока (абзац/заголовки): мышь + клавиатура (стрелки, Enter, Escape). */
 export function BlockSelect({ editor, current }: BlockSelectProps) {
   const { t } = useTranslation('theory')
   const [menuOpen, setMenuOpen] = useState(false)
+  const [cursor, setCursor] = useState(0)
   const menuWrapRef = useRef<HTMLDivElement>(null)
 
   // Закрытие меню по клику вне.
@@ -41,6 +44,11 @@ export function BlockSelect({ editor, current }: BlockSelectProps) {
     h3: t('block_h3'),
   }
 
+  function openMenu() {
+    setCursor(Math.max(0, BLOCK_KINDS.indexOf(current)))
+    setMenuOpen(true)
+  }
+
   function applyBlock(kind: BlockKind) {
     setMenuOpen(false)
     if (!editor) return
@@ -50,22 +58,64 @@ export function BlockSelect({ editor, current }: BlockSelectProps) {
     else chain.toggleHeading({ level: kind === 'h1' ? 1 : kind === 'h2' ? 2 : 3 }).run()
   }
 
+  function onButtonKeyDown(event: React.KeyboardEvent) {
+    if (event.key === 'ArrowDown' || event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault()
+      if (!menuOpen) openMenu()
+
+      return
+    }
+    if (event.key === 'Escape') setMenuOpen(false)
+  }
+
+  function onMenuKeyDown(event: React.KeyboardEvent) {
+    if (event.key === 'ArrowDown') {
+      event.preventDefault()
+      setCursor((index) => Math.min(index + 1, BLOCK_KINDS.length - 1))
+
+      return
+    }
+    if (event.key === 'ArrowUp') {
+      event.preventDefault()
+      setCursor((index) => Math.max(index - 1, 0))
+
+      return
+    }
+    if (event.key === 'Enter') {
+      event.preventDefault()
+      applyBlock(BLOCK_KINDS[cursor])
+
+      return
+    }
+    if (event.key === 'Escape') {
+      event.preventDefault()
+      setMenuOpen(false)
+    }
+  }
+
   return (
     <BlockSelectWrap ref={menuWrapRef}>
       <BlockSelectButton
         type="button"
         aria-label={t('block_kind')}
-        onClick={() => setMenuOpen((v) => !v)}
+        aria-expanded={menuOpen}
+        aria-haspopup="listbox"
+        onClick={() => (menuOpen ? setMenuOpen(false) : openMenu())}
+        onKeyDown={onButtonKeyDown}
       >
         {blockLabels[current]} <ChevronDown size={14} />
       </BlockSelectButton>
       {menuOpen && (
-        <BlockMenu>
-          {(Object.keys(blockLabels) as BlockKind[]).map((kind) => (
+        <BlockMenu role="listbox" onKeyDown={onMenuKeyDown}>
+          {BLOCK_KINDS.map((kind) => (
             <BlockMenuItem
               key={kind}
               type="button"
+              role="option"
+              aria-selected={current === kind}
               $active={current === kind}
+              data-cursor={cursor === BLOCK_KINDS.indexOf(kind) || undefined}
+              onMouseEnter={() => setCursor(BLOCK_KINDS.indexOf(kind))}
               onClick={() => applyBlock(kind)}
             >
               {blockLabels[kind]}

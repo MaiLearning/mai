@@ -36,6 +36,7 @@
     "@tiptap/pm": "^3.30.3",
     "@tiptap/react": "^3.30.3",
     "@tiptap/starter-kit": "^3.30.3",
+    "@tiptap/suggestion": "^3.30.3",
     "d3-force": "^3.0.0",
     "i18next": "^26.4.0",
     "i18next-browser-languagedetector": "^8.2.1",

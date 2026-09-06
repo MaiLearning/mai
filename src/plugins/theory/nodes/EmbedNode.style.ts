@@ -91,6 +91,11 @@ export const SetupInput = styled.input`
     outline: none;
     border-color: ${({ theme }) => theme.colors.primary};
   }
+
+  &[data-invalid='true'] {
+    border-color: ${({ theme }) => theme.colors.danger};
+    color: ${({ theme }) => theme.colors.danger};
+  }
 `
 
 /** Строка подписи под каркасом. */

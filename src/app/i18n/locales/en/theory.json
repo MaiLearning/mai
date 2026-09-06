@@ -31,6 +31,7 @@
   "blockquote": "Quote",
   "align": "Alignment",
   "insert_link": "Link",
+  "insert_unlink": "Remove link",
   "insert_image": "Image",
   "insert_video": "Video",
   "insert_code": "Code block",
@@ -54,22 +55,42 @@
 
   "status_autosave_on": "Autosave enabled",
   "status_autosave_saving": "Saving…",
+  "status_autosave_saved": "Saved",
   "status_autosave_error": "Save error",
+  "status_retry": "Retry",
+
+  "content_loading": "Loading material…",
 
   "dialog_link_title": "Link",
   "dialog_link_placeholder": "https://example.com",
-  "dialog_link_hint": "Leave empty to remove the link from selection.",
+  "dialog_link_hint": "Leave empty to remove the link from selection. Ctrl+Click a link in text to open it.",
   "dialog_image_title": "Image",
   "dialog_image_placeholder": "https://example.com/picture.png",
-  "dialog_image_hint": "Images are inserted by direct URL.",
-  "dialog_video_title": "Video",
-  "dialog_video_placeholder": "https://example.com/video",
-  "dialog_video_hint": "Video frame with a link; opens in external browser.",
+  "dialog_image_hint": "The image is inserted by a direct URL.",
   "dialog_cancel": "Cancel",
   "dialog_apply": "Apply",
   "dialog_invalid_url": "Enter a valid URL (http/https)",
+  "dialog_open": "Open",
+  "dialog_copy": "Copy",
+  "dialog_copy_success_title": "Link copied",
+  "dialog_copy_success_message": "The URL has been copied to the clipboard",
+  "dialog_copy_failed": "Failed to copy the link",
+
+  "open_external_failed": "Failed to open the link",
+
+  "embed_open": "Open video",
+  "embed_setup_placeholder": "Paste a video URL and press Enter",
+  "embed_setup_label": "Video URL",
+  "embed_caption_placeholder": "Video caption",
+  "embed_caption_label": "Video caption",
+
+  "callout_tone_label": "Callout tone",
+  "callout_tone": "Tone: {{tone}}",
 
   "insert_row_block": "Block",
   "insert_row_media": "Media",
-  "insert_row_formula": "Formula"
+  "insert_row_formula": "Formula",
+
+  "wiki_suggest_empty": "No materials found",
+  "wiki_link_open": "Open material “{{name}}”"
 }

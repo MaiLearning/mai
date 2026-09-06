@@ -9,6 +9,9 @@ const SAVE_DEBOUNCE_MS = 500
 /** Минимальное время показа статуса «Сохранение…» — локальное сохранение быстрее, и статус не должен мелькать. */
 const SAVE_STATE_MIN_MS = 800
 
+/** Через сколько после «Сохранено» статус гаснет обратно в idle. */
+const SAVED_DECAY_MS = 2000
+
 /** Держит статус «Сохранение…» не меньше SAVE_STATE_MIN_MS от момента его показа. */
 function holdMinSavingDuration(savingStartedAt: number): Promise<void> {
   const rest = SAVE_STATE_MIN_MS - (Date.now() - savingStartedAt)
@@ -19,17 +22,28 @@ function holdMinSavingDuration(savingStartedAt: number): Promise<void> {
 /**
  * Автосохранение контента теории: дебаунс изменений, статусы
  * idle/saving/saved/error, финальное сохранение при размонтировании.
+ *
+ * flushSave — единственный владелец отложенного контента: он же используется
+ * дебаунсом, ручным сохранением (Ctrl+S) и финальным сохранением — гонок нет.
  */
-export function useTheoryAutosave(resourceId: string) {
+export function useTheoryAutosave(resourceId: string, onSaved?: (content: JSONContent) => void) {
   const [saveState, setSaveState] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle')
   const [updatedAt, setUpdatedAt] = useState<number | null>(null)
   const pendingRef = useRef<JSONContent | null>(null)
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const decayRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const mountedRef = useRef(true)
+  const onSavedRef = useRef(onSaved)
+  onSavedRef.current = onSaved
 
   const flushSave = useCallback(async () => {
     if (timerRef.current) {
       clearTimeout(timerRef.current)
       timerRef.current = null
+    }
+    if (decayRef.current) {
+      clearTimeout(decayRef.current)
+      decayRef.current = null
     }
 
     const content = pendingRef.current
@@ -39,16 +53,24 @@ export function useTheoryAutosave(resourceId: string) {
     setSaveState('saving')
     const savingStartedAt = Date.now()
     try {
-      await saveTheoryContent({ resourceId, content })
+      const record = await saveTheoryContent({ resourceId, content })
       await holdMinSavingDuration(savingStartedAt)
+      if (!mountedRef.current) return
+
       setSaveState('saved')
-      setUpdatedAt(Date.now())
+      setUpdatedAt(record.updatedAt)
+      onSavedRef.current?.(content)
       info(`plugins/theory: autosave success (${resourceId})`)
+      decayRef.current = setTimeout(() => {
+        if (mountedRef.current) setSaveState('idle')
+      }, SAVED_DECAY_MS)
     } catch (e) {
       await holdMinSavingDuration(savingStartedAt)
       logError(`plugins/theory: save content failed: ${e instanceof Error ? e.message : String(e)}`)
+      if (!mountedRef.current) return
+
       setSaveState('error')
-      // Возвращаем контент в очередь — следующее изменение или «Сохранить» повторят попытку.
+      // Возвращаем контент в очередь — следующее изменение или Ctrl+S повторят попытку.
       pendingRef.current = content
     }
   }, [resourceId])
@@ -66,20 +88,18 @@ export function useTheoryAutosave(resourceId: string) {
     [flushSave, saveState],
   )
 
-  // Финальное сохранение при размонтировании / смене ресурса.
+  // Финальное сохранение при размонтировании / смене ресурса — тем же flushSave.
+  const flushRef = useRef(flushSave)
+  flushRef.current = flushSave
+
   useEffect(() => {
+    mountedRef.current = true
+
     return () => {
-      if (timerRef.current) clearTimeout(timerRef.current)
-
-      const pending = pendingRef.current
-      pendingRef.current = null
-      if (!pending) return
-
-      saveTheoryContent({ resourceId, content: pending }).catch((e) => {
-        logError(`plugins/theory: final save failed: ${e instanceof Error ? e.message : String(e)}`)
-      })
+      mountedRef.current = false
+      void flushRef.current()
     }
   }, [resourceId])
 
-  return { saveState, updatedAt, setUpdatedAt, scheduleSave }
+  return { saveState, updatedAt, setUpdatedAt, scheduleSave, flushSave }
 }

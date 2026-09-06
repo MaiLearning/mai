@@ -14,6 +14,7 @@ const DEFAULT_STATE = {
   underline: false,
   strike: false,
   highlight: false,
+  link: false,
   bulletList: false,
   orderedList: false,
   blockquote: false,
@@ -46,6 +47,7 @@ export function useToolbarState(editor: Editor | null) {
         underline: e.isActive('underline'),
         strike: e.isActive('strike'),
         highlight: e.isActive('highlight'),
+        link: e.isActive('link'),
         bulletList: e.isActive('bulletList'),
         orderedList: e.isActive('orderedList'),
         blockquote: e.isActive('blockquote'),
@@ -69,6 +71,9 @@ export function useToolbarState(editor: Editor | null) {
 
   return rawState ?? DEFAULT_STATE
 }
+
+/** Итоговый тип состояния тулбара (для прокидывания одним подписчиком). */
+export type ToolbarState = ReturnType<typeof useToolbarState>
 
 /** Количество слов в документе — для показателя времени чтения в шапке. */
 export function useWordCount(editor: Editor | null) {

@@ -31,6 +31,7 @@
   "blockquote": "Цитата",
   "align": "Выравнивание",
   "insert_link": "Ссылка",
+  "insert_unlink": "Убрать ссылку",
   "insert_image": "Изображение",
   "insert_video": "Видео",
   "insert_code": "Блок кода",
@@ -54,22 +55,42 @@
 
   "status_autosave_on": "Автосохранение включено",
   "status_autosave_saving": "Сохранение…",
+  "status_autosave_saved": "Сохранено",
   "status_autosave_error": "Ошибка сохранения",
+  "status_retry": "Повторить",
+
+  "content_loading": "Загрузка материала…",
 
   "dialog_link_title": "Ссылка",
   "dialog_link_placeholder": "https://example.com",
-  "dialog_link_hint": "Пустое значение убирает ссылку с выделенного текста.",
+  "dialog_link_hint": "Пустое значение убирает ссылку с выделенного текста. Ctrl+Click по ссылке в тексте — открыть.",
   "dialog_image_title": "Изображение",
   "dialog_image_placeholder": "https://example.com/picture.png",
   "dialog_image_hint": "Изображение вставляется по прямой ссылке.",
-  "dialog_video_title": "Видео",
-  "dialog_video_placeholder": "https://example.com/video",
-  "dialog_video_hint": "Каркас видео со ссылкой; откроется во внешнем браузере.",
   "dialog_cancel": "Отмена",
   "dialog_apply": "Применить",
   "dialog_invalid_url": "Введите корректный URL (http/https)",
+  "dialog_open": "Открыть",
+  "dialog_copy": "Копировать",
+  "dialog_copy_success_title": "Ссылка скопирована",
+  "dialog_copy_success_message": "Адрес скопирован в буфер обмена",
+  "dialog_copy_failed": "Не удалось скопировать ссылку",
+
+  "open_external_failed": "Не удалось открыть ссылку",
+
+  "embed_open": "Открыть видео",
+  "embed_setup_placeholder": "Вставьте ссылку на видео и нажмите Enter",
+  "embed_setup_label": "Ссылка на видео",
+  "embed_caption_placeholder": "Подпись к видео",
+  "embed_caption_label": "Подпись к видео",
+
+  "callout_tone_label": "Тон выноски",
+  "callout_tone": "Тон: {{tone}}",
 
   "insert_row_block": "Блок",
   "insert_row_media": "Медиа",
-  "insert_row_formula": "Формула"
+  "insert_row_formula": "Формула",
+
+  "wiki_suggest_empty": "Материалы не найдены",
+  "wiki_link_open": "Перейти к материалу «{{name}}»"
 }

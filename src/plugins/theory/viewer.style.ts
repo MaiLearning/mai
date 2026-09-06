@@ -25,12 +25,31 @@ export const Body = styled.div`
   min-width: 0;
 `
 
+/** Обёртка рабочей области: держит относительное позиционирование для оверлея загрузки. */
+export const CanvasWrap = styled.div`
+  position: relative;
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+`
+
 /** Прокручиваемая рабочая область с листом документа по центру. */
 export const Canvas = styled.div.attrs({ className: 'app-scroll', 'data-lenis-prevent': 'true' })`
   flex: 1;
   min-width: 0;
   overflow-y: auto;
   padding: ${({ theme }) => `${theme.spacing.xl} ${theme.spacing.lg}`};
+`
+
+/** Оверлей загрузки контента: закрывает документ, пока идёт загрузка с backend. */
+export const LoadOverlay = styled.div`
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  display: grid;
+  place-items: center;
+  background: ${({ theme }) => theme.colors.body};
 `
 
 /** Лист документа — колонка текста фиксированной ширины. */
@@ -341,13 +360,16 @@ export const Prose = styled(EditorContent)`
 
 // ─────────────────────────  Строка вставки под листом  ─────────────────────────
 
-/** Плавающая строка «+ Блок / Медиа / Формула» — проявляется при наведении. */
+/**
+ * Строка «+ Блок / Медиа / Формула» под листом. Постоянно слегка видима,
+ * чтобы быть обнаруживаемой; при наведении проявляется полностью.
+ */
 export const InsertRow = styled.div`
   display: flex;
   align-items: center;
   gap: ${({ theme }) => theme.spacing.sm};
   height: 34px;
-  opacity: 0;
+  opacity: 0.55;
   transition: opacity ${({ theme }) => theme.transitions.fast};
 
   &:hover,

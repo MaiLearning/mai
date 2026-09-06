@@ -1,6 +1,7 @@
 import { mergeAttributes, Node } from '@tiptap/core'
 import { NodeViewContent, type NodeViewProps, ReactNodeViewRenderer } from '@tiptap/react'
 import { CheckCircle2, Lightbulb, Sparkles } from 'lucide-react'
+import { useTranslation } from '@/app/i18n'
 import { CalloutBox, ToneSwitch, ToneSwitchDot } from './CalloutNode.style'
 
 /** Тон выноски: подсказка, акцент/идея, успех/важно. */
@@ -17,6 +18,7 @@ function toneIcon(tone: CalloutTone) {
 
 /** View выноски: иконка по тону + редактируемое содержимое. */
 function CalloutView({ node, selected, updateAttributes }: NodeViewProps) {
+  const { t } = useTranslation('theory')
   const tone = (node.attrs.tone as CalloutTone | undefined) ?? 'info'
   const Icon = toneIcon(tone)
 
@@ -25,16 +27,16 @@ function CalloutView({ node, selected, updateAttributes }: NodeViewProps) {
       <Icon size={18} />
       <NodeViewContent className="th-callout-content" />
       {selected && (
-        <ToneSwitch role="group" aria-label="Тон выноски">
-          {TONES.map((t) => (
+        <ToneSwitch role="group" aria-label={t('callout_tone_label')}>
+          {TONES.map((item) => (
             <ToneSwitchDot
-              key={t}
+              key={item}
               type="button"
-              $tone={t}
-              $active={t === tone}
-              aria-label={`Тон: ${t}`}
-              aria-pressed={t === tone}
-              onClick={() => updateAttributes({ tone: t })}
+              $tone={item}
+              $active={item === tone}
+              aria-label={t('callout_tone', { tone: item })}
+              aria-pressed={item === tone}
+              onClick={() => updateAttributes({ tone: item })}
             />
           ))}
         </ToneSwitch>

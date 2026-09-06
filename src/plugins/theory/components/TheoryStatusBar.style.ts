@@ -37,6 +37,29 @@ export const StatusSpacer = styled.span`
   flex: 1;
 `
 
+/** Кнопка повторной попытки сохранения — видна только при ошибке. */
+export const StatusRetry = styled.button`
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: ${({ theme }) => theme.spacing.sm};
+  padding: 2px 8px;
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  border-radius: ${({ theme }) => theme.radii.pill};
+  background: transparent;
+  color: ${({ theme }) => theme.colors.textMuted};
+  font-family: inherit;
+  font-size: 11px;
+  letter-spacing: inherit;
+  cursor: pointer;
+  transition: color ${({ theme }) => theme.transitions.fast};
+
+  &:hover {
+    color: ${({ theme }) => theme.colors.text};
+    border-color: ${({ theme }) => theme.colors.borderStrong};
+  }
+`
+
 /** Индикатор автосохранения: success — сохранено/включено, warning — сохранение, danger — ошибка. */
 export const SaveDot = styled.span<{ $tone: 'success' | 'warning' | 'danger' }>`
   width: 6px;

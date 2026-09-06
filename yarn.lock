@@ -2230,6 +2230,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@tiptap/suggestion@npm:^3.30.3":
+  version: 3.31.3
+  resolution: "@tiptap/suggestion@npm:3.31.3"
+  peerDependencies:
+    "@floating-ui/dom": ^1.0.0
+    "@tiptap/core": 3.31.3
+    "@tiptap/pm": 3.31.3
+  checksum: 10c0/ed0e56feffec9d5bbe65a1835ba86549289ced122a3131c93e0c47cd49b044a6bc3b99adf17bdb049924ea7545f4a5a70a1789130b14ae04502e4bc80200892b
+  languageName: node
+  linkType: hard
+
 "@tmcp/adapter-valibot@npm:^0.1.5":
   version: 0.1.6
   resolution: "@tmcp/adapter-valibot@npm:0.1.6"
@@ -4172,6 +4183,7 @@ __metadata:
     "@tiptap/pm": "npm:^3.30.3"
     "@tiptap/react": "npm:^3.30.3"
     "@tiptap/starter-kit": "npm:^3.30.3"
+    "@tiptap/suggestion": "npm:^3.30.3"
     "@types/d3-force": "npm:^3.0.10"
     "@types/node": "npm:^26.2.0"
     "@types/react": "npm:^19.1.8"
