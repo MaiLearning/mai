@@ -1,9 +1,10 @@
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use std::fmt;
+use utoipa::ToSchema;
 
 /// Описание одного метода gateway-плагина (для дискавери).
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, ToSchema)]
 #[serde(rename_all = "camelCase")]
 pub struct GatewayMethodInfo {
     pub name: String,
@@ -20,7 +21,7 @@ impl GatewayMethodInfo {
 }
 
 /// Манифест gateway-плагина: перечень открытых другим плагинам методов.
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, ToSchema)]
 #[serde(rename_all = "camelCase")]
 pub struct GatewayManifest {
     pub plugin_id: String,
@@ -42,7 +43,7 @@ pub struct GatewayCallRequest {
 }
 
 /// Код ошибки gateway-вызова.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, ToSchema)]
 #[serde(rename_all = "camelCase")]
 pub enum GatewayErrorCode {
     PluginNotFound,
@@ -55,7 +56,7 @@ pub enum GatewayErrorCode {
 }
 
 /// Структурированная ошибка gateway-вызова (сериализуется в rejection).
-#[derive(Debug, Clone, Serialize)]
+#[derive(Debug, Clone, Serialize, ToSchema)]
 #[serde(rename_all = "camelCase")]
 pub struct GatewayError {
     pub code: GatewayErrorCode,

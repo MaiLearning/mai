@@ -11,6 +11,7 @@ pub fn router(state: AppState) -> Router {
     Router::new()
         .merge(SwaggerUi::new("/docs").url("/api-docs/openapi.json", ApiDoc::openapi()))
         .route("/health", get(endpoints::health::health))
+        .nest("/plugin", endpoints::plugin_gateway::router())
         .nest("/plugins", endpoints::plugin::router())
         .nest("/courses", endpoints::course::router())
         .nest("/structures", endpoints::structure::router())

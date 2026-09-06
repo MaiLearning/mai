@@ -81,6 +81,33 @@ pub async fn handler(
 6. Стартап-инициализация (когда слушателей ещё нет) публикует через `NoopPublisher`
    (см. `plugins/initializer.rs`) — события наружу не идут.
 
+## Мост над gateway: `/plugin`
+
+Контент-плагины (task, theory, link, …) выставляются наружу не отдельными
+REST-папками, а единым мостом (домен `plugin_gateway/`):
+
+- `GET /plugin/manifests` — дискавери: манифесты всех gateway-плагинов;
+- `POST /plugin/{plugin_id}/{method}` — вызов метода; тело — JSON-объект
+  аргументов (может быть пустым), `caller` фиксируется как `"http"`
+  (базис будущих data-rights).
+
+Новый метод плагина (доступен сразу и через IPC, и через HTTP):
+объявить в `<plugin>/gateway/manifest.rs` — `routes()` + запись в
+манифест — и добавить одну строку в `gateway/registry.rs::all_routes()`.
+Сигнатура обработчика: `async fn(args: Value, ctx: GatewayCtx)`; разбор
+аргументов — `support::parse_args`, сериализация — `support::to_value`.
+
+Правила:
+
+- Сервис плагина собирается per-call в `<plugin>/runtime.rs::build_service`
+  (общий для IPC-команд и gateway-обработчиков).
+- Мутации публикуют события через `ctx.publisher` (по HTTP уедет
+  origin=http); read-only методы (task, theory) событий не публикуют.
+- Новая сущность с событиями = контрактная пара Rust ↔ Zod (см. раздел
+  выше); read-only gateway-методы событийного контракта не требуют.
+- Ошибки — `GatewayError` (структурированные `{code, message}`), маппинг
+  в статус — `plugin_gateway/router.rs::map_error`.
+
 ## Чек-лист: новый эндпоинт существующего домена
 
 - [ ] файл операции в папке домена + маршрут в `<domain>/router.rs`

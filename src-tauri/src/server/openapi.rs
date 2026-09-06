@@ -1,7 +1,7 @@
 use utoipa::OpenApi;
 
 use super::endpoints::{
-    course, health, plugin, resource, resource_type,
+    course, health, plugin, plugin_gateway, resource, resource_type,
     structure::{self, directory, move_node, node},
 };
 
@@ -32,6 +32,9 @@ use super::endpoints::{
         plugin::register::handler,
         plugin::remove::handler,
         plugin::set_enabled::handler,
+        // Plugin gateway bridge
+        plugin_gateway::manifests::handler,
+        plugin_gateway::call::handler,
         // Resources
         resource::create::handler,
         resource::get::handler,
@@ -62,6 +65,9 @@ use super::endpoints::{
         crate::services::plugin::PluginManifest,
         plugin::register::RegisterPluginRequest,
         plugin::set_enabled::SetPluginEnabledRequest,
+        // Plugin gateway bridge
+        crate::plugins::gateway::data::GatewayManifest,
+        crate::plugins::gateway::data::GatewayMethodInfo,
         // Resources
         crate::services::resource::ResourceData,
         resource::create::CreateResourceRequest,
@@ -75,6 +81,7 @@ use super::endpoints::{
         (name = "courses", description = "Course management"),
         (name = "structures", description = "Course structure management"),
         (name = "plugins", description = "Plugin management"),
+        (name = "plugin_gateway", description = "HTTP-мост над gateway плагинов: /plugin/manifests, /plugin/{plugin_id}/{method}"),
         (name = "resources", description = "Resource management"),
         (name = "resource_types", description = "Resource type management"),
     )

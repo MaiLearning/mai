@@ -1,16 +1,8 @@
-use std::sync::Arc;
-
 use sqlx::SqlitePool;
 use tauri::State;
 
-use crate::database::sqlite::repositories::theory::SqliteTheoryRepository;
+use crate::plugins::theory::runtime::build_service;
 use crate::plugins::theory::service::data::TheoryContentData;
-use crate::plugins::theory::service::TheoryService;
-
-fn build_service(pool: &SqlitePool) -> TheoryService {
-    let theory_repo = Arc::new(SqliteTheoryRepository::new(pool.clone()));
-    TheoryService::new(theory_repo)
-}
 
 #[tauri::command]
 pub async fn get_theory_content(
