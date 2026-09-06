@@ -1,4 +1,5 @@
 pub mod endpoints;
+pub mod mcp;
 pub mod openapi;
 pub mod router;
 mod server;

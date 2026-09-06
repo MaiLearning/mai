@@ -39,10 +39,14 @@ async-trait = "0.1"
 utoipa = "5"
 utoipa-swagger-ui = { version = "9", features = ["axum"] }
 uuid = { version = "1", features = ["v4"] }
+# MCP-сервер: официальный SDK, streamable HTTP поверх общего Axum-сервера (src/server/mcp/).
+rmcp = { version = "3", features = ["server", "transport-streamable-http-server"] }
+schemars = "1"
 
 [dev-dependencies]
 tower = { version = "0.5", features = ["util"] }
 http-body-util = "0.1"
+http = "1"
 
 [profile.dev]
 opt-level = 1
