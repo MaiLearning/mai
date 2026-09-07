@@ -6,7 +6,7 @@
 > превращает это в структурированный курс, который вы создаёте, организуете
 > и реально завершаете — в своём темпе, по своим правилам и со своими материалами
 
-[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![License: MIT + Commons Clause](https://img.shields.io/badge/license-MIT%20%2B%20Commons%20Clause-blue.svg)](LICENSE)
 
 ## Скриншоты
 
@@ -60,4 +60,4 @@ cargo clippy        # запуск из src-tauri/
 
 ## Лицензия
 
-Распространяется по лицензии [MIT](LICENSE).
+Распространяется по лицензии [MIT](LICENSE) с условием [Commons Clause](LICENSE): использовать, копировать, изменять и распространять ПО можно, но продавать его и платные услуги на его основе — нельзя. Подробнее — в [LICENSE](LICENSE).

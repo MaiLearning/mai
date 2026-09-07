@@ -6,7 +6,7 @@
 > structured course that you create, organize, and actually finish — at your
 > own pace.
 
-[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![License: MIT + Commons Clause](https://img.shields.io/badge/license-MIT%20%2B%20Commons%20Clause-blue.svg)](LICENSE)
 
 ## Screenshots
 
@@ -60,4 +60,4 @@ Internal documentation (architecture, entities, plugin contract) is in Russian:
 
 ## License
 
-Released under the [MIT](LICENSE) license.
+Released under the [MIT](LICENSE) license with the [Commons Clause](LICENSE) license condition: you may use, copy, modify, and distribute the software, but you may not sell it or sell services built on it. See [LICENSE](LICENSE) for details.

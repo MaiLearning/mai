@@ -2,6 +2,7 @@
 name = "mai"
 version = "0.1.0"
 description = "The backend for the Mai application uses Tauri as the main framework."
+license-file = "../LICENSE"
 authors = ["GILGANSH"]
 edition = "2021"
 
