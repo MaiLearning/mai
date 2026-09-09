@@ -2,6 +2,12 @@
   "settings": {
     "global": {
       "title": "General settings",
+      "theme": {
+        "label": "Theme",
+        "system": "System",
+        "light": "Light",
+        "dark": "Dark"
+      },
       "language": {
         "label": "Interface language",
         "ru": "Русский",

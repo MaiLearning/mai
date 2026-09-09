@@ -1,11 +1,13 @@
 import { createContext } from 'react'
-import type { AppTheme, ThemeName, ThemePreference } from './theme'
+import type { SettingsTheme } from '@/entities/settings'
+import type { AppTheme, ThemeName } from './theme'
 
 export interface AppThemeContextValue {
   theme: AppTheme
   themeName: ThemeName
-  preference: ThemePreference
-  setTheme: (preference: ThemePreference) => void
+  /** Выбранная тема из настроек приложения. */
+  preference: SettingsTheme
+  setTheme: (theme: SettingsTheme) => void
   isDark: boolean
 }
 

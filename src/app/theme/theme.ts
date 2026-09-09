@@ -5,9 +5,9 @@ import { lightTheme } from './themes/light'
  * Имя встроенной или пользовательской темы.
  * При добавлении новой темы ее идентификатор нужно добавить сюда и в registry.
  * Компоненты не проверяют ThemeName: они используют semantic tokens темы.
+ * Выбор темы пользователя живёт в настройках приложения (entities/settings).
  */
 export type ThemeName = 'light' | 'dark' | 'sepia' | 'midnight'
-export type ThemePreference = ThemeName | 'system'
 
 export interface AppTheme {
   name: ThemeName

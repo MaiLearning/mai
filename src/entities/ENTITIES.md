@@ -1,7 +1,8 @@
 # Entities — Mai frontend
 
-Сущности (`src/entities/<name>/`): `course`, `directory`, `kv`, `plugins`,
-`resource`, `structure`, `task-plugin`, `theory-plugin`.
+Сущности (`src/entities/<name>/`): `course`, `directory`,
+`kv`, `plugins`, `resource`, `settings`, `structure`, `task-plugin`,
+`theory-plugin`.
 Каждая следует структуре `{core, api, services, store, index.ts}`
 (исключение: `kv` — без `store`).
 
@@ -25,7 +26,8 @@
 
 - Плоско (`export *`): `course`, `plugins`, `resource`, `task-plugin`,
   `theory-plugin`.
-- С неймспейсом (`export * as <name>`): `directory`, `structure`.
+- С неймспейсом (`export * as <name>`): `directory`, `settings`,
+  `structure`.
 - `kv` из корня не реэкспортируется — импортировать напрямую через
   `@/entities/kv`.
 
@@ -81,6 +83,24 @@ createdAt, updatedAt}`.
 `Resource {id, courseId, typeKey?, name, metadata: unknown, files[],
 createdAt, updatedAt}`.
 State: `resourcesAtom`, `resourceTypesAtom` + операции.
+
+### settings
+Глобальные настройки приложения (SSOT):
+`AppSettings {theme: 'system' | 'light' | 'dark', language: 'ru' | 'en'}`;
+список тем расширяемый (`SETTINGS_THEME_OPTIONS`), дефолт —
+`DEFAULT_SETTINGS` (`theme: 'system'`, `language: 'ru'`).
+Backend-команд пока нет: обе ветки `api/` работают поверх in-memory
+хранилища (`api/memory.ts`), «реальная» — invoke-заглушка
+(`settings_get`/`settings_update`) с warn-логом; при появлении команд
+меняется только тело заглушек.
+State: `settingsAtom: AppSettings | null` (null до загрузки —
+потребители fallback'ят на `DEFAULT_SETTINGS`) + операции
+`loadSettingsAtom`, `updateSettingsAtom(partial)` (сервис сливает патч
+с текущим значением и валидирует). Применение к слоям — у потребителей:
+тема — `app/theme/provider.tsx` (реактивно), язык — `app/i18n/hooks.ts`
+(`i18next.changeLanguage` + boot-кэш `localStorage['mai.lang']`),
+стартовая синхронизация — runner-таска `init-settings`.
+Из корня экспортируется **с неймспейсом** (подробности в `SETTINGS.md`).
 
 ### structure
 Дерево содержимого курса; хранится плоско, собирается по
