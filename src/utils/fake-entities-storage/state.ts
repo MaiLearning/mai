@@ -17,6 +17,7 @@ export const fakeState: {
   resourceTypes: ResourceType[]
   nodes: StructureNodeFlat[]
   links: Link[]
+  pluginSettings: Record<string, Record<string, unknown>>
 } = {
   courses: [
     {
@@ -151,6 +152,8 @@ export const fakeState: {
     },
   ],
   links: [],
+  /** Значения настроек плагинов: pluginId → (ключ настройки → значение). */
+  pluginSettings: {},
 }
 
 export function fakeId(): string {

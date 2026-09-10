@@ -1,5 +1,1 @@
-export { CourseSettings } from './course'
-export { GlobalSettings } from './global'
-export { PluginSettings } from './plugin'
-export { ProfileSettings } from './profile'
 export { SettingsPage } from './settings-page'

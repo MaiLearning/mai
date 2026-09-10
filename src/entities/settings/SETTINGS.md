@@ -54,6 +54,25 @@ in-memory хранилищем (`api/memory.ts`): fake-ветка — по фл�
 При появлении backend-команд меняется только тело invoke-заглушек —
 контракт сущности не трогается.
 
+## Настройки плагинов
+
+Отдельная ветка сущности — значения настроек плагинов: карта
+`pluginSettings: Record<pluginId, Record<ключ, unknown>>` в
+fake-хранилище (`utils/fake-entities-storage/state.ts`). Типы значений
+знает только сам плагин — хранилище агностично.
+
+- `api/plugin.ts` — fake-ветка + invoke-заглушки
+  (`plugin_settings_get`/`plugin_settings_update`, warn-лог); при
+  появлении backend-команд меняется только тело заглушек.
+- `services/plugin.ts` — `fetchPluginSettings` / `updatePluginSettings`
+  (валидация pluginId и карты, полная замена).
+- `store/plugin.ts` — кэш `pluginSettingsAtom` + `loadPluginSettingsAtom`
+  + `updatePluginSettingAtom` (оптимистичная запись одного ключа,
+  при ошибке — откат и проброс).
+- Единый API для секций настроек — хук `usePluginSettings(pluginId)`
+  (`features/settings/use-plugin-settings.ts`): `{ settings, ready,
+  setSetting }`; ошибки сохранения ловит и уведомляет сам.
+
 ## Как расширять
 
 - **Новое поле** — добавить в `SettingsSchema` (и `UpdateSettingsInputSchema`),

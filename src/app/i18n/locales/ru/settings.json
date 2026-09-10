@@ -1,5 +1,6 @@
 {
   "settings": {
+    "title": "Настройки",
     "global": {
       "title": "Общие настройки",
       "theme": {
@@ -13,6 +14,22 @@
         "ru": "Русский",
         "en": "English"
       }
+    },
+    "groups": {
+      "plugins": "Встроенные плагины",
+      "external": "Сторонние плагины",
+      "courses": "Курсы"
+    },
+    "fields": {
+      "theme": "Тема оформления",
+      "language": "Язык интерфейса"
+    },
+    "search": {
+      "placeholder": "Поиск настроек",
+      "empty": "Ничего не найдено"
+    },
+    "sections": {
+      "general": "Общие"
     }
   }
 }

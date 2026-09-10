@@ -8,7 +8,7 @@ import {
   type SettingsTheme,
   settingsAtom,
 } from '@/entities/settings'
-import { GlobalSettings } from './global'
+import { GeneralSettings } from './general'
 
 /**
  * Инициализирует i18next до рендера: в сторибуке runner-таски приложения
@@ -35,8 +35,8 @@ function preset(theme: SettingsTheme, language: SettingsLanguage) {
 }
 
 const meta = {
-  title: 'Pages/Settings/GlobalSettings',
-  component: GlobalSettings,
+  title: 'Settings/GeneralSettings',
+  component: GeneralSettings,
   tags: ['autodocs'],
   decorators: [
     (Story) => (
@@ -45,7 +45,7 @@ const meta = {
       </WithI18n>
     ),
   ],
-} satisfies Meta<typeof GlobalSettings>
+} satisfies Meta<typeof GeneralSettings>
 
 export default meta
 type Story = StoryObj<typeof meta>

@@ -48,6 +48,13 @@ Internal-плагин — модуль `src/plugins/<name>/`, поставляе
 
 - **`viewer.tsx`** — обязателен: реализация или реэкспорт компонента-viewer'а,
   отображающего ресурс.
+- **`settings.tsx`** — опционален: секции настроек плагина
+  (`SettingsSection[]` — контракт в `features/settings/core/types.ts`).
+  Слот реестра — `features/settings/registry.ts`
+  (`INTERNAL_SETTINGS_SECTIONS` / `EXTERNAL_SETTINGS_SECTIONS` — для
+  external). Значения настроек — через `usePluginSettings(pluginId)`
+  (`features/settings/use-plugin-settings.ts`), форма секции — шаблоны
+  полей (`features/settings/ui/fields`). Детали: `docs/roadmap/settings.md`.
 - **`index.ts`** — публичные реэкспорты плагина (viewer + публичные типы).
 - **`core/`** — контракты: типы данных, реестры вариантов.
 

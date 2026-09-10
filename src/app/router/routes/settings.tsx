@@ -1,20 +1,14 @@
 import { Navigate, RouteObject } from 'react-router-dom'
-import {
-  CourseSettings,
-  GlobalSettings,
-  PluginSettings,
-  ProfileSettings,
-  SettingsPage,
-} from '@/pages/settings'
+import { CourseSettings, SectionOutlet } from '@/features/settings'
+import { SettingsPage } from '@/pages/settings'
 
 export const settingsRoute: RouteObject = {
   path: '/settings',
   element: <SettingsPage />,
   children: [
-    { index: true, element: <Navigate to="app" replace /> },
-    { path: 'app', element: <GlobalSettings /> },
-    { path: 'profile', element: <ProfileSettings /> },
+    { index: true, element: <Navigate to="general" replace /> },
+    // Параметрические настройки курса — статический префикс важнее :sectionId
     { path: 'course/:courseId', element: <CourseSettings /> },
-    { path: 'plugin/:pluginId', element: <PluginSettings /> },
+    { path: ':sectionId', element: <SectionOutlet /> },
   ],
 }

@@ -1,10 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { getDefaultStore } from 'jotai'
 import { type ReactNode, useEffect, useState } from 'react'
-import { MemoryRouter, Route, Routes } from 'react-router-dom'
+import { MemoryRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { i18next, initI18n } from '@/app/i18n'
 import { DEFAULT_SETTINGS, settingsAtom } from '@/entities/settings'
-import { GlobalSettings } from './global'
+import { CourseSettings, INTERNAL_SETTINGS_SECTIONS, SectionOutlet } from '@/features/settings'
+import { mockPluginSection } from '@/features/settings/__mocks__/plugin-section'
 import { SettingsPage } from './settings-page'
 
 /**
@@ -27,22 +28,35 @@ function StorySetup({ children }: { children: ReactNode }) {
   return ready ? <>{children}</> : null
 }
 
+/** Маршруты /settings — зеркало settingsRoute из app/router. */
+function SettingsRoutes({ initialPath = '/settings/general' }: { initialPath?: string }) {
+  return (
+    <MemoryRouter initialEntries={[initialPath]}>
+      <Routes>
+        <Route path="/settings" element={<SettingsPage />}>
+          <Route index element={<Navigate to="general" replace />} />
+          <Route path="course/:courseId" element={<CourseSettings />} />
+          <Route path=":sectionId" element={<SectionOutlet />} />
+        </Route>
+      </Routes>
+    </MemoryRouter>
+  )
+}
+
 const meta = {
   title: 'Pages/Settings/SettingsPage',
   component: SettingsPage,
   tags: ['autodocs'],
   decorators: [
     (Story) => (
-      // Страница рендерит <Outlet /> — нужен роутер с вложенным маршрутом
       <StorySetup>
-        <MemoryRouter initialEntries={['/settings']}>
-          <Routes>
-            <Route path="/settings" element={<Story />}>
-              <Route index element={<GlobalSettings />} />
-            </Route>
-          </Routes>
-        </MemoryRouter>
+        <Story />
       </StorySetup>
+    ),
+    (Story) => (
+      <div style={{ height: '100vh' }}>
+        <Story />
+      </div>
     ),
   ],
 } satisfies Meta<typeof SettingsPage>
@@ -50,5 +64,27 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-/** Оболочка страницы с разделом «Общие настройки» в Outlet. */
-export const Default: Story = {}
+/** Шелл целиком: сайдбар (3 группы) + поисковик + секция «Общие». */
+export const Default: Story = {
+  render: () => <SettingsRoutes />,
+}
+
+/** С мок-секцией плагина: группа «Встроенные плагины» и настройки демо-плагина. */
+export const WithMockPlugin: Story = {
+  render: () => <SettingsRoutes initialPath="/settings/demo-plugin" />,
+  decorators: [
+    (Story) => {
+      INTERNAL_SETTINGS_SECTIONS.push(mockPluginSection)
+
+      return <Story />
+    },
+  ],
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Реальные плагины сюда не подключены (отдельная задача) — секция добавлена моком для демонстрации контракта.',
+      },
+    },
+  },
+}

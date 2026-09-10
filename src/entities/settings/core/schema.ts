@@ -10,6 +10,16 @@ export const SETTINGS_THEME_OPTIONS = ['system', 'light', 'dark'] as const
 export const SETTINGS_LANGUAGE_OPTIONS = ['ru', 'en'] as const
 
 export const SettingsThemeSchema = z.enum(SETTINGS_THEME_OPTIONS)
+
+/** Идентификатор плагина в настройках. */
+export const PluginIdSchema = z.string().min(1).max(256)
+
+/**
+ * Значения настроек плагина: карта «ключ настройки → значение».
+ * Типы значений знает только сам плагин — хранилище агностично.
+ */
+export const PluginSettingsSchema = z.record(z.string(), z.unknown())
+export type PluginSettings = z.infer<typeof PluginSettingsSchema>
 export type SettingsTheme = z.infer<typeof SettingsThemeSchema>
 
 export const SettingsLanguageSchema = z.enum(SETTINGS_LANGUAGE_OPTIONS)

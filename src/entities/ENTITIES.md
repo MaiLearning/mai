@@ -120,6 +120,10 @@ State: `settingsAtom: AppSettings | null` (null до загрузки —
 тема — `app/theme/provider.tsx` (реактивно), язык — `app/i18n/hooks.ts`
 (`i18next.changeLanguage` + boot-кэш `localStorage['mai.lang']`),
 стартовая синхронизация — runner-таска `init-settings`.
+Ветка настроек плагинов: значения в fake-хранилище
+(`fakeState.pluginSettings`), api-заглушки `plugin_settings_get`/
+`plugin_settings_update`, кэш `pluginSettingsAtom`, единый API — хук
+`usePluginSettings(pluginId)` (подробности в `SETTINGS.md`).
 Из корня экспортируется **с неймспейсом** (подробности в `SETTINGS.md`).
 
 ### structure
