@@ -1,6 +1,6 @@
 # Entities — Mai frontend
 
-Сущности (`src/entities/<name>/`): `course`, `directory`,
+Сущности (`src/entities/<name>/`): `code-plugin`, `course`, `directory`,
 `kv`, `plugins`, `resource`, `settings`, `structure`, `task-plugin`,
 `theory-plugin`.
 Каждая следует структуре `{core, api, services, store, index.ts}`
@@ -38,6 +38,26 @@
 Руководства заполняются постепенно; отсутствующие — заглушки.
 
 ## Сущности
+
+### code-plugin
+Контент уроков-кодов, привязанный к ресурсу (wire-контракт in-app
+плагина `code`); backend хранит его opaque-JSON при ресурсе (как
+theory). Урок: `language: 'python' | 'javascript'` и шаги
+`CodeStep {id, title (1..200), instructions (до 5000), starterCode,
+expectedOutput (до 100 000)}` — границы `MAX_*` экспортируются из
+`core/schema.ts`. Прохождение: `code: Record<id шага, код ученика>`,
+`results: Record<id шага, 'passed' | 'failed'>` (нет записи — не
+проверялся; проверка на backend — сравнение stdout с `expectedOutput`
+с trim). `CodeLessonContent {language, steps, code, results}`,
+снапшот `CodeContentData {resourceId, content, createdAt, updatedAt}`,
+результат запуска `CodeRunResult {stdout, stderr, exitCode (nullable),
+timedOut, durationMs}`, входы `UpdateCodeContentInput`,
+`RunCodeInput`. Zod-схемы — источник истины, дефолт backend `{}`
+разворачивается в `{language: 'python', steps: [], code: {}, results:
+{}}`. API — Tauri IPC `code_snapshot`, `update_code_content` (полная
+замена, ответ — свежий снапшот), `code_run`, без fake-ветки. State:
+`codeSnapshotsAtom` (по id ресурса); операции `loadCodeSnapshotAtom`,
+`saveCodeContentAtom`, `runCodeAtom` (подробности в `CODE-PLUGIN.md`).
 
 ### course
 Учебный курс: `{id, name, description?, tags[], colorFrom?, colorTo?,
