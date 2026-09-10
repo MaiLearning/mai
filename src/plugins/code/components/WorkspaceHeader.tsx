@@ -96,7 +96,7 @@ export function WorkspaceHeader({
         index={index}
         stepState={stepState}
         onSelect={onSelect}
-        onAdd={editing ? onAddStep : undefined}
+        onAdd={onAddStep}
       />
 
       <MetaRow>

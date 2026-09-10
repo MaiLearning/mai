@@ -2,6 +2,7 @@ import { javascript } from '@codemirror/lang-javascript'
 import { python } from '@codemirror/lang-python'
 import CodeMirror from '@uiw/react-codemirror'
 import type { CodeLanguage } from '@/entities/code-plugin'
+import { padToLines, stripTrailingEmpty } from '../lib/padLines'
 import { EditorWrap } from './CodeEditor.style'
 
 interface CodeEditorProps {
@@ -12,7 +13,11 @@ interface CodeEditorProps {
   ariaLabel: string
 }
 
-/** Поле кода на CodeMirror: подсветка по языку урока, тема приложения. */
+/**
+ * Поле кода на CodeMirror: подсветка по языку урока, тема приложения.
+ * Пустое поле показывает минимум строк (MIN_EDITOR_LINES) с честной нумерацией:
+ * паддинг — только на отображение, наружу уходит код без концевых пустых строк.
+ */
 export function CodeEditor({
   language,
   value,
@@ -25,8 +30,8 @@ export function CodeEditor({
   return (
     <EditorWrap aria-label={ariaLabel}>
       <CodeMirror
-        value={value}
-        onChange={onChange}
+        value={padToLines(value)}
+        onChange={(next) => onChange(stripTrailingEmpty(next))}
         extensions={extensions}
         editable={!readOnly}
         basicSetup={{
