@@ -63,5 +63,19 @@ pub fn register_internal_plugins() -> Vec<InternalPluginEntry> {
             created_at: 0,
             updated_at: 0,
         }],
+    }, InternalPluginEntry {
+        id: "internal-code",
+        name: "Код",
+        version: "0.1.0",
+        description: Some("Уроки кода: редактор, исполнение и проверка программ"),
+        resource_types: vec![ResourceTypeData {
+            key: "code".into(),
+            name: "Код".into(),
+            description: Some("Уроки кода".into()),
+            plugin_id: None,
+            supported_extensions: vec![],
+            created_at: 0,
+            updated_at: 0,
+        }],
     }]
 }

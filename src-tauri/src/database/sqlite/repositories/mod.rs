@@ -1,3 +1,4 @@
+pub mod code;
 pub mod course;
 pub mod directory;
 pub mod kv;
