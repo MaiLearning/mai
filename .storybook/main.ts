@@ -1,5 +1,5 @@
 import type { StorybookConfig } from '@storybook/react-vite'
-import { dirname } from 'path'
+import { dirname, resolve } from 'path'
 import { fileURLToPath } from 'url'
 
 const __filename = fileURLToPath(import.meta.url)
@@ -19,6 +19,9 @@ const config: StorybookConfig = {
     config.resolve.alias = {
       ...config.resolve.alias,
       '@': __dirname.replace('.storybook', 'src'),
+      // Виртуальный модуль из vite.config.ts в сторибуке не генерируется —
+      // подставляем заглушку (браузерное окружение, fakeData: true)
+      'virtual:mai-config': resolve(__dirname, 'mai-config.ts'),
     }
 
     return config
