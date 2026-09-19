@@ -5,6 +5,7 @@ import {
   DEFAULT_NS,
   FALLBACK_LANGUAGE,
   LANGUAGE_STORAGE_KEY,
+  SUPPORTED_LANGUAGES,
 } from './config'
 
 let initialized = false
@@ -32,22 +33,27 @@ export function initI18n({ resources }: InitI18nOptions): void {
 
   const saved = (localStorage.getItem(LANGUAGE_STORAGE_KEY) as AppLanguage | null) ?? null
 
+  // i18next ждёт форму `{ [lang]: { [ns]: dict } }` — собираем её из
+  // входных `{ [ns]: { [lang]: dict } }`.
+  const ns = Object.keys(resources)
+  const formattedResources = Object.fromEntries(
+    SUPPORTED_LANGUAGES.map((lang) => [
+      lang,
+      Object.fromEntries(
+        Object.entries(resources).map(([nsName, langs]) => [nsName, langs[lang] ?? {}]),
+      ),
+    ]),
+  )
+
   i18next.init({
     lng: saved ?? DEFAULT_LANGUAGE,
     fallbackLng: FALLBACK_LANGUAGE,
+    supportedLngs: SUPPORTED_LANGUAGES,
     defaultNS: DEFAULT_NS,
-    ns: Object.keys(resources),
-    resources: Object.fromEntries(
-      Object.entries(resources).map(([ns, langs]) => [
-        ns,
-        Object.fromEntries(
-          Object.entries(langs).map(([lang, translations]) => [
-            lang,
-            { translation: translations },
-          ]),
-        ),
-      ]),
-    ),
+    ns,
+    resources: formattedResources,
+    // Синхронная инициализация: к моменту первого рендера переводы уже на месте.
+    initImmediate: false,
     interpolation: { escapeValue: false },
     react: { useSuspense: true },
   })
