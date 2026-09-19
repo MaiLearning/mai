@@ -79,6 +79,19 @@
     "newCourse": "Новый курс",
     "manage": "Управление курсами",
     "library": "Библиотека курсов",
+    "libraryTitle": "Все курсы",
+    "libraryAvailable_one": "{{count}} курс доступен для изучения",
+    "libraryAvailable_few": "{{count}} курса доступны для изучения",
+    "libraryAvailable_many": "{{count}} курсов доступны для изучения",
+    "libraryAvailable_other": "{{count}} курса доступны для изучения",
+    "searchPlaceholder": "Поиск по курсам...",
+    "searchLabel": "Поиск по курсам",
+    "filters": "Фильтры",
+    "viewLabel": "Вид списка курсов",
+    "viewGrid": "Сетка",
+    "viewCompact": "Список",
+    "emptyTitle": "Ничего не найдено",
+    "emptyHint": "Попробуйте изменить запрос",
     "cards": {
       "status": {
         "draft": "Черновик",
@@ -89,13 +102,24 @@
       "resources_few": "{{count}} ресурса",
       "resources_many": "{{count}} ресурсов",
       "resources_other": "{{count}} ресурса",
+      "lessons_one": "{{count}} урок",
+      "lessons_few": "{{count}} урока",
+      "lessons_many": "{{count}} уроков",
+      "lessons_other": "{{count}} урока",
       "percentComplete": "{{percent}}% завершено",
       "open": "Открыть",
+      "openCourse": "Перейти к курсу",
       "settings": "Настройки курса"
     },
     "createCard": {
       "title": "Создать новый курс",
       "subtitle": "Начните с темы, цели или документа, который хотите освоить."
+    },
+    "featured": {
+      "continueEyebrow": "Продолжить обучение",
+      "openLesson": "Открыть урок",
+      "inProgress": "В процессе",
+      "lessonOf": "Урок {{current}} из {{total}}"
     }
   }
 }

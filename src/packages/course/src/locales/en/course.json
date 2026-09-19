@@ -79,6 +79,17 @@
     "newCourse": "New course",
     "manage": "Manage courses",
     "library": "Course library",
+    "libraryTitle": "All courses",
+    "libraryAvailable_one": "{{count}} course available to study",
+    "libraryAvailable_other": "{{count}} courses available to study",
+    "searchPlaceholder": "Search courses...",
+    "searchLabel": "Search courses",
+    "filters": "Filters",
+    "viewLabel": "Course list view",
+    "viewGrid": "Grid",
+    "viewCompact": "List",
+    "emptyTitle": "Nothing found",
+    "emptyHint": "Try a different query",
     "cards": {
       "status": {
         "draft": "Draft",
@@ -87,13 +98,22 @@
       },
       "resources_one": "{{count}} resource",
       "resources_other": "{{count}} resources",
+      "lessons_one": "{{count}} lesson",
+      "lessons_other": "{{count}} lessons",
       "percentComplete": "{{percent}}% complete",
       "open": "Open",
+      "openCourse": "Go to course",
       "settings": "Course settings"
     },
     "createCard": {
       "title": "Create a new course",
       "subtitle": "Start from a topic, a goal, or a document you want to master."
+    },
+    "featured": {
+      "continueEyebrow": "Continue learning",
+      "openLesson": "Open lesson",
+      "inProgress": "In progress",
+      "lessonOf": "Lesson {{current}} of {{total}}"
     }
   }
 }

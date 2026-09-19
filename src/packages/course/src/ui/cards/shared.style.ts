@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+import type { CourseStatus } from '../../core'
 
 /** Контейнер секции: центрирование и боковые отступы. */
 export const MainContainer = styled.div`
@@ -63,4 +64,38 @@ export const SectionLink = styled.button<{
     outline: 2px solid ${({ theme }) => theme.focus.ring};
     outline-offset: 2px;
   }
+`
+
+/**
+ * Бейдж статуса курса. Маппинг под референс: черновик — amber,
+ * в процессе — violet, завершён — emerald.
+ */
+export const StatusBadge = styled.span<{ $status: CourseStatus }>`
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  border-radius: ${({ theme }) => theme.radius.sm};
+  font-size: 11px;
+  font-weight: 500;
+  ${({ theme, $status }) => {
+    if ($status === 'completed')
+      return `
+        border: 1px solid ${theme.status.success.foreground}33;
+        background: ${theme.status.success.background};
+        color: ${theme.status.success.foreground};
+      `
+    if ($status === 'in_progress')
+      return `
+        border: 1px solid ${theme.text.accent}33;
+        background: ${theme.background.accentSubtle};
+        color: ${theme.text.accent};
+      `
+
+    return `
+      border: 1px solid ${theme.status.warning.foreground}33;
+      background: ${theme.status.warning.background};
+      color: ${theme.status.warning.foreground};
+    `
+  }}
 `

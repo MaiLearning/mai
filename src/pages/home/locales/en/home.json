@@ -1,0 +1,16 @@
+{
+  "greeting": "Good afternoon, {{name}}",
+  "greetingSubtitle": "Pick up where you left off.",
+  "brand": "Mai",
+  "notifications": "Notifications",
+  "nav": {
+    "overview": "Overview",
+    "manage": "Manage courses",
+    "analytics": "Analytics",
+    "main": "Main navigation"
+  },
+  "learning": {
+    "title": "Your learning",
+    "subtitle": "Course picks and current activity"
+  }
+}

@@ -8,6 +8,7 @@ import { linkI18NResources } from '@mai-plugin/link'
 import { theoryI18NResources } from '@mai-plugin/theory'
 import { useEffect } from 'react'
 import { RouterProvider } from 'react-router-dom'
+import { homeI18NResources } from '@/pages/home/locales'
 import { AppRouter } from './router'
 import { Runner } from './runner'
 import { initEventsTask } from './runner/task/init_events'
@@ -18,6 +19,7 @@ import { initPluginsTask } from './runner/task/init_plugins'
 initI18n({
   resources: {
     course: courseI18NResources,
+    home: homeI18NResources,
     sidebar: sidebarI18NResources,
     plugin: pluginI18NResources,
     link: linkI18NResources,

@@ -2,19 +2,22 @@ import type { Course } from '@mai/course'
 import { CoursesSection, CreateCourseModal, EditCourseModal } from '@mai/course'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { HomeShell } from './ui/homeShell/HomeShell'
 import { useCourses } from './useCourses'
 
 export function HomePage() {
-  const { courses, lessonCounts, loading, error, reload } = useCourses()
+  const { courses, lessonCounts, continueCourse, loading, error, reload } = useCourses()
   const navigate = useNavigate()
   const [createOpened, setCreateOpened] = useState(false)
   const [editingCourse, setEditingCourse] = useState<Course | null>(null)
 
   return (
-    <main>
+    // TODO: мок пользователя — заменить реальными данными, когда появится модель
+    <HomeShell userName="Алексей" userInitials="АК">
       <CoursesSection
         courses={courses}
         lessonCounts={lessonCounts}
+        continueCourse={continueCourse}
         loading={loading}
         error={error}
         reload={reload}
@@ -38,6 +41,6 @@ export function HomePage() {
         onSaved={reload}
         onDeleted={reload}
       />
-    </main>
+    </HomeShell>
   )
 }
