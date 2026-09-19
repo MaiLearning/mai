@@ -13,6 +13,8 @@ export type { AlertProps, AlertVariant } from './ui/base/alert/alert'
 export { Alert } from './ui/base/alert/alert'
 export type { ButtonProps, ButtonSize, ButtonVariant } from './ui/base/button/button'
 export { Button } from './ui/base/button/button'
+export type { CardProps } from './ui/base/card/card'
+export { Card } from './ui/base/card/card'
 export type { IconProps, IconSize } from './ui/base/icon/icon'
 export { Icon } from './ui/base/icon/icon'
 export type {

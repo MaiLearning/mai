@@ -51,7 +51,7 @@ export const Preset = styled.button<{ $from: string; $to: string; $active: boole
     $active &&
     css`
       box-shadow:
-        0 0 0 2px ${theme.background.surface},
+        0 0 0 2px ${theme.background.body},
         0 0 0 4px ${theme.border.accent};
     `}
 `
@@ -71,7 +71,7 @@ export const Slot = styled.button<{ $active: boolean }>`
   border-radius: ${({ theme }) => theme.radius.md};
   border: 1px solid
     ${({ theme, $active }) => ($active ? theme.border.accent : theme.border.default)};
-  background: ${({ theme }) => theme.background.surface};
+  background: transparent;
   text-align: left;
   cursor: pointer;
   transition:
@@ -125,7 +125,7 @@ export const Swap = styled.button`
   flex-shrink: 0;
   border-radius: ${({ theme }) => theme.radius.sm};
   border: 1px solid ${({ theme }) => theme.border.default};
-  background: ${({ theme }) => theme.background.surface};
+  background: transparent;
   color: ${({ theme }) => theme.text.muted};
   cursor: pointer;
   transition:
@@ -180,7 +180,7 @@ export const HexInput = styled.input`
   padding: 0 12px;
   border-radius: ${({ theme }) => theme.radius.sm};
   border: 1px solid ${({ theme }) => theme.border.default};
-  background: ${({ theme }) => theme.background.surface};
+  background: ${({ theme }) => theme.background.body};
   color: ${({ theme }) => theme.text.primary};
   font-family: ${({ theme }) => theme.typography.fontFamilyMonospace};
   font-size: 13px;

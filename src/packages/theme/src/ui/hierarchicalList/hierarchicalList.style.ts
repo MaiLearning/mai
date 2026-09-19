@@ -16,7 +16,7 @@ export const ToggleButton = styled.button`
   padding: 0;
   border: 1px solid ${({ theme }) => theme.border.default};
   border-radius: ${({ theme }) => theme.radius.sm};
-  background: ${({ theme }) => theme.background.surface};
+  background: ${({ theme }) => theme.background.raised};
   color: ${({ theme }) => theme.text.muted};
   cursor: pointer;
   transition:

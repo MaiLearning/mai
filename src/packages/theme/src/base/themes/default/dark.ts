@@ -17,18 +17,18 @@ const _gray: ColorScale = [
 ]
 
 const _accent: ColorScale = [
-  '#1c151e',
-  '#231526',
-  '#36193e',
-  '#461951',
-  '#52205e',
-  '#5f2c6c',
-  '#753c84',
-  '#954da8',
-  '#c253de',
-  '#b545d0',
-  '#eb8eff',
-  '#f4d3fd',
+  '#14121f',
+  '#1b1525',
+  '#291f43',
+  '#33255b',
+  '#3c2e69',
+  '#473876',
+  '#56468b',
+  '#6958ad',
+  '#6e56cf',
+  '#7d66d9',
+  '#baa7ff',
+  '#e2ddfe',
 ]
 
 const _success: ColorScale = [
@@ -94,7 +94,7 @@ const _info: ColorScale = [
 const palette: Palette = {
   gray: _gray,
   accent: _accent,
-  background: '#0f172a',
+  background: '#090b10',
   success: _success,
   warning: _warning,
   danger: _danger,
@@ -107,12 +107,18 @@ export const dark = {
   text: {
     primary: gray[11],
     muted: gray[10],
-    onPrimary: accent[11],
+    onPrimary: '#ffffff',
     accent: accent[11],
   },
   background: {
     body: background,
-    surface: gray[1],
+    // Тело карточек и поиска по референсу: композит slate-900/70 поверх body.
+    surface: '#0d1322',
+    // Слой «кнопка на карточке» по референсу: композит slate-800/60 поверх surface.
+    // Ховер (gray[2]) остаётся выше и заметен.
+    raised: '#162032',
+    // Ступень между surface и body: вдавленные зоны темнее карточки.
+    sunken: '#121317',
     elevated: gray[2],
     accent: accent[9],
     accentHover: accent[10],
@@ -139,6 +145,6 @@ export const dark = {
   shadows: {
     sm: '0 1px 2px rgba(0, 0, 0, 0.4)',
     md: '0 4px 12px rgba(0, 0, 0, 0.5)',
-    lg: '0 8px 24px rgba(0, 0, 0, 0.6)',
+    lg: '0 16px 50px -24px rgba(0, 0, 0, 0.8)',
   },
 } satisfies AppTheme

@@ -85,7 +85,7 @@ export const OverlayCard = styled.div`
   width: 240px;
   box-sizing: border-box;
   padding: ${({ theme }) => theme.spacing.xs};
-  background: ${({ theme }) => theme.background.surface};
+  background: ${({ theme }) => theme.background.elevated};
   border: 1px solid ${({ theme }) => theme.border.strong};
   border-radius: ${({ theme }) => theme.radius.md};
   box-shadow: ${({ theme }) => theme.shadows.lg};

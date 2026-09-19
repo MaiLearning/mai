@@ -13,7 +13,7 @@ export const MenuSurface = styled.div<{ $x: number; $y: number }>`
   padding: 6px;
   border: 1px solid ${({ theme }) => theme.border.default};
   border-radius: ${({ theme }) => theme.radius.md};
-  background: ${({ theme }) => theme.background.surface};
+  background: ${({ theme }) => theme.background.elevated};
   box-shadow: ${({ theme }) => theme.shadows.md};
 `
 

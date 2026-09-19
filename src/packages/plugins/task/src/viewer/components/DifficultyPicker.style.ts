@@ -6,10 +6,10 @@ export const MenuRow = styled.div<{ $active: boolean }>`
   align-items: center;
   gap: 2px;
   border-radius: ${({ theme }) => theme.radius.sm};
-  background: ${({ $active, theme }) => ($active ? theme.background.surface : 'transparent')};
+  background: ${({ $active, theme }) => ($active ? theme.background.selected : 'transparent')};
 
   &:hover {
-    background: ${({ theme }) => theme.background.surface};
+    background: ${({ theme }) => theme.background.hover};
   }
 `
 

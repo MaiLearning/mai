@@ -44,7 +44,7 @@ export const ToolbarRoot = styled.div`
   flex-wrap: wrap;
   padding: 6px ${({ theme }) => theme.spacing.xl};
   border-bottom: 1px solid ${({ theme }) => theme.border.default};
-  background: ${({ theme }) => theme.background.surface};
+  background: ${({ theme }) => theme.background.elevated};
 `
 
 export const ToolGroup = styled.div`
@@ -88,7 +88,7 @@ export const BlockSelect = styled.button`
     border-color ${({ theme }) => theme.durations.fast};
 
   &:hover {
-    background: ${({ theme }) => theme.background.elevated};
+    background: ${({ theme }) => theme.background.hover};
     border-color: ${({ theme }) => theme.border.strong};
   }
 
@@ -108,7 +108,7 @@ export const BlockMenu = styled.div`
   padding: 4px;
   border: 1px solid ${({ theme }) => theme.border.default};
   border-radius: ${({ theme }) => theme.radius.md};
-  background: ${({ theme }) => theme.background.surface};
+  background: ${({ theme }) => theme.background.elevated};
   box-shadow: ${({ theme }) => theme.shadows.md};
 `
 

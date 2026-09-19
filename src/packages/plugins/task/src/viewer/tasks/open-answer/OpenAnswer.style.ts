@@ -10,7 +10,7 @@ const TextArea = styled.textarea<{
   padding: 16px;
   border-radius: ${({ theme }) => theme.radius.md};
   border: 1px solid ${({ theme }) => theme.border.default};
-  background: ${({ theme }) => theme.background.surface};
+  background: ${({ theme }) => theme.background.body};
   color: ${({ theme }) => theme.text.primary};
   font: inherit;
   font-size: 1rem;
@@ -84,7 +84,7 @@ const EditRow = styled.div`
   padding: 14px 16px;
   border-radius: ${({ theme }) => theme.radius.md};
   border: 1px solid ${({ theme }) => theme.border.default};
-  background: ${({ theme }) => theme.background.surface};
+  background: ${({ theme }) => theme.background.body};
   color: ${({ theme }) => theme.text.primary};
   transition: all ${({ theme }) => theme.durations.fast};
 

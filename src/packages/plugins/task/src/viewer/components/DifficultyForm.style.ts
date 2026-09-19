@@ -15,7 +15,7 @@ export const FormInput = styled.input`
   padding: 0 12px;
   border-radius: ${({ theme }) => theme.radius.sm};
   border: 1px solid ${({ theme }) => theme.border.default};
-  background: ${({ theme }) => theme.background.surface};
+  background: ${({ theme }) => theme.background.body};
   color: ${({ theme }) => theme.text.primary};
   font: inherit;
   font-size: 0.875rem;

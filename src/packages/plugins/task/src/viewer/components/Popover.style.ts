@@ -40,7 +40,7 @@ export const MenuItem = styled.button`
   transition: background ${({ theme }) => theme.durations.fast};
 
   &:hover {
-    background: ${({ theme }) => theme.background.surface};
+    background: ${({ theme }) => theme.background.hover};
   }
 
   svg {

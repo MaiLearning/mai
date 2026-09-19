@@ -41,9 +41,9 @@ export const base: Omit<
     xl: '2rem',
   },
   radius: {
-    sm: '0.25rem',
+    sm: '0.375rem',
     md: '0.5rem',
-    lg: '1rem',
+    lg: '0.625rem',
     full: '9999px',
   },
   zIndex: {

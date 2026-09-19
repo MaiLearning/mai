@@ -31,7 +31,7 @@ export const Slot = styled.div<{ $state?: 'idle' | 'correct' | 'incorrect'; $ove
   padding: 6px 8px;
   border: 1px dashed ${({ theme }) => theme.border.default};
   border-radius: ${({ theme }) => theme.radius.md};
-  background: ${({ theme }) => theme.background.surface};
+  background: ${({ theme }) => theme.background.sunken};
   transition: all ${({ theme }) => theme.durations.fast};
 
   ${({ $over, theme }) =>
@@ -105,7 +105,7 @@ export const Pool = styled.div<{ $over?: boolean }>`
   padding: 12px 14px;
   border: 1px dashed ${({ theme }) => theme.border.default};
   border-radius: ${({ theme }) => theme.radius.md};
-  background: ${({ theme }) => theme.background.surface};
+  background: ${({ theme }) => theme.background.sunken};
   transition: all ${({ theme }) => theme.durations.fast};
 
   ${({ $over, theme }) =>

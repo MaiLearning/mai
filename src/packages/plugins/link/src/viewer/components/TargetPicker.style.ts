@@ -17,8 +17,7 @@ export const KindTab = styled.button<{ $active: boolean }>`
   border-radius: ${({ theme }) => theme.radius.full};
   border: 1px solid
     ${({ theme, $active }) => ($active ? theme.border.accent : theme.border.default)};
-  background: ${({ theme, $active }) =>
-    $active ? theme.background.accentSubtle : theme.background.surface};
+  background: ${({ theme, $active }) => ($active ? theme.background.accentSubtle : 'transparent')};
   color: ${({ theme, $active }) => ($active ? theme.text.primary : theme.text.muted)};
   font-family: ${({ theme }) => theme.typography.fontFamily};
   font-size: 13px;
@@ -42,7 +41,7 @@ export const PickerSelect = styled.select`
   padding: 10px 14px;
   border: 1px solid ${({ theme }) => theme.border.default};
   border-radius: ${({ theme }) => theme.radius.md};
-  background: ${({ theme }) => theme.background.surface};
+  background: ${({ theme }) => theme.background.body};
   color: ${({ theme }) => theme.text.primary};
   font-family: ${({ theme }) => theme.typography.fontFamily};
   font-size: 14px;

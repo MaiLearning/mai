@@ -60,7 +60,7 @@ function variantStyles(theme: AppTheme, variant: ButtonVariant) {
       }
     `,
     secondary: css`
-      background: ${theme.background.surface};
+      background: ${theme.background.raised};
       border: 1px solid ${theme.border.default};
       color: ${theme.text.primary};
 

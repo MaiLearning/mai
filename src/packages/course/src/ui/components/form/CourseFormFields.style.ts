@@ -31,7 +31,6 @@ export const inputBase = css<{ $invalid?: boolean }>`
 
   &:focus {
     outline: none;
-    background: ${({ theme }) => theme.background.surface};
     border-color: ${({ theme, $invalid }) =>
       $invalid ? theme.status.danger.foreground : theme.border.accent};
     /* Контрастное кольцо box-shadow оптически «выпрямляет» углы: компенсируем,

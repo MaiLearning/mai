@@ -56,7 +56,7 @@ export const TypeChip = styled.code`
   padding: 4px 10px;
   border: 1px solid ${({ theme }) => theme.border.default};
   border-radius: ${({ theme }) => theme.radius.sm};
-  background: ${({ theme }) => theme.background.surface};
+  background: ${({ theme }) => theme.background.raised};
   color: ${({ theme }) => theme.text.muted};
   font-family: ${({ theme }) => theme.typography.fontFamilyMonospace};
   font-size: 11.5px;

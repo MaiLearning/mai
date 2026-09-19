@@ -43,7 +43,7 @@ const Blank = styled.input<{
   border: none;
   border-bottom: 2px solid ${({ theme }) => theme.border.strong};
   border-radius: ${({ theme }) => theme.radius.sm} ${({ theme }) => theme.radius.sm} 0 0;
-  background: ${({ theme }) => theme.background.surface};
+  background: ${({ theme }) => theme.background.body};
   color: ${({ theme }) => theme.text.primary};
   font: inherit;
   font-size: 1rem;

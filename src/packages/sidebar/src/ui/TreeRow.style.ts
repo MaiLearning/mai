@@ -164,7 +164,7 @@ export const RenameInput = styled.input`
   padding: 2px 4px;
   border: 1px solid ${({ theme }) => theme.focus.ring};
   border-radius: ${({ theme }) => theme.radius.sm};
-  background: ${({ theme }) => theme.background.surface};
+  background: ${({ theme }) => theme.background.body};
   color: ${({ theme }) => theme.text.primary};
   font-family: inherit;
   font-size: 13px;

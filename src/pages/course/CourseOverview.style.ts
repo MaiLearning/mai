@@ -31,5 +31,5 @@ export const Hint = styled(Text)`
   padding: 16px 18px;
   border-left: 3px solid ${({ theme }) => theme.text.accent};
   border-radius: ${({ theme }) => theme.radius.md};
-  background: ${({ theme }) => theme.background.surface};
+  background: ${({ theme }) => theme.status.info.background};
 `

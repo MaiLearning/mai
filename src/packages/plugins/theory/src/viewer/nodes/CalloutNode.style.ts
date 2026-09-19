@@ -59,7 +59,7 @@ export const ToneSwitch = styled.span`
   padding: 4px;
   border: 1px solid ${({ theme }) => theme.border.default};
   border-radius: ${({ theme }) => theme.radius.full};
-  background: ${({ theme }) => theme.background.surface};
+  background: ${({ theme }) => theme.background.elevated};
   box-shadow: ${({ theme }) => theme.shadows.sm};
 `
 

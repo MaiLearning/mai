@@ -177,7 +177,7 @@ export const ModalFooter = styled.div`
   padding: ${({ theme }) => theme.spacing.lg} ${({ theme }) => theme.spacing.xl};
   padding-bottom: max(${({ theme }) => theme.spacing.lg}, env(safe-area-inset-bottom));
   border-top: 1px solid ${({ theme }) => theme.border.default};
-  background: ${({ theme }) => theme.background.surface};
+  background: ${({ theme }) => theme.background.raised};
 
   @media (min-width: ${({ theme }) => theme.breakpoints.md}) {
     padding: ${({ theme }) => theme.spacing.lg} 28px;

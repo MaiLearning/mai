@@ -11,7 +11,7 @@ export const StatusBar = styled.footer`
   height: 34px;
   flex: none;
   border-top: 1px solid ${({ theme }) => theme.border.default};
-  background: ${({ theme }) => theme.background.surface};
+  background: ${({ theme }) => theme.background.elevated};
   font-family: ${({ theme }) => theme.typography.fontFamilyMonospace};
   font-size: 11px;
   letter-spacing: 0.03em;

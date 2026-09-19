@@ -83,7 +83,7 @@ export const Step = styled.button<{ $state: 'idle' | 'current' | 'correct' | 'in
   height: 34px;
   border-radius: ${({ theme }) => theme.radius.sm};
   border: 1px solid ${({ theme }) => theme.border.default};
-  background: ${({ theme }) => theme.background.surface};
+  background: transparent;
   color: ${({ theme }) => theme.text.muted};
   font-family: ${({ theme }) => theme.typography.fontFamilyMonospace};
   font-size: 0.8125rem;
@@ -169,7 +169,7 @@ export const Badge = styled.span<{
   font-weight: 600;
   border: 1px solid ${({ theme }) => theme.border.default};
   color: ${({ theme }) => theme.text.muted};
-  background: ${({ theme }) => theme.background.surface};
+  background: ${({ theme }) => theme.background.raised};
 
   ${({ $tone, theme }) =>
     $tone === 'easy' &&

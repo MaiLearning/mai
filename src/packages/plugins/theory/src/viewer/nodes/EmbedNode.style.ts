@@ -79,7 +79,7 @@ export const SetupInput = styled.input`
   padding: 8px 14px;
   border: 1px solid ${({ theme }) => theme.border.default};
   border-radius: ${({ theme }) => theme.radius.full};
-  background: ${({ theme }) => theme.background.surface};
+  background: ${({ theme }) => theme.background.body};
   color: ${({ theme }) => theme.text.primary};
   font-size: 13px;
 

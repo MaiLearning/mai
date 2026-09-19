@@ -18,7 +18,7 @@ export const Root = styled.span<{ $variant: BadgeVariant }>`
       accent: { bg: theme.background.accentSubtle, color: theme.text.accent },
       success: { bg: theme.status.success.background, color: theme.status.success.foreground },
       danger: { bg: theme.status.danger.background, color: theme.status.danger.foreground },
-      neutral: { bg: theme.background.surface, color: theme.text.muted },
+      neutral: { bg: theme.background.raised, color: theme.text.muted },
     }
     const s = map[$variant]
 

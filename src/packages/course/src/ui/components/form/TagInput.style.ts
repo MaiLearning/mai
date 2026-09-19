@@ -52,7 +52,7 @@ export const TagRemove = styled.button`
 
   &:hover {
     opacity: 1;
-    background: ${({ theme }) => theme.background.surface};
+    background: ${({ theme }) => theme.background.hover};
   }
 `
 

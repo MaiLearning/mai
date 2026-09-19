@@ -308,7 +308,7 @@ export const Prose = styled(EditorContent)`
     }
 
     tbody tr:hover td {
-      background: ${({ theme }) => theme.background.surface};
+      background: ${({ theme }) => theme.background.hover};
     }
 
     .selectedCell {
@@ -385,7 +385,7 @@ export const InsertButton = styled.button`
   padding: 0 10px;
   border: 1px dashed ${({ theme }) => theme.border.strong};
   border-radius: ${({ theme }) => theme.radius.full};
-  background: ${({ theme }) => theme.background.surface};
+  background: transparent;
   color: ${({ theme }) => theme.text.muted};
   font-size: 12px;
   white-space: nowrap;
