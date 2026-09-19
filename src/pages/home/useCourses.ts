@@ -1,9 +1,8 @@
+import type { Course } from '@mai/course'
+import { fetchAllCourses, LAST_OPENED_COURSE_KEY, resolveContinueCourse } from '@mai/course'
+import { getKvValue } from '@mai/kv'
+import { fetchStructure } from '@mai/structure'
 import { useCallback, useEffect, useState } from 'react'
-import type { Course } from '@/entities/course'
-import { LAST_OPENED_COURSE_KEY, resolveContinueCourse } from '@/entities/course'
-import { fetchAllCourses } from '@/entities/course/services'
-import { getKvValue } from '@/entities/kv/services'
-import { fetchStructure } from '@/entities/structure/services'
 
 interface UseCoursesResult {
   courses: Course[]
@@ -19,8 +18,8 @@ interface UseCoursesResult {
 /**
  * Загружает список курсов, для каждого — кол-во уроков из структуры и
  * id последнего открытого курса (KV-хранилище) для continue-курса.
- * Структуру читает напрямую через сервис (не через loadStructureAtom),
- * чтобы не затирать глобальный атом структуры открытого курса.
+ * Структуру читает напрямую через сервис (не через атомы стора),
+ * чтобы не затирать глобальный стор структуры открытого курса.
  */
 export function useCourses(): UseCoursesResult {
   const [courses, setCourses] = useState<Course[]>([])
@@ -43,7 +42,7 @@ export function useCourses(): UseCoursesResult {
         list.map(async (course) => {
           const nodes = await fetchStructure(course.id)
 
-          return [course.id, nodes.filter((node) => !node.isDirectory).length] as const
+          return [course.id, nodes.filter((n) => !n.isDirectory).length] as const
         }),
       )
       setLessonCounts(Object.fromEntries(counts))

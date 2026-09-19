@@ -1,12 +1,11 @@
 import { RouteObject } from 'react-router-dom'
-import { CoursePage } from '@/layouts'
-import { CoursePage as CourseView, ResourcePage } from '@/pages'
+import { CourseOverview, CourseShell, ResourcePage } from '@/pages/course'
 
 export const courseRoute: RouteObject = {
   path: '/course/:courseId',
-  element: <CoursePage />,
+  element: <CourseShell />,
   children: [
-    { index: true, element: <CourseView /> },
+    { index: true, element: <CourseOverview /> },
     { path: 'resource/:resourceId', element: <ResourcePage /> },
   ],
 }

@@ -1,0 +1,101 @@
+{
+  "createEyebrow": "Новый курс",
+  "editEyebrow": "Редактирование курса",
+  "close": "Закрыть окно",
+  "dirtyBadge": "Есть несохранённые изменения",
+  "previewTitlePlaceholder": "Название курса",
+  "actions": {
+    "cancel": "Отмена",
+    "create": "Создать курс",
+    "creating": "Создание…",
+    "save": "Сохранить",
+    "saving": "Сохранение…"
+  },
+  "notifications": {
+    "createSuccess": "Курс создан",
+    "createError": "Не удалось создать курс",
+    "saveSuccess": "Курс обновлён",
+    "saveError": "Не удалось сохранить курс",
+    "deleteSuccess": "Курс удалён",
+    "deleteError": "Не удалось удалить курс"
+  },
+  "validation": {
+    "nameRange": "Название курса должно содержать от 3 до 120 символов",
+    "descriptionMax": "Описание курса не должно превышать {{max}} символов",
+    "tagMax": "Тег курса не должен превышать {{max}} символов"
+  },
+  "fields": {
+    "name": "Название курса",
+    "namePlaceholder": "Например, React с нуля до продакшена",
+    "description": "Описание",
+    "descriptionPlaceholder": "Разберем компоненты, состояние, роутинг и деплой на реальном проекте…",
+    "tags": "Теги курса",
+    "tagsHint": "До {{max}} символов на тег. Enter или запятая — добавить.",
+    "tagsPlaceholderExisting": "Добавить тег…",
+    "tagsPlaceholderEmpty": "Например, Frontend",
+    "tagsLimitReached": "Тег слишком длинный",
+    "removeTag": "Убрать тег {{tag}}",
+    "colors": "Цвета карточки",
+    "colorsHint": "Два цвета формируют градиент обложки курса.",
+    "status": "Статус курса",
+    "statusGroupLabel": "Статус курса"
+  },
+  "statuses": {
+    "draft": { "label": "Черновик", "hint": "Виден только вам" },
+    "in_progress": { "label": "В процессе", "hint": "Доступен студентам" },
+    "completed": { "label": "Завершён", "hint": "Материал закрыт" }
+  },
+  "colorPicker": {
+    "presetsLabel": "Готовые пары",
+    "presetsAria": "Палитра {{name}}",
+    "slotsLabel": "Два цвета карточки",
+    "fromLabel": "Первый цвет",
+    "toLabel": "Второй цвет",
+    "paletteLabel": "Палитра · {{slot}}",
+    "swap": "Поменять цвета местами",
+    "hexAria": "HEX для «{{slot}}»",
+    "custom": "Свой цвет",
+    "panelAria": "Панель выбора цвета",
+    "hue": "Тон",
+    "saturation": "Насыщенность и яркость"
+  },
+  "danger": {
+    "title": "Удаление курса",
+    "description": "Курс исчезнет вместе со всеми материалами и статистикой.",
+    "delete": "Удалить курс",
+    "confirmTitle": "Удалить курс «{{name}}»?",
+    "confirmText": "Курс и весь его прогресс будут удалены безвозвратно. Действие нельзя отменить.",
+    "confirm": "Да, удалить курс",
+    "cancel": "Оставить",
+    "deleting": "Удаление…"
+  },
+  "error": {
+    "loadFailed": "Не удалось загрузить курсы: {{error}}",
+    "retry": "Повторить"
+  },
+  "coursesSection": {
+    "title": "Мои курсы",
+    "subtitle": "Всё, что вы создали для себя, в одном месте.",
+    "newCourse": "Новый курс",
+    "manage": "Управление курсами",
+    "library": "Библиотека курсов",
+    "cards": {
+      "status": {
+        "draft": "Черновик",
+        "in_progress": "В процессе",
+        "completed": "Завершён"
+      },
+      "resources_one": "{{count}} ресурс",
+      "resources_few": "{{count}} ресурса",
+      "resources_many": "{{count}} ресурсов",
+      "resources_other": "{{count}} ресурса",
+      "percentComplete": "{{percent}}% завершено",
+      "open": "Открыть",
+      "settings": "Настройки курса"
+    },
+    "createCard": {
+      "title": "Создать новый курс",
+      "subtitle": "Начните с темы, цели или документа, который хотите освоить."
+    }
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "name": "@mai-plugin/theory",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "import": "./src/index.ts"
+    }
+  },
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "styled-components": "^6.5.0"
+  },
+  "dependencies": {
+    "@mai-plugin/link": "workspace:*",
+    "@mai/course": "workspace:*",
+    "@mai/i18n": "workspace:*",
+    "@mai/notifications": "workspace:*",
+    "@mai/plugin": "workspace:*",
+    "@mai/resource": "workspace:*",
+    "@mai/structure": "workspace:*",
+    "@mai/tauri": "workspace:*",
+    "@mai/theme": "workspace:*",
+    "@tiptap/core": "^3.30.3",
+    "@tiptap/extension-highlight": "^3.30.3",
+    "@tiptap/extension-image": "^3.30.3",
+    "@tiptap/extension-table": "^3.30.3",
+    "@tiptap/extension-text-align": "^3.30.3",
+    "@tiptap/extensions": "^3.30.3",
+    "@tiptap/pm": "^3.30.3",
+    "@tiptap/react": "^3.30.3",
+    "@tiptap/starter-kit": "^3.30.3",
+    "@tiptap/suggestion": "^3.30.3",
+    "jotai": "^2.20.3",
+    "lucide-react": "^0.475.0",
+    "react-router-dom": "^7.18.2",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "styled-components": "^6.5.3",
+    "typescript": "~6.0.3"
+  }
+}

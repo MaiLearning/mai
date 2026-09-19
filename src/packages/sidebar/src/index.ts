@@ -1,0 +1,6 @@
+export type { CourseSidebarRootProps } from './CourseSidebarRoot'
+export { CourseSidebarRoot } from './CourseSidebarRoot'
+export { sidebarI18NResources } from './locales'
+export type { CourseNode, CourseNodeType, SidebarAction } from './model/types'
+export type { CourseSidebarProps } from './ui/CourseSidebar'
+export { CourseSidebar } from './ui/CourseSidebar'

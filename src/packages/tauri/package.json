@@ -1,0 +1,25 @@
+{
+  "name": "@mai/tauri",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./ipc": {
+      "types": "./src/ipc.ts",
+      "default": "./src/ipc.ts"
+    },
+    "./logs": {
+      "types": "./src/logs.ts",
+      "default": "./src/logs.ts"
+    },
+    "./opener": {
+      "types": "./src/opener.ts",
+      "default": "./src/opener.ts"
+    }
+  },
+  "dependencies": {
+    "@tauri-apps/api": "^2.8.0",
+    "@tauri-apps/plugin-log": "^2.8.0",
+    "@tauri-apps/plugin-opener": "^2"
+  }
+}

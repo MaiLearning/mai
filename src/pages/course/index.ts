@@ -1,1 +1,3 @@
-export { CoursePage } from './CoursePage'
+export { CourseOverview } from './CourseOverview'
+export { CourseShell } from './CourseShell'
+export { ResourcePage } from './ResourcePage'

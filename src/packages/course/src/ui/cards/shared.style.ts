@@ -1,0 +1,66 @@
+import styled from 'styled-components'
+
+/** Контейнер секции: центрирование и боковые отступы. */
+export const MainContainer = styled.div`
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  @media (min-width: ${({ theme }) => theme.breakpoints.md}) {
+    padding: 0 32px;
+  }
+`
+
+/**
+ * Кнопка-действие в стиле ссылок главной страницы.
+ * В пакете нет роутера: навигацию выполняет потребитель через onClick.
+ */
+export const SectionLink = styled.button<{
+  $variant?: 'primary' | 'ghost' | 'soft'
+  $size?: 'md' | 'lg'
+}>`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid transparent;
+  border-radius: ${({ theme }) => theme.radius.full};
+  font-weight: 600;
+  white-space: nowrap;
+  font-size: ${({ $size }) => ($size === 'lg' ? '16px' : '14px')};
+  padding: ${({ $size }) => ($size === 'lg' ? '14px 26px' : '10px 18px')};
+  cursor: pointer;
+  transition:
+    transform ${({ theme }) => theme.durations.fast},
+    background ${({ theme }) => theme.durations.fast},
+    box-shadow ${({ theme }) => theme.durations.fast};
+  background: ${({ theme, $variant }) =>
+    $variant === 'ghost'
+      ? 'transparent'
+      : $variant === 'soft'
+        ? theme.background.accentSubtle
+        : theme.background.accent};
+  color: ${({ theme, $variant }) =>
+    $variant === 'ghost'
+      ? theme.text.primary
+      : $variant === 'soft'
+        ? theme.text.accent
+        : theme.text.onPrimary};
+  border-color: ${({ theme, $variant }) => ($variant === 'ghost' ? theme.border.default : 'transparent')};
+  box-shadow: ${({ theme }) => theme.shadows.sm};
+  &:hover {
+    background: ${({ theme, $variant }) =>
+      $variant === 'ghost'
+        ? theme.background.hover
+        : $variant === 'soft'
+          ? theme.background.selected
+          : theme.background.accentHover};
+  }
+  &:active {
+    transform: translateY(1px);
+  }
+  &:focus-visible {
+    outline: 2px solid ${({ theme }) => theme.focus.ring};
+    outline-offset: 2px;
+  }
+`

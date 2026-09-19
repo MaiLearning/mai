@@ -1,71 +1,40 @@
-import fs from 'node:fs'
-import path from 'node:path'
-import react from '@vitejs/plugin-react'
-import { defineConfig, type Plugin } from 'vite'
-
-const host = process.env.TAURI_DEV_HOST
-const virtualModuleId = 'virtual:mai-config'
-const resolvedVirtualModuleId = `\0${virtualModuleId}`
-
-function maiConfigPlugin(mode: string): Plugin {
-  return {
-    name: 'mai-config',
-    resolveId(id) {
-      return id === virtualModuleId ? resolvedVirtualModuleId : undefined
-    },
-    load(id) {
-      if (id !== resolvedVirtualModuleId) return undefined
-
-      const configPath = path.resolve(__dirname, 'config', `${mode}.conf`)
-      const values = Object.fromEntries(
-        fs
-          .readFileSync(configPath, 'utf8')
-          .split(/\r?\n/)
-          .map((line) => line.trim())
-          .filter((line) => line && !line.startsWith('#'))
-          .map((line) => {
-            const separator = line.indexOf('=')
-            if (separator < 1) {
-              throw new Error(`Некорректная строка в ${configPath}: ${line}`)
-            }
-
-            return [line.slice(0, separator).trim(), line.slice(separator + 1).trim()]
-          }),
-      )
-
-      return `export default ${JSON.stringify({
-        mode,
-        plugins: values.plugins ? values.plugins.split(',').map((item) => item.trim()) : [],
-        logging: values.logging ?? 'info',
-        fakeData: values.fake_data === 'true' && mode === 'development',
-      })}`
-    },
-  }
-}
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+// @ts-expect-error type error without @types/node package
+import path from "node:path";
+// @ts-expect-error type error without @types/node package
+import process from "node:process";
+const host = process.env.TAURI_DEV_HOST;
 
 // https://vite.dev/config/
-export default defineConfig(({ mode }) => ({
-  plugins: [maiConfigPlugin(mode), react()],
+export default defineConfig(() => ({
+  plugins: [react()],
+
   resolve: {
-    alias: {
-      '@': path.resolve(__dirname, 'src'),
-    },
+    // @ts-expect-error type error without @types/node package
+    alias: { "@": path.resolve("src") },
+    dedupe: ["react", "react-dom", "styled-components"],
   },
 
+  // Vite options tailored for Tauri development and only applied in `tauri dev` or `tauri build`
+  //
+  // 1. prevent Vite from obscuring rust errors
   clearScreen: false,
+  // 2. tauri expects a fixed port, fail if that port is not available
   server: {
     port: 1420,
     strictPort: true,
     host: host || false,
     hmr: host
       ? {
-          protocol: 'ws',
+          protocol: "ws",
           host,
           port: 1421,
         }
       : undefined,
     watch: {
-      ignored: ['**/src-tauri/**'],
+      // 3. tell Vite to ignore watching `src-tauri`
+      ignored: ["**/src-tauri/**"],
     },
   },
-}))
+}));

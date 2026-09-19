@@ -1,42 +1,35 @@
+import type { Course } from '@mai/course'
+import { CoursesSection, CreateCourseModal, EditCourseModal } from '@mai/course'
 import { useState } from 'react'
-import type { Course } from '@/entities/course'
-import { CoursesSection } from './CoursesSection'
-import { HeroSection } from './HeroSection'
-import { HomeFooter } from './HomeFooter'
-import { HomeHeader } from './HomeHeader'
-import { CreateCourseModal } from './modal/CreateCourseModal'
-import { EditCourseModal } from './modal/EditCourseModal'
+import { useNavigate } from 'react-router-dom'
 import { useCourses } from './useCourses'
 
 export function HomePage() {
-  const { courses, lessonCounts, continueCourse, loading, error, reload } = useCourses()
+  const { courses, lessonCounts, loading, error, reload } = useCourses()
+  const navigate = useNavigate()
   const [createOpened, setCreateOpened] = useState(false)
   const [editingCourse, setEditingCourse] = useState<Course | null>(null)
 
   return (
-    <>
-      <HomeHeader continueCourse={continueCourse} onCreateCourse={() => setCreateOpened(true)} />
-      <main>
-        <HeroSection
-          continueCourse={continueCourse}
-          lessonCounts={lessonCounts}
-          onCreateCourse={() => setCreateOpened(true)}
-        />
-        <CoursesSection
-          courses={courses}
-          lessonCounts={lessonCounts}
-          loading={loading}
-          error={error}
-          reload={reload}
-          onCreateCourse={() => setCreateOpened(true)}
-          onEditCourse={setEditingCourse}
-        />
-      </main>
-      <HomeFooter />
+    <main>
+      <CoursesSection
+        courses={courses}
+        lessonCounts={lessonCounts}
+        loading={loading}
+        error={error}
+        reload={reload}
+        onCreateCourse={() => setCreateOpened(true)}
+        onEditCourse={setEditingCourse}
+        onOpenCourse={(course) => navigate(`/course/${course.id}`)}
+        onManageCourses={() => {}}
+      />
       <CreateCourseModal
         opened={createOpened}
         onClose={() => setCreateOpened(false)}
-        onCreated={reload}
+        onCreated={(course) => {
+          reload()
+          navigate(`/course/${course.id}`)
+        }}
       />
       <EditCourseModal
         opened={editingCourse !== null}
@@ -45,6 +38,6 @@ export function HomePage() {
         onSaved={reload}
         onDeleted={reload}
       />
-    </>
+    </main>
   )
 }

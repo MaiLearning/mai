@@ -1,0 +1,66 @@
+{
+  "header": {
+    "structureAria": "Структура курса",
+    "courseOverview": "К обзору курса",
+    "meta": {
+      "resources_one": "{{count}} ресурс",
+      "resources_few": "{{count}} ресурса",
+      "resources_many": "{{count}} ресурсов",
+      "resources_other": "{{count}} ресурса",
+      "folders_one": "{{count}} группа",
+      "folders_few": "{{count}} группы",
+      "folders_many": "{{count}} групп",
+      "folders_other": "{{count}} группы"
+    }
+  },
+  "actions": {
+    "resource": "Ресурс",
+    "folder": "Папка",
+    "newResource": "Новый ресурс",
+    "newFolder": "Новая папка",
+    "cancel": "Отмена",
+    "delete": "Удалить",
+    "deleting": "Удаление",
+    "retry": "Перегрузить",
+    "rename": "Переименовать",
+    "moveTo": "Переместить в",
+    "noFolders": "Нет доступных папок",
+    "courseActions": "Действия с курсом",
+    "moreActions": "Ещё действия"
+  },
+  "search": {
+    "placeholder": "Поиск по структуре",
+    "aria": "Поиск по структуре курса",
+    "clear": "Очистить поиск"
+  },
+  "aria": {
+    "collapse": "Свернуть",
+    "expand": "Развернуть"
+  },
+  "loading": "Загрузка структуры",
+  "error": {
+    "load": "Ошибка загрузки: {{error}}"
+  },
+  "delete": {
+    "title": "Подтверждение удаления",
+    "folder": "Удалить папку «{{name}}» и всё её содержимое?",
+    "resource": "Удалить ресурс «{{name}}»?"
+  },
+  "empty": {
+    "title": "Структура пуста",
+    "notFound": "Ничего не найдено",
+    "hint": "Создайте первый ресурс или группу, чтобы начать курс",
+    "searchHint": "Попробуйте изменить запрос"
+  },
+  "dnd": {
+    "toRoot": "Переместить в корень",
+    "toFolder": "Переместить в «{{title}}»"
+  },
+  "errors": {
+    "createFolder": "Не удалось создать папку",
+    "createResource": "Не удалось создать ресурс",
+    "move": "Не удалось переместить элемент",
+    "rename": "Не удалось переименовать",
+    "delete": "Не удалось удалить элемент"
+  }
+}

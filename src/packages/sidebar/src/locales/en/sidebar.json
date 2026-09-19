@@ -1,0 +1,62 @@
+{
+  "header": {
+    "structureAria": "Course structure",
+    "courseOverview": "Go to course overview",
+    "meta": {
+      "resources_one": "{{count}} resource",
+      "resources_other": "{{count}} resources",
+      "folders_one": "{{count}} group",
+      "folders_other": "{{count}} groups"
+    }
+  },
+  "actions": {
+    "resource": "Resource",
+    "folder": "Folder",
+    "newResource": "New resource",
+    "newFolder": "New folder",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "deleting": "Deleting",
+    "retry": "Reload",
+    "rename": "Rename",
+    "moveTo": "Move to",
+    "noFolders": "No folders available",
+    "courseActions": "Course actions",
+    "moreActions": "More actions"
+  },
+  "search": {
+    "placeholder": "Search structure",
+    "aria": "Search course structure",
+    "clear": "Clear search"
+  },
+  "aria": {
+    "collapse": "Collapse",
+    "expand": "Expand"
+  },
+  "loading": "Loading structure",
+  "error": {
+    "load": "Failed to load: {{error}}"
+  },
+  "delete": {
+    "title": "Confirm deletion",
+    "folder": "Delete folder \"{{name}}\" and all of its contents?",
+    "resource": "Delete resource \"{{name}}\"?"
+  },
+  "empty": {
+    "title": "Structure is empty",
+    "notFound": "Nothing found",
+    "hint": "Create your first resource or group to start the course",
+    "searchHint": "Try changing your query"
+  },
+  "dnd": {
+    "toRoot": "Move to root",
+    "toFolder": "Move to \"{{title}}\""
+  },
+  "errors": {
+    "createFolder": "Failed to create folder",
+    "createResource": "Failed to create resource",
+    "move": "Failed to move item",
+    "rename": "Failed to rename",
+    "delete": "Failed to delete item"
+  }
+}

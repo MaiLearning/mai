@@ -1,43 +1,36 @@
-import { ReactLenis } from 'lenis/react'
+import { I18nProvider } from '@mai/i18n'
+import { NotificationsHost } from '@mai/notifications'
+import { ThemeProvider } from '@mai/theme'
 import { useEffect } from 'react'
 import { RouterProvider } from 'react-router-dom'
-import { I18nProvider } from '@/app/i18n'
-import { SafeAreaProvider } from '@/layouts'
-import { appConfig } from './config'
-import AppRouter from './router'
+import { AppRouter } from './router'
 import { Runner } from './runner'
 import { initEventsTask } from './runner/task/init_events'
+import { initI18nTask } from './runner/task/init_i18n'
 import { initLoggerTask } from './runner/task/init_logger'
 import { initPluginsTask } from './runner/task/init_plugins'
-import { initSettingsTask } from './runner/task/init_settings'
-import { ThemeProvider } from './theme'
 
 /**
  * Корневой компонент всего приложения.
- * Основное назначение — управлять и конфигурировать весь GUI.
+ * Основное назначение - управлять и конфигурировать весь GUI.
  */
 export default function Application() {
   useEffect(() => {
     const runner = new Runner()
 
     runner.register(initLoggerTask, ['development', 'production', 'release'])
-    runner.register(initSettingsTask, ['development', 'production', 'release'])
+    runner.register(initI18nTask, ['development', 'production', 'release'])
     runner.register(initPluginsTask, ['development', 'production', 'release'])
     runner.register(initEventsTask, ['development', 'production', 'release'])
 
-    runner.current = appConfig.mode
     runner.run()
   }, [])
 
   return (
     <ThemeProvider>
       <I18nProvider>
-        {/* Плавный инерционный скролл (window-level); вложенные скроллы — через data-lenis-prevent */}
-        <ReactLenis root options={{ duration: 1.15 }}>
-          <SafeAreaProvider>
-            <RouterProvider router={AppRouter} />
-          </SafeAreaProvider>
-        </ReactLenis>
+        <NotificationsHost />
+        <RouterProvider router={AppRouter} />
       </I18nProvider>
     </ThemeProvider>
   )

@@ -41,6 +41,7 @@ const STYLE_FILE = /\.(style|styles)\.ts$/
 const styleTargets = []
 if (paths.length === 0) {
   styleTargets.push('src/**/*.{style,styles}.ts')
+  styleTargets.push('src/packages/**/*.{style,styles}.ts')
 } else {
   for (const p of paths) {
     let st = null
