@@ -10,6 +10,7 @@ pub mod utils;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
+    use tauri::Emitter;
     use tauri::Manager;
     let builder = tauri::Builder::default();
 
@@ -39,6 +40,25 @@ pub fn run() {
 
             let app_paths = utils::paths::AppPaths::new(&app_handle)
                 .expect("Failed to resolve app data directories");
+
+            // Единый конфиг проекта (mai.toml): читается фронтом через
+            // config_get, изменения приходят событием config://changed.
+            // TODO: путь для production-сборки (resource dir) — см. SPEC @mai/config.
+            let config_path = std::env::current_dir()
+                .map(|dir| dir.join("mai.toml"))
+                .unwrap_or_else(|_| "mai.toml".into());
+            let app_config = Arc::new(
+                mai_config::MaiConfig::load(config_path)
+                    .expect("Failed to load mai.toml configuration"),
+            );
+            let emit_handle = app_handle.clone();
+            let config_watcher = app_config
+                .watch(move |value| {
+                    let _ = emit_handle.emit("config://changed", value);
+                })
+                .expect("Failed to watch mai.toml");
+            app.manage(app_config);
+            app.manage(config_watcher);
 
             #[cfg(debug_assertions)]
             let db_config =
@@ -131,6 +151,7 @@ pub fn run() {
             plugins::link::client::commands::create_link,
             plugins::link::client::commands::update_link,
             plugins::link::client::commands::delete_link,
+            mai_config::commands::config_get,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

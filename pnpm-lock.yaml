@@ -175,6 +175,9 @@ importers:
       '@mai-plugin/theory':
         specifier: workspace:*
         version: link:src/packages/plugins/theory
+      '@mai/config':
+        specifier: workspace:*
+        version: link:src/packages/config
       '@mai/course':
         specifier: workspace:*
         version: link:src/packages/course
@@ -318,6 +321,34 @@ importers:
         specifier: ^2.0.0
         version: 2.0.0
     devDependencies:
+      typescript:
+        specifier: ~6.0.3
+        version: 6.0.3
+      vitest:
+        specifier: ^4.1.10
+        version: 4.1.11(@types/node@26.6.1)(@vitest/coverage-v8@4.1.11)(vite@8.3.0(@types/node@26.6.1)(esbuild@0.28.2))
+
+  src/packages/config:
+    dependencies:
+      '@mai/tauri':
+        specifier: workspace:*
+        version: link:../tauri
+      '@tauri-apps/api':
+        specifier: ^2
+        version: 2.11.1
+      jotai:
+        specifier: ^2.20.3
+        version: 2.20.3(@babel/core@7.29.7(supports-color@7.2.0))(@babel/template@7.29.7)(@types/react@19.3.0)(react@19.3.0)
+      zod:
+        specifier: ^4.6.5
+        version: 4.6.5
+    devDependencies:
+      '@types/react':
+        specifier: ^19.1.8
+        version: 19.3.0
+      react:
+        specifier: ^19.1.0
+        version: 19.3.0
       typescript:
         specifier: ~6.0.3
         version: 6.0.3

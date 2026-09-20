@@ -11,6 +11,7 @@ import { RouterProvider } from 'react-router-dom'
 import { homeI18NResources } from '@/pages/home/locales'
 import { AppRouter } from './router'
 import { Runner } from './runner'
+import { initConfigTask } from './runner/task/init_config'
 import { initEventsTask } from './runner/task/init_events'
 import { initLoggerTask } from './runner/task/init_logger'
 import { initPluginsTask } from './runner/task/init_plugins'
@@ -35,6 +36,7 @@ export default function Application() {
   useEffect(() => {
     const runner = new Runner()
 
+    runner.register(initConfigTask, ['development', 'production', 'release'])
     runner.register(initLoggerTask, ['development', 'production', 'release'])
     runner.register(initPluginsTask, ['development', 'production', 'release'])
     runner.register(initEventsTask, ['development', 'production', 'release'])

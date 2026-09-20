@@ -1,0 +1,27 @@
+# Единый конфиг проекта Mai.
+# Читается backend-крейтом mai-config (см. src-tauri/crates/mai-config)
+# и фронтенд-пакетом @mai/config. Спецификация — в src/packages/config/docs/SPEC.md.
+
+name = "Mai"
+version = "0.1.0"
+description = "Самообучающаяся платформа: курсы, теория, практика, плагины."
+
+# Общие настройки — по умолчанию разработка
+[mode]
+default = "development"
+available = ["development", "production", "release"]
+
+[mode.development]
+debug = true
+fake_data = true
+hot_reload = true
+
+[mode.production]
+debug = false
+fake_data = false
+hot_reload = false
+
+[mode.release]
+debug = false
+fake_data = false
+hot_reload = false

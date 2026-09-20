@@ -29,6 +29,8 @@ tauri-plugin-pilot = { git = "https://github.com/mpiton/tauri-pilot", optional =
 tauri-plugin-opener = "2"
 tauri-plugin-log = "2"
 log = "0.4"
+# Единый конфиг проекта (mai.toml): чтение, слежение, IPC-команда.
+mai-config = { path = "crates/mai-config" }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 axum = "0.8"
@@ -55,4 +57,7 @@ debug = 1
 
 [profile.dev.package."*"]
 opt-level = 2
+
+[workspace]
+members = [".", "crates/mai-config"]
 

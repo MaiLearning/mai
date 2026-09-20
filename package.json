@@ -23,6 +23,7 @@
     "@mai-plugin/task": "workspace:*",
     "@mai-plugin/theory": "workspace:*",
     "@mai/course": "workspace:*",
+    "@mai/config": "workspace:*",
     "@mai/fakeData": "workspace:*",
     "@mai/i18n": "workspace:*",
     "@mai/kv": "workspace:*",

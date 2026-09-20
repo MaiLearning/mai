@@ -1,0 +1,12 @@
+[package]
+name = "mai-config"
+version = "0.1.0"
+edition = "2021"
+description = "Единый конфиг проекта Mai (mai.toml): чтение, слежение, доступ по IPC"
+
+[dependencies]
+log = "0.4"
+notify = "8"
+serde_json = "1"
+tauri = { version = "2", features = [] }
+toml = "0.9"
