@@ -6,7 +6,7 @@ import { Progress } from './progress'
  * задаётся пропом `percent` (0–100) и строится из токенов темы.
  */
 const meta = {
-  title: 'Design/Components/Progress',
+  title: 'Theme/Components/Progress',
   component: Progress,
   tags: ['autodocs'],
   parameters: {

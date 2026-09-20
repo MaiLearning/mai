@@ -5,7 +5,7 @@ import { GRADIENT_PRESETS } from './constants'
 
 /** Градиентный хедер превью карточки — живой предпросмотр названия, статуса и тегов. */
 const meta = {
-  title: 'Course/UI/CoursePreviewHeader',
+  title: 'Course/Form/CoursePreviewHeader',
   component: CoursePreviewHeader,
   tags: ['autodocs'],
   args: { onClose: fn() },

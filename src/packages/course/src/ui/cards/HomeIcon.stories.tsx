@@ -3,7 +3,7 @@ import { HomeIcon } from './HomeIcon'
 
 /** Иконки карточки курса — набор SVG-символов для визуализации категорий. */
 const meta = {
-  title: 'Course/UI/HomeIcon',
+  title: 'Course/Cards/HomeIcon',
   component: HomeIcon,
   tags: ['autodocs'],
   parameters: { layout: 'padded' },

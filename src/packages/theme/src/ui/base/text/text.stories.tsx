@@ -8,7 +8,7 @@ import { Text } from './text'
  * без отдельных компонентов.
  */
 const meta = {
-  title: 'Design/Components/Text',
+  title: 'Theme/Components/Text',
   component: Text,
   tags: ['autodocs'],
   parameters: {

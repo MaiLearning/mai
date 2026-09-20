@@ -3,7 +3,7 @@ import { DirtyBadge } from './FormFeedback'
 
 /** Бейдж несохранённых изменений в футере окна редактирования. */
 const meta = {
-  title: 'Course/UI/DirtyBadge',
+  title: 'Course/Form/DirtyBadge',
   component: DirtyBadge,
   tags: ['autodocs'],
   parameters: { layout: 'centered' },

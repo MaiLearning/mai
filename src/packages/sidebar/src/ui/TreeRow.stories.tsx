@@ -18,7 +18,7 @@ const resourceNode: CourseNode = { id: 'res-what', type: 'resource', title: 'Ч�
  * презентационный: состояние приходит сверху.
  */
 const meta = {
-  title: 'sidebar/TreeRow',
+  title: 'Sidebar/TreeRow',
   component: TreeRow,
   tags: ['autodocs'],
   decorators: [

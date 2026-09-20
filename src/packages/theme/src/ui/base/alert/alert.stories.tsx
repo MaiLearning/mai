@@ -8,7 +8,7 @@ import { Alert } from './alert'
  * Фон прозрачный — уведомление не выделяется цветовым блоком.
  */
 const meta = {
-  title: 'Design/Components/Alert',
+  title: 'Theme/Components/Alert',
   component: Alert,
   tags: ['autodocs'],
   parameters: {

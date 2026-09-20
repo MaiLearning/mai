@@ -30,7 +30,7 @@ function CheckIcon() {
 const icon = (children: ReactNode) => <Icon>{children}</Icon>
 
 const meta = {
-  title: 'Design/Components/Button',
+  title: 'Theme/Components/Button',
   component: Button,
   tags: ['autodocs'],
   parameters: {

@@ -4,7 +4,7 @@ import { DangerPlate } from './DangerPlate'
 
 /** Опасная зона редактирования — двухэтапное удаление курса. */
 const meta = {
-  title: 'Course/UI/DangerPlate',
+  title: 'Course/Form/DangerPlate',
   component: DangerPlate,
   tags: ['autodocs'],
   args: { onArm: fn(), onDisarm: fn(), onDelete: fn() },

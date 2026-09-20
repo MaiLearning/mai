@@ -59,7 +59,7 @@ const manyActions: SidebarAction[] = [
  * кнопками, остальные складываются в overflow-меню за «…».
  */
 const meta = {
-  title: 'sidebar/SidebarActions',
+  title: 'Sidebar/SidebarActions',
   component: SidebarActions,
   tags: ['autodocs'],
   decorators: [

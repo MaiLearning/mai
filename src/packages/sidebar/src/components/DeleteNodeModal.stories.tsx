@@ -26,7 +26,7 @@ const resourceNode: CourseNode = {
  * вместе с содержимым, ресурс — сам. Пока идёт удаление, закрытие запрещено.
  */
 const meta = {
-  title: 'sidebar/DeleteNodeModal',
+  title: 'Sidebar/DeleteNodeModal',
   component: DeleteNodeModal,
   tags: ['autodocs'],
   args: {
@@ -58,23 +58,21 @@ export const Closed: Story = {
 }
 
 /** Живой сценарий: открытие кнопками и закрытие через onClose. */
-export const Interactive: Story = {
-  render: () => {
-    const [target, setTarget] = useState<CourseNode | null>(null)
+const InteractiveCanvas = () => {
+  const [target, setTarget] = useState<CourseNode | null>(null)
 
-    return (
-      <div style={{ display: 'flex', gap: 8 }}>
-        <Button onClick={() => setTarget(resourceNode)}>Удалить ресурс</Button>
-        <Button variant="secondary" onClick={() => setTarget(folderNode)}>
-          Удалить папку
-        </Button>
-        <DeleteNodeModal
-          target={target}
-          onConfirm={async () => {}}
-          onClose={() => setTarget(null)}
-        />
-      </div>
-    )
-  },
+  return (
+    <div style={{ display: 'flex', gap: 8 }}>
+      <Button onClick={() => setTarget(resourceNode)}>Удалить ресурс</Button>
+      <Button variant="secondary" onClick={() => setTarget(folderNode)}>
+        Удалить папку
+      </Button>
+      <DeleteNodeModal target={target} onConfirm={async () => {}} onClose={() => setTarget(null)} />
+    </div>
+  )
+}
+
+export const Interactive: Story = {
+  render: () => <InteractiveCanvas />,
   args: { target: null },
 }

@@ -85,7 +85,7 @@ function TreePlayground() {
  * Дерево полностью управляемое: состояние раскрытия приходит сверху.
  */
 const meta = {
-  title: 'sidebar/CourseTree',
+  title: 'Sidebar/CourseTree',
   component: CourseTree,
   tags: ['autodocs'],
   decorators: [

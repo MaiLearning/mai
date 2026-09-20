@@ -6,7 +6,7 @@ import { Spinner } from './spinner'
  * `role="status"` и aria-label, который задаётся пропом `label`.
  */
 const meta = {
-  title: 'Design/Components/Spinner',
+  title: 'Theme/Components/Spinner',
   component: Spinner,
   tags: ['autodocs'],
   parameters: {

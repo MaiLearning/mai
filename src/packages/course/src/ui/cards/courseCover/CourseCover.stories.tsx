@@ -1,5 +1,4 @@
 import { I18nProvider, initI18n } from '@mai/i18n'
-import { ThemeProvider } from '@mai/theme'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { courseI18NResources } from '../../../locales'
 import { CourseCover } from './CourseCover'
@@ -7,18 +6,16 @@ import { CourseCover } from './CourseCover'
 initI18n({ resources: { course: courseI18NResources } })
 
 const meta = {
-  title: 'Course/UI/CourseCover',
+  title: 'Course/Cards/CourseCover',
   component: CourseCover,
   tags: ['autodocs'],
   decorators: [
     (Story) => (
-      <ThemeProvider>
-        <I18nProvider>
-          <div style={{ maxWidth: 640 }}>
-            <Story />
-          </div>
-        </I18nProvider>
-      </ThemeProvider>
+      <I18nProvider>
+        <div style={{ maxWidth: 640 }}>
+          <Story />
+        </div>
+      </I18nProvider>
     ),
   ],
   parameters: { layout: 'padded' },

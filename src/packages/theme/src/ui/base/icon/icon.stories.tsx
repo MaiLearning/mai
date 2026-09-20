@@ -10,7 +10,7 @@ function StarIcon() {
 }
 
 const meta = {
-  title: 'Design/Components/Icon',
+  title: 'Theme/Components/Icon',
   component: Icon,
   tags: ['autodocs'],
   parameters: {

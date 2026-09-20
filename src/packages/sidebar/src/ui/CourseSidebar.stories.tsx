@@ -66,7 +66,7 @@ function SidebarFrame({ children }: { children: ReactNode }) {
  * с авто-статистикой, поиск, деревья «папки + ресурсы» и панель действий.
  */
 const meta = {
-  title: 'sidebar/CourseSidebar',
+  title: 'Sidebar/CourseSidebar',
   component: CourseSidebar,
   tags: ['autodocs'],
   decorators: [

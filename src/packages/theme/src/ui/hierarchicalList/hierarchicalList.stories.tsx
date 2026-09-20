@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { HierarchicalList } from './hierarchicalList'
 
 const meta = {
-  title: 'Design/HierarchicalList',
+  title: 'Theme/HierarchicalList',
   component: HierarchicalList,
   tags: ['autodocs'],
   parameters: {

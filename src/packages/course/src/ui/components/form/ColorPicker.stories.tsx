@@ -4,7 +4,7 @@ import { ColorPicker } from './ColorPicker'
 
 /** Выбор цвета: SV-квадрат + Hue-слайдер вместо системного пикера. */
 const meta = {
-  title: 'Course/UI/ColorPicker',
+  title: 'Course/Form/ColorPicker',
   component: ColorPicker,
   tags: ['autodocs'],
   args: { onChange: fn() },

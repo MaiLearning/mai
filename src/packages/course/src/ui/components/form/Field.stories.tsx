@@ -3,7 +3,7 @@ import { Field } from './Field'
 
 /** Поле формы с лейблом, обязательностью, счётчиком символов и сообщениями об ошибках. */
 const meta = {
-  title: 'Course/UI/Field',
+  title: 'Course/Form/Field',
   component: Field,
   tags: ['autodocs'],
 } satisfies Meta<typeof Field>

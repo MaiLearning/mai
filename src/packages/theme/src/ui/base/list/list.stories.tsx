@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { List } from './list'
 
 const meta = {
-  title: 'Design/Components/List',
+  title: 'Theme/Components/List',
   component: List,
   tags: ['autodocs'],
   parameters: {

@@ -5,7 +5,7 @@ import { StatusPicker } from './StatusPicker'
 
 /** Выбор статуса курса радио-карточками с иконками и подсказками. */
 const meta = {
-  title: 'Course/UI/StatusPicker',
+  title: 'Course/Form/StatusPicker',
   component: StatusPicker,
   tags: ['autodocs'],
   args: { onChange: fn() },

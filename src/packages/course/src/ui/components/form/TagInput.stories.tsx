@@ -4,7 +4,7 @@ import { TagInput } from './TagInput'
 
 /** Ввод тегов с чипами, удалением и подсказками автодополнения. */
 const meta = {
-  title: 'Course/UI/TagInput',
+  title: 'Course/Form/TagInput',
   component: TagInput,
   tags: ['autodocs'],
   args: { onChange: fn() },

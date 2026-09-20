@@ -13,7 +13,7 @@ const fontLabels = (fonts: typeof sansFonts) =>
  * поэтому витрина показывает финальный вид компонентов.
  */
 const meta = {
-  title: 'Design/Base/Fonts',
+  title: 'Theme/Base/Fonts',
   component: FontGallery,
   tags: ['autodocs'],
   parameters: {

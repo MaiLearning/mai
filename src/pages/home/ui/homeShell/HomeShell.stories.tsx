@@ -1,5 +1,4 @@
 import { I18nProvider, initI18n } from '@mai/i18n'
-import { ThemeProvider } from '@mai/theme'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { homeI18NResources } from '../../locales'
 import { HomeShell } from './HomeShell'
@@ -12,11 +11,9 @@ const meta = {
   tags: ['autodocs'],
   decorators: [
     (Story) => (
-      <ThemeProvider>
-        <I18nProvider>
-          <Story />
-        </I18nProvider>
-      </ThemeProvider>
+      <I18nProvider>
+        <Story />
+      </I18nProvider>
     ),
   ],
   parameters: { layout: 'fullscreen' },
