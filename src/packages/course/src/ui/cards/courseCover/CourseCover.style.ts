@@ -110,6 +110,8 @@ export const CoverEyebrow = styled.p`
 
 export const CoverTitle = styled.h2`
   margin: 0;
+  min-width: 0;
+  overflow-wrap: anywhere;
   font-size: 24px;
   font-weight: 600;
   letter-spacing: -0.02em;

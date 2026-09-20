@@ -26,14 +26,14 @@ export const SectionHead = styled.div`
   }
 `
 
-export const CourseGrid = styled.div`
+/** Обёртка hero-карточки последнего курса. */
+export const CourseHero = styled.div`
+  margin-bottom: 20px;
+`
+
+/** Контейнер загрузки секции. */
+export const CourseSectionLoading = styled.div`
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 20px;
-  @media (min-width: ${({ theme }) => theme.breakpoints.sm}) {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  @media (min-width: ${({ theme }) => theme.breakpoints.lg}) {
-    grid-template-columns: repeat(3, 1fr);
-  }
+  place-items: center;
+  padding: 48px;
 `

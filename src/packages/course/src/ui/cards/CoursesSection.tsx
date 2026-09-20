@@ -1,7 +1,12 @@
 import { useTranslation } from '@mai/i18n'
 import { Alert, Spinner } from '@mai/theme'
 import type { Course } from '../../core'
-import { CoursesSection as Section, SectionHead } from './CoursesSection.style'
+import {
+  CourseHero,
+  CourseSectionLoading,
+  CoursesSection as Section,
+  SectionHead,
+} from './CoursesSection.style'
 import { CourseLibrary } from './courseLibrary/CourseLibrary'
 import { FeaturedCourseCard } from './featuredCourseCard/FeaturedCourseCard'
 import { SectionLink } from './shared.style'
@@ -60,9 +65,9 @@ export function CoursesSection({
       </SectionHead>
 
       {loading && (
-        <div style={{ display: 'grid', placeItems: 'center', padding: 48 }}>
+        <CourseSectionLoading>
           <Spinner />
-        </div>
+        </CourseSectionLoading>
       )}
 
       {!loading && error && (
@@ -77,7 +82,7 @@ export function CoursesSection({
       {!loading && !error && (
         <>
           {continueCourse && (
-            <div style={{ marginBottom: 20 }}>
+            <CourseHero>
               <FeaturedCourseCard
                 course={continueCourse}
                 lessonsTotal={lessonCounts[continueCourse.id]}
@@ -88,7 +93,7 @@ export function CoursesSection({
                 onOpen={onOpenCourse}
                 onEdit={onEditCourse}
               />
-            </div>
+            </CourseHero>
           )}
           <CourseLibrary
             courses={gridCourses}

@@ -119,18 +119,9 @@ export const FilterButton = styled.button`
 export const LibraryGrid = styled.div<{ $compact?: boolean }>`
   margin-top: 20px;
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: ${({ $compact }) =>
+    $compact ? '1fr' : 'repeat(auto-fill, minmax(min(100%, 280px), 1fr))'};
   gap: 16px;
-  ${({ $compact, theme }) =>
-    !$compact &&
-    `
-  @media (min-width: ${theme.breakpoints.md}) {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  @media (min-width: ${theme.breakpoints.xl}) {
-    grid-template-columns: repeat(3, 1fr);
-  }
-  `}
 `
 
 export const EmptyState = styled.div`

@@ -3,6 +3,7 @@ import styled from 'styled-components'
 /** Каркас главной: сайдбар слева (только lg+), контент по центру, мобильная навигация снизу. */
 export const ShellRoot = styled.div`
   min-height: 100vh;
+  overflow-x: clip;
   padding-bottom: 76px;
   @media (min-width: ${({ theme }) => theme.breakpoints.lg}) {
     padding-bottom: 0;
@@ -126,10 +127,13 @@ export const MobileBrand = styled.div`
 
 export const Greeting = styled.h1`
   margin: 0;
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 600;
   letter-spacing: -0.02em;
   color: ${({ theme }) => theme.text.primary};
+  @media (min-width: ${({ theme }) => theme.breakpoints.sm}) {
+    font-size: 24px;
+  }
   @media (min-width: ${({ theme }) => theme.breakpoints.md}) {
     font-size: 30px;
   }
