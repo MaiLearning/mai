@@ -6,9 +6,9 @@
 > `course` (`@mai/course`), `structure` + `directory` (`@mai/structure`),
 > `resource` + `resourceType` (`@mai/resource`), `plugin` (`@mai/plugin`),
 > `link` (`@mai-plugin/link`). Не портированы: Rust-издатель событий
-> (`src-tauri/src/services/events.rs`) и механизм `virtual:mai-config` —
-> `configureFakeData` пока никто не вызывает, `isFakeDataEnabled()` всегда
-> `false`. Документ описывает механизм в том виде, в котором он спроектирован и
+> (`src-tauri/src/services/events.rs`). Настройка fake-режима — в едином
+> конфиге `@mai/config`: таска `initConfigTask` вызывает `configureFakeData`
+> с данными `mai.toml`. Документ описывает механизм в том виде, в котором он спроектирован и
 > работал в предыдущем поколении фронтенда (`app/_mai`).
 
 Как изменения данных доезжают до интерфейса без перезагрузки и ручных обновлений.
