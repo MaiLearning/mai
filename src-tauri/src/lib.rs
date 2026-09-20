@@ -1,5 +1,7 @@
 // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
 
+use std::path::PathBuf;
+
 pub mod client;
 pub mod database;
 pub mod plugins;
@@ -43,13 +45,27 @@ pub fn run() {
 
             // Единый конфиг проекта (mai.toml): читается фронтом через
             // config_get, изменения приходят событием config://changed.
-            // TODO: путь для production-сборки (resource dir) — см. SPEC @mai/config.
-            let config_path = std::env::current_dir()
-                .map(|dir| dir.join("mai.toml"))
-                .unwrap_or_else(|_| "mai.toml".into());
+            // Путь не зависит от рабочего каталога процесса (CWD dev-запуска
+            // может отличаться) — см. SPEC @mai/config.
+            let config_path = if cfg!(debug_assertions) {
+                let manifest_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+                manifest_dir
+                    .parent()
+                    .map(|dir| dir.join("mai.toml"))
+                    .expect("mai.toml: resolve project root from CARGO_MANIFEST_DIR")
+            } else {
+                app.path()
+                    .resource_dir()
+                    .map(|dir| dir.join("mai.toml"))
+                    .unwrap_or_else(|_| "mai.toml".into())
+            };
             let app_config = Arc::new(
-                mai_config::MaiConfig::load(config_path)
-                    .expect("Failed to load mai.toml configuration"),
+                mai_config::MaiConfig::load(config_path.clone()).unwrap_or_else(|e| {
+                    panic!(
+                        "Failed to load mai.toml configuration at {:?}: {}",
+                        config_path, e
+                    )
+                }),
             );
             let emit_handle = app_handle.clone();
             let config_watcher = app_config
