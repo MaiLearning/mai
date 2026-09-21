@@ -1,0 +1,38 @@
+{
+  "name": "@mai-plugin/code",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "import": "./src/index.ts"
+    }
+  },
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "styled-components": "^6.5.0"
+  },
+  "dependencies": {
+    "@codemirror/lang-javascript": "^6.2.5",
+    "@codemirror/lang-python": "^6.2.1",
+    "@mai/notifications": "workspace:*",
+    "@mai/plugin": "workspace:*",
+    "@mai/resource": "workspace:*",
+    "@mai/tauri": "workspace:*",
+    "@mai/theme": "workspace:*",
+    "@uiw/react-codemirror": "^4.25.11",
+    "jotai": "^2.20.3",
+    "lucide-react": "^1.47.0",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "styled-components": "^6.5.3",
+    "typescript": "~6.0.3"
+  }
+}

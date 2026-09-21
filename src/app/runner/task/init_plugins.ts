@@ -1,9 +1,11 @@
 import { isFakeDataEnabled } from '@mai/fakeData'
 import { loadPlugins, setInternalViewers } from '@mai/plugin'
-import { LinkViewer } from '@mai-plugin/link'
-import { TaskViewer } from '@mai-plugin/task'
 import { TheoryViewer } from '@mai-plugin/theory'
 import type { Task } from '../types'
+// Viewers
+import { CodeViewer } from '@mai-plugin/code'
+import { LinkViewer } from '@mai-plugin/link'
+import { TaskViewer } from '@mai-plugin/task'
 
 /**
  * Регистрирует вьюверы internal-плагинов и загружает
@@ -17,6 +19,7 @@ export const initPluginsTask: Task = {
       theory: TheoryViewer,
       task: TaskViewer,
       link: LinkViewer,
+      code: CodeViewer,
     })
     if (!import.meta.env.DEV || !isFakeDataEnabled()) await loadPlugins()
   },

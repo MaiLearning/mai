@@ -19,6 +19,7 @@
     "build-storybook": "storybook build"
   },
   "dependencies": {
+    "@mai-plugin/code": "workspace:*",
     "@mai-plugin/link": "workspace:*",
     "@mai-plugin/task": "workspace:*",
     "@mai-plugin/theory": "workspace:*",
