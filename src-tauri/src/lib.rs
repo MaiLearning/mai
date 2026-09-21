@@ -10,6 +10,38 @@ pub mod services;
 pub mod startup;
 pub mod utils;
 
+fn resolve_config_path(app: &tauri::AppHandle) -> Result<PathBuf, String> {
+    use tauri::Manager;
+
+    let mut candidates = Vec::new();
+
+    if let Ok(resource_dir) = app.path().resource_dir() {
+        candidates.push(resource_dir.join("mai.toml"));
+    }
+
+    // `tauri dev --release` не собирает ресурсы, поэтому используем исходный
+    // конфиг как fallback для release-сборки в режиме разработки.
+    candidates.push(
+        PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .parent()
+            .map(|dir| dir.join("mai.toml"))
+            .ok_or_else(|| "mai.toml: не удалось определить корень проекта".to_owned())?,
+    );
+
+    candidates
+        .iter()
+        .find(|path| path.is_file())
+        .cloned()
+        .ok_or_else(|| {
+            let checked_paths = candidates
+                .iter()
+                .map(|path| path.display().to_string())
+                .collect::<Vec<_>>()
+                .join(", ");
+            format!("mai.toml не найден по путям: {checked_paths}")
+        })
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     use tauri::Emitter;
@@ -47,18 +79,8 @@ pub fn run() {
             // config_get, изменения приходят событием config://changed.
             // Путь не зависит от рабочего каталога процесса (CWD dev-запуска
             // может отличаться) — см. SPEC @mai/config.
-            let config_path = if cfg!(debug_assertions) {
-                let manifest_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
-                manifest_dir
-                    .parent()
-                    .map(|dir| dir.join("mai.toml"))
-                    .expect("mai.toml: resolve project root from CARGO_MANIFEST_DIR")
-            } else {
-                app.path()
-                    .resource_dir()
-                    .map(|dir| dir.join("mai.toml"))
-                    .unwrap_or_else(|_| "mai.toml".into())
-            };
+            let config_path =
+                resolve_config_path(&app_handle).expect("Не удалось найти конфигурацию mai.toml");
             let app_config = Arc::new(
                 mai_config::MaiConfig::load(config_path.clone()).unwrap_or_else(|e| {
                     panic!(
