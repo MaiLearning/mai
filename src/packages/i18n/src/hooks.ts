@@ -1,6 +1,6 @@
 import { useTranslation as useI18nextTranslation } from 'react-i18next'
 import { type AppLanguage, DEFAULT_NS, SUPPORTED_LANGUAGES } from './config'
-import { saveLanguage } from './init'
+import { applyLanguage } from './init'
 
 /**
  * Обёртка над useTranslation из react-i18next.
@@ -15,7 +15,7 @@ export function useTranslation(ns?: string) {
 }
 
 /**
- * Текущий язык + сеттер с сохранением в localStorage.
+ * Текущий язык + сеттер: переключает i18next и обновляет boot-кэш.
  * Возвращает `[lang, setLang]` — аналог useState-паттерна.
  */
 export function useCurrentLanguage(): [AppLanguage, (lang: AppLanguage) => void] {
@@ -25,8 +25,7 @@ export function useCurrentLanguage(): [AppLanguage, (lang: AppLanguage) => void]
 
   const setLang = (next: AppLanguage) => {
     if (!SUPPORTED_LANGUAGES.includes(next)) return
-    i18n.changeLanguage(next)
-    saveLanguage(next)
+    applyLanguage(next)
   }
 
   return [lang, setLang]

@@ -6,6 +6,7 @@ pub mod link;
 pub mod plugin;
 pub mod resource;
 pub mod resource_type;
+pub mod settings;
 pub mod structure;
 pub mod task;
 pub mod theory;

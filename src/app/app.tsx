@@ -3,6 +3,7 @@ import { courseI18NResources } from '@mai/course'
 import { I18nProvider, initI18n } from '@mai/i18n'
 import { NotificationsHost } from '@mai/notifications'
 import { pluginI18NResources } from '@mai/plugin'
+import { settingsReadyAtom, useSystemTheme } from '@mai/settings'
 import { sidebarI18NResources } from '@mai/sidebar'
 import { ThemeProvider } from '@mai/theme'
 import { linkI18NResources } from '@mai-plugin/link'
@@ -17,6 +18,7 @@ import { initConfigTask } from './runner/task/init_config'
 import { initEventsTask } from './runner/task/init_events'
 import { initLoggerTask } from './runner/task/init_logger'
 import { initPluginsTask } from './runner/task/init_plugins'
+import { initSettingsTask } from './runner/task/init_settings'
 
 // Синхронно до первого рендера: к моменту paint переводы уже на месте.
 initI18n({
@@ -35,9 +37,11 @@ initI18n({
  * Основное назначение - управлять и конфигурировать весь GUI.
  */
 export default function Application() {
-  // Пока конфиг не загружен (mai.toml / фолбэк), потребители не должны
-  // работать: fake-режим, тема и роутинг зависят от активного режима.
+  // Пока конфиг и настройки не загружены, потребители не должны работать:
+  // fake-режим, тема, язык и роутинг зависят от активного режима/настроек.
   const configReady = useAtomValue(configReadyAtom)
+  const settingsReady = useAtomValue(settingsReadyAtom)
+  const theme = useSystemTheme()
 
   useEffect(() => {
     const runner = new Runner()
@@ -46,14 +50,15 @@ export default function Application() {
     runner.register(initLoggerTask, ['development', 'production', 'release'])
     runner.register(initPluginsTask, ['development', 'production', 'release'])
     runner.register(initEventsTask, ['development', 'production', 'release'])
+    runner.register(initSettingsTask, ['development', 'production', 'release'])
 
     runner.run()
   }, [])
 
-  if (!configReady) return null
+  if (!configReady || !settingsReady) return null
 
   return (
-    <ThemeProvider>
+    <ThemeProvider theme={theme}>
       <I18nProvider>
         <NotificationsHost />
         <RouterProvider router={AppRouter} />

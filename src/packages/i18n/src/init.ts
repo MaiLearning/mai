@@ -59,8 +59,17 @@ export function initI18n({ resources }: InitI18nOptions): void {
   })
 }
 
-/** Сохраняет выбор языка в localStorage для следующего запуска. */
-// TODO: сохранить в настройки backend!!
+/** Сохраняет язык в localStorage — boot-кэш против мигания до загрузки настроек. */
 export function saveLanguage(lang: AppLanguage): void {
   localStorage.setItem(LANGUAGE_STORAGE_KEY, lang)
+}
+
+/**
+ * Применить язык: переключить i18next и обновить boot-кэш.
+ * Источник правды — настройка `language` (@mai/settings); сюда приходит
+ * уже выбранное значение.
+ */
+export function applyLanguage(lang: AppLanguage): void {
+  i18next.changeLanguage(lang)
+  saveLanguage(lang)
 }

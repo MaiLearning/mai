@@ -9,6 +9,6 @@ export {
 } from './config'
 export { useCurrentLanguage, useTranslation } from './hooks'
 export type { InitI18nOptions } from './init'
-export { initI18n, saveLanguage } from './init'
+export { applyLanguage, initI18n, saveLanguage } from './init'
 export type { I18nProviderProps } from './provider'
 export { I18nProvider } from './provider'
