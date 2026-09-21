@@ -6,7 +6,7 @@ export const HeroFoot = styled.div`
   flex-direction: column;
   gap: ${({ theme }) => theme.spacing.md};
   padding: ${({ theme }) => theme.spacing.md};
-  @media (min-width: ${({ theme }) => theme.breakpoints.md}) {
+  @container course-card (min-width: 480px) {
     flex-direction: row;
     align-items: flex-end;
     justify-content: space-between;
@@ -57,7 +57,7 @@ export const HeroCta = styled.div`
   & > button {
     width: 100%;
   }
-  @media (min-width: ${({ theme }) => theme.breakpoints.md}) {
+  @container course-card (min-width: 480px) {
     width: auto;
     & > button {
       width: auto;

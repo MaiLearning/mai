@@ -12,7 +12,7 @@ const meta = {
   decorators: [
     (Story) => (
       <I18nProvider>
-        <div style={{ maxWidth: 640 }}>
+        <div style={{ maxWidth: 640, containerType: 'inline-size', containerName: 'course-card' }}>
           <Story />
         </div>
       </I18nProvider>

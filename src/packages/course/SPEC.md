@@ -39,7 +39,9 @@ packages/course/src/
 - `theme.transitions.fast` → `theme.durations.fast` (в переходах: `transition: color ${theme.durations.fast}`)
 - `theme.shadows.md` → `theme.shadows.md`, `.sm`, `.lg`
 - `theme.zIndex.modal` → `theme.zIndex.modal`
-- `theme.breakpoints.md` → media-запросы не через токен, а инлайн-литералы из base (см. ниже)
+- `theme.breakpoints.*` — токена больше нет: адаптивность компонентов строится на
+  container queries (`@container`), а вьюпорт-хром (сайдбары, фикс. навигация) — на
+  инлайн-литералах media-запросов (см. «Адаптивность» ниже)
 - `theme.radii.*` в Media (course-preview + cards) не используются.
 
 Токены, которых НЕТ в @mai/theme и их замена:
@@ -57,15 +59,25 @@ radius: { sm, md, lg, full }
 shadows: { sm, md, lg }
 zIndex: { popover, toast, modal }
 durations: { fast, normal, slow }
-breakpoints: { sm, md, lg, xl }  (в px строками)
 ```
+Токен `breakpoints` удалён из контракта темы.
 
-## Breakpoints
-Использовать напрямую из контракта, но в styled-компонентах запись:
-```ts
-@media (min-width: ${({ theme }) => theme.breakpoints.md}) { ... }
-```
-Если стиль тянет статичную строку — ок захардкодить '768px' с комментарием.
+## Адаптивность
+Тема отвечает только за стилистику (цвета, типографику, радиусы), не за размеры
+экрана. Точки перелома из темы удалены. Механизм выбирается по природе элемента:
+
+- **Карточки и сетка** — container queries. Корень карточки (`CourseCardRoot`)
+  объявлен контейнером `course-card`, блок `Library` — контейнером `library`;
+  внутренние блоки и число колонок адаптируются по ширине контейнера, а не вьюпорта.
+  ```ts
+  @container course-card (min-width: 480px) { ... }
+  ```
+- **Контентная колонка страницы** — контейнеры `content` (HomeShell `Content`)
+  и `course-main` (CourseShell `Main`).
+- **Вьюпорт-хром с `position: fixed`** (мобильная навигация, drawer, overlay,
+  сетка шелла) — остаётся на `@media`, записанных инлайн-литералами
+  (`@media (min-width: 1024px)`): `container-type` создаёт layout-контейнмент и
+  сломал бы фиксированное позиционирование.
 
 ## i18n
 - namespace: `course` (единый ns). Ключи брать из `_mai/src/features/course-modal/locales/{ru,en}/courseModal.json`

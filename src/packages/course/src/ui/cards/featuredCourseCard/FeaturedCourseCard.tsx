@@ -1,8 +1,9 @@
 import { useTranslation } from '@mai/i18n'
-import { Button, Card } from '@mai/theme'
+import { Button } from '@mai/theme'
 import { ChevronRight, Play } from 'lucide-react'
 import type { Course } from '../../../core'
 import { CourseCover } from '../courseCover/CourseCover'
+import { CourseCardRoot } from '../shared.style'
 import {
   HeroCta,
   HeroFoot,
@@ -39,7 +40,7 @@ export function FeaturedCourseCard({
   const { t } = useTranslation('course')
 
   return (
-    <Card as="section" interactive={false} aria-label={course.name}>
+    <CourseCardRoot as="section" interactive={false} aria-label={course.name}>
       <CourseCover
         colorFrom={course.colorFrom}
         colorTo={course.colorTo}
@@ -80,6 +81,6 @@ export function FeaturedCourseCard({
           </Button>
         </HeroCta>
       </HeroFoot>
-    </Card>
+    </CourseCardRoot>
   )
 }

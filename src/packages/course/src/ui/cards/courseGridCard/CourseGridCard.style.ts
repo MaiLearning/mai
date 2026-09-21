@@ -3,6 +3,7 @@ import styled from 'styled-components'
 export const GridCardBody = styled.div`
   display: flex;
   flex: 1;
+  min-width: 0;
   flex-direction: column;
   gap: 8px;
   min-height: 176px;
@@ -10,6 +11,8 @@ export const GridCardBody = styled.div`
 
   h3 {
     margin: 0;
+    min-width: 0;
+    overflow-wrap: anywhere;
     font-size: 16px;
     font-weight: 600;
     letter-spacing: -0.02em;

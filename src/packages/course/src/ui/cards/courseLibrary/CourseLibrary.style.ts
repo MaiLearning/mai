@@ -1,8 +1,10 @@
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 
 /** Блок «Все курсы»: заголовок, тулбар поиска, сетка, empty-state. */
 export const Library = styled.div`
   margin-top: 40px;
+  container-type: inline-size;
+  container-name: library;
 `
 
 export const LibraryHead = styled.div`
@@ -29,7 +31,7 @@ export const ViewToggle = styled.div`
   padding: 4px;
   border: 1px solid ${({ theme }) => theme.border.default};
   border-radius: ${({ theme }) => theme.radius.md};
-  @media (min-width: ${({ theme }) => theme.breakpoints.sm}) {
+  @container library (min-width: 420px) {
     display: flex;
   }
 `
@@ -119,9 +121,18 @@ export const FilterButton = styled.button`
 export const LibraryGrid = styled.div<{ $compact?: boolean }>`
   margin-top: 20px;
   display: grid;
-  grid-template-columns: ${({ $compact }) =>
-    $compact ? '1fr' : 'repeat(auto-fill, minmax(min(100%, 280px), 1fr))'};
+  grid-template-columns: 1fr;
   gap: 16px;
+  ${({ $compact }) =>
+    !$compact &&
+    css`
+      @container library (min-width: 640px) {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      @container library (min-width: 960px) {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    `}
 `
 
 export const EmptyState = styled.div`

@@ -5,7 +5,7 @@ export const Shell = styled.div`
   min-height: 100vh;
   /* Первая колонка — вертикальная панель курса, вторая — контент */
   grid-template-columns: 48px 1fr;
-  @media (min-width: ${({ theme }) => theme.breakpoints.lg}) {
+  @media (min-width: 1024px) {
     grid-template-columns: 288px 1fr;
   }
 `
@@ -15,7 +15,7 @@ export const SidebarSlot = styled.div<{ $open: boolean }>`
   z-index: 20;
   transform: translateX(${({ $open }) => ($open ? '0' : '-100%')});
   transition: transform 0.25s ease;
-  @media (min-width: ${({ theme }) => theme.breakpoints.lg}) {
+  @media (min-width: 1024px) {
     position: sticky;
     top: 0;
     height: 100vh;
@@ -25,6 +25,8 @@ export const SidebarSlot = styled.div<{ $open: boolean }>`
 export const Main = styled.main`
   min-width: 0;
   background: ${({ theme }) => theme.background.body};
+  container-type: inline-size;
+  container-name: course-main;
 `
 export const Overlay = styled.button<{ $open: boolean }>`
   position: fixed;
@@ -34,7 +36,7 @@ export const Overlay = styled.button<{ $open: boolean }>`
   background: color-mix(in srgb, ${({ theme }) => theme.background.body} 40%, transparent);
   opacity: ${({ $open }) => ($open ? 1 : 0)};
   visibility: ${({ $open }) => ($open ? 'visible' : 'hidden')};
-  @media (min-width: ${({ theme }) => theme.breakpoints.lg}) {
+  @media (min-width: 1024px) {
     display: none;
   }
 `
@@ -56,7 +58,7 @@ export const Rail = styled.nav`
   background: ${({ theme }) => theme.background.surface};
   border-right: 1px solid ${({ theme }) => theme.border.default};
 
-  @media (max-width: calc(${({ theme }) => theme.breakpoints.lg} - 1px)) {
+  @media (max-width: 1023px) {
     display: flex;
   }
 `

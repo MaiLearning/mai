@@ -4,8 +4,10 @@ import styled from 'styled-components'
 export const ShellRoot = styled.div`
   min-height: 100vh;
   overflow-x: clip;
+  container-type: inline-size;
+  container-name: home-shell;
   padding-bottom: 76px;
-  @media (min-width: ${({ theme }) => theme.breakpoints.lg}) {
+  @container home-shell (min-width: 1200px) {
     padding-bottom: 0;
   }
 `
@@ -24,7 +26,7 @@ export const Sidebar = styled.aside`
   width: 256px;
   padding: 24px 20px;
   border-right: 1px solid ${({ theme }) => theme.border.default};
-  @media (min-width: ${({ theme }) => theme.breakpoints.lg}) {
+  @container home-shell (min-width: 1200px) {
     display: block;
   }
 `
@@ -78,18 +80,21 @@ export const NavLink = styled.a<{ $active?: boolean }>`
 export const Content = styled.section`
   min-width: 0;
   flex: 1;
+  container-type: inline-size;
+  container-name: content;
 `
 
 /** Центрирующая оболочка: контент всегда по центру с полями слева/справа. */
 export const ContentInner = styled.div`
   width: 100%;
   max-width: 1200px;
+  box-sizing: border-box;
   margin: 0 auto;
   padding: 24px 20px 64px;
-  @media (min-width: ${({ theme }) => theme.breakpoints.sm}) {
+  @container content (min-width: 560px) {
     padding: 24px 32px 64px;
   }
-  @media (min-width: ${({ theme }) => theme.breakpoints.lg}) {
+  @container content (min-width: 1024px) {
     padding: 32px 48px 64px;
   }
 `
@@ -101,7 +106,7 @@ export const Header = styled.header`
   gap: 16px;
   padding-bottom: 28px;
   border-bottom: 1px solid ${({ theme }) => theme.border.default};
-  @media (min-width: ${({ theme }) => theme.breakpoints.md}) {
+  @container content (min-width: 768px) {
     align-items: center;
   }
 `
@@ -120,7 +125,7 @@ export const MobileBrand = styled.div`
   svg {
     color: ${({ theme }) => theme.text.accent};
   }
-  @media (min-width: ${({ theme }) => theme.breakpoints.lg}) {
+  @container home-shell (min-width: 1200px) {
     display: none;
   }
 `
@@ -131,10 +136,10 @@ export const Greeting = styled.h1`
   font-weight: 600;
   letter-spacing: -0.02em;
   color: ${({ theme }) => theme.text.primary};
-  @media (min-width: ${({ theme }) => theme.breakpoints.sm}) {
+  @container content (min-width: 560px) {
     font-size: 24px;
   }
-  @media (min-width: ${({ theme }) => theme.breakpoints.md}) {
+  @container content (min-width: 768px) {
     font-size: 30px;
   }
 `
@@ -194,7 +199,7 @@ export const MobileNav = styled.nav`
   padding: 8px 12px max(12px, env(safe-area-inset-bottom));
   border-top: 1px solid ${({ theme }) => theme.border.default};
   background: ${({ theme }) => theme.background.elevated};
-  @media (min-width: ${({ theme }) => theme.breakpoints.lg}) {
+  @container home-shell (min-width: 1200px) {
     display: none;
   }
 `

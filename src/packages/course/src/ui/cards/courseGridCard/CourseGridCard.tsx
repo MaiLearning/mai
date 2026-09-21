@@ -1,10 +1,10 @@
 import { useTranslation } from '@mai/i18n'
-import { Button, Card } from '@mai/theme'
+import { Button } from '@mai/theme'
 import { Check, FilePenLine, Play } from 'lucide-react'
 import type { Course } from '../../../core'
 import { CourseCover } from '../courseCover/CourseCover'
 import { HomeIcon } from '../HomeIcon'
-import { StatusBadge } from '../shared.style'
+import { CourseCardRoot, StatusBadge } from '../shared.style'
 import {
   GridCardBody,
   GridCardButton,
@@ -40,7 +40,7 @@ export function CourseGridCard({
   const StatusIcon = STATUS_ICONS[course.status]
 
   return (
-    <Card as="article">
+    <CourseCardRoot as="article">
       <CourseCover
         colorFrom={course.colorFrom}
         colorTo={course.colorTo}
@@ -73,6 +73,6 @@ export function CourseGridCard({
           </Button>
         </GridCardButton>
       </GridCardBody>
-    </Card>
+    </CourseCardRoot>
   )
 }

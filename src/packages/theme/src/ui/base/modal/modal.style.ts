@@ -43,7 +43,7 @@ export const Overlay = styled.div<ModalStyledProps>`
       animation: ${fadeIn} ${CLOSE_DURATION_MS}ms ease reverse both;
     `}
 
-  @media (min-width: ${({ theme }) => theme.breakpoints.md}) {
+  @media (min-width: 768px) {
     align-items: center;
     padding: ${({ theme }) => theme.spacing.xl};
   }
@@ -71,7 +71,7 @@ export const Panel = styled.div<ModalStyledProps>`
       animation: ${panelIn} ${CLOSE_DURATION_MS}ms ease reverse both;
     `}
 
-  @media (min-width: ${({ theme }) => theme.breakpoints.md}) {
+  @media (min-width: 768px) {
     max-height: calc(100dvh - 48px);
     border-radius: ${({ theme }) => theme.radius.lg};
   }
@@ -92,7 +92,7 @@ export const Grabber = styled.div`
     background: ${({ theme }) => theme.border.strong};
   }
 
-  @media (min-width: ${({ theme }) => theme.breakpoints.md}) {
+  @media (min-width: 768px) {
     display: none;
   }
 `
@@ -106,7 +106,7 @@ export const Header = styled.div`
   gap: ${({ theme }) => theme.spacing.lg};
   padding: ${({ theme }) => theme.spacing.xl} ${({ theme }) => theme.spacing.xl} 0;
 
-  @media (min-width: ${({ theme }) => theme.breakpoints.md}) {
+  @media (min-width: 768px) {
     padding: ${({ theme }) => theme.spacing.xl} 28px 0;
   }
 `
@@ -162,7 +162,7 @@ export const ModalBody = styled.div`
   overflow-y: auto;
   flex: 1;
 
-  @media (min-width: ${({ theme }) => theme.breakpoints.md}) {
+  @media (min-width: 768px) {
     padding: ${({ theme }) => theme.spacing.xl} 28px;
   }
 `
@@ -179,7 +179,7 @@ export const ModalFooter = styled.div`
   border-top: 1px solid ${({ theme }) => theme.border.default};
   background: ${({ theme }) => theme.background.raised};
 
-  @media (min-width: ${({ theme }) => theme.breakpoints.md}) {
+  @media (min-width: 768px) {
     padding: ${({ theme }) => theme.spacing.lg} 28px;
   }
 `

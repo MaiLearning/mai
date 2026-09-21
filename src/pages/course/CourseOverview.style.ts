@@ -5,7 +5,7 @@ export const Overview = styled.article`
   max-width: 760px;
   margin: 0 auto;
   padding: 28px 20px 96px;
-  @media (min-width: ${({ theme }) => theme.breakpoints.md}) {
+  @container course-main (min-width: 768px) {
     padding: 52px 40px 120px;
   }
 `

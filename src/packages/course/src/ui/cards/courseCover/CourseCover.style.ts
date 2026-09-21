@@ -19,7 +19,7 @@ export const CoverRoot = styled.div<CoverRootProps>`
   padding: ${({ theme }) => theme.spacing.md};
   color: ${({ $ink }) => $ink};
   background: linear-gradient(135deg, ${({ $from }) => $from}, ${({ $to }) => $to});
-  @media (min-width: ${({ theme }) => theme.breakpoints.md}) {
+  @container course-card (min-width: 480px) {
     min-height: ${({ $size }) => ($size === 'lg' ? '272px' : '160px')};
   }
 `
@@ -116,7 +116,7 @@ export const CoverTitle = styled.h2`
   font-weight: 600;
   letter-spacing: -0.02em;
   line-height: 1.2;
-  @media (min-width: ${({ theme }) => theme.breakpoints.md}) {
+  @container course-card (min-width: 480px) {
     font-size: 30px;
   }
 `

@@ -1,3 +1,4 @@
+import { Card } from '@mai/theme'
 import styled from 'styled-components'
 import type { CourseStatus } from '../../core'
 
@@ -5,11 +6,17 @@ import type { CourseStatus } from '../../core'
 export const MainContainer = styled.div`
   width: 100%;
   max-width: 1200px;
+  box-sizing: border-box;
   margin: 0 auto;
-  padding: 0 20px;
-  @media (min-width: ${({ theme }) => theme.breakpoints.md}) {
-    padding: 0 32px;
-  }
+`
+
+/**
+ * Корень карточки курса. Объявлен контейнером: внутренние блоки карточки
+ * (обложка, футер hero) адаптируются по её ширине, а не по вьюпорту.
+ */
+export const CourseCardRoot = styled(Card)`
+  container-type: inline-size;
+  container-name: course-card;
 `
 
 /**

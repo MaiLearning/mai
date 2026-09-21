@@ -197,10 +197,4 @@ export interface AppTheme {
     normal: string
     slow: string
   }
-  breakpoints: {
-    sm: string
-    md: string
-    lg: string
-    xl: string
-  }
 }
