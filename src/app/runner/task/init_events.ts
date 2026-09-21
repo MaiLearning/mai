@@ -23,7 +23,7 @@ import type { Task } from '../types'
 export const initEventsTask: Task = {
   name: 'init-events',
   async run() {
-    if (isFakeDataEnabled()) return
+    if (import.meta.env.DEV && isFakeDataEnabled()) return
 
     subscribeStructureBus()
 

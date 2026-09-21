@@ -1,5 +1,7 @@
+import { isFakeDataEnabled } from '@mai/fakeData'
 import { invoke } from '@mai/tauri/ipc'
 import type { StructureNodeFlat } from '../../core/model'
+import { fakeSendCreateDirectory } from './fake'
 
 /**
  * Создание директории.
@@ -13,6 +15,9 @@ export function sendCreateDirectory(
   name: string,
   parentId?: string | null,
 ): Promise<StructureNodeFlat> {
+  if (import.meta.env.DEV && isFakeDataEnabled())
+    return fakeSendCreateDirectory(courseId, name, parentId ?? null)
+
   return invoke<StructureNodeFlat>('create_directory', {
     courseId,
     name,

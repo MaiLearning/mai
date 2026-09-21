@@ -358,6 +358,9 @@ importers:
 
   src/packages/course:
     dependencies:
+      '@mai/fakeData':
+        specifier: workspace:*
+        version: link:../fakeData
       '@mai/i18n':
         specifier: workspace:*
         version: link:../i18n
@@ -410,6 +413,9 @@ importers:
       '@mai/structure':
         specifier: workspace:*
         version: link:../structure
+      '@mai/tauri':
+        specifier: workspace:*
+        version: link:../tauri
     devDependencies:
       typescript:
         specifier: ~6.0.3
@@ -834,6 +840,9 @@ importers:
       '@mai/bus':
         specifier: workspace:*
         version: link:../bus
+      '@mai/fakeData':
+        specifier: workspace:*
+        version: link:../fakeData
       '@mai/resource':
         specifier: workspace:*
         version: link:../resource

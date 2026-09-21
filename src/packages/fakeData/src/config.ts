@@ -1,3 +1,5 @@
+import { isTauriRuntime } from '@mai/tauri/runtime'
+
 export type FakeDataMode = 'development' | 'production' | 'release'
 
 export interface FakeDataConfig {
@@ -17,6 +19,7 @@ export function configureFakeData(next: FakeDataConfig): void {
   config = next
 }
 
+/** Fake-режим активен только в чистом браузере (без Tauri-рантайма). */
 export function isFakeDataEnabled(): boolean {
-  return config.mode === 'development' && config.fakeData
+  return config.mode === 'development' && config.fakeData && !isTauriRuntime()
 }

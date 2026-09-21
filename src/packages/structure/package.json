@@ -22,6 +22,7 @@
   },
   "dependencies": {
     "@mai/bus": "workspace:*",
+    "@mai/fakeData": "workspace:*",
     "@mai/resource": "workspace:*",
     "@mai/sync": "workspace:*",
     "@mai/tauri": "workspace:*",

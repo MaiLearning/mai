@@ -1,1 +1,1 @@
-export { appConfigAtom, getAppConfig, initAppConfig } from './configStore'
+export { appConfigAtom, configReadyAtom, getAppConfig, initAppConfig } from './configStore'

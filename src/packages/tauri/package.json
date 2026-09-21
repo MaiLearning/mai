@@ -15,6 +15,10 @@
     "./opener": {
       "types": "./src/opener.ts",
       "default": "./src/opener.ts"
+    },
+    "./runtime": {
+      "types": "./src/runtime.ts",
+      "default": "./src/runtime.ts"
     }
   },
   "dependencies": {

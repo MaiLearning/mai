@@ -9,6 +9,13 @@ import { parseAppConfig } from '../core/schema'
 /** Текущий конфиг приложения. До инициализации — заготовка по умолчанию. */
 export const appConfigAtom = atom<AppConfig>(defaultConfig)
 
+/**
+ * Готовность конфига к работе приложения. Выставляется композиционным слоем
+ * (таска `initConfigTask`) после загрузки конфига и настройки его потребителей.
+ * До этого рендер приложения приостановлен.
+ */
+export const configReadyAtom = atom(false)
+
 const store = getDefaultStore()
 
 function apply(next: AppConfig): void {

@@ -12,13 +12,9 @@ export type { LogOptions }
 
 type Level = 'debug' | 'info' | 'warn' | 'error' | 'trace'
 
-/** Плагин доступен только внутри Tauri-окружения: в чистом браузере (Storybook) его нет. */
-function isTauriRuntime(): boolean {
-  return (
-    typeof window !== 'undefined' &&
-    Boolean((window as unknown as { __TAURI_INTERNALS__?: unknown }).__TAURI_INTERNALS__)
-  )
-}
+import { isTauriRuntime } from './runtime'
+
+export { isTauriRuntime }
 
 function toConsole(level: Level, message: string): void {
   console[level](message)
@@ -46,6 +42,10 @@ let initialized = false
 export async function initLogger(): Promise<() => void> {
   if (initialized) return () => {}
   initialized = true
+
+  // В чистом браузере (Storybook, dev без Tauri) plugin-log недоступен —
+  // обёртки и так пишут в console, attachConsole вызывать нечем.
+  if (!isTauriRuntime()) return () => {}
 
   const detach = await attachConsole()
   info('[Logger] Инициализирован')

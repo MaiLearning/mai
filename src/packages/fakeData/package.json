@@ -12,7 +12,8 @@
   "dependencies": {
     "@mai/course": "workspace:*",
     "@mai/resource": "workspace:*",
-    "@mai/structure": "workspace:*"
+    "@mai/structure": "workspace:*",
+    "@mai/tauri": "workspace:*"
   },
   "devDependencies": {
     "typescript": "~6.0.3"

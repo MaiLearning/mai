@@ -1,3 +1,4 @@
+import { configReadyAtom } from '@mai/config'
 import { courseI18NResources } from '@mai/course'
 import { I18nProvider, initI18n } from '@mai/i18n'
 import { NotificationsHost } from '@mai/notifications'
@@ -6,6 +7,7 @@ import { sidebarI18NResources } from '@mai/sidebar'
 import { ThemeProvider } from '@mai/theme'
 import { linkI18NResources } from '@mai-plugin/link'
 import { theoryI18NResources } from '@mai-plugin/theory'
+import { useAtomValue } from 'jotai'
 import { useEffect } from 'react'
 import { RouterProvider } from 'react-router-dom'
 import { homeI18NResources } from '@/pages/home/locales'
@@ -33,6 +35,10 @@ initI18n({
  * Основное назначение - управлять и конфигурировать весь GUI.
  */
 export default function Application() {
+  // Пока конфиг не загружен (mai.toml / фолбэк), потребители не должны
+  // работать: fake-режим, тема и роутинг зависят от активного режима.
+  const configReady = useAtomValue(configReadyAtom)
+
   useEffect(() => {
     const runner = new Runner()
 
@@ -43,6 +49,8 @@ export default function Application() {
 
     runner.run()
   }, [])
+
+  if (!configReady) return null
 
   return (
     <ThemeProvider>

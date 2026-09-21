@@ -15,6 +15,7 @@
     "styled-components": "^6.5.0"
   },
   "dependencies": {
+    "@mai/fakeData": "workspace:*",
     "@mai/i18n": "workspace:*",
     "@mai/sync": "workspace:*",
     "@mai/tauri": "workspace:*",
@@ -24,11 +25,11 @@
     "zod": "^4.0.0"
   },
   "devDependencies": {
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "styled-components": "^6.5.3",
-    "typescript": "~6.0.3",
-    "@types/react": "^19.1.8",
-    "@types/react-dom": "^19.1.6"
+    "typescript": "~6.0.3"
   }
 }
