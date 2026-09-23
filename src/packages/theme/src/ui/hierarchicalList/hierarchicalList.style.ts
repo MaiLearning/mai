@@ -14,10 +14,10 @@ export const ToggleButton = styled.button`
   height: 20px;
   margin: 0 ${({ theme }) => theme.spacing.xs} 0 0;
   padding: 0;
-  border: 1px solid ${({ theme }) => theme.border.default};
+  border: 1px solid ${({ theme }) => theme.utils.getBorder('neutral', 'default')};
   border-radius: ${({ theme }) => theme.radius.sm};
-  background: ${({ theme }) => theme.background.raised};
-  color: ${({ theme }) => theme.text.muted};
+  background: ${({ theme }) => theme.utils.getBackground('neutral', 'raised')};
+  color: ${({ theme }) => theme.utils.getText('neutral', 'muted')};
   cursor: pointer;
   transition:
     background-color ${({ theme }) => theme.durations.fast} ease,
@@ -25,24 +25,24 @@ export const ToggleButton = styled.button`
     color ${({ theme }) => theme.durations.fast} ease;
 
   &:hover {
-    background: ${({ theme }) => theme.background.hover};
-    border-color: ${({ theme }) => theme.border.strong};
-    color: ${({ theme }) => theme.text.primary};
+    background: ${({ theme }) => theme.utils.withState(theme.utils.getBackground('neutral', 'raised'), 'hoverAlpha')};
+    border-color: ${({ theme }) => theme.utils.withState(theme.utils.getBorder('neutral', 'default'), 'hoverAlpha')};
+    color: ${({ theme }) => theme.utils.getText('neutral', 'primary')};
   }
 
   &:focus-visible {
-    outline: 2px solid ${({ theme }) => theme.focus.ring};
+    outline: 2px solid ${({ theme }) => theme.utils.getFocusRing()};
     outline-offset: 1px;
   }
 
   &:active {
-    background: ${({ theme }) => theme.background.active};
+    background: ${({ theme }) => theme.utils.withState(theme.utils.getBackground('neutral', 'raised'), 'activeAlpha')};
   }
 
   &:disabled {
-    background: ${({ theme }) => theme.background.disabled};
-    border-color: ${({ theme }) => theme.border.default};
-    color: ${({ theme }) => theme.text.muted};
+    background: ${({ theme }) => theme.utils.withState(theme.utils.getBackground('neutral', 'raised'), 'disabledAlpha')};
+    border-color: ${({ theme }) => theme.utils.getBorder('neutral', 'default')};
+    color: ${({ theme }) => theme.utils.getText('neutral', 'muted')};
     cursor: not-allowed;
   }
 `
@@ -51,8 +51,8 @@ export const ToggleChevron = styled.span<{ $expanded: boolean }>`
   display: inline-block;
   width: 6px;
   height: 6px;
-  border-right: 1px solid ${({ theme }) => theme.text.primary};
-  border-bottom: 1px solid ${({ theme }) => theme.text.primary};
+  border-right: 1px solid ${({ theme }) => theme.utils.getText('neutral', 'primary')};
+  border-bottom: 1px solid ${({ theme }) => theme.utils.getText('neutral', 'primary')};
   transform: rotate(${({ $expanded }) => ($expanded ? '45deg' : '-45deg')});
   transition: transform ${({ theme }) => theme.durations.fast} ease;
 `

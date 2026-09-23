@@ -13,8 +13,8 @@ export const CardRoot = styled.div<CardRootProps>`
   display: flex;
   flex-direction: column;
   border-radius: ${({ theme }) => theme.radius.lg};
-  border: 1px solid ${({ theme }) => theme.border.default};
-  background: ${({ theme }) => theme.background.surface};
+  border: 1px solid ${({ theme }) => theme.utils.getBorder('neutral', 'default')};
+  background: ${({ theme }) => theme.utils.getBackground('neutral', 'surface')};
   box-shadow: ${({ theme }) => theme.shadows.sm};
   transition:
     transform 0.16s ease,
@@ -26,7 +26,7 @@ export const CardRoot = styled.div<CardRootProps>`
     css`
       &:hover {
         transform: translateY(-2px);
-        border-color: ${theme.border.strong};
+        border-color: ${theme.utils.withState(theme.utils.getBorder('neutral', 'default'), 'hoverAlpha')};
         box-shadow: ${theme.shadows.md};
       }
     `}

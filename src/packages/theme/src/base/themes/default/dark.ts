@@ -1,12 +1,20 @@
-import type { AppTheme, ColorScale, Palette } from '../../theme'
+import type { AppTheme, ColorScale } from '../../theme'
+import { createThemeUtils } from '../../utils'
 import { base } from './base'
+import { contrastText, state, steps } from './steps'
 
-const _gray: ColorScale = [
-  '#17181a',
-  '#1b1b1f',
+/**
+ * Нейтральная шкала. Ступени 1–3 — бывшие композиты поверхности
+ * (body/surface/raised) и фон страницы, 4 — поп-ап слой: за счёт того,
+ * что все они выражены ступенями одной шкалы, elevation работает
+ * одинаково для любой роли.
+ */
+const neutral: ColorScale = [
+  '#090b10',
+  '#0d1322',
+  '#162032',
   '#222326',
   '#292a2e',
-  '#303136',
   '#393a40',
   '#46474f',
   '#5a5b66',
@@ -16,7 +24,7 @@ const _gray: ColorScale = [
   '#eeeef0',
 ]
 
-const _accent: ColorScale = [
+const accent: ColorScale = [
   '#14121f',
   '#1b1525',
   '#291f43',
@@ -31,7 +39,7 @@ const _accent: ColorScale = [
   '#e2ddfe',
 ]
 
-const _success: ColorScale = [
+const success: ColorScale = [
   '#0e1512',
   '#0f1b14',
   '#12291b',
@@ -46,7 +54,7 @@ const _success: ColorScale = [
   '#b1f1cb',
 ]
 
-const _warning: ColorScale = [
+const warning: ColorScale = [
   '#16120c',
   '#1d180f',
   '#302008',
@@ -61,7 +69,7 @@ const _warning: ColorScale = [
   '#ffe7b3',
 ]
 
-const _danger: ColorScale = [
+const danger: ColorScale = [
   '#191111',
   '#201314',
   '#381316',
@@ -76,7 +84,7 @@ const _danger: ColorScale = [
   '#ffd1d9',
 ]
 
-const _info: ColorScale = [
+const info: ColorScale = [
   '#0d1520',
   '#111927',
   '#102a43',
@@ -91,60 +99,28 @@ const _info: ColorScale = [
   '#c2e6ff',
 ]
 
-const palette: Palette = {
-  gray: _gray,
-  accent: _accent,
-  background: '#090b10',
-  success: _success,
-  warning: _warning,
-  danger: _danger,
-  info: _info,
-}
-const { gray, accent, background, success, warning, danger, info } = palette
-
-export const dark = {
-  ...base,
-  text: {
-    primary: gray[11],
-    muted: gray[10],
-    onPrimary: '#ffffff',
-    accent: accent[11],
+const colorPart = {
+  mode: 'dark',
+  intent: {
+    neutral,
+    accent,
+    success,
+    warning,
+    danger,
+    info,
   },
-  background: {
-    body: background,
-    // Тело карточек и поиска по референсу: композит slate-900/70 поверх body.
-    surface: '#0d1322',
-    // Слой «кнопка на карточке» по референсу: композит slate-800/60 поверх surface.
-    // Ховер (gray[2]) остаётся выше и заметен.
-    raised: '#162032',
-    // Ступень между surface и body: вдавленные зоны темнее карточки.
-    sunken: '#121317',
-    elevated: gray[2],
-    accent: accent[9],
-    accentHover: accent[10],
-    accentSubtle: accent[2],
-    hover: gray[2],
-    active: gray[3],
-    selected: accent[3],
-    disabled: gray[1],
-  },
-  border: {
-    default: gray[6],
-    strong: gray[8],
-    accent: accent[9],
-  },
-  status: {
-    success: { foreground: success[10], background: success[2] },
-    warning: { foreground: warning[10], background: warning[2] },
-    danger: { foreground: danger[10], background: danger[2] },
-    info: { foreground: info[10], background: info[2] },
-  },
-  focus: {
-    ring: accent[9],
-  },
+  steps,
+  state,
+  contrastText,
   shadows: {
     sm: '0 1px 2px rgba(0, 0, 0, 0.4)',
     md: '0 4px 12px rgba(0, 0, 0, 0.5)',
     lg: '0 16px 50px -24px rgba(0, 0, 0, 0.8)',
   },
-} satisfies AppTheme
+} as const
+
+export const dark: AppTheme = {
+  ...colorPart,
+  utils: createThemeUtils(colorPart),
+  ...base,
+}

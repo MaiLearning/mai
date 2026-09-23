@@ -8,7 +8,7 @@ import type { AppTheme } from '../../theme'
  */
 export const base: Omit<
   AppTheme,
-  'text' | 'background' | 'border' | 'status' | 'focus' | 'shadows'
+  'mode' | 'intent' | 'steps' | 'state' | 'contrastText' | 'utils' | 'shadows'
 > = {
   typography: {
     fontFamily: "system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif",

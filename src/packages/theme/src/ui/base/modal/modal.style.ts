@@ -31,7 +31,8 @@ export const Overlay = styled.div<ModalStyledProps>`
   align-items: flex-end;
   justify-content: center;
   padding: 0;
-  background: color-mix(in srgb, ${({ theme }) => theme.background.body} 40%, transparent);
+  background: ${({ theme }) =>
+    theme.utils.withState(theme.utils.getBackground('neutral', 'body'), 'disabledAlpha')};
   backdrop-filter: blur(6px) saturate(120%);
   animation: ${fadeIn} 200ms ease both;
   overflow-y: auto;
@@ -58,8 +59,8 @@ export const Panel = styled.div<ModalStyledProps>`
   width: 100%;
   max-width: ${({ $width }) => `${$width}px`};
   max-height: 100dvh;
-  background: ${({ theme }) => theme.background.surface};
-  border: 1px solid ${({ theme }) => theme.border.default};
+  background: ${({ theme }) => theme.utils.getBackground('neutral', 'surface')};
+  border: 1px solid ${({ theme }) => theme.utils.getBorder('neutral', 'default')};
   border-radius: ${({ theme }) => theme.radius.lg} ${({ theme }) => theme.radius.lg} 0 0;
   box-shadow: ${({ theme }) => theme.shadows.lg};
   overflow: hidden;
@@ -89,7 +90,7 @@ export const Grabber = styled.div`
     width: 42px;
     height: 4px;
     border-radius: ${({ theme }) => theme.radius.full};
-    background: ${({ theme }) => theme.border.strong};
+    background: ${({ theme }) => theme.utils.getBorder('neutral', 'strong')};
   }
 
   @media (min-width: 768px) {
@@ -117,7 +118,7 @@ export const Title = styled.h2`
   font-size: ${({ theme }) => theme.typography.sizes.lg};
   font-weight: ${({ theme }) => theme.typography.weights.semibold};
   line-height: ${({ theme }) => theme.typography.lineHeights.tight};
-  color: ${({ theme }) => theme.text.primary};
+  color: ${({ theme }) => theme.utils.getText('neutral', 'primary')};
 `
 
 /* ── Крестик (inline, без IconButton/lucide) ── */
@@ -132,7 +133,7 @@ export const CloseButton = styled.button`
   border: none;
   border-radius: ${({ theme }) => theme.radius.md};
   background: transparent;
-  color: ${({ theme }) => theme.text.muted};
+  color: ${({ theme }) => theme.utils.getText('neutral', 'muted')};
   font-size: 1.25rem;
   line-height: 1;
   cursor: pointer;
@@ -142,12 +143,12 @@ export const CloseButton = styled.button`
   flex-shrink: 0;
 
   &:hover {
-    background: ${({ theme }) => theme.background.hover};
-    color: ${({ theme }) => theme.text.primary};
+    background: ${({ theme }) => theme.utils.withState(theme.utils.getBackground('neutral', 'surface'), 'hoverAlpha')};
+    color: ${({ theme }) => theme.utils.getText('neutral', 'primary')};
   }
 
   &:focus-visible {
-    outline: 2px solid ${({ theme }) => theme.focus.ring};
+    outline: 2px solid ${({ theme }) => theme.utils.getFocusRing()};
     outline-offset: 2px;
   }
 `
@@ -176,8 +177,8 @@ export const ModalFooter = styled.div`
   gap: ${({ theme }) => theme.spacing.lg};
   padding: ${({ theme }) => theme.spacing.lg} ${({ theme }) => theme.spacing.xl};
   padding-bottom: max(${({ theme }) => theme.spacing.lg}, env(safe-area-inset-bottom));
-  border-top: 1px solid ${({ theme }) => theme.border.default};
-  background: ${({ theme }) => theme.background.raised};
+  border-top: 1px solid ${({ theme }) => theme.utils.getBorder('neutral', 'default')};
+  background: ${({ theme }) => theme.utils.getBackground('neutral', 'raised')};
 
   @media (min-width: 768px) {
     padding: ${({ theme }) => theme.spacing.lg} 28px;

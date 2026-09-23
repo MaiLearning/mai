@@ -12,22 +12,29 @@ export interface TextStyledProps {
   $ellipsis?: boolean
 }
 
-function isTextColorToken(
-  theme: AppTheme,
-  color: TextColor,
-): color is keyof AppTheme['text'] | keyof AppTheme['status'] {
-  return color in theme.text || color in theme.status
-}
-
 function resolveTextColor(theme: AppTheme, color?: TextColor): string {
-  if (!color) return theme.text.primary
-  if (isTextColorToken(theme, color)) {
-    return color in theme.text
-      ? theme.text[color as keyof AppTheme['text']]
-      : theme.status[color as keyof AppTheme['status']].foreground
+  switch (color) {
+    case undefined:
+    case 'primary':
+    case 'neutral':
+      return theme.utils.getText('neutral', 'primary')
+    case 'muted':
+    case 'gray':
+      return theme.utils.getText('neutral', 'muted')
+    case 'accent':
+      return theme.utils.getText('accent', 'primary')
+    case 'error':
+    case 'danger':
+      return theme.utils.getText('danger', 'primary')
+    case 'success':
+      return theme.utils.getText('success', 'primary')
+    case 'warning':
+      return theme.utils.getText('warning', 'primary')
+    case 'info':
+      return theme.utils.getText('info', 'primary')
+    default:
+      return color
   }
-
-  return color
 }
 
 export const StyledText = styled.span<TextStyledProps>`

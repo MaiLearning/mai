@@ -1,4 +1,5 @@
 import { createGlobalStyle } from 'styled-components'
+import { getColor } from './utils'
 
 /**
  * Глобальные стили приложения. Сейчас пусты — точка подключения: как только
@@ -8,8 +9,8 @@ import { createGlobalStyle } from 'styled-components'
 export const GlobalStyle = createGlobalStyle`
   body {
     margin: 0;
-    background: ${({ theme }) => theme.background.body};
-    color: ${({ theme }) => theme.text.primary};
+    background: ${({ theme }) => getColor(theme, 'neutral', 'background', 'body')};
+    color: ${({ theme }) => getColor(theme, 'neutral', 'foreground', 'primary')};
     font-family: ${({ theme }) => theme.typography.fontFamily};
     -webkit-font-smoothing: antialiased;
   }

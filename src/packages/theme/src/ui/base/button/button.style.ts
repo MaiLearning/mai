@@ -48,53 +48,53 @@ function sizeStyles(theme: AppTheme, size: ButtonSize) {
 function variantStyles(theme: AppTheme, variant: ButtonVariant) {
   const styles: Record<ButtonVariant, ReturnType<typeof css>> = {
     primary: css`
-      background: ${theme.background.accent};
-      color: ${theme.text.onPrimary};
+      background: ${theme.utils.getSolid('accent', 'base')};
+      color: ${theme.contrastText.accent};
 
       &:hover {
-        background: ${theme.background.accentHover};
+        background: ${theme.utils.getSolid('accent', 'hover')};
       }
 
       &:active {
-        background: ${theme.background.accentHover};
+        background: ${theme.utils.getSolid('accent', 'hover')};
       }
     `,
     secondary: css`
-      background: ${theme.background.raised};
-      border: 1px solid ${theme.border.default};
-      color: ${theme.text.primary};
+      background: ${theme.utils.getBackground('neutral', 'raised')};
+      border: 1px solid ${theme.utils.getBorder('neutral', 'default')};
+      color: ${theme.utils.getText('neutral', 'primary')};
 
       &:hover {
-        background: ${theme.background.hover};
-        border-color: ${theme.border.strong};
+        background: ${theme.utils.withState(theme.utils.getBackground('neutral', 'raised'), 'hoverAlpha')};
+        border-color: ${theme.utils.withState(theme.utils.getBorder('neutral', 'default'), 'hoverAlpha')};
       }
     `,
     danger: css`
-      background: ${theme.status.danger.background};
-      border: 1px solid ${theme.status.danger.foreground}33;
-      color: ${theme.status.danger.foreground};
+      background: ${theme.utils.getBackground('danger', 'surface')};
+      border: 1px solid ${theme.utils.getBorder('danger', 'default')};
+      color: ${theme.utils.getText('danger', 'primary')};
 
       &:hover {
-        background: ${theme.status.danger.background};
-        border-color: ${theme.status.danger.foreground};
+        background: ${theme.utils.withState(theme.utils.getBackground('danger', 'surface'), 'hoverAlpha')};
+        border-color: ${theme.utils.withState(theme.utils.getBorder('danger', 'default'), 'hoverAlpha')};
       }
     `,
     ghost: css`
       background: transparent;
-      color: ${theme.text.primary};
+      color: ${theme.utils.getText('neutral', 'primary')};
 
       &:hover {
-        background: ${theme.background.hover};
+        background: ${theme.utils.withState(theme.utils.getBackground('neutral', 'surface'), 'hoverAlpha')};
       }
     `,
     outline: css`
-      border: 1px solid ${theme.border.default};
+      border: 1px solid ${theme.utils.getBorder('neutral', 'default')};
       background: transparent;
-      color: ${theme.text.primary};
+      color: ${theme.utils.getText('neutral', 'primary')};
 
       &:hover {
-        background: ${theme.background.hover};
-        border-color: ${theme.border.strong};
+        background: ${theme.utils.withState(theme.utils.getBackground('neutral', 'surface'), 'hoverAlpha')};
+        border-color: ${theme.utils.withState(theme.utils.getBorder('neutral', 'default'), 'hoverAlpha')};
       }
     `,
   }
@@ -130,22 +130,22 @@ export const ButtonRoot = styled.button<ButtonRootProps>`
   }
 
   &:focus-visible {
-    outline: 2px solid ${({ theme }) => theme.focus.ring};
+    outline: 2px solid ${({ theme }) => theme.utils.getFocusRing()};
     outline-offset: 2px;
   }
 
   &:disabled {
-    background: ${({ theme }) => theme.background.disabled};
-    border-color: ${({ theme }) => theme.border.default};
-    color: ${({ theme }) => theme.text.muted};
+    background: ${({ theme }) => theme.utils.withState(theme.utils.getBackground('neutral', 'raised'), 'disabledAlpha')};
+    border-color: ${({ theme }) => theme.utils.getBorder('neutral', 'default')};
+    color: ${({ theme }) => theme.utils.getText('neutral', 'muted')};
     opacity: 1;
     cursor: not-allowed;
     transform: none;
   }
 
   &[aria-pressed='true'] {
-    background: ${({ theme }) => theme.background.selected};
-    border-color: ${({ theme }) => theme.border.accent};
-    color: ${({ theme }) => theme.text.accent};
+    background: ${({ theme }) => theme.utils.withState(theme.utils.getBackground('neutral', 'surface'), 'selectedAlpha')};
+    border-color: ${({ theme }) => theme.utils.getBorder('accent', 'default')};
+    color: ${({ theme }) => theme.utils.getText('accent', 'primary')};
   }
 `

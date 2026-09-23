@@ -8,15 +8,27 @@ export interface AlertStyledProps {
 
 function variantStyle(theme: AppTheme, variant: AlertVariant) {
   const map: Record<AlertVariant, { border: string; color: string }> = {
-    error: { border: theme.status.danger.foreground, color: theme.status.danger.foreground },
-    warning: { border: theme.status.warning.foreground, color: theme.status.warning.foreground },
-    success: { border: theme.status.success.foreground, color: theme.status.success.foreground },
-    info: { border: theme.status.info.foreground, color: theme.status.info.foreground },
+    error: {
+      border: theme.utils.getBorder('danger', 'default'),
+      color: theme.utils.getText('danger', 'primary'),
+    },
+    warning: {
+      border: theme.utils.getBorder('warning', 'default'),
+      color: theme.utils.getText('warning', 'primary'),
+    },
+    success: {
+      border: theme.utils.getBorder('success', 'default'),
+      color: theme.utils.getText('success', 'primary'),
+    },
+    info: {
+      border: theme.utils.getBorder('info', 'default'),
+      color: theme.utils.getText('info', 'primary'),
+    },
   }
   const s = map[variant]
 
   return css`
-    border-color: ${s.border}33;
+    border-color: ${s.border};
     color: ${s.color};
   `
 }

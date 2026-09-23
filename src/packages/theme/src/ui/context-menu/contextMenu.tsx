@@ -22,7 +22,7 @@ import {
   MenuSurface,
   SectionLabel,
   SubmenuChevron,
-} from './contextMenu.style'
+} from '../base/popover/menu.style'
 import type {
   ContextMenuItemProps,
   ContextMenuRootProps,

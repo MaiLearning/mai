@@ -1,12 +1,22 @@
 import type { ComponentPropsWithoutRef, ElementType } from 'react'
-import type { AppTheme } from '../../../base/theme'
 import { StyledText } from './text.style'
 
 export type TextSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl'
 export type TextWeight = 'regular' | 'medium' | 'semibold' | 'bold'
 export type TextLineHeight = 'tight' | 'normal' | 'relaxed'
 export type TextAlign = 'left' | 'center' | 'right' | 'justify'
-export type TextColor = keyof AppTheme['text'] | keyof AppTheme['status'] | (string & {})
+export type TextColor =
+  | 'primary'
+  | 'muted'
+  | 'gray'
+  | 'accent'
+  | 'neutral'
+  | 'info'
+  | 'success'
+  | 'warning'
+  | 'danger'
+  | 'error'
+  | (string & {})
 
 /** Пропсы текстового примитива Text. */
 export interface TextProps {

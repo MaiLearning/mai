@@ -6,9 +6,21 @@ export { useAppTheme } from './base/hooks'
 export type { ThemeProviderProps } from './base/provider'
 export { ThemeProvider } from './base/provider'
 export { getTheme, themes } from './base/registry'
-export type { AppTheme, ColorScale, Palette } from './base/theme'
-export { base, dark, light } from './base/themes'
+export type {
+  AppTheme,
+  BackgroundKey,
+  BorderKey,
+  ColorScale,
+  ForegroundKey,
+  IntentName,
+  SolidKey,
+  StateName,
+  StepsConfig,
+} from './base/theme'
+export { base, contrastText, dark, light, state, steps } from './base/themes'
 export type { ThemeDefinition, ThemeRegistry } from './base/types'
+export { blendColors, getColor, getFocusRing, withState } from './base/utils'
+export type { ThemeUtils } from './base/utils/createThemeUtils'
 export type { AlertProps, AlertVariant } from './ui/base/alert/alert'
 export { Alert } from './ui/base/alert/alert'
 export type { ButtonProps, ButtonSize, ButtonVariant } from './ui/base/button/button'
@@ -33,7 +45,6 @@ export { ModalBody, ModalFooter, ModalFooterSpacer } from './ui/base/modal/modal
 export type { ProgressProps } from './ui/base/progress/progress'
 export { Progress } from './ui/base/progress/progress'
 export type { SpinnerProps } from './ui/base/spinner/spinner'
-
 export { Spinner } from './ui/base/spinner/spinner'
 export type {
   TextAlign,

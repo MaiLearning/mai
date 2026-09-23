@@ -19,7 +19,7 @@ export const SpinnerRoot = styled.span<SpinnerStyledProps>`
   display: inline-block;
   width: 1em;
   height: 1em;
-  border: 2px solid ${({ theme }) => theme.text.accent};
+  border: 2px solid ${({ theme }) => theme.utils.getText('accent', 'primary')};
   border-right-color: transparent;
   border-radius: 50%;
   animation: ${spin} ${({ $speed }) => speedMap[$speed]} linear infinite;

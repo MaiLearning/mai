@@ -34,7 +34,7 @@ export const ListItemRoot = styled.div<ListItemRootProps>`
   padding: ${({ theme }) => `${theme.spacing.sm} ${theme.spacing.md}`};
   border: 1px solid transparent;
   border-radius: ${({ theme }) => theme.radius.md};
-  color: ${({ theme }) => theme.text.primary};
+  color: ${({ theme }) => theme.utils.getText('neutral', 'primary')};
   font-family: ${({ theme }) => theme.typography.fontFamily};
   cursor: pointer;
   user-select: none;
@@ -43,34 +43,37 @@ export const ListItemRoot = styled.div<ListItemRootProps>`
     border-color ${({ theme }) => theme.durations.fast} ease;
 
   &:hover {
-    background: ${({ theme, $disabled }) => ($disabled ? 'transparent' : theme.background.hover)};
+    background: ${({ theme, $disabled }) =>
+      $disabled
+        ? 'transparent'
+        : theme.utils.withState(theme.utils.getBackground('neutral', 'surface'), 'hoverAlpha')};
   }
 
   ${({ theme, $selected }) =>
     $selected &&
     `
-      background: ${theme.background.selected};
-      border-color: ${theme.border.accent};
-      color: ${theme.text.accent};
+      background: ${theme.utils.withState(theme.utils.getBackground('neutral', 'surface'), 'selectedAlpha')};
+      border-color: ${theme.utils.getBorder('accent', 'default')};
+      color: ${theme.utils.getText('accent', 'primary')};
     `}
 
   ${({ theme, $focused }) =>
     $focused &&
     `
-      outline: 2px solid ${theme.focus.ring};
+      outline: 2px solid ${theme.utils.getFocusRing()};
       outline-offset: -2px;
     `}
 
   ${({ theme, $active }) =>
     $active &&
     `
-      background: ${theme.background.active};
+      background: ${theme.utils.withState(theme.utils.getBackground('neutral', 'surface'), 'activeAlpha')};
     `}
 
   ${({ theme, $disabled }) =>
     $disabled &&
     `
-      color: ${theme.text.muted};
+      color: ${theme.utils.getText('neutral', 'muted')};
       cursor: not-allowed;
       opacity: 0.6;
     `}

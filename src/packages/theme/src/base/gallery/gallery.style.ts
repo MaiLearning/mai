@@ -1,11 +1,12 @@
 import styled from 'styled-components'
+import { getColor } from '../utils'
 
 /** Карточка одного варианта шрифта (рамка, фон, отступы). */
 export const GalleryCard = styled.div`
   min-width: 0;
   padding: ${(p) => p.theme.spacing.lg};
-  background: ${(p) => p.theme.background.surface};
-  border: 1px solid ${(p) => p.theme.border.default};
+  background: ${(p) => getColor(p.theme, 'neutral', 'background', 'surface')};
+  border: 1px solid ${(p) => getColor(p.theme, 'neutral', 'border', 'default')};
   border-radius: ${(p) => p.theme.radius.lg};
 `
 
@@ -13,7 +14,7 @@ export const GalleryCard = styled.div`
 export const GalleryHeader = styled.div`
   padding-bottom: ${(p) => p.theme.spacing.md};
   margin-bottom: ${(p) => p.theme.spacing.lg};
-  border-bottom: 1px solid ${(p) => p.theme.border.default};
+  border-bottom: 1px solid ${(p) => getColor(p.theme, 'neutral', 'border', 'default')};
 `
 
 /** Содержимое карточки: вертикальный набор секций. */
@@ -38,7 +39,7 @@ export const Section = styled.section`
 export const SectionLabel = styled.span`
   font-size: ${(p) => p.theme.typography.sizes.xs};
   font-weight: ${(p) => p.theme.typography.weights.semibold};
-  color: ${(p) => p.theme.text.muted};
+  color: ${(p) => getColor(p.theme, 'neutral', 'foreground', 'muted')};
   text-transform: uppercase;
   letter-spacing: 0.08em;
 `
@@ -56,8 +57,8 @@ export const CodeInline = styled.code`
   font-family: ${(p) => p.theme.typography.fontFamilyMonospace};
   font-size: ${(p) => p.theme.typography.sizes.sm};
   padding: 0.1em 0.4em;
-  background: ${(p) => p.theme.background.body};
-  border: 1px solid ${(p) => p.theme.border.default};
+  background: ${(p) => getColor(p.theme, 'neutral', 'background', 'body')};
+  border: 1px solid ${(p) => getColor(p.theme, 'neutral', 'border', 'default')};
   border-radius: ${(p) => p.theme.radius.sm};
 `
 
@@ -68,8 +69,8 @@ export const CodeBlock = styled.pre`
   font-family: ${(p) => p.theme.typography.fontFamilyMonospace};
   font-size: ${(p) => p.theme.typography.sizes.sm};
   line-height: ${(p) => p.theme.typography.lineHeights.normal};
-  background: ${(p) => p.theme.background.body};
-  border: 1px solid ${(p) => p.theme.border.default};
+  background: ${(p) => getColor(p.theme, 'neutral', 'background', 'body')};
+  border: 1px solid ${(p) => getColor(p.theme, 'neutral', 'border', 'default')};
   border-radius: ${(p) => p.theme.radius.md};
   overflow: auto;
 `
