@@ -13,6 +13,12 @@ const meta = {
   tags: ['autodocs'],
   parameters: {
     layout: 'centered',
+    docs: {
+      description: {
+        component:
+          'Неблокирующее уведомление. Семантические варианты берут из одной палитры границу, текст и тематическую иконку слева; фон прозрачный — alert не выделяется цветовым блоком.',
+      },
+    },
   },
   args: {
     children: 'Уведомление для пользователя.',
@@ -31,6 +37,8 @@ const meta = {
 export default meta
 
 type Story = StoryObj<typeof meta>
+
+export const Playground: Story = {}
 
 /** Информационное уведомление — вариант по умолчанию. */
 export const Info: Story = {

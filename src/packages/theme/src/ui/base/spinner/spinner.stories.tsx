@@ -11,6 +11,12 @@ const meta = {
   tags: ['autodocs'],
   parameters: {
     layout: 'centered',
+    docs: {
+      description: {
+        component:
+          'Индикатор загрузки. Доступность — через `role="status"` и aria-label из пропа `label`; скорость вращения выбирается из slow/normal/fast.',
+      },
+    },
   },
   argTypes: {
     label: { description: 'aria-label для скринридеров' },

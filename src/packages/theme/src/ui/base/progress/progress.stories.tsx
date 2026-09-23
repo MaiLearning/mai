@@ -11,6 +11,12 @@ const meta = {
   tags: ['autodocs'],
   parameters: {
     layout: 'centered',
+    docs: {
+      description: {
+        component:
+          'Индикатор выполнения. Ширина заливки задаётся пропом `percent` (0–100), значения за пределами диапазона нормализуются; трек и заливка собраны из токенов темы.',
+      },
+    },
   },
   args: {
     percent: 50,

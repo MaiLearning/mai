@@ -1,6 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Card } from './card'
 
+/**
+ * Card — базовый контейнер карточки. Поверхность, граница, скругление
+ * и тень собираются из токенов темы; содержимое (обложка, тело, футер)
+ * добавляет потребитель. Интерактивная карточка приподнимается на hover.
+ */
 const meta = {
   title: 'Theme/Components/Card',
   component: Card,

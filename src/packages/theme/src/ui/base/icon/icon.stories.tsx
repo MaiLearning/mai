@@ -1,6 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Icon } from './icon'
 
+/**
+ * Icon — контейнер для иконок с единым размером и выравниванием.
+ * Масштабирует вложенный SVG; размеры от xs до xl из токенов темы.
+ */
 function StarIcon() {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">

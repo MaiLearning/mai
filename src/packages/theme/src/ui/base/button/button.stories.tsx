@@ -1,8 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { type ReactNode, useState } from 'react'
+import { expect, fn, screen, userEvent } from 'storybook/test'
 import { Icon } from '../icon/icon'
 import { Button } from './button'
 
+/**
+ * Button — кнопка действия дизайн-системы Mai. Пять размеров, пять
+ * визуальных вариантов, состояния disabled/loading/selected и иконки
+ * до, после или вместо текста. Клик — стандартный `onClick`.
+ */
 function PlusIcon() {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
@@ -162,5 +168,17 @@ export const Toggle: Story = {
         story: 'Пример управляемого selected-состояния для кнопки Enable/Disable.',
       },
     },
+  },
+}
+
+/** Клик по кнопке вызывает onClick. */
+export const Play: Story = {
+  args: {
+    children: 'Нажми меня',
+    onClick: fn(),
+  },
+  play: async ({ args }) => {
+    await userEvent.click(screen.getByRole('button', { name: 'Нажми меня' }))
+    await expect(args.onClick).toHaveBeenCalledOnce()
   },
 }

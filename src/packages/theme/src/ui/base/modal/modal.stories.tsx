@@ -16,6 +16,12 @@ const meta = {
   tags: ['autodocs'],
   parameters: {
     layout: 'centered',
+    docs: {
+      description: {
+        component:
+          'Модальное окно. Портал в body, ловушка фокуса, закрытие по Esc/оверлею/кнопке, блокировка скролла. Управляется пропом `opened` — состояние держит вызывающий компонент.',
+      },
+    },
   },
   args: {
     opened: true,

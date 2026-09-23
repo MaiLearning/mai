@@ -1,7 +1,13 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { useState } from 'react'
+import { expect, fn, screen, userEvent } from 'storybook/test'
 import { List } from './list'
 
+/**
+ * List — список дизайн-системы Mai. Управляет порядком, selection и
+ * клавиатурной навигацией, а List.Item предоставляет оболочку с
+ * произвольным содержимым.
+ */
 const meta = {
   title: 'Theme/Components/List',
   component: List,
@@ -10,12 +16,34 @@ const meta = {
     docs: {
       description: {
         component:
-          'List управляет порядком, selection и клавиатурной навигацией, а List.Item предоставляет оболочку с произвольным содержимым.',
+          'List управляет порядком, selection и клавиатурной навигацией, а List.Item предоставляет оболочку с произвольным содержимым. Режимы выборки: none, single, multiple.',
       },
     },
   },
   args: {
     children: null,
+    selectionMode: 'none',
+  },
+  argTypes: {
+    selectionMode: {
+      control: 'select',
+      options: ['none', 'single', 'multiple'],
+      description: 'Режим выбора элементов.',
+    },
+    direction: {
+      control: 'select',
+      options: ['vertical', 'horizontal'],
+      description: 'Направление раскладки элементов.',
+    },
+    gap: {
+      control: 'select',
+      options: ['none', 'xs', 'sm', 'md', 'lg', 'xl'],
+      description: 'Отступ между элементами.',
+    },
+    keyboardNavigation: {
+      control: 'boolean',
+      description: 'Клавиатурная навигация (↑ ↓ Home End Enter).',
+    },
   },
 } satisfies Meta<typeof List>
 
@@ -46,6 +74,25 @@ export const Playground: Story = {
         </List.Item>
       </List>
     )
+  },
+}
+
+/** Клик по элементу выбирает его в режиме single. */
+export const Play: Story = {
+  args: {
+    children: null,
+    selectionMode: 'single',
+    onSelectionChange: fn(),
+  },
+  render: (args) => (
+    <List {...args} style={{ maxWidth: 320 }}>
+      <List.Item id="document">Документ</List.Item>
+      <List.Item id="image">Изображение</List.Item>
+    </List>
+  ),
+  play: async ({ args }) => {
+    await userEvent.click(screen.getByRole('option', { name: 'Изображение' }))
+    await expect(args.onSelectionChange).toHaveBeenCalledWith(['image'])
   },
 }
 
