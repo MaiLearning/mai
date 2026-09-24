@@ -16,6 +16,7 @@
     "@mai/tauri": "workspace:*"
   },
   "devDependencies": {
+    "@mai/settings": "workspace:*",
     "typescript": "~6.0.3"
   }
 }

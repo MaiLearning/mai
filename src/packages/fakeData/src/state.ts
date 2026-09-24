@@ -1,5 +1,6 @@
 import type { Course } from '@mai/course'
 import type { Resource, ResourceType } from '@mai/resource'
+import type { SettingsDocument } from '@mai/settings'
 import type { Directory, StructureNodeFlat } from '@mai/structure'
 
 const now = Date.now()
@@ -13,6 +14,7 @@ export const fakeState: {
   resources: Resource[]
   resourceTypes: ResourceType[]
   nodes: StructureNodeFlat[]
+  settings: Record<string, SettingsDocument>
 } = {
   courses: [
     {
@@ -146,6 +148,7 @@ export const fakeState: {
       name: 'Практика',
     },
   ],
+  settings: {},
 }
 
 export function fakeId(): string {
