@@ -18,6 +18,12 @@ export function ToggleControl({
   'aria-label': ariaLabel,
 }: ToggleControlProps) {
   return (
-    <Switch checked={value} onChange={onChange} disabled={disabled} id={id} aria-label={ariaLabel} />
+    <Switch
+      checked={value}
+      onChange={onChange}
+      disabled={disabled}
+      id={id}
+      aria-label={ariaLabel}
+    />
   )
 }

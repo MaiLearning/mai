@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import styles from './SettingsNav.module.css'
+import { Children, Group, Icon, Nav, NavItem } from './SettingsNav.style'
 
 export interface SettingsNavItem {
   /** Идентификатор пункта (для activeId и onSelect). */
@@ -29,33 +29,35 @@ interface NavLevelProps {
 }
 
 function NavLevel({ items, activeId, onSelect, nested }: NavLevelProps) {
+  const Level = nested ? Children : Group
+
   return (
-    <div className={nested ? styles.children : styles.group}>
+    <Level>
       {items.map((item) => (
         <div key={item.id}>
-          <button
+          <NavItem
             type="button"
-            className={styles.item}
+            $active={item.id === activeId}
             data-active={item.id === activeId}
             onClick={() => onSelect(item.id)}
           >
-            {item.icon ? <span className={styles.icon}>{item.icon}</span> : null}
+            {item.icon ? <Icon>{item.icon}</Icon> : null}
             {item.label}
-          </button>
+          </NavItem>
           {item.children?.length ? (
             <NavLevel items={item.children} activeId={activeId} onSelect={onSelect} nested />
           ) : null}
         </div>
       ))}
-    </div>
+    </Level>
   )
 }
 
 /** Навигация по разделам настроек с вложенными пунктами. */
 export function SettingsNav({ items, activeId, onSelect, ariaLabel }: SettingsNavProps) {
   return (
-    <nav className={styles.nav} aria-label={ariaLabel}>
+    <Nav aria-label={ariaLabel}>
       <NavLevel items={items} activeId={activeId} onSelect={onSelect} />
-    </nav>
+    </Nav>
   )
 }

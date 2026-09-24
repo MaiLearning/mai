@@ -1,6 +1,6 @@
 import { Heading, Text } from '@mai/theme'
 import type { ReactNode } from 'react'
-import styles from './SettingsSection.module.css'
+import { Head, Section } from './SettingsSection.style'
 
 export interface SettingsSectionProps {
   /** Заголовок раздела. */
@@ -14,9 +14,9 @@ export interface SettingsSectionProps {
 /** Раздел настроек: заголовок, пояснение и поля. */
 export function SettingsSection({ title, description, children }: SettingsSectionProps) {
   return (
-    <section className={styles.section}>
+    <Section>
       {title ? (
-        <div className={styles.head}>
+        <Head>
           <Heading as="h3" size="lg">
             {title}
           </Heading>
@@ -25,9 +25,9 @@ export function SettingsSection({ title, description, children }: SettingsSectio
               {description}
             </Text>
           ) : null}
-        </div>
+        </Head>
       ) : null}
       {children}
-    </section>
+    </Section>
   )
 }

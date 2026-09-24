@@ -10,16 +10,19 @@
     }
   },
   "peerDependencies": {
-    "react": "^19.0.0"
+    "react": "^19.0.0",
+    "styled-components": "^6.5.3"
   },
   "dependencies": {
     "@mai/tauri": "workspace:*",
+    "@mai/theme": "workspace:*",
     "jotai": "^2.20.3",
     "zod": "^4.6.5"
   },
   "devDependencies": {
     "@types/react": "^19.1.8",
     "react": "^19.1.0",
+    "styled-components": "^6.5.3",
     "typescript": "~6.0.3",
     "vitest": "^4.1.10"
   }

@@ -1,6 +1,6 @@
 import { Text } from '@mai/theme'
 import type { ReactNode } from 'react'
-import styles from './SettingsFieldRow.module.css'
+import { Field, Label } from './SettingsFieldRow.style'
 
 export interface SettingsFieldRowProps {
   /** Подпись поля. */
@@ -18,10 +18,8 @@ export interface SettingsFieldRowProps {
 /** Обёртка поля настроек: подпись, контрол и пояснение/ошибка. */
 export function SettingsFieldRow({ label, htmlFor, hint, error, children }: SettingsFieldRowProps) {
   return (
-    <div className={styles.field}>
-      <label className={styles.label} htmlFor={htmlFor}>
-        {label}
-      </label>
+    <Field>
+      <Label htmlFor={htmlFor}>{label}</Label>
       {children}
       {error ? (
         <Text size="xs" color="red">
@@ -32,6 +30,6 @@ export function SettingsFieldRow({ label, htmlFor, hint, error, children }: Sett
           {hint}
         </Text>
       ) : null}
-    </div>
+    </Field>
   )
 }
