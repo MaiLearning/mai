@@ -1,0 +1,48 @@
+{
+  "nav": {
+    "title": "Settings",
+    "close": "Close settings",
+    "general": "General",
+    "system": "System",
+    "profile": "Profile",
+    "courses": "Courses",
+    "plugins": "Plugins"
+  },
+  "layout": {
+    "empty": "Select a settings section"
+  },
+  "system": {
+    "title": "System settings",
+    "description": "Appearance and interface language of the application.",
+    "saving": "Saving…",
+    "error": "Failed to save settings: {{error}}",
+    "theme": {
+      "label": "Color theme",
+      "hint": "System theme follows the operating system appearance."
+    },
+    "language": {
+      "label": "Interface language",
+      "hint": "Applied immediately after selection."
+    }
+  },
+  "options": {
+    "theme": {
+      "system": "System",
+      "light": "Light",
+      "dark": "Dark"
+    },
+    "language": {
+      "ru": "Русский",
+      "en": "English"
+    }
+  },
+  "controls": {
+    "selectPlaceholder": "Select a value",
+    "noOptions": "No available options",
+    "required": "Required field",
+    "invalidUrl": "Enter a valid URL",
+    "invalidDate": "Enter a valid date",
+    "minLength": "At least {{min}} characters",
+    "maxLength": "At most {{max}} characters"
+  }
+}
