@@ -1,4 +1,4 @@
-import type { AppTheme } from '@mai/theme'
+import { type AppTheme, getColor } from '@mai/theme'
 import {
   EDGE_CURVATURE,
   LABEL_FADE_RANGE,
@@ -29,15 +29,15 @@ export type GraphRenderTheme = {
 /** Маппинг темы приложения в цвета canvas-рендера. */
 export function toRenderTheme(theme: AppTheme): GraphRenderTheme {
   return {
-    edge: theme.border.strong,
-    edgeHighlighted: theme.background.accent,
-    edgeBroken: theme.status.danger.foreground,
-    nodeCourse: theme.background.accent,
-    nodeResource: theme.border.strong,
-    nodeUri: theme.text.muted,
-    label: theme.text.primary,
-    labelHalo: theme.background.body,
-    ring: theme.background.accent,
+    edge: getColor(theme, 'neutral', 'border', 'strong'),
+    edgeHighlighted: getColor(theme, 'accent', 'solid', 'base'),
+    edgeBroken: getColor(theme, 'danger', 'solid', 'base'),
+    nodeCourse: getColor(theme, 'accent', 'solid', 'base'),
+    nodeResource: getColor(theme, 'neutral', 'border', 'strong'),
+    nodeUri: getColor(theme, 'neutral', 'foreground', 'muted'),
+    label: getColor(theme, 'neutral', 'foreground', 'primary'),
+    labelHalo: getColor(theme, 'neutral', 'background', 'body'),
+    ring: getColor(theme, 'accent', 'solid', 'base'),
     font: `600 ${LABEL_FONT_SIZE}px ${theme.typography.fontFamily}`,
   }
 }

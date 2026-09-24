@@ -1,11 +1,10 @@
 import type { Course } from '@mai/course'
 import { useTranslation } from '@mai/i18n'
 import { notifyError, notifySuccess } from '@mai/notifications'
-import { Button, Modal } from '@mai/theme'
+import { Button, Modal, TextField } from '@mai/theme'
 import { useSetAtom } from 'jotai'
 import { useState } from 'react'
 import { type CreateLinkInput, createLinkAtom, type LinkTarget } from '../../entity'
-import { Input } from '../../ui'
 import { OWNER_PLUGIN_ID } from '../core/constants'
 import { Fields, FieldsLabel, FieldsSelect } from './CreateLinkModal.style'
 import { type PickerResource, TargetPicker } from './TargetPicker'
@@ -119,13 +118,13 @@ export function CreateLinkModal({
           }}
         />
 
-        <Input
+        <TextField
           label={t('link_title')}
           value={title}
           maxLength={200}
           onChange={(e) => setTitle(e.target.value)}
         />
-        <Input
+        <TextField
           label={t('link_description')}
           value={description}
           maxLength={2000}

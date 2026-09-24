@@ -2,13 +2,12 @@ import { useTranslation } from '@mai/i18n'
 import { useAppTheme } from '@mai/theme'
 import { Scan, SlidersHorizontal, ZoomIn, ZoomOut } from 'lucide-react'
 import { useMemo, useState } from 'react'
-import { IconButton } from '../../ui'
 import { DEFAULT_PHYSICS, ZOOM_BUTTON_FACTOR } from '../core/constants'
 import type { GraphEdge, GraphNode, PhysicsParams } from '../core/types'
 import { toRenderTheme } from '../lib/render'
 import { useGraphCanvas } from '../lib/useGraphCanvas'
 import { GraphSettingsPanel } from './GraphSettingsPanel'
-import { CanvasWrap, ControlsBar, OverlayRail } from './LinkGraph.style'
+import { CanvasWrap, ControlButton, ControlsBar, OverlayRail } from './LinkGraph.style'
 
 export interface LinkGraphProps {
   nodes: GraphNode[]
@@ -50,18 +49,26 @@ export function LinkGraph({
       <canvas ref={canvasRef} />
       <OverlayRail>
         <ControlsBar>
-          <IconButton label={t('zoom_in')} onClick={() => controls.zoomBy(ZOOM_BUTTON_FACTOR)}>
-            <ZoomIn size={18} />
-          </IconButton>
-          <IconButton label={t('zoom_out')} onClick={() => controls.zoomBy(1 / ZOOM_BUTTON_FACTOR)}>
-            <ZoomOut size={18} />
-          </IconButton>
-          <IconButton label={t('fit_view')} onClick={() => controls.fitView()}>
-            <Scan size={18} />
-          </IconButton>
-          <IconButton label={t('graph_settings')} onClick={() => setSettingsOpen((open) => !open)}>
-            <SlidersHorizontal size={18} />
-          </IconButton>
+          <ControlButton
+            aria-label={t('zoom_in')}
+            onClick={() => controls.zoomBy(ZOOM_BUTTON_FACTOR)}
+            onlyIcon={<ZoomIn size={18} />}
+          />
+          <ControlButton
+            aria-label={t('zoom_out')}
+            onClick={() => controls.zoomBy(1 / ZOOM_BUTTON_FACTOR)}
+            onlyIcon={<ZoomOut size={18} />}
+          />
+          <ControlButton
+            aria-label={t('fit_view')}
+            onClick={() => controls.fitView()}
+            onlyIcon={<Scan size={18} />}
+          />
+          <ControlButton
+            aria-label={t('graph_settings')}
+            onClick={() => setSettingsOpen((open) => !open)}
+            onlyIcon={<SlidersHorizontal size={18} />}
+          />
         </ControlsBar>
 
         {settingsOpen && <GraphSettingsPanel params={params} onChange={setParams} />}

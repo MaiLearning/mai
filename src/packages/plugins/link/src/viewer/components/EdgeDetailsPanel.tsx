@@ -1,11 +1,10 @@
 import type { Course } from '@mai/course'
 import { useTranslation } from '@mai/i18n'
 import { notifyError, notifySuccess } from '@mai/notifications'
-import { Button } from '@mai/theme'
+import { Button, TextField } from '@mai/theme'
 import { useSetAtom } from 'jotai'
 import { useEffect, useState } from 'react'
 import { deleteLinkAtom, type Link, type LinkTarget, updateLinkAtom } from '../../entity'
-import { Input } from '../../ui'
 import { OWNER_PLUGIN_ID } from '../core/constants'
 import {
   BrokenBadge,
@@ -125,13 +124,13 @@ export function EdgeDetailsPanel({
       </Endpoints>
 
       <PanelRow>
-        <Input
+        <TextField
           label={t('link_title')}
           value={title}
           maxLength={200}
           onChange={(e) => setTitle(e.target.value)}
         />
-        <Input
+        <TextField
           label={t('link_description')}
           value={description}
           maxLength={2000}

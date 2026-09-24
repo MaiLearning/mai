@@ -9,21 +9,21 @@ export const Fields = styled.div`
 export const FieldsLabel = styled.label`
   font-size: 13px;
   font-weight: 500;
-  color: ${({ theme }) => theme.text.muted};
+  color: ${({ theme }) => theme.utils.getText('neutral', 'muted')};
 `
 
 export const FieldsSelect = styled.select`
   width: 100%;
   padding: 10px 14px;
-  border: 1px solid ${({ theme }) => theme.border.default};
+  border: 1px solid ${({ theme }) => theme.utils.getBorder('neutral', 'default')};
   border-radius: ${({ theme }) => theme.radius.md};
-  background: ${({ theme }) => theme.background.body};
-  color: ${({ theme }) => theme.text.primary};
+  background: ${({ theme }) => theme.utils.getBackground('neutral', 'body')};
+  color: ${({ theme }) => theme.utils.getText('neutral', 'primary')};
   font-family: ${({ theme }) => theme.typography.fontFamily};
   font-size: 14px;
 
   &:focus {
-    border-color: ${({ theme }) => theme.border.accent};
+    border-color: ${({ theme }) => theme.utils.getBorder('accent', 'default')};
     outline: none;
   }
 `

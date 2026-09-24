@@ -10,8 +10,8 @@ export const ViewerRoot = styled.div`
   height: 100%;
   min-width: 0;
   min-height: 0;
-  background: ${({ theme }) => theme.background.body};
-  color: ${({ theme }) => theme.text.primary};
+  background: ${({ theme }) => theme.utils.getBackground('neutral', 'body')};
+  color: ${({ theme }) => theme.utils.getText('neutral', 'primary')};
   font-family: ${({ theme }) => theme.typography.fontFamily};
 `
 
@@ -20,7 +20,7 @@ export const Header = styled.div`
   align-items: center;
   gap: ${({ theme }) => theme.spacing.md};
   padding: ${({ theme }) => `${theme.spacing.md} ${theme.spacing.lg}`};
-  border-bottom: 1px solid ${({ theme }) => theme.border.default};
+  border-bottom: 1px solid ${({ theme }) => theme.utils.getBorder('neutral', 'default')};
 `
 
 export const HeaderTitles = styled.div`
@@ -60,5 +60,5 @@ export const EmptyState = styled.div`
   align-items: center;
   justify-content: center;
   gap: ${({ theme }) => theme.spacing.md};
-  color: ${({ theme }) => theme.text.muted};
+  color: ${({ theme }) => theme.utils.getText('neutral', 'muted')};
 `

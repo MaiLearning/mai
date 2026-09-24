@@ -1,7 +1,7 @@
 import type { Course } from '@mai/course'
+import { TextField } from '@mai/theme'
 import { useState } from 'react'
 import { LINK_URI_PATTERN, type LinkTarget } from '../../entity'
-import { Input } from '../../ui'
 import { KindTab, KindTabs, PickerField, PickerRoot, PickerSelect } from './TargetPicker.style'
 
 export type TargetKind = 'resource' | 'course' | 'uri'
@@ -122,7 +122,7 @@ export function TargetPicker({
 
       {kind === 'uri' && (
         <PickerField>
-          <Input
+          <TextField
             value={uriText}
             placeholder={labels.uriPlaceholder}
             onChange={(e) => changeUri(e.target.value)}

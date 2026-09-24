@@ -1,3 +1,4 @@
+import { Button } from '@mai/theme'
 import styled from 'styled-components'
 
 /** Контейнер canvas-холста с оверлеем управления. */
@@ -33,8 +34,16 @@ export const ControlsBar = styled.div`
   flex-direction: column;
   gap: 2px;
   padding: 4px;
-  border: 1px solid ${({ theme }) => theme.border.default};
+  border: 1px solid ${({ theme }) => theme.utils.getBorder('neutral', 'default')};
   border-radius: ${({ theme }) => theme.radius.md};
-  background: ${({ theme }) => theme.background.elevated};
+  background: ${({ theme }) => theme.utils.getBackground('neutral', 'elevated')};
   box-shadow: ${({ theme }) => theme.shadows.sm};
+`
+
+/** Квадратная кнопка-иконка оверлея на базе Button. */
+export const ControlButton = styled(Button).attrs({ variant: 'ghost', size: 'sm' } as const)`
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border-radius: ${({ theme }) => theme.radius.sm};
 `

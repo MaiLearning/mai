@@ -16,9 +16,9 @@ export const KindTab = styled.button<{ $active: boolean }>`
   padding: 6px 14px;
   border-radius: ${({ theme }) => theme.radius.full};
   border: 1px solid
-    ${({ theme, $active }) => ($active ? theme.border.accent : theme.border.default)};
-  background: ${({ theme, $active }) => ($active ? theme.background.accentSubtle : 'transparent')};
-  color: ${({ theme, $active }) => ($active ? theme.text.primary : theme.text.muted)};
+    ${({ theme, $active }) => ($active ? theme.utils.getBorder('accent', 'default') : theme.utils.getBorder('neutral', 'default'))};
+  background: ${({ theme, $active }) => ($active ? theme.utils.getBackground('accent', 'surface') : 'transparent')};
+  color: ${({ theme, $active }) => ($active ? theme.utils.getText('neutral', 'primary') : theme.utils.getText('neutral', 'muted'))};
   font-family: ${({ theme }) => theme.typography.fontFamily};
   font-size: 13px;
   cursor: pointer;
@@ -27,7 +27,7 @@ export const KindTab = styled.button<{ $active: boolean }>`
     background ${({ theme }) => theme.durations.fast};
 
   &:hover {
-    border-color: ${({ theme }) => theme.border.accent};
+    border-color: ${({ theme }) => theme.utils.getBorder('accent', 'default')};
   }
 `
 
@@ -39,15 +39,15 @@ export const PickerField = styled.div`
 export const PickerSelect = styled.select`
   width: 100%;
   padding: 10px 14px;
-  border: 1px solid ${({ theme }) => theme.border.default};
+  border: 1px solid ${({ theme }) => theme.utils.getBorder('neutral', 'default')};
   border-radius: ${({ theme }) => theme.radius.md};
-  background: ${({ theme }) => theme.background.body};
-  color: ${({ theme }) => theme.text.primary};
+  background: ${({ theme }) => theme.utils.getBackground('neutral', 'body')};
+  color: ${({ theme }) => theme.utils.getText('neutral', 'primary')};
   font-family: ${({ theme }) => theme.typography.fontFamily};
   font-size: 14px;
 
   &:focus {
-    border-color: ${({ theme }) => theme.border.accent};
+    border-color: ${({ theme }) => theme.utils.getBorder('accent', 'default')};
     outline: none;
   }
 `
