@@ -1,11 +1,10 @@
 import { useTranslation } from '@mai/i18n'
 import { warn } from '@mai/tauri/logs'
+import { Field, Stack, TextAreaField, TextField } from '@mai/theme'
 import { useEffect, useId, useState } from 'react'
 import { type CourseStatus, MAX_TAG_LENGTH } from '../../../core'
 import { fetchAllTags } from '../../../services'
 import { ColorPairPicker } from './ColorPairPicker'
-import { DescriptionArea, NameInput, Stack } from './CourseFormFields.style'
-import { Field } from './Field'
 import { type StatusOption, StatusPicker } from './StatusPicker'
 import { TagInput } from './TagInput'
 import {
@@ -69,43 +68,33 @@ export function CourseFormFields({ values, errors, setField, onFieldBlur }: Cour
 
   return (
     <>
-      <Field
+      <TextField
+        id={titleId}
         label={t('fields.name')}
-        htmlFor={titleId}
         required
         error={nameError}
         count={[...values.name].length}
         max={NAME_MAX}
-      >
-        <NameInput
-          id={titleId}
-          value={values.name}
-          maxLength={NAME_MAX + 20}
-          placeholder={t('fields.namePlaceholder')}
-          $invalid={Boolean(nameError)}
-          onChange={(event) => setField('name', event.target.value)}
-          onBlur={() => onFieldBlur('name')}
-        />
-      </Field>
+        value={values.name}
+        maxLength={NAME_MAX + 20}
+        placeholder={t('fields.namePlaceholder')}
+        onChange={(event) => setField('name', event.target.value)}
+        onBlur={() => onFieldBlur('name')}
+      />
 
-      <Field
+      <TextAreaField
+        id={descriptionId}
         label={t('fields.description')}
-        htmlFor={descriptionId}
         error={descriptionError}
         count={values.description.length}
         max={DESCRIPTION_MAX}
-      >
-        <DescriptionArea
-          id={descriptionId}
-          value={values.description}
-          $invalid={Boolean(descriptionError)}
-          placeholder={t('fields.descriptionPlaceholder')}
-          onChange={(event) => setField('description', event.target.value)}
-          onBlur={() => onFieldBlur('description')}
-        />
-      </Field>
+        value={values.description}
+        placeholder={t('fields.descriptionPlaceholder')}
+        onChange={(event) => setField('description', event.target.value)}
+        onBlur={() => onFieldBlur('description')}
+      />
 
-      <Stack>
+      <Stack gap="sm">
         <Field
           label={t('fields.tags')}
           htmlFor={tagsId}

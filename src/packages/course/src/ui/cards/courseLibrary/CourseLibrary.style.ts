@@ -1,3 +1,4 @@
+import { SegmentedControl } from '@mai/theme'
 import styled, { css } from 'styled-components'
 
 /** Блок «Все курсы»: заголовок, тулбар поиска, сетка, empty-state. */
@@ -12,45 +13,19 @@ export const LibraryHead = styled.div`
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  h2 {
-    margin: 0;
-    font-size: 18px;
-    font-weight: 600;
-    letter-spacing: -0.01em;
-    color: ${({ theme }) => theme.text.primary};
-  }
-  p {
-    margin: 4px 0 0;
-    font-size: 14px;
-    color: ${({ theme }) => theme.text.muted};
-  }
 `
 
-export const ViewToggle = styled.div`
+/** Блок заголовка секции: подпись и пояснение. */
+export const LibraryTitles = styled.div`
+  display: grid;
+  gap: 4px;
+`
+
+/** Переключатель сетка/список — только когда библиотеке хватает ширины. */
+export const ViewToggleResponsive = styled(SegmentedControl)`
   display: none;
-  padding: 4px;
-  border: 1px solid ${({ theme }) => theme.border.default};
-  border-radius: ${({ theme }) => theme.radius.md};
   @container library (min-width: 420px) {
     display: flex;
-  }
-`
-
-export const ViewButton = styled.button<{ $active?: boolean }>`
-  cursor: pointer;
-  display: grid;
-  place-items: center;
-  padding: 6px;
-  border: none;
-  border-radius: ${({ theme }) => theme.radius.sm};
-  background: ${({ theme, $active }) => ($active ? theme.background.selected : 'transparent')};
-  color: ${({ theme, $active }) => ($active ? theme.text.primary : theme.text.muted)};
-  &:hover {
-    color: ${({ theme }) => theme.text.primary};
-  }
-  &:focus-visible {
-    outline: 2px solid ${({ theme }) => theme.focus.ring};
-    outline-offset: 2px;
   }
 `
 
@@ -63,59 +38,9 @@ export const Toolbar = styled.div`
 `
 
 export const SearchWrap = styled.div`
-  position: relative;
   min-width: 0;
   width: 100%;
   max-width: 360px;
-  svg {
-    position: absolute;
-    left: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: ${({ theme }) => theme.text.muted};
-    pointer-events: none;
-  }
-`
-
-export const SearchInput = styled.input`
-  width: 100%;
-  height: 40px;
-  padding: 0 12px 0 36px;
-  border: 1px solid ${({ theme }) => theme.border.default};
-  border-radius: ${({ theme }) => theme.radius.md};
-  background: ${({ theme }) => theme.background.surface};
-  color: ${({ theme }) => theme.text.primary};
-  font-size: 14px;
-  font-family: inherit;
-  outline: none;
-  &::placeholder {
-    color: ${({ theme }) => theme.text.muted};
-    opacity: 0.7;
-  }
-  &:focus {
-    border-color: ${({ theme }) => theme.border.accent};
-    box-shadow: 0 0 0 2px ${({ theme }) => theme.background.accentSubtle};
-  }
-`
-
-export const FilterButton = styled.button`
-  cursor: pointer;
-  flex-shrink: 0;
-  display: grid;
-  place-items: center;
-  padding: 10px;
-  border: 1px solid ${({ theme }) => theme.border.default};
-  border-radius: ${({ theme }) => theme.radius.md};
-  background: transparent;
-  color: ${({ theme }) => theme.text.muted};
-  &:hover {
-    background: ${({ theme }) => theme.background.hover};
-    color: ${({ theme }) => theme.text.primary};
-  }
-  &:focus-visible {
-    outline: 2px solid ${({ theme }) => theme.focus.ring};
-    outline-offset: 2px;
-  }
 `
 
 export const LibraryGrid = styled.div<{ $compact?: boolean }>`
@@ -138,10 +63,10 @@ export const LibraryGrid = styled.div<{ $compact?: boolean }>`
 export const EmptyState = styled.div`
   margin-top: 20px;
   padding: 64px 16px;
-  border: 1px dashed ${({ theme }) => theme.border.default};
+  border: 1px dashed ${({ theme }) => theme.utils.getBorder('neutral', 'default')};
   border-radius: ${({ theme }) => theme.radius.lg};
   text-align: center;
-  color: ${({ theme }) => theme.text.muted};
+  color: ${({ theme }) => theme.utils.getText('neutral', 'muted')};
   svg {
     margin: 0 auto;
   }
@@ -153,7 +78,6 @@ export const EmptyState = styled.div`
     display: block;
     margin-top: 4px;
     font-size: 12px;
-    opacity: 0.7;
   }
 `
 
@@ -166,17 +90,17 @@ export const CreateCard = styled.button`
   place-items: center;
   gap: 12px;
   padding: 32px;
-  border: 2px dashed ${({ theme }) => theme.border.default};
+  border: 2px dashed ${({ theme }) => theme.utils.getBorder('neutral', 'default')};
   border-radius: ${({ theme }) => theme.radius.lg};
   background: transparent;
-  color: ${({ theme }) => theme.text.muted};
+  color: ${({ theme }) => theme.utils.getText('neutral', 'muted')};
   text-align: center;
   transition:
     border-color 0.16s ease,
     color 0.16s ease,
     background 0.16s ease;
   strong {
-    color: ${({ theme }) => theme.text.primary};
+    color: ${({ theme }) => theme.utils.getText('neutral', 'primary')};
     font-size: 16px;
   }
   span {
@@ -184,12 +108,13 @@ export const CreateCard = styled.button`
     font-size: 13.5px;
   }
   &:hover {
-    border-color: ${({ theme }) => theme.border.accent};
-    color: ${({ theme }) => theme.text.accent};
-    background: ${({ theme }) => theme.background.accentSubtle}55;
+    border-color: ${({ theme }) => theme.utils.getBorder('accent', 'default')};
+    color: ${({ theme }) => theme.utils.getText('accent', 'primary')};
+    background: ${({ theme }) =>
+      theme.utils.withState(theme.utils.getBackground('accent', 'surface'), 'hoverAlpha')};
   }
   &:focus-visible {
-    outline: 2px solid ${({ theme }) => theme.focus.ring};
+    outline: 2px solid ${({ theme }) => theme.utils.getFocusRing()};
     outline-offset: 2px;
   }
 `
@@ -200,6 +125,6 @@ export const CreateIcon = styled.span`
   width: 48px;
   height: 48px;
   border-radius: ${({ theme }) => theme.radius.md};
-  background: ${({ theme }) => theme.background.accentSubtle};
-  color: ${({ theme }) => theme.text.accent};
+  background: ${({ theme }) => theme.utils.getBackground('accent', 'surface')};
+  color: ${({ theme }) => theme.utils.getText('accent', 'primary')};
 `

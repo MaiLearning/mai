@@ -1,8 +1,9 @@
 import { useTranslation } from '@mai/i18n'
+import { Badge, Button } from '@mai/theme'
 import { Plus, X } from 'lucide-react'
 import { useRef, useState } from 'react'
 import { MAX_TAG_LENGTH } from '../../../core'
-import { BareInput, Shell, Suggestion, Suggestions, Tag, TagRemove } from './TagInput.style'
+import { BareInput, Shell, Suggestion, Suggestions } from './TagInput.style'
 
 export interface TagInputProps {
   id?: string
@@ -53,16 +54,17 @@ export function TagInput({ id, value, suggestions = [], onChange }: TagInputProp
     <>
       <Shell $focused={focused} onMouseDown={() => inputRef.current?.focus()}>
         {value.map((tag) => (
-          <Tag key={tag}>
+          <Badge key={tag} tone="accent">
             {tag}
-            <TagRemove
+            <Button
               type="button"
-              onClick={() => removeTag(tag)}
+              variant="ghost"
+              size="xs"
+              onlyIcon={<X size={13} aria-hidden="true" />}
               aria-label={t('fields.removeTag', { tag })}
-            >
-              <X size={13} aria-hidden="true" />
-            </TagRemove>
-          </Tag>
+              onClick={() => removeTag(tag)}
+            />
+          </Badge>
         ))}
         <BareInput
           id={id}

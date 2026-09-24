@@ -1,6 +1,6 @@
 import { useTranslation } from '@mai/i18n'
+import { useAppTheme } from '@mai/theme'
 import { CircleCheck, CircleDashed, CircleDot } from 'lucide-react'
-import { useTheme } from 'styled-components'
 import type { CourseStatus } from '../../../core'
 import { Group, Head, Hint, Option } from './StatusPicker.style'
 
@@ -26,14 +26,20 @@ export interface StatusPickerProps {
 /** Выбор статуса курса в виде группы радио-карточек с иконкой и подсказкой. */
 export function StatusPicker({ value, options, onChange }: StatusPickerProps) {
   const { t } = useTranslation('course')
-  const theme = useTheme()
+  const { theme } = useAppTheme()
   const tones: Record<CourseStatus, { tone: string; surface: string }> = {
-    draft: { tone: theme.text.muted, surface: theme.background.accentSubtle },
-    in_progress: {
-      tone: theme.status.warning.foreground,
-      surface: theme.status.warning.background,
+    draft: {
+      tone: theme.utils.getText('neutral', 'muted'),
+      surface: theme.utils.getBackground('accent', 'surface'),
     },
-    completed: { tone: theme.status.success.foreground, surface: theme.status.success.background },
+    in_progress: {
+      tone: theme.utils.getText('warning', 'primary'),
+      surface: theme.utils.getBackground('warning', 'surface'),
+    },
+    completed: {
+      tone: theme.utils.getText('success', 'primary'),
+      surface: theme.utils.getBackground('success', 'surface'),
+    },
   }
 
   return (
@@ -54,7 +60,7 @@ export function StatusPicker({ value, options, onChange }: StatusPickerProps) {
             $surface={surface}
             onClick={() => onChange(option.value)}
           >
-            <Head $color={active ? tone : theme.text.primary}>
+            <Head $color={active ? tone : theme.utils.getText('neutral', 'primary')}>
               <Icon size={15} aria-hidden="true" />
               {option.label}
             </Head>

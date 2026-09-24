@@ -8,16 +8,6 @@ export const GridCardBody = styled.div`
   gap: 8px;
   min-height: 176px;
   padding: ${({ theme }) => theme.spacing.md};
-
-  h3 {
-    margin: 0;
-    min-width: 0;
-    overflow-wrap: anywhere;
-    font-size: 16px;
-    font-weight: 600;
-    letter-spacing: -0.02em;
-    line-height: 1.3;
-  }
 `
 
 /** Строка длительности: прижата вправо, над заголовком. */
@@ -27,7 +17,7 @@ export const GridCardDuration = styled.div`
   justify-content: flex-end;
   gap: 4px;
   font-size: 12px;
-  color: ${({ theme }) => theme.text.muted};
+  color: ${({ theme }) => theme.utils.getText('neutral', 'muted')};
 `
 
 /** Описание курса — не больше двух строк. */
@@ -35,7 +25,7 @@ export const GridCardDescription = styled.p`
   margin: 0;
   font-size: 14px;
   line-height: 1.45;
-  color: ${({ theme }) => theme.text.muted};
+  color: ${({ theme }) => theme.utils.getText('neutral', 'muted')};
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -53,7 +43,7 @@ export const GridCardMetaRow = styled.div`
   margin-top: auto;
   padding-top: 12px;
   font-size: 12px;
-  color: ${({ theme }) => theme.text.muted};
+  color: ${({ theme }) => theme.utils.getText('neutral', 'muted')};
 `
 
 /** Кнопка перехода — на всю ширину, под метой. */

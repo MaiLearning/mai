@@ -1,22 +1,20 @@
 import { useTranslation } from '@mai/i18n'
-import { LayoutGrid, ListFilter, Search, SlidersHorizontal } from 'lucide-react'
+import { Button, Heading, Icon, SearchField, Text, Tooltip } from '@mai/theme'
+import { Search, SlidersHorizontal } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import type { Course } from '../../../core'
 import { CourseGridCard } from '../courseGridCard/CourseGridCard'
-import { HomeIcon } from '../HomeIcon'
 import {
   CreateCard,
   CreateIcon,
   EmptyState,
-  FilterButton,
   Library,
   LibraryGrid,
   LibraryHead,
-  SearchInput,
+  LibraryTitles,
   SearchWrap,
   Toolbar,
-  ViewButton,
-  ViewToggle,
+  ViewToggleResponsive,
 } from './CourseLibrary.style'
 
 interface CourseLibraryProps {
@@ -57,37 +55,28 @@ export function CourseLibrary({
   return (
     <Library id="library">
       <LibraryHead>
-        <div>
-          <h2>{t('coursesSection.libraryTitle')}</h2>
-          <p>{t('coursesSection.libraryAvailable', { count: filtered.length })}</p>
-        </div>
-        <ViewToggle role="group" aria-label={t('coursesSection.viewLabel')}>
-          <ViewButton
-            type="button"
-            $active={!compact}
-            aria-label={t('coursesSection.viewGrid')}
-            aria-pressed={!compact}
-            onClick={() => setCompact(false)}
-          >
-            <LayoutGrid size={15} aria-hidden="true" />
-          </ViewButton>
-          <ViewButton
-            type="button"
-            $active={compact}
-            aria-label={t('coursesSection.viewCompact')}
-            aria-pressed={compact}
-            onClick={() => setCompact(true)}
-          >
-            <ListFilter size={15} aria-hidden="true" />
-          </ViewButton>
-        </ViewToggle>
+        <LibraryTitles>
+          <Heading as="h2" size="lg">
+            {t('coursesSection.libraryTitle')}
+          </Heading>
+          <Text as="p" size="sm" color="muted">
+            {t('coursesSection.libraryAvailable', { count: filtered.length })}
+          </Text>
+        </LibraryTitles>
+        <ViewToggleResponsive
+          value={compact ? 'compact' : 'grid'}
+          onChange={(next) => setCompact(next === 'compact')}
+          items={[
+            { value: 'grid', label: t('coursesSection.viewGrid') },
+            { value: 'compact', label: t('coursesSection.viewCompact') },
+          ]}
+          aria-label={t('coursesSection.viewLabel')}
+        />
       </LibraryHead>
 
       <Toolbar>
         <SearchWrap>
-          <Search size={16} aria-hidden="true" />
-          <SearchInput
-            type="search"
+          <SearchField
             aria-label={t('coursesSection.searchLabel')}
             placeholder={t('coursesSection.searchPlaceholder')}
             value={query}
@@ -95,9 +84,14 @@ export function CourseLibrary({
           />
         </SearchWrap>
         {/* TODO: панель фильтров ещё не спроектирована */}
-        <FilterButton type="button" aria-label={t('coursesSection.filters')}>
-          <SlidersHorizontal size={16} aria-hidden="true" />
-        </FilterButton>
+        <Tooltip content={t('coursesSection.filters')}>
+          <Button
+            type="button"
+            variant="outline"
+            onlyIcon={<SlidersHorizontal size={16} aria-hidden="true" />}
+            aria-label={t('coursesSection.filters')}
+          />
+        </Tooltip>
       </Toolbar>
 
       {filtered.length === 0 ? (
@@ -120,7 +114,7 @@ export function CourseLibrary({
           {!query && (
             <CreateCard type="button" onClick={onCreateCourse}>
               <CreateIcon>
-                <HomeIcon name="plus" size={24} />
+                <Icon name="plus" size={24} aria-hidden="true" />
               </CreateIcon>
               <strong>{t('coursesSection.createCard.title')}</strong>
               <span>{t('coursesSection.createCard.subtitle')}</span>

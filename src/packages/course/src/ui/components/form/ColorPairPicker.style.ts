@@ -5,9 +5,9 @@ export const Root = styled.div`
   flex-direction: column;
   gap: ${({ theme }) => theme.spacing.md};
   padding: ${({ theme }) => theme.spacing.md};
-  border: 1px solid ${({ theme }) => theme.border.default};
+  border: 1px solid ${({ theme }) => theme.utils.getBorder('neutral', 'default')};
   border-radius: ${({ theme }) => theme.radius.lg};
-  background: ${({ theme }) => theme.background.body};
+  background: ${({ theme }) => theme.utils.getBackground('neutral', 'body')};
 `
 
 export const SubLabel = styled.p`
@@ -16,7 +16,7 @@ export const SubLabel = styled.p`
   font-weight: 600;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: ${({ theme }) => theme.text.muted};
+  color: ${({ theme }) => theme.utils.getText('neutral', 'muted')};
   margin: 0 0 8px;
 `
 
@@ -44,15 +44,15 @@ export const Preset = styled.button<{ $from: string; $to: string; $active: boole
   }
 
   &:focus-visible {
-    outline: 2px solid ${({ theme }) => theme.focus.ring};
+    outline: 2px solid ${({ theme }) => theme.utils.getFocusRing()};
   }
 
   ${({ $active, theme }) =>
     $active &&
     css`
       box-shadow:
-        0 0 0 2px ${theme.background.body},
-        0 0 0 4px ${theme.border.accent};
+        0 0 0 2px ${theme.utils.getBackground('neutral', 'body')},
+        0 0 0 4px ${theme.utils.getBorder('accent', 'default')};
     `}
 `
 
@@ -70,7 +70,10 @@ export const Slot = styled.button<{ $active: boolean }>`
   padding: 8px 10px;
   border-radius: ${({ theme }) => theme.radius.md};
   border: 1px solid
-    ${({ theme, $active }) => ($active ? theme.border.accent : theme.border.default)};
+    ${({ theme, $active }) =>
+      $active
+        ? theme.utils.getBorder('accent', 'default')
+        : theme.utils.getBorder('neutral', 'default')};
   background: transparent;
   text-align: left;
   cursor: pointer;
@@ -81,7 +84,7 @@ export const Slot = styled.button<{ $active: boolean }>`
   ${({ $active, theme }) =>
     $active &&
     css`
-      box-shadow: 0 0 0 3px ${theme.background.accentSubtle};
+      box-shadow: 0 0 0 3px ${theme.utils.getBackground('accent', 'surface')};
     `}
 `
 
@@ -94,7 +97,7 @@ export const Bubble = styled.span<{ $color: string }>`
   flex-shrink: 0;
   border-radius: 9px;
   background: ${({ $color }) => $color};
-  box-shadow: inset 0 0 0 1px rgba(22, 20, 40, 0.12);
+  box-shadow: inset 0 0 0 1px ${({ theme }) => theme.utils.getBorder('neutral', 'default')};
 `
 
 export const SlotText = styled.span`
@@ -105,13 +108,13 @@ export const SlotText = styled.span`
   strong {
     font-size: 12px;
     font-weight: 600;
-    color: ${({ theme }) => theme.text.primary};
+    color: ${({ theme }) => theme.utils.getText('neutral', 'primary')};
   }
 
   code {
     font-family: ${({ theme }) => theme.typography.fontFamilyMonospace};
     font-size: 11.5px;
-    color: ${({ theme }) => theme.text.muted};
+    color: ${({ theme }) => theme.utils.getText('neutral', 'muted')};
     text-transform: uppercase;
   }
 `
@@ -124,17 +127,17 @@ export const Swap = styled.button`
   height: 34px;
   flex-shrink: 0;
   border-radius: ${({ theme }) => theme.radius.sm};
-  border: 1px solid ${({ theme }) => theme.border.default};
+  border: 1px solid ${({ theme }) => theme.utils.getBorder('neutral', 'default')};
   background: transparent;
-  color: ${({ theme }) => theme.text.muted};
+  color: ${({ theme }) => theme.utils.getText('neutral', 'muted')};
   cursor: pointer;
   transition:
     color ${({ theme }) => theme.durations.fast},
     border-color ${({ theme }) => theme.durations.fast};
 
   &:hover {
-    color: ${({ theme }) => theme.text.accent};
-    border-color: ${({ theme }) => theme.border.accent};
+    color: ${({ theme }) => theme.utils.getText('accent', 'primary')};
+    border-color: ${({ theme }) => theme.utils.getBorder('accent', 'default')};
   }
 `
 
@@ -151,7 +154,7 @@ export const Swatch = styled.button<{ $color: string; $selected: boolean }>`
   padding: 0;
   border-radius: 8px;
   background: ${({ $color }) => $color};
-  box-shadow: inset 0 0 0 1px rgba(22, 20, 40, 0.14);
+  box-shadow: inset 0 0 0 1px ${({ theme }) => theme.utils.getBorder('neutral', 'default')};
   cursor: pointer;
   transition: transform ${({ theme }) => theme.durations.fast};
 
@@ -179,17 +182,17 @@ export const HexInput = styled.input`
   min-width: 0;
   padding: 0 12px;
   border-radius: ${({ theme }) => theme.radius.sm};
-  border: 1px solid ${({ theme }) => theme.border.default};
-  background: ${({ theme }) => theme.background.body};
-  color: ${({ theme }) => theme.text.primary};
+  border: 1px solid ${({ theme }) => theme.utils.getBorder('neutral', 'default')};
+  background: ${({ theme }) => theme.utils.getBackground('neutral', 'body')};
+  color: ${({ theme }) => theme.utils.getText('neutral', 'primary')};
   font-family: ${({ theme }) => theme.typography.fontFamilyMonospace};
   font-size: 13px;
   text-transform: uppercase;
 
   &:focus {
     outline: none;
-    border-color: ${({ theme }) => theme.border.accent};
-    box-shadow: 0 0 0 3px ${({ theme }) => theme.background.accentSubtle};
+    border-color: ${({ theme }) => theme.utils.getBorder('accent', 'default')};
+    box-shadow: 0 0 0 3px ${({ theme }) => theme.utils.getBackground('accent', 'surface')};
   }
 `
 
@@ -205,10 +208,15 @@ export const CustomButton = styled.button<{ $open: boolean }>`
   height: 38px;
   padding: 0 12px;
   border-radius: ${({ theme }) => theme.radius.sm};
-  border: 1px dashed ${({ theme, $open }) => ($open ? theme.border.accent : theme.border.strong)};
+  border: 1px dashed
+    ${({ theme, $open }) =>
+      $open
+        ? theme.utils.getBorder('accent', 'default')
+        : theme.utils.getBorder('neutral', 'strong')};
   /* Без явного фона рисуется дефолтный светлый buttonface браузера */
   background: transparent;
-  color: ${({ theme, $open }) => ($open ? theme.text.accent : theme.text.muted)};
+  color: ${({ theme, $open }) =>
+    $open ? theme.utils.getText('accent', 'primary') : theme.utils.getText('neutral', 'muted')};
   font-size: 12.5px;
   font-weight: 600;
   cursor: pointer;
@@ -218,8 +226,8 @@ export const CustomButton = styled.button<{ $open: boolean }>`
     border-color ${({ theme }) => theme.durations.fast};
 
   &:hover {
-    color: ${({ theme }) => theme.text.accent};
-    border-color: ${({ theme }) => theme.border.accent};
+    color: ${({ theme }) => theme.utils.getText('accent', 'primary')};
+    border-color: ${({ theme }) => theme.utils.getBorder('accent', 'default')};
   }
 `
 
@@ -232,7 +240,7 @@ export const Popup = styled.div`
   width: 248px;
   padding: ${({ theme }) => theme.spacing.md};
   border-radius: ${({ theme }) => theme.radius.md};
-  border: 1px solid ${({ theme }) => theme.border.default};
-  background: ${({ theme }) => theme.background.elevated};
+  border: 1px solid ${({ theme }) => theme.utils.getBorder('neutral', 'default')};
+  background: ${({ theme }) => theme.utils.getBackground('neutral', 'elevated')};
   box-shadow: ${({ theme }) => theme.shadows.md};
 `

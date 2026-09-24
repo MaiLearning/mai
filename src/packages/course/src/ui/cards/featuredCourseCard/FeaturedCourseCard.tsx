@@ -1,5 +1,5 @@
 import { useTranslation } from '@mai/i18n'
-import { Button } from '@mai/theme'
+import { Badge, Button, Heading } from '@mai/theme'
 import { ChevronRight, Play } from 'lucide-react'
 import type { Course } from '../../../core'
 import { CourseCover } from '../courseCover/CourseCover'
@@ -8,10 +8,8 @@ import {
   HeroCta,
   HeroFoot,
   HeroInfo,
-  HeroInProgress,
   HeroLastOpened,
   HeroStatusRow,
-  HeroTitle,
 } from './FeaturedCourseCard.style'
 
 interface FeaturedCourseCardProps {
@@ -53,10 +51,10 @@ export function FeaturedCourseCard({
       <HeroFoot>
         <HeroInfo>
           <HeroStatusRow>
-            <HeroInProgress>
+            <Badge tone="accent">
               <Play size={12} aria-hidden="true" fill="currentColor" />
               {t('coursesSection.featured.inProgress')}
-            </HeroInProgress>
+            </Badge>
             {currentLessonIndex !== undefined && lessonsTotal !== undefined && (
               <>
                 <span aria-hidden="true">•</span>
@@ -69,7 +67,9 @@ export function FeaturedCourseCard({
               </>
             )}
           </HeroStatusRow>
-          <HeroTitle>{currentLessonTitle ?? course.name}</HeroTitle>
+          <Heading as="h3" size="md">
+            {currentLessonTitle ?? course.name}
+          </Heading>
           {lastOpenedLabel && <HeroLastOpened>{lastOpenedLabel}</HeroLastOpened>}
         </HeroInfo>
         <HeroCta>

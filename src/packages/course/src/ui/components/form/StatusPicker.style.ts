@@ -18,8 +18,8 @@ export const Option = styled.button<{ $active: boolean; $tone: string; $surface:
   padding: 11px 14px;
   text-align: left;
   border-radius: ${({ theme }) => theme.radius.md};
-  border: 1px solid ${({ theme }) => theme.border.default};
-  background: ${({ theme }) => theme.background.body};
+  border: 1px solid ${({ theme }) => theme.utils.getBorder('neutral', 'default')};
+  background: ${({ theme }) => theme.utils.getBackground('neutral', 'body')};
   font-family: ${({ theme }) => theme.typography.fontFamily};
   cursor: pointer;
   transition:
@@ -28,11 +28,11 @@ export const Option = styled.button<{ $active: boolean; $tone: string; $surface:
     box-shadow ${({ theme }) => theme.durations.fast};
 
   &:hover {
-    border-color: ${({ theme }) => theme.border.strong};
+    border-color: ${({ theme }) => theme.utils.getBorder('neutral', 'strong')};
   }
 
   &:focus-visible {
-    outline: 2px solid ${({ theme }) => theme.focus.ring};
+    outline: 2px solid ${({ theme }) => theme.utils.getFocusRing()};
     outline-offset: 2px;
   }
 
@@ -64,5 +64,5 @@ export const Head = styled.span<{ $color: string }>`
 
 export const Hint = styled.span`
   font-size: 11.5px;
-  color: ${({ theme }) => theme.text.muted};
+  color: ${({ theme }) => theme.utils.getText('neutral', 'muted')};
 `

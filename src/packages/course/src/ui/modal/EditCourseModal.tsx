@@ -1,6 +1,15 @@
 import { useTranslation } from '@mai/i18n'
 import { error as logError } from '@mai/tauri/logs'
-import { Button, Modal, ModalBody, ModalFooter, ModalFooterSpacer, Spinner } from '@mai/theme'
+import {
+  Alert,
+  Badge,
+  Button,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalFooterSpacer,
+  Spinner,
+} from '@mai/theme'
 import { Check } from 'lucide-react'
 import { useEffect, useId, useMemo, useState } from 'react'
 import type { Course } from '../../core'
@@ -10,9 +19,7 @@ import {
   type CourseFormValues,
   CoursePreviewHeader,
   DangerPlate,
-  DirtyBadge,
   emptyCourseForm,
-  FormError,
   useCourseForm,
 } from '../components/form'
 import { SectionDivider } from './EditCourseModal.style'
@@ -159,11 +166,11 @@ export function EditCourseModal({
             onDelete={() => void runDelete()}
           />
 
-          {formError && <FormError role="alert">{formError}</FormError>}
+          {formError && <Alert variant="error">{formError}</Alert>}
         </ModalBody>
 
         <ModalFooter>
-          {isDirty ? <DirtyBadge /> : null}
+          {isDirty ? <Badge tone="warning">{t('dirtyBadge')}</Badge> : null}
           <ModalFooterSpacer />
           <Button variant="ghost" type="button" onClick={onClose} disabled={busy}>
             {t('actions.cancel')}

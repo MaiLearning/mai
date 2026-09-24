@@ -113,12 +113,12 @@ export const CloseButton = styled.button<{ $onGradient: boolean }>`
         }
       `
       : `
-        color: ${theme.text.muted};
+        color: ${theme.utils.getText('neutral', 'muted')};
         background: transparent;
 
         &:hover {
-          background: ${theme.background.accentSubtle};
-          color: ${theme.text.primary};
+          background: ${theme.utils.getBackground('accent', 'surface')};
+          color: ${theme.utils.getText('neutral', 'primary')};
         }
       `}
 `

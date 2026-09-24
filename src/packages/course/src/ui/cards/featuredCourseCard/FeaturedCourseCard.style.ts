@@ -27,28 +27,12 @@ export const HeroStatusRow = styled.div`
   align-items: center;
   gap: 8px;
   font-size: 12px;
-  color: ${({ theme }) => theme.text.muted};
-`
-
-export const HeroInProgress = styled.span`
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-weight: 600;
-  color: ${({ theme }) => theme.text.accent};
-`
-
-export const HeroTitle = styled.h3`
-  margin: 0;
-  font-size: 16px;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  color: ${({ theme }) => theme.text.primary};
+  color: ${({ theme }) => theme.utils.getText('neutral', 'muted')};
 `
 
 export const HeroLastOpened = styled.div`
   font-size: 12px;
-  color: ${({ theme }) => theme.text.muted};
+  color: ${({ theme }) => theme.utils.getText('neutral', 'muted')};
 `
 
 export const HeroCta = styled.div`

@@ -1,10 +1,8 @@
 import { useTranslation } from '@mai/i18n'
-import { Button } from '@mai/theme'
-import { Check, FilePenLine, Play } from 'lucide-react'
+import { Badge, Button, Heading, Icon } from '@mai/theme'
 import type { Course } from '../../../core'
 import { CourseCover } from '../courseCover/CourseCover'
-import { HomeIcon } from '../HomeIcon'
-import { CourseCardRoot, StatusBadge } from '../shared.style'
+import { CourseCardRoot } from '../shared.style'
 import {
   GridCardBody,
   GridCardButton,
@@ -14,9 +12,15 @@ import {
 } from './CourseGridCard.style'
 
 const STATUS_ICONS = {
-  draft: FilePenLine,
-  in_progress: Play,
-  completed: Check,
+  draft: 'filePenLine',
+  in_progress: 'play',
+  completed: 'check',
+} as const
+
+const STATUS_TONES = {
+  draft: 'warning',
+  in_progress: 'accent',
+  completed: 'success',
 } as const
 
 interface CourseGridCardProps {
@@ -37,7 +41,6 @@ export function CourseGridCard({
   onOpen,
 }: CourseGridCardProps) {
   const { t } = useTranslation('course')
-  const StatusIcon = STATUS_ICONS[course.status]
 
   return (
     <CourseCardRoot as="article">
@@ -51,25 +54,27 @@ export function CourseGridCard({
       <GridCardBody>
         {durationLabel && (
           <GridCardDuration>
-            <HomeIcon name="clock" size={13} />
+            <Icon name="clock3" size={13} aria-hidden="true" />
             {durationLabel}
           </GridCardDuration>
         )}
-        <h3>{course.name}</h3>
+        <Heading as="h3" size="md">
+          {course.name}
+        </Heading>
         {course.description && <GridCardDescription>{course.description}</GridCardDescription>}
         <GridCardMetaRow>
           {lessons !== undefined && (
             <span>{t('coursesSection.cards.lessons', { count: lessons })}</span>
           )}
-          <StatusBadge $status={course.status}>
-            <StatusIcon size={13} aria-hidden="true" />
+          <Badge tone={STATUS_TONES[course.status]}>
+            <Icon name={STATUS_ICONS[course.status]} size={13} aria-hidden="true" />
             {t(`coursesSection.cards.status.${course.status}`)}
-          </StatusBadge>
+          </Badge>
         </GridCardMetaRow>
         <GridCardButton>
           <Button variant="secondary" onClick={() => onOpen(course)}>
             {t('coursesSection.cards.openCourse')}
-            <HomeIcon name="arrow" size={15} />
+            <Icon name="arrowRight" size={15} aria-hidden="true" />
           </Button>
         </GridCardButton>
       </GridCardBody>

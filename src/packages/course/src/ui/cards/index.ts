@@ -7,4 +7,3 @@ export {
 export { CourseGridCard } from './courseGridCard/CourseGridCard'
 export { CourseLibrary } from './courseLibrary/CourseLibrary'
 export { FeaturedCourseCard } from './featuredCourseCard/FeaturedCourseCard'
-export { HomeIcon, type HomeIconName } from './HomeIcon'

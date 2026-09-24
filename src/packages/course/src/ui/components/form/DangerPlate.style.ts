@@ -7,8 +7,14 @@ export const Plate = styled.section<{ $armed: boolean }>`
   padding: ${({ theme }) => theme.spacing.md};
   border-radius: ${({ theme }) => theme.radius.lg};
   border: 1px solid
-    ${({ theme, $armed }) => ($armed ? theme.status.danger.foreground : theme.border.default)};
-  background: ${({ theme, $armed }) => ($armed ? theme.status.danger.background : theme.background.body)};
+    ${({ theme, $armed }) =>
+      $armed
+        ? theme.utils.getBorder('danger', 'default')
+        : theme.utils.getBorder('neutral', 'default')};
+  background: ${({ theme, $armed }) =>
+    $armed
+      ? theme.utils.getBackground('danger', 'surface')
+      : theme.utils.getBackground('neutral', 'body')};
   transition:
     background ${({ theme }) => theme.durations.fast},
     border-color ${({ theme }) => theme.durations.fast};
@@ -28,14 +34,14 @@ export const PlateText = styled.div`
     gap: 7px;
     font-size: 13.5px;
     font-weight: 600;
-    color: ${({ theme }) => theme.text.primary};
+    color: ${({ theme }) => theme.utils.getText('neutral', 'primary')};
   }
 
   p {
     margin-top: 3px;
     font-size: 12.5px;
     line-height: 1.5;
-    color: ${({ theme }) => theme.text.muted};
+    color: ${({ theme }) => theme.utils.getText('neutral', 'muted')};
   }
 `
 

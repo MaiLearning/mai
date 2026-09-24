@@ -1,6 +1,14 @@
 import { useTranslation } from '@mai/i18n'
 import { error as logError } from '@mai/tauri/logs'
-import { Button, Modal, ModalBody, ModalFooter, ModalFooterSpacer, Spinner } from '@mai/theme'
+import {
+  Alert,
+  Button,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalFooterSpacer,
+  Spinner,
+} from '@mai/theme'
 import { Sparkles } from 'lucide-react'
 import { useEffect, useId, useState } from 'react'
 import type { Course } from '../../core'
@@ -10,7 +18,6 @@ import {
   type CourseFormValues,
   CoursePreviewHeader,
   emptyCourseForm,
-  FormError,
   useCourseForm,
 } from '../components/form'
 
@@ -89,7 +96,7 @@ export function CreateCourseModal({ opened, onClose, onCreated }: CreateCourseMo
             setField={setField}
             onFieldBlur={blur}
           />
-          {formError && <FormError role="alert">{formError}</FormError>}
+          {formError && <Alert variant="error">{formError}</Alert>}
         </ModalBody>
 
         <ModalFooter>

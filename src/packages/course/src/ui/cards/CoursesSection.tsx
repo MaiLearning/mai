@@ -1,15 +1,15 @@
 import { useTranslation } from '@mai/i18n'
-import { Alert, Spinner } from '@mai/theme'
+import { Alert, Button, Heading, Spinner, Text } from '@mai/theme'
 import type { Course } from '../../core'
 import {
   CourseHero,
   CourseSectionLoading,
   CoursesSection as Section,
   SectionHead,
+  SectionTitles,
 } from './CoursesSection.style'
 import { CourseLibrary } from './courseLibrary/CourseLibrary'
 import { FeaturedCourseCard } from './featuredCourseCard/FeaturedCourseCard'
-import { SectionLink } from './shared.style'
 
 /** Максимальное число карточек курсов на главной странице. */
 const MAX_VISIBLE_COURSES = 12
@@ -58,10 +58,14 @@ export function CoursesSection({
   return (
     <Section>
       <SectionHead>
-        <div>
-          <h2 id="courses">{th('learning.title')}</h2>
-          <p>{th('learning.subtitle')}</p>
-        </div>
+        <SectionTitles>
+          <Heading as="h2" size="lg" id="courses">
+            {th('learning.title')}
+          </Heading>
+          <Text as="p" size="sm" color="muted">
+            {th('learning.subtitle')}
+          </Text>
+        </SectionTitles>
       </SectionHead>
 
       {loading && (
@@ -73,9 +77,9 @@ export function CoursesSection({
       {!loading && error && (
         <Alert variant="error">
           {t('error.loadFailed', { error })}
-          <SectionLink type="button" $variant="ghost" onClick={reload}>
+          <Button variant="ghost" size="sm" type="button" onClick={reload}>
             {t('error.retry')}
-          </SectionLink>
+          </Button>
         </Alert>
       )}
 
@@ -103,9 +107,9 @@ export function CoursesSection({
             onOpenCourse={onOpenCourse}
           />
           {hasMore && (
-            <SectionLink type="button" $variant="soft" onClick={onManageCourses}>
+            <Button variant="secondary" type="button" onClick={onManageCourses}>
               {t('coursesSection.library')}
-            </SectionLink>
+            </Button>
           )}
         </>
       )}
