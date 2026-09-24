@@ -1,18 +1,22 @@
-import type { AppTheme } from '@mai/theme'
+import type { AppTheme, IntentName } from '@mai/theme'
 import styled, { css } from 'styled-components'
 import type { NotificationVariant } from './types'
 
-/** Цвет акцента варианта: статусный токен или акцент темы для загрузки. */
-function accent(theme: AppTheme, variant: NotificationVariant): string {
-  if (variant === 'loading') return theme.text.accent
-  const status = variant === 'error' ? 'danger' : variant
+/** Смысловая роль варианта: загрузка — акцент, ошибка — danger. */
+function intentOf(variant: NotificationVariant): IntentName {
+  if (variant === 'loading') return 'accent'
 
-  return theme.status[status].foreground
+  return variant === 'error' ? 'danger' : variant
+}
+
+/** Цвет акцента варианта — текст смысловой роли. */
+function accent(theme: AppTheme, variant: NotificationVariant): string {
+  return theme.utils.getText(intentOf(variant), 'primary')
 }
 
 function borderStyle(theme: AppTheme, variant: NotificationVariant) {
   return css`
-    border-color: ${accent(theme, variant)}33;
+    border-color: ${theme.utils.getBorder(intentOf(variant), 'default')};
   `
 }
 
@@ -23,7 +27,7 @@ export const NotificationRoot = styled.div<{ $variant: NotificationVariant }>`
   box-sizing: border-box;
   width: 100%;
   padding: ${({ theme }) => `${theme.spacing.sm} ${theme.spacing.md}`};
-  background: ${({ theme }) => theme.background.elevated};
+  background: ${({ theme }) => theme.utils.getBackground('neutral', 'elevated')};
   border: 1px solid transparent;
   border-radius: ${({ theme }) => theme.radius.md};
   box-shadow: ${({ theme }) => theme.shadows.md};
@@ -57,14 +61,20 @@ export const NotificationActions = styled.div`
 export const NotificationClose = styled.button`
   display: inline-flex;
   padding: ${({ theme }) => theme.spacing.xs};
-  color: ${({ theme }) => theme.text.muted};
+  color: ${({ theme }) => theme.utils.getText('neutral', 'muted')};
   background: transparent;
   border: none;
   border-radius: ${({ theme }) => theme.radius.sm};
   cursor: pointer;
 
   &:hover {
-    color: ${({ theme }) => theme.text.primary};
-    background: ${({ theme }) => theme.background.hover};
+    color: ${({ theme }) => theme.utils.getText('neutral', 'primary')};
+    background: ${({ theme }) =>
+      theme.utils.withState(theme.utils.getBackground('neutral', 'surface'), 'hoverAlpha')};
+  }
+
+  &:focus-visible {
+    outline: 2px solid ${({ theme }) => theme.utils.getFocusRing()};
+    outline-offset: 2px;
   }
 `
