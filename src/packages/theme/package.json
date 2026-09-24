@@ -52,6 +52,6 @@
     "typescript": "~6.0.3"
   },
   "dependencies": {
-    "lucide-react": "^0.475.0"
+    "@mai/icons": "workspace:*"
   }
 }

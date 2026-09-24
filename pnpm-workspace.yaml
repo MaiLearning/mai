@@ -2,5 +2,6 @@ packages:
   - '.'
   - 'src/packages/*'
   - 'src/packages/plugins/*'
+  - 'src/packages/theme/packages/*'
 allowBuilds:
   esbuild: true
