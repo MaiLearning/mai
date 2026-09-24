@@ -1,4 +1,5 @@
 import { useTranslation } from '@mai/i18n'
+import { Input } from '@mai/theme'
 import { type MouseEvent, useMemo, useState } from 'react'
 import { useSidebarSearch } from '../hooks/useSidebarSearch'
 import { countNodes } from '../model/tree-queries'
@@ -14,9 +15,7 @@ import {
   Mark,
   MarkLink,
   Meta,
-  SearchIconSlot,
-  SearchInput,
-  SearchRow,
+  SearchWrap,
 } from './CourseSidebar.style'
 import { CourseTree } from './CourseTree'
 import { CloseIcon, SearchIcon } from './icons'
@@ -143,23 +142,24 @@ export function CourseSidebar({
 
       <Main>
         {searchable && (
-          <SearchRow>
-            <SearchIconSlot>
-              <SearchIcon />
-            </SearchIconSlot>
-            <SearchInput
+          <SearchWrap>
+            <Input
               type="search"
+              size="sm"
               value={query}
               placeholder={t('search.placeholder')}
               aria-label={t('search.aria')}
+              startContent={<SearchIcon />}
+              endContent={
+                query ? (
+                  <ClearButton type="button" aria-label={t('search.clear')} onClick={clearQuery}>
+                    <CloseIcon />
+                  </ClearButton>
+                ) : undefined
+              }
               onChange={(event) => setQuery(event.target.value)}
             />
-            {query && (
-              <ClearButton type="button" aria-label={t('search.clear')} onClick={clearQuery}>
-                <CloseIcon />
-              </ClearButton>
-            )}
-          </SearchRow>
+          </SearchWrap>
         )}
 
         <CourseTree

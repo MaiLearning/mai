@@ -5,9 +5,9 @@ import type { GuideSegment } from '../model/tree-utils'
 import type { CourseNode } from '../model/types'
 import { ChevronIcon, FolderIcon, FolderOpenIcon, ResourceIcon, TrashIcon } from './icons'
 import {
-  Badge,
   DeleteButton,
   Guide,
+  NodeBadge,
   NodeIcon,
   RenameInput,
   ROW_INDENT,
@@ -167,7 +167,11 @@ export const TreeRow = forwardRef<HTMLDivElement, TreeRowProps>(function TreeRow
         </Title>
       )}
 
-      {node.badge && <Badge $tone={node.badgeTone ?? 'neutral'}>{node.badge}</Badge>}
+      {node.badge && (
+        <NodeBadge tone={node.badgeTone ?? 'neutral'} variant="soft">
+          {node.badge}
+        </NodeBadge>
+      )}
 
       {!overlay && !isRenaming && (
         <DeleteButton

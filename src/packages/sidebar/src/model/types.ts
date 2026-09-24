@@ -1,3 +1,4 @@
+import type { BadgeTone } from '@mai/theme'
 import type { ReactNode } from 'react'
 
 /**
@@ -16,7 +17,7 @@ export interface CourseNode {
   /** Опциональная короткая метка справа: «12 мин», «Черновик» и т.п. */
   badge?: string
   /** Визуальный тон метки. */
-  badgeTone?: 'neutral' | 'accent' | 'success' | 'danger' | 'info'
+  badgeTone?: BadgeTone
 }
 
 /** Описание действия в панели действий. Список открыт на расширение. */

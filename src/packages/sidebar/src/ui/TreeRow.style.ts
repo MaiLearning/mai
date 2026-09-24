@@ -1,4 +1,4 @@
-import type { AppTheme } from '@mai/theme'
+import { Badge } from '@mai/theme'
 import styled, { css } from 'styled-components'
 
 export const ROW_INDENT = 16
@@ -17,7 +17,7 @@ export const Guide = styled.span<{ $level: number; $indent: number; $end?: boole
   left: ${({ $level, $indent, theme }) =>
     `calc(${theme.spacing.sm} + ${($level - 1) * ROW_INDENT - $indent}px + 7px)`};
   width: 1px;
-  background: ${({ theme }) => theme.border.default};
+  background: ${({ theme }) => theme.utils.getBorder('neutral', 'default')};
   pointer-events: none;
 
   /* Конец линии (последняя строка поддерева): вместо обрыва — один
@@ -32,8 +32,8 @@ export const Guide = styled.span<{ $level: number; $indent: number; $end?: boole
       height: calc(100% - 2px);
       width: 10px;
       background: none;
-      border-left: 1px solid ${theme.border.default};
-      border-bottom: 1px solid ${theme.border.default};
+      border-left: 1px solid ${theme.utils.getBorder('neutral', 'default')};
+      border-bottom: 1px solid ${theme.utils.getBorder('neutral', 'default')};
       border-bottom-left-radius: 4px;
     `}
 `
@@ -60,7 +60,8 @@ export const Row = styled.div<{
   padding-right: ${({ theme }) => theme.spacing.sm};
   padding-left: ${({ theme }) => theme.spacing.sm};
   border-radius: ${({ theme }) => theme.radius.md};
-  color: ${({ theme, $selected }) => ($selected ? theme.text.primary : theme.text.muted)};
+  color: ${({ theme, $selected }) =>
+    $selected ? theme.utils.getText('accent', 'primary') : theme.utils.getText('neutral', 'muted')};
   cursor: pointer;
   user-select: none;
   touch-action: none;
@@ -69,8 +70,9 @@ export const Row = styled.div<{
     color ${({ theme }) => theme.durations.fast};
 
   &:hover {
-    background: ${({ theme }) => theme.background.elevated};
-    color: ${({ theme }) => theme.text.primary};
+    background: ${({ theme }) =>
+      theme.utils.withState(theme.utils.getBackground('neutral', 'surface'), 'hoverAlpha')};
+    color: ${({ theme }) => theme.utils.getText('neutral', 'primary')};
   }
 
   ${({ $dimmed }) =>
@@ -79,14 +81,33 @@ export const Row = styled.div<{
       opacity: 0.4;
     `}
 
+  ${({ $selected, theme }) =>
+    $selected &&
+    css`
+      background: ${theme.utils.withState(
+        theme.utils.getBackground('neutral', 'surface'),
+        'selectedAlpha',
+      )};
+      box-shadow: inset 0 0 0 1px ${theme.utils.getBorder('accent', 'default')};
+      color: ${theme.utils.getText('accent', 'primary')};
+
+      &:hover {
+        background: ${theme.utils.withState(
+          theme.utils.getBackground('neutral', 'surface'),
+          'selectedAlpha',
+        )};
+        color: ${theme.utils.getText('accent', 'primary')};
+      }
+    `}
+
   ${({ $dropInside, theme }) =>
     $dropInside &&
     css`
-      background: ${theme.background.accentSubtle};
-      box-shadow: inset 0 0 0 1px ${theme.background.accent};
+      background: ${theme.utils.getBackground('accent', 'surface')};
+      box-shadow: inset 0 0 0 1px ${theme.utils.getBorder('accent', 'default')};
 
       &:hover {
-        background: ${theme.background.accentSubtle};
+        background: ${theme.utils.getBackground('accent', 'surface')};
       }
     `}
 
@@ -101,7 +122,7 @@ export const Row = styled.div<{
         ${$dropLine === 'before' ? 'top: -3px;' : 'bottom: -3px;'}
         height: 2px;
         border-radius: ${theme.radius.full};
-        background: ${theme.background.accent};
+        background: ${theme.utils.getSolid('accent', 'base')};
         pointer-events: none;
       }
     `}
@@ -115,16 +136,6 @@ export const Row = styled.div<{
         background: transparent;
       }
     `}
-
-  ${({ $selected, theme }) =>
-    $selected &&
-    css`
-      background: ${theme.background.accentSubtle};
-
-      &:hover {
-        background: ${theme.background.accentSubtle};
-      }
-    `}
 `
 
 export const Twisty = styled.span<{ $visible: boolean; $expanded: boolean }>`
@@ -134,7 +145,7 @@ export const Twisty = styled.span<{ $visible: boolean; $expanded: boolean }>`
   width: 14px;
   height: 14px;
   flex-shrink: 0;
-  color: ${({ theme }) => theme.text.muted};
+  color: ${({ theme }) => theme.utils.getText('neutral', 'muted')};
   visibility: ${({ $visible }) => ($visible ? 'visible' : 'hidden')};
   transform: rotate(${({ $expanded }) => ($expanded ? 90 : 0)}deg);
   transition: transform ${({ theme }) => theme.durations.fast};
@@ -143,7 +154,8 @@ export const Twisty = styled.span<{ $visible: boolean; $expanded: boolean }>`
 export const NodeIcon = styled.span<{ $folder: boolean }>`
   display: inline-flex;
   flex-shrink: 0;
-  color: ${({ $folder, theme }) => ($folder ? theme.background.accent : theme.text.muted)};
+  color: ${({ $folder, theme }) =>
+    $folder ? theme.utils.getText('accent', 'primary') : theme.utils.getText('neutral', 'muted')};
 `
 
 export const Title = styled.span<{ $folder: boolean }>`
@@ -162,61 +174,21 @@ export const RenameInput = styled.input`
   flex: 1;
   min-width: 0;
   padding: 2px 4px;
-  border: 1px solid ${({ theme }) => theme.focus.ring};
+  border: 1px solid ${({ theme }) => theme.utils.getFocusRing()};
   border-radius: ${({ theme }) => theme.radius.sm};
-  background: ${({ theme }) => theme.background.body};
-  color: ${({ theme }) => theme.text.primary};
+  background: ${({ theme }) => theme.utils.getBackground('neutral', 'body')};
+  color: ${({ theme }) => theme.utils.getText('neutral', 'primary')};
   font-family: inherit;
   font-size: 13px;
   font-weight: inherit;
   outline: none;
 `
 
-/** Семантические тона метки. */
-export type BadgeTone = 'neutral' | 'accent' | 'success' | 'danger' | 'info'
-
-/** Цвета метки по тону: подложка + текст. */
-function toneColors(theme: AppTheme, tone: BadgeTone): { background: string; foreground: string } {
-  switch (tone) {
-    case 'accent':
-      return { background: theme.background.accentSubtle, foreground: theme.text.accent }
-    case 'success':
-      return {
-        background: theme.status.success.background,
-        foreground: theme.status.success.foreground,
-      }
-    case 'danger':
-      return {
-        background: theme.status.danger.background,
-        foreground: theme.status.danger.foreground,
-      }
-    case 'info':
-      return { background: theme.status.info.background, foreground: theme.status.info.foreground }
-    default:
-      return { background: theme.background.elevated, foreground: theme.text.muted }
-  }
-}
-
-export const Badge = styled.span<{ $tone: BadgeTone }>`
+/** Метка узла: тема `Badge`, приведённая к плотности строки дерева. */
+export const NodeBadge = styled(Badge)`
   flex-shrink: 0;
-  padding: 1px 6px;
-  border-radius: ${({ theme }) => theme.radius.full};
-  font-size: 10.5px;
-  font-weight: ${({ theme }) => theme.typography.weights.semibold};
-  letter-spacing: 0.02em;
   text-transform: uppercase;
-
-  ${({ $tone, theme }) =>
-    $tone === 'neutral'
-      ? css`
-          background: ${theme.background.elevated};
-          border: 1px solid ${theme.border.default};
-          color: ${theme.text.muted};
-        `
-      : css`
-          background: ${toneColors(theme, $tone).background};
-          color: ${toneColors(theme, $tone).foreground};
-        `}
+  letter-spacing: 0.02em;
 `
 
 export const DeleteButton = styled.button`
@@ -229,7 +201,7 @@ export const DeleteButton = styled.button`
   border: none;
   border-radius: ${({ theme }) => theme.radius.sm};
   background: transparent;
-  color: ${({ theme }) => theme.text.muted};
+  color: ${({ theme }) => theme.utils.getText('neutral', 'muted')};
   opacity: 0;
   transition:
     opacity ${({ theme }) => theme.durations.fast},
@@ -241,7 +213,7 @@ export const DeleteButton = styled.button`
   }
 
   &:hover {
-    background: ${({ theme }) => theme.status.danger.background};
-    color: ${({ theme }) => theme.status.danger.foreground};
+    background: ${({ theme }) => theme.utils.getBackground('danger', 'surface')};
+    color: ${({ theme }) => theme.utils.getText('danger', 'primary')};
   }
 `

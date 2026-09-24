@@ -64,16 +64,16 @@ export const RootZone = styled.div<{ $visible: boolean; $over: boolean }>`
   ${({ $visible, theme }) =>
     $visible &&
     css`
-      border-color: ${theme.border.default};
-      color: ${theme.text.muted};
+      border-color: ${theme.utils.getBorder('neutral', 'default')};
+      color: ${theme.utils.getText('neutral', 'muted')};
     `}
 
   ${({ $over, theme }) =>
     $over &&
     css`
-      border-color: ${theme.background.accent};
-      background: ${theme.background.accentSubtle};
-      color: ${theme.text.primary};
+      border-color: ${theme.utils.getSolid('accent', 'base')};
+      background: ${theme.utils.getBackground('accent', 'surface')};
+      color: ${theme.utils.getText('neutral', 'primary')};
     `}
 `
 
@@ -85,8 +85,8 @@ export const OverlayCard = styled.div`
   width: 240px;
   box-sizing: border-box;
   padding: ${({ theme }) => theme.spacing.xs};
-  background: ${({ theme }) => theme.background.elevated};
-  border: 1px solid ${({ theme }) => theme.border.strong};
+  background: ${({ theme }) => theme.utils.getBackground('neutral', 'elevated')};
+  border: 1px solid ${({ theme }) => theme.utils.getBorder('neutral', 'strong')};
   border-radius: ${({ theme }) => theme.radius.md};
   box-shadow: ${({ theme }) => theme.shadows.lg};
 `
@@ -94,7 +94,7 @@ export const OverlayCard = styled.div`
 export const OverlayHint = styled.div`
   overflow: hidden;
   padding: 1px 4px;
-  color: ${({ theme }) => theme.text.muted};
+  color: ${({ theme }) => theme.utils.getText('neutral', 'muted')};
   font-size: 11px;
   letter-spacing: -0.005em;
   text-overflow: ellipsis;
@@ -107,21 +107,21 @@ export const Empty = styled.div`
   gap: ${({ theme }) => theme.spacing.xs};
   margin: ${({ theme }) => theme.spacing.md};
   padding: ${({ theme }) => theme.spacing.lg};
-  border: 1px dashed ${({ theme }) => theme.border.default};
+  border: 1px dashed ${({ theme }) => theme.utils.getBorder('neutral', 'default')};
   border-radius: ${({ theme }) => theme.radius.lg};
   text-align: center;
 `
 
 export const EmptyTitle = styled.p`
   margin: 0;
-  color: ${({ theme }) => theme.text.primary};
+  color: ${({ theme }) => theme.utils.getText('neutral', 'primary')};
   font-size: 13px;
   font-weight: 600;
 `
 
 export const EmptyHint = styled.p`
   margin: 0;
-  color: ${({ theme }) => theme.text.muted};
+  color: ${({ theme }) => theme.utils.getText('neutral', 'muted')};
   font-size: 12px;
   line-height: 1.5;
 `

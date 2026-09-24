@@ -53,7 +53,8 @@ export function SidebarActions({ actions, maxVisible = 2 }: SidebarActionsProps)
         <ActionButton
           key={action.id}
           type="button"
-          $variant={action.variant ?? 'primary'}
+          size="sm"
+          variant={action.variant === 'ghost' ? 'outline' : 'primary'}
           disabled={action.disabled}
           onClick={action.onSelect}
         >
