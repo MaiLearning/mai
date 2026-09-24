@@ -1,4 +1,5 @@
 import { useTranslation } from '@mai/i18n'
+import { Heading, Text } from '@mai/theme'
 import { useAtomValue } from 'jotai'
 import { Puzzle } from 'lucide-react'
 import { runtimePluginsAtom } from '../runtime/atoms'
@@ -6,9 +7,7 @@ import type { RuntimePlugin } from '../runtime/model'
 import type { PluginViewerProps } from '../runtime/types'
 import {
   FallbackCard,
-  FallbackDescription,
   FallbackIcon,
-  FallbackTitle,
   MessageRoot,
   TypeChip,
   TypeChipLabel,
@@ -57,12 +56,16 @@ function Fallback({ kind, pluginId, type }: FallbackProps) {
 
   return (
     <MessageRoot>
-      <FallbackCard>
+      <FallbackCard interactive={false}>
         <FallbackIcon>
           <Puzzle size={26} aria-hidden="true" />
         </FallbackIcon>
-        <FallbackTitle>{t('fallback.title')}</FallbackTitle>
-        <FallbackDescription>{reason}</FallbackDescription>
+        <Heading as="h2" size="md">
+          {t('fallback.title')}
+        </Heading>
+        <Text color="muted" size="sm" lineHeight="normal">
+          {reason}
+        </Text>
         {type && (
           <TypeChip>
             <TypeChipLabel>{t('fallback.type_label')}</TypeChipLabel>

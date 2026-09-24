@@ -1,3 +1,4 @@
+import { Card } from '@mai/theme'
 import styled from 'styled-components'
 
 export const ViewerRoot = styled.div`
@@ -16,9 +17,7 @@ export const MessageRoot = styled.div`
   padding: 32px;
 `
 
-export const FallbackCard = styled.div`
-  display: flex;
-  flex-direction: column;
+export const FallbackCard = styled(Card)`
   align-items: center;
   gap: 14px;
   max-width: 420px;
@@ -32,21 +31,8 @@ export const FallbackIcon = styled.span`
   width: 56px;
   height: 56px;
   border-radius: ${({ theme }) => theme.radius.lg};
-  background: ${({ theme }) => theme.background.accentSubtle};
-  color: ${({ theme }) => theme.text.accent};
-`
-
-export const FallbackTitle = styled.strong`
-  font-size: 15px;
-  font-weight: 600;
-  color: ${({ theme }) => theme.text.primary};
-`
-
-export const FallbackDescription = styled.p`
-  margin: -6px 0 0;
-  font-size: 13px;
-  line-height: 1.55;
-  color: ${({ theme }) => theme.text.muted};
+  background: ${({ theme }) => theme.utils.getBackground('accent', 'surface')};
+  color: ${({ theme }) => theme.utils.getText('accent', 'primary')};
 `
 
 export const TypeChip = styled.code`
@@ -54,10 +40,10 @@ export const TypeChip = styled.code`
   align-items: center;
   gap: 7px;
   padding: 4px 10px;
-  border: 1px solid ${({ theme }) => theme.border.default};
+  border: 1px solid ${({ theme }) => theme.utils.getBorder('neutral', 'default')};
   border-radius: ${({ theme }) => theme.radius.sm};
-  background: ${({ theme }) => theme.background.raised};
-  color: ${({ theme }) => theme.text.muted};
+  background: ${({ theme }) => theme.utils.getBackground('neutral', 'raised')};
+  color: ${({ theme }) => theme.utils.getText('neutral', 'primary')};
   font-family: ${({ theme }) => theme.typography.fontFamilyMonospace};
   font-size: 11.5px;
   letter-spacing: 0.05em;
@@ -65,6 +51,6 @@ export const TypeChip = styled.code`
 `
 
 export const TypeChipLabel = styled.span`
+  color: ${({ theme }) => theme.utils.getText('neutral', 'muted')};
   text-transform: none;
-  opacity: 0.65;
 `
