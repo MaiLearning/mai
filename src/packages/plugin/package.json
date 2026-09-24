@@ -31,7 +31,7 @@
     "@mai/tauri": "workspace:*",
     "@mai/theme": "workspace:*",
     "jotai": "^2.20.3",
-    "lucide-react": "^0.475.0",
+    "lucide-react": "^1.47.0",
     "zod": "^4.6.5"
   }
 }
