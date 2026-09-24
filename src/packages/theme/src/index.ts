@@ -69,6 +69,8 @@ export type { BoxProps } from './components/foundation/box/box'
 export { Box } from './components/foundation/box/box'
 export type { CardProps } from './components/foundation/card/card'
 export { Card } from './components/foundation/card/card'
+export type { DividerProps } from './components/foundation/divider/divider'
+export { Divider } from './components/foundation/divider/divider'
 export type { FlexProps } from './components/foundation/flex/flex'
 export { Flex } from './components/foundation/flex/flex'
 export type { HeadingLevel, HeadingProps } from './components/foundation/heading/heading'
@@ -91,6 +93,8 @@ export type {
   TextWeight,
 } from './components/foundation/text/text'
 export { Text } from './components/foundation/text/text'
+export type { TooltipProps } from './components/foundation/tooltip/tooltip'
+export { Tooltip } from './components/foundation/tooltip/tooltip'
 export type {
   CheckboxGroupItem,
   CheckboxGroupProps,
