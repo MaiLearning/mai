@@ -56,7 +56,7 @@ export function PasswordField({
       hint={hint}
       error={error}
       count={counterCount}
-      max={maxLength}
+      max={max ?? maxLength}
       disabled={disabled}
     >
       <Input

@@ -18,7 +18,9 @@ export interface TextFieldProps
  * `<input>`: все стандартные атрибуты (type, value, onChange, placeholder,
  * disabled, maxLength и т.д.) прокидываются напрямую. При заданном `max`
  * (или нативном `maxLength`) счётчик символов подсчитывается из `value`
- * автоматически и может быть переопределён через `count`.
+ * автоматически и может быть переопределён через `count`. Лимитом счётчика
+ * служит `max`, если он задан, иначе — `maxLength`: так `maxLength` можно
+ * оставить с запасом относительно валидации.
  *
  * @example
  * <TextField label="Название" value={value} onChange={(e) => setValue(e.target.value)} max={50} />
@@ -54,7 +56,7 @@ export function TextField({
       hint={hint}
       error={error}
       count={counterCount}
-      max={maxLength}
+      max={max ?? maxLength}
       disabled={disabled}
     >
       <Input

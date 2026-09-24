@@ -18,6 +18,8 @@ export interface TextAreaFieldProps
  * rows, maxLength, disabled и т.д.) прокидываются напрямую. При заданном
  * `max` (или нативном `maxLength`) счётчик символов подсчитывается из
  * `value` автоматически и может быть переопределён через `count`.
+ * Лимитом счётчика служит `max`, если он задан, иначе — `maxLength`:
+ * так `maxLength` можно оставить с запасом относительно валидации.
  *
  * @example
  * <TextAreaField label="Описание" value={value} onChange={(e) => setValue(e.target.value)} max={200} />
@@ -52,7 +54,7 @@ export function TextAreaField({
       hint={hint}
       error={error}
       count={counterCount}
-      max={limit}
+      max={max ?? limit}
       disabled={disabled}
     >
       <TextAreaRoot
