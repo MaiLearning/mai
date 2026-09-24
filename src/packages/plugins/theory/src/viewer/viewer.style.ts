@@ -11,8 +11,8 @@ export const ViewerRoot = styled.div`
   height: 100%;
   min-width: 0;
   min-height: 0;
-  background: ${({ theme }) => theme.background.body};
-  color: ${({ theme }) => theme.text.primary};
+  background: ${({ theme }) => theme.utils.getBackground('neutral', 'body')};
+  color: ${({ theme }) => theme.utils.getText('neutral', 'primary')};
   font-family: ${({ theme }) => theme.typography.fontFamily};
 `
 
@@ -49,7 +49,7 @@ export const LoadOverlay = styled.div`
   z-index: 10;
   display: grid;
   place-items: center;
-  background: ${({ theme }) => theme.background.body};
+  background: ${({ theme }) => theme.utils.getBackground('neutral', 'body')};
 `
 
 /** Лист документа — колонка текста фиксированной ширины. */
@@ -72,7 +72,7 @@ export const Sheet = styled.article`
 export const Prose = styled(EditorContent)`
   font-size: 16px;
   line-height: 1.75;
-  color: ${({ theme }) => theme.text.primary};
+  color: ${({ theme }) => theme.utils.getText('neutral', 'primary')};
 
   &:focus,
   .ProseMirror:focus {
@@ -80,7 +80,7 @@ export const Prose = styled(EditorContent)`
   }
 
   .ProseMirror {
-    caret-color: ${({ theme }) => theme.text.accent};
+    caret-color: ${({ theme }) => theme.utils.getText('accent', 'primary')};
   }
 
   /* ── Базовый ритм блоков ─────────────────────────────────────── */
@@ -144,7 +144,7 @@ export const Prose = styled(EditorContent)`
   .ProseMirror mark {
     padding: 1px 3px;
     border-radius: ${({ theme }) => theme.radius.sm};
-    background: ${({ theme }) => theme.background.accentSubtle};
+    background: ${({ theme }) => theme.utils.getBackground('accent', 'surface')};
     color: inherit;
   }
 
@@ -160,7 +160,7 @@ export const Prose = styled(EditorContent)`
   }
 
   .ProseMirror li::marker {
-    color: ${({ theme }) => theme.text.accent};
+    color: ${({ theme }) => theme.utils.getText('accent', 'primary')};
   }
 
   .ProseMirror ul p,
@@ -173,10 +173,10 @@ export const Prose = styled(EditorContent)`
   .ProseMirror blockquote {
     margin: 0;
     padding: ${({ theme }) => `${theme.spacing.sm} ${theme.spacing.md}`};
-    border-left: 3px solid ${({ theme }) => theme.background.accentSubtle};
+    border-left: 3px solid ${({ theme }) => theme.utils.getBackground('accent', 'surface')};
     border-radius: 0 ${({ theme }) => theme.radius.sm} ${({ theme }) => theme.radius.sm} 0;
-    background: ${({ theme }) => theme.background.surface};
-    color: ${({ theme }) => theme.text.muted};
+    background: ${({ theme }) => theme.utils.getBackground('neutral', 'surface')};
+    color: ${({ theme }) => theme.utils.getText('neutral', 'muted')};
 
     p {
       margin: 0;
@@ -188,19 +188,19 @@ export const Prose = styled(EditorContent)`
   .ProseMirror :not(pre) > code {
     padding: 2px 6px;
     border-radius: 5px;
-    border: 1px solid ${({ theme }) => theme.border.default};
-    background: ${({ theme }) => theme.background.elevated};
+    border: 1px solid ${({ theme }) => theme.utils.getBorder('neutral', 'default')};
+    background: ${({ theme }) => theme.utils.getBackground('neutral', 'elevated')};
     font-family: ${({ theme }) => theme.typography.fontFamilyMonospace};
     font-size: 0.85em;
-    color: ${({ theme }) => theme.text.accent};
+    color: ${({ theme }) => theme.utils.getText('accent', 'primary')};
   }
   /* ── Блок кода с «шапкой» из data-language ─────────────────── */
 
   .ProseMirror pre {
     margin: ${({ theme }) => theme.spacing.md} 0;
-    border: 1px solid ${({ theme }) => theme.border.default};
+    border: 1px solid ${({ theme }) => theme.utils.getBorder('neutral', 'default')};
     border-radius: ${({ theme }) => theme.radius.lg};
-    background: ${({ theme }) => theme.background.surface};
+    background: ${({ theme }) => theme.utils.getBackground('neutral', 'surface')};
     overflow: hidden;
     font-family: ${({ theme }) => theme.typography.fontFamilyMonospace};
     font-size: 13px;
@@ -209,13 +209,13 @@ export const Prose = styled(EditorContent)`
     &::before {
       display: block;
       padding: 8px 12px;
-      border-bottom: 1px solid ${({ theme }) => theme.border.default};
-      background: ${({ theme }) => theme.background.elevated};
+      border-bottom: 1px solid ${({ theme }) => theme.utils.getBorder('neutral', 'default')};
+      background: ${({ theme }) => theme.utils.getBackground('neutral', 'elevated')};
       content: attr(data-language);
       font-size: 11px;
       letter-spacing: 0.08em;
       text-transform: uppercase;
-      color: ${({ theme }) => theme.text.muted};
+      color: ${({ theme }) => theme.utils.getText('neutral', 'muted')};
     }
 
     &[data-language='']::before {
@@ -236,13 +236,13 @@ export const Prose = styled(EditorContent)`
   /* ── Ссылки ─────────────────────────────────────────────────── */
 
   .ProseMirror a {
-    color: ${({ theme }) => theme.text.accent};
+    color: ${({ theme }) => theme.utils.getText('accent', 'primary')};
     text-decoration: none;
-    border-bottom: 1px solid ${({ theme }) => theme.background.accentSubtle};
+    border-bottom: 1px solid ${({ theme }) => theme.utils.getBackground('accent', 'surface')};
     transition: border-color ${({ theme }) => theme.durations.fast};
 
     &:hover {
-      border-bottom-color: ${({ theme }) => theme.border.accent};
+      border-bottom-color: ${({ theme }) => theme.utils.getBorder('accent', 'default')};
     }
   }
 
@@ -251,11 +251,11 @@ export const Prose = styled(EditorContent)`
   .ProseMirror img {
     display: block;
     max-width: 100%;
-    border: 1px solid ${({ theme }) => theme.border.default};
+    border: 1px solid ${({ theme }) => theme.utils.getBorder('neutral', 'default')};
     border-radius: ${({ theme }) => theme.radius.lg};
 
     &.ProseMirror-selectednode {
-      outline: 2px solid ${({ theme }) => theme.focus.ring};
+      outline: 2px solid ${({ theme }) => theme.utils.getFocusRing()};
       outline-offset: 2px;
     }
   }
@@ -263,14 +263,14 @@ export const Prose = styled(EditorContent)`
   .ProseMirror hr {
     margin: ${({ theme }) => theme.spacing.lg} 0;
     border: none;
-    border-top: 1px dashed ${({ theme }) => theme.border.strong};
+    border-top: 1px dashed ${({ theme }) => theme.utils.getBorder('neutral', 'strong')};
   }
 
   /* ── Таблица ────────────────────────────────────────────────── */
 
   .ProseMirror .tableWrapper {
     margin: ${({ theme }) => theme.spacing.md} 0;
-    border: 1px solid ${({ theme }) => theme.border.default};
+    border: 1px solid ${({ theme }) => theme.utils.getBorder('neutral', 'default')};
     border-radius: ${({ theme }) => theme.radius.lg};
     overflow-x: auto;
   }
@@ -284,18 +284,18 @@ export const Prose = styled(EditorContent)`
     td {
       padding: 10px 14px;
       text-align: left;
-      border-bottom: 1px solid ${({ theme }) => theme.border.default};
+      border-bottom: 1px solid ${({ theme }) => theme.utils.getBorder('neutral', 'default')};
       vertical-align: top;
     }
 
     th {
-      background: ${({ theme }) => theme.background.elevated};
+      background: ${({ theme }) => theme.utils.getBackground('neutral', 'elevated')};
       font-family: ${({ theme }) => theme.typography.fontFamily};
       font-size: 11px;
       font-weight: 600;
       letter-spacing: 0.08em;
       text-transform: uppercase;
-      color: ${({ theme }) => theme.text.muted};
+      color: ${({ theme }) => theme.utils.getText('neutral', 'muted')};
     }
 
     td:first-child,
@@ -308,11 +308,12 @@ export const Prose = styled(EditorContent)`
     }
 
     tbody tr:hover td {
-      background: ${({ theme }) => theme.background.hover};
+      background: ${({ theme }) =>
+        theme.utils.withState(theme.utils.getBackground('neutral', 'surface'), 'hoverAlpha')};
     }
 
     .selectedCell {
-      background: ${({ theme }) => theme.background.accentSubtle};
+      background: ${({ theme }) => theme.utils.getBackground('accent', 'surface')};
     }
   }
 
@@ -324,18 +325,18 @@ export const Prose = styled(EditorContent)`
     justify-content: center;
     gap: ${({ theme }) => theme.spacing.md};
     padding: ${({ theme }) => `${theme.spacing.lg} ${theme.spacing.md}`};
-    border: 1px dashed ${({ theme }) => theme.border.default};
+    border: 1px dashed ${({ theme }) => theme.utils.getBorder('neutral', 'default')};
     border-radius: ${({ theme }) => theme.radius.lg};
-    background: ${({ theme }) => theme.background.surface};
+    background: ${({ theme }) => theme.utils.getBackground('neutral', 'surface')};
     white-space: pre-wrap;
     font-family: ${({ theme }) => theme.typography.fontFamilyMonospace};
     font-size: 17px;
     letter-spacing: 0.02em;
-    color: ${({ theme }) => theme.text.primary};
+    color: ${({ theme }) => theme.utils.getText('neutral', 'primary')};
 
     &:empty::before {
       content: '∑ …';
-      color: ${({ theme }) => theme.text.muted};
+      color: ${({ theme }) => theme.utils.getText('neutral', 'muted')};
     }
   }
 
@@ -346,7 +347,7 @@ export const Prose = styled(EditorContent)`
     float: left;
     height: 0;
     pointer-events: none;
-    color: ${({ theme }) => theme.text.muted};
+    color: ${({ theme }) => theme.utils.getText('neutral', 'muted')};
     opacity: 0.7;
   }
 
@@ -383,23 +384,23 @@ export const InsertButton = styled.button`
   gap: 6px;
   height: 26px;
   padding: 0 10px;
-  border: 1px dashed ${({ theme }) => theme.border.strong};
+  border: 1px dashed ${({ theme }) => theme.utils.getBorder('neutral', 'strong')};
   border-radius: ${({ theme }) => theme.radius.full};
   background: transparent;
-  color: ${({ theme }) => theme.text.muted};
+  color: ${({ theme }) => theme.utils.getText('neutral', 'muted')};
   font-size: 12px;
   white-space: nowrap;
   cursor: pointer;
 
   &:hover {
     border-style: solid;
-    border-color: ${({ theme }) => theme.border.accent};
-    color: ${({ theme }) => theme.text.accent};
+    border-color: ${({ theme }) => theme.utils.getBorder('accent', 'default')};
+    color: ${({ theme }) => theme.utils.getText('accent', 'primary')};
   }
 `
 
 export const InsertLine = styled.span`
   flex: 1;
   height: 1px;
-  background: ${({ theme }) => theme.border.default};
+  background: ${({ theme }) => theme.utils.getBorder('neutral', 'default')};
 `

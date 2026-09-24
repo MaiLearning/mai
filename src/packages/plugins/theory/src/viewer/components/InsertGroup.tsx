@@ -1,4 +1,5 @@
 import { useTranslation } from '@mai/i18n'
+import { Tooltip } from '@mai/theme'
 import type { Editor } from '@tiptap/core'
 import {
   Code2,
@@ -10,7 +11,6 @@ import {
   Table2,
   Video,
 } from 'lucide-react'
-import { Tooltip } from '../../ui'
 import type { InsertDialogKind } from './TheoryToolbar'
 import { ToolButton, ToolGroup } from './TheoryToolbar.style'
 
@@ -86,14 +86,12 @@ export function InsertGroup({ editor, codeActive, linkActive, onRequestDialog }:
         <Tooltip key={tool.label} content={tool.label}>
           <ToolButton
             type="button"
-            label={tool.label}
-            $active={tool.active}
-            aria-pressed={tool.active}
+            aria-label={tool.label}
+            selected={tool.active}
             disabled={tool.disabled}
             onClick={tool.onClick}
-          >
-            <tool.icon size={16} />
-          </ToolButton>
+            onlyIcon={<tool.icon size={16} />}
+          />
         </Tooltip>
       ))}
     </ToolGroup>

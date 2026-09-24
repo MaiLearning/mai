@@ -7,8 +7,8 @@ export const Header = styled.header`
   flex-direction: column;
   gap: ${({ theme }) => theme.spacing.md};
   padding: ${({ theme }) => `${theme.spacing.lg} ${theme.spacing.xl} ${theme.spacing.md}`};
-  border-bottom: 1px solid ${({ theme }) => theme.border.default};
-  background: ${({ theme }) => theme.background.body};
+  border-bottom: 1px solid ${({ theme }) => theme.utils.getBorder('neutral', 'default')};
+  background: ${({ theme }) => theme.utils.getBackground('neutral', 'body')};
 `
 
 export const HeaderTop = styled.div`
@@ -36,7 +36,7 @@ export const Breadcrumbs = styled.nav`
   font-size: 12px;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: ${({ theme }) => theme.text.muted};
+  color: ${({ theme }) => theme.utils.getText('neutral', 'muted')};
 
   svg {
     opacity: 0.45;
@@ -51,7 +51,7 @@ export const Crumb = styled.span<{ $current?: boolean }>`
   ${({ $current, theme }) =>
     $current &&
     css`
-      color: ${theme.text.accent};
+      color: ${theme.utils.getText('accent', 'primary')};
       font-weight: 600;
     `}
 `
@@ -65,7 +65,7 @@ export const TitleTextarea = styled.textarea`
   padding: 0;
   resize: none;
   overflow: hidden;
-  color: ${({ theme }) => theme.text.primary};
+  color: ${({ theme }) => theme.utils.getText('neutral', 'primary')};
   font-family: ${({ theme }) => theme.typography.fontFamily};
   font-size: ${({ theme }) => theme.typography.sizes.lg};
   font-weight: ${({ theme }) => theme.typography.weights.semibold};
@@ -73,7 +73,7 @@ export const TitleTextarea = styled.textarea`
   letter-spacing: -0.03em;
 
   &::placeholder {
-    color: ${({ theme }) => theme.text.muted};
+    color: ${({ theme }) => theme.utils.getText('neutral', 'muted')};
     opacity: 0.6;
   }
 
@@ -88,7 +88,7 @@ export const MetaRow = styled.div`
   gap: ${({ theme }) => theme.spacing.md};
   flex-wrap: wrap;
   font-size: 13px;
-  color: ${({ theme }) => theme.text.muted};
+  color: ${({ theme }) => theme.utils.getText('neutral', 'muted')};
 `
 
 export const MetaItem = styled.span`
@@ -105,5 +105,5 @@ export const MetaDot = styled.span`
   width: 3px;
   height: 3px;
   border-radius: 50%;
-  background: ${({ theme }) => theme.border.strong};
+  background: ${({ theme }) => theme.utils.getBorder('neutral', 'strong')};
 `

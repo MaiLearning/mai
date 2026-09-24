@@ -6,13 +6,13 @@ import styled from 'styled-components'
 /** Каркас видео-вставки: рамка, радиус, скрытие переполнения. */
 export const EmbedFigure = styled(NodeViewWrapper)`
   margin: ${({ theme }) => theme.spacing.md} 0;
-  border: 1px solid ${({ theme }) => theme.border.default};
+  border: 1px solid ${({ theme }) => theme.utils.getBorder('neutral', 'default')};
   border-radius: ${({ theme }) => theme.radius.lg};
-  background: ${({ theme }) => theme.background.surface};
+  background: ${({ theme }) => theme.utils.getBackground('neutral', 'surface')};
   overflow: hidden;
 
   &[data-selected='true'] {
-    outline: 2px solid ${({ theme }) => theme.focus.ring};
+    outline: 2px solid ${({ theme }) => theme.utils.getFocusRing()};
     outline-offset: 2px;
   }
 `
@@ -25,14 +25,14 @@ export const EmbedFrame = styled.button`
   aspect-ratio: 16 / 9;
   border: none;
   cursor: pointer;
-  color: ${({ theme }) => theme.text.accent};
+  color: ${({ theme }) => theme.utils.getText('accent', 'primary')};
   background:
     radial-gradient(
       circle at 50% 45%,
-      ${({ theme }) => theme.background.accentSubtle},
+      ${({ theme }) => theme.utils.getBackground('accent', 'surface')},
       transparent 65%
     ),
-    ${({ theme }) => theme.background.elevated};
+    ${({ theme }) => theme.utils.getBackground('neutral', 'elevated')};
 
   svg {
     display: grid;
@@ -42,8 +42,8 @@ export const EmbedFrame = styled.button`
     padding: 16px;
     box-sizing: border-box;
     border-radius: 50%;
-    background: ${({ theme }) => theme.background.accent};
-    color: ${({ theme }) => theme.text.onPrimary};
+    background: ${({ theme }) => theme.utils.getSolid('accent', 'base')};
+    color: ${({ theme }) => theme.contrastText.accent};
     box-shadow: ${({ theme }) => theme.shadows.md};
     transition:
       transform ${({ theme }) => theme.durations.fast},
@@ -52,7 +52,7 @@ export const EmbedFrame = styled.button`
 
   &:hover svg {
     transform: scale(1.06);
-    background: ${({ theme }) => theme.background.accentHover};
+    background: ${({ theme }) => theme.utils.getSolid('accent', 'hover')};
   }
 `
 
@@ -64,37 +64,37 @@ export const EmbedSetup = styled.div`
   justify-content: center;
   gap: ${({ theme }) => theme.spacing.md};
   aspect-ratio: 16 / 9;
-  color: ${({ theme }) => theme.text.muted};
+  color: ${({ theme }) => theme.utils.getText('neutral', 'muted')};
   background:
     radial-gradient(
       circle at 50% 45%,
-      ${({ theme }) => theme.background.accentSubtle},
+      ${({ theme }) => theme.utils.getBackground('accent', 'surface')},
       transparent 65%
     ),
-    ${({ theme }) => theme.background.elevated};
+    ${({ theme }) => theme.utils.getBackground('neutral', 'elevated')};
 `
 
 export const SetupInput = styled.input`
   width: min(100%, 360px);
   padding: 8px 14px;
-  border: 1px solid ${({ theme }) => theme.border.default};
+  border: 1px solid ${({ theme }) => theme.utils.getBorder('neutral', 'default')};
   border-radius: ${({ theme }) => theme.radius.full};
-  background: ${({ theme }) => theme.background.body};
-  color: ${({ theme }) => theme.text.primary};
+  background: ${({ theme }) => theme.utils.getBackground('neutral', 'body')};
+  color: ${({ theme }) => theme.utils.getText('neutral', 'primary')};
   font-size: 13px;
 
   &::placeholder {
-    color: ${({ theme }) => theme.text.muted};
+    color: ${({ theme }) => theme.utils.getText('neutral', 'muted')};
   }
 
   &:focus {
     outline: none;
-    border-color: ${({ theme }) => theme.border.accent};
+    border-color: ${({ theme }) => theme.utils.getBorder('accent', 'default')};
   }
 
   &[data-invalid='true'] {
-    border-color: ${({ theme }) => theme.status.danger.foreground};
-    color: ${({ theme }) => theme.status.danger.foreground};
+    border-color: ${({ theme }) => theme.utils.getBorder('danger', 'default')};
+    color: ${({ theme }) => theme.utils.getText('danger', 'primary')};
   }
 `
 
@@ -104,7 +104,7 @@ export const EmbedCaptionRow = styled.div`
   align-items: center;
   gap: ${({ theme }) => theme.spacing.sm};
   padding: 8px 14px;
-  border-top: 1px solid ${({ theme }) => theme.border.default};
+  border-top: 1px solid ${({ theme }) => theme.utils.getBorder('neutral', 'default')};
 `
 
 export const CaptionInput = styled.input`
@@ -113,7 +113,7 @@ export const CaptionInput = styled.input`
   border: none;
   background: transparent;
   padding: 0;
-  color: ${({ theme }) => theme.text.muted};
+  color: ${({ theme }) => theme.utils.getText('neutral', 'muted')};
   font-size: 13px;
 
   &::placeholder {
@@ -122,6 +122,6 @@ export const CaptionInput = styled.input`
 
   &:focus {
     outline: none;
-    color: ${({ theme }) => theme.text.primary};
+    color: ${({ theme }) => theme.utils.getText('neutral', 'primary')};
   }
 `

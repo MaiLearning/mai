@@ -10,12 +10,12 @@ export const StatusBar = styled.footer`
   padding: 0 ${({ theme }) => theme.spacing.xl};
   height: 34px;
   flex: none;
-  border-top: 1px solid ${({ theme }) => theme.border.default};
-  background: ${({ theme }) => theme.background.elevated};
+  border-top: 1px solid ${({ theme }) => theme.utils.getBorder('neutral', 'default')};
+  background: ${({ theme }) => theme.utils.getBackground('neutral', 'elevated')};
   font-family: ${({ theme }) => theme.typography.fontFamilyMonospace};
   font-size: 11px;
   letter-spacing: 0.03em;
-  color: ${({ theme }) => theme.text.muted};
+  color: ${({ theme }) => theme.utils.getText('neutral', 'muted')};
 `
 
 export const StatusItem = styled.span`
@@ -44,10 +44,10 @@ export const StatusRetry = styled.button`
   gap: 4px;
   margin-left: ${({ theme }) => theme.spacing.sm};
   padding: 2px 8px;
-  border: 1px solid ${({ theme }) => theme.border.default};
+  border: 1px solid ${({ theme }) => theme.utils.getBorder('neutral', 'default')};
   border-radius: ${({ theme }) => theme.radius.full};
   background: transparent;
-  color: ${({ theme }) => theme.text.muted};
+  color: ${({ theme }) => theme.utils.getText('neutral', 'muted')};
   font-family: inherit;
   font-size: 11px;
   letter-spacing: inherit;
@@ -55,8 +55,8 @@ export const StatusRetry = styled.button`
   transition: color ${({ theme }) => theme.durations.fast};
 
   &:hover {
-    color: ${({ theme }) => theme.text.primary};
-    border-color: ${({ theme }) => theme.border.strong};
+    color: ${({ theme }) => theme.utils.getText('neutral', 'primary')};
+    border-color: ${({ theme }) => theme.utils.getBorder('neutral', 'strong')};
   }
 `
 
@@ -67,8 +67,8 @@ export const SaveDot = styled.span<{ $tone: 'success' | 'warning' | 'danger' }>`
   border-radius: 50%;
   background: ${({ theme, $tone }) =>
     $tone === 'warning'
-      ? theme.status.warning.foreground
+      ? theme.utils.getText('warning', 'primary')
       : $tone === 'danger'
-        ? theme.status.danger.foreground
-        : theme.status.success.foreground};
+        ? theme.utils.getText('danger', 'primary')
+        : theme.utils.getText('success', 'primary')};
 `

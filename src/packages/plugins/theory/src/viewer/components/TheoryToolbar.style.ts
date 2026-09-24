@@ -1,38 +1,16 @@
+import { Button } from '@mai/theme'
 import styled from 'styled-components'
-import { IconButton } from '../../ui'
 
-/** Кнопка инструмента на базе IconButton пакета, с состоянием «активно». */
-export const ToolButton = styled(IconButton)<{ $active?: boolean }>`
+/** Кнопка инструмента на базе Button: ghost-вариант с активным состоянием. */
+export const ToolButton = styled(Button).attrs({ variant: 'ghost', size: 'sm' } as const)`
   width: 32px;
   height: 32px;
+  padding: 0;
   border-radius: ${({ theme }) => theme.radius.sm};
-  color: ${({ theme }) => theme.text.muted};
-
-  &:hover {
-    background: ${({ theme }) => theme.background.elevated};
-    color: ${({ theme }) => theme.text.primary};
-  }
-
-  ${({ $active, theme }) =>
-    $active &&
-    `
-    background: ${theme.background.accentSubtle};
-    color: ${theme.text.accent};
-
-    &:hover {
-      background: ${theme.background.accentSubtle};
-      color: ${theme.text.accent};
-    }
-  `}
 
   &:disabled {
-    opacity: 0.35;
-    cursor: default;
-
-    &:hover {
-      background: transparent;
-      color: ${({ theme }) => theme.text.muted};
-    }
+    background: transparent;
+    color: ${({ theme }) => theme.utils.getText('neutral', 'muted')};
   }
 `
 
@@ -43,8 +21,8 @@ export const ToolbarRoot = styled.div`
   gap: ${({ theme }) => theme.spacing.xs};
   flex-wrap: wrap;
   padding: 6px ${({ theme }) => theme.spacing.xl};
-  border-bottom: 1px solid ${({ theme }) => theme.border.default};
-  background: ${({ theme }) => theme.background.elevated};
+  border-bottom: 1px solid ${({ theme }) => theme.utils.getBorder('neutral', 'default')};
+  background: ${({ theme }) => theme.utils.getBackground('neutral', 'elevated')};
 `
 
 export const ToolGroup = styled.div`
@@ -60,7 +38,7 @@ export const ToolbarSpacer = styled.span`
 export const WordCount = styled.span`
   font-family: ${({ theme }) => theme.typography.fontFamilyMonospace};
   font-size: 12px;
-  color: ${({ theme }) => theme.text.muted};
+  color: ${({ theme }) => theme.utils.getText('neutral', 'muted')};
   white-space: nowrap;
 `
 
@@ -76,10 +54,10 @@ export const BlockSelect = styled.button`
   gap: 8px;
   height: 32px;
   padding: 0 10px;
-  border: 1px solid ${({ theme }) => theme.border.default};
+  border: 1px solid ${({ theme }) => theme.utils.getBorder('neutral', 'default')};
   border-radius: ${({ theme }) => theme.radius.sm};
   background: transparent;
-  color: ${({ theme }) => theme.text.primary};
+  color: ${({ theme }) => theme.utils.getText('neutral', 'primary')};
   font-family: ${({ theme }) => theme.typography.fontFamily};
   font-size: 13px;
   font-weight: 500;
@@ -88,8 +66,9 @@ export const BlockSelect = styled.button`
     border-color ${({ theme }) => theme.durations.fast};
 
   &:hover {
-    background: ${({ theme }) => theme.background.hover};
-    border-color: ${({ theme }) => theme.border.strong};
+    background: ${({ theme }) =>
+      theme.utils.withState(theme.utils.getBackground('neutral', 'surface'), 'hoverAlpha')};
+    border-color: ${({ theme }) => theme.utils.getBorder('neutral', 'strong')};
   }
 
   > svg:last-child {
@@ -106,9 +85,9 @@ export const BlockMenu = styled.div`
   flex-direction: column;
   min-width: 180px;
   padding: 4px;
-  border: 1px solid ${({ theme }) => theme.border.default};
+  border: 1px solid ${({ theme }) => theme.utils.getBorder('neutral', 'default')};
   border-radius: ${({ theme }) => theme.radius.md};
-  background: ${({ theme }) => theme.background.elevated};
+  background: ${({ theme }) => theme.utils.getBackground('neutral', 'elevated')};
   box-shadow: ${({ theme }) => theme.shadows.md};
 `
 
@@ -121,21 +100,21 @@ export const BlockMenuItem = styled.button<{ $active?: boolean }>`
   border: none;
   border-radius: ${({ theme }) => theme.radius.sm};
   background: transparent;
-  color: ${({ theme }) => theme.text.primary};
+  color: ${({ theme }) => theme.utils.getText('neutral', 'primary')};
   font-size: 13px;
   text-align: left;
   cursor: pointer;
 
   &:hover,
   &[data-cursor='true'] {
-    background: ${({ theme }) => theme.background.elevated};
+    background: ${({ theme }) => theme.utils.getBackground('neutral', 'elevated')};
   }
 
   ${({ $active, theme }) =>
     $active &&
     `
-    background: ${theme.background.accentSubtle};
-    color: ${theme.text.accent};
+    background: ${theme.utils.getBackground('accent', 'surface')};
+    color: ${theme.utils.getText('accent', 'primary')};
     font-weight: 600;
   `}
 `

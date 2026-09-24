@@ -1,4 +1,5 @@
 import { useTranslation } from '@mai/i18n'
+import { Divider, Tooltip } from '@mai/theme'
 import type { Editor } from '@tiptap/core'
 import type { LucideIcon } from 'lucide-react'
 import {
@@ -14,7 +15,6 @@ import {
   Underline,
   Undo2,
 } from 'lucide-react'
-import { Divider, Tooltip } from '../../ui'
 import { BlockSelect } from './BlockSelect'
 import { InsertGroup } from './InsertGroup'
 import { ToolButton, ToolbarRoot, ToolbarSpacer, ToolGroup, WordCount } from './TheoryToolbar.style'
@@ -124,14 +124,12 @@ export function TheoryToolbar({ editor, state, onRequestDialog }: TheoryToolbarP
       <Tooltip key={item.label} content={item.hint ? `${item.label} (${item.hint})` : item.label}>
         <ToolButton
           type="button"
-          label={item.label}
-          $active={item.active}
-          aria-pressed={item.active}
+          aria-label={item.label}
+          selected={item.active}
           disabled={item.disabled}
           onClick={item.onClick}
-        >
-          <item.icon size={16} />
-        </ToolButton>
+          onlyIcon={<item.icon size={16} />}
+        />
       </Tooltip>
     ))
   }

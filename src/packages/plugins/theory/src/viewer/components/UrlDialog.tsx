@@ -1,10 +1,9 @@
 import { useTranslation } from '@mai/i18n'
 import { notifyError, notifySuccess } from '@mai/notifications'
 import { error as logError } from '@mai/tauri/logs'
-import { Button, Modal, Text } from '@mai/theme'
+import { Button, Modal, Text, TextField } from '@mai/theme'
 import type { ChangeEvent, KeyboardEvent } from 'react'
 import { useEffect, useState } from 'react'
-import { Input } from '../../ui'
 import { openExternal } from '../lib/open-external'
 import { isValidHttpUrl } from '../lib/url-validation'
 import type { InsertDialogKind } from './TheoryToolbar'
@@ -105,7 +104,7 @@ export function UrlDialog({ state, onClose, onSubmit }: UrlDialogProps) {
         </>
       }
     >
-      <Input
+      <TextField
         autoFocus
         value={value}
         placeholder={placeholders[state.kind]}

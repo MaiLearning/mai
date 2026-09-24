@@ -13,13 +13,13 @@ export const CalloutBox = styled(NodeViewWrapper)<{ $tone: 'info' | 'accent' | '
   border-radius: ${({ theme }) => theme.radius.lg};
   background: ${({ theme, $tone }) =>
     $tone === 'accent'
-      ? theme.background.accentSubtle
+      ? theme.utils.getBackground('accent', 'surface')
       : $tone === 'success'
-        ? theme.status.success.background
-        : theme.status.info.background};
+        ? theme.utils.getBackground('success', 'surface')
+        : theme.utils.getBackground('info', 'surface')};
 
   &[data-selected='true'] {
-    outline: 2px solid ${({ theme }) => theme.focus.ring};
+    outline: 2px solid ${({ theme }) => theme.utils.getFocusRing()};
     outline-offset: 2px;
   }
 
@@ -28,10 +28,10 @@ export const CalloutBox = styled(NodeViewWrapper)<{ $tone: 'info' | 'accent' | '
     margin-top: 3px;
     color: ${({ theme, $tone }) =>
       $tone === 'accent'
-        ? theme.text.accent
+        ? theme.utils.getText('accent', 'primary')
         : $tone === 'success'
-          ? theme.status.success.foreground
-          : theme.status.info.foreground};
+          ? theme.utils.getText('success', 'primary')
+          : theme.utils.getText('info', 'primary')};
   }
 
   .th-callout-content {
@@ -57,9 +57,9 @@ export const ToneSwitch = styled.span`
   display: inline-flex;
   gap: 4px;
   padding: 4px;
-  border: 1px solid ${({ theme }) => theme.border.default};
+  border: 1px solid ${({ theme }) => theme.utils.getBorder('neutral', 'default')};
   border-radius: ${({ theme }) => theme.radius.full};
-  background: ${({ theme }) => theme.background.elevated};
+  background: ${({ theme }) => theme.utils.getBackground('neutral', 'elevated')};
   box-shadow: ${({ theme }) => theme.shadows.sm};
 `
 
@@ -72,14 +72,14 @@ export const ToneSwitchDot = styled.button<{ $tone: string; $active?: boolean }>
   cursor: pointer;
   background: ${({ theme, $tone }) =>
     $tone === 'success'
-      ? theme.status.success.foreground
+      ? theme.utils.getSolid('success', 'base')
       : $tone === 'accent'
-        ? theme.text.accent
-        : theme.status.info.foreground};
+        ? theme.utils.getSolid('accent', 'base')
+        : theme.utils.getSolid('info', 'base')};
 
   ${({ theme, $active }) =>
     $active &&
     css`
-      border-color: ${theme.text.muted};
+      border-color: ${theme.utils.getBorder('neutral', 'strong')};
     `}
 `

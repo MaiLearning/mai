@@ -11,9 +11,9 @@ export const MenuSurface = styled.div<{ $x: number; $y: number }>`
   max-height: 260px;
   overflow-y: auto;
   padding: 6px;
-  border: 1px solid ${({ theme }) => theme.border.default};
+  border: 1px solid ${({ theme }) => theme.utils.getBorder('neutral', 'default')};
   border-radius: ${({ theme }) => theme.radius.md};
-  background: ${({ theme }) => theme.background.elevated};
+  background: ${({ theme }) => theme.utils.getBackground('neutral', 'elevated')};
   box-shadow: ${({ theme }) => theme.shadows.md};
 `
 
@@ -26,19 +26,19 @@ export const MenuItem = styled.button`
   border: none;
   border-radius: ${({ theme }) => theme.radius.sm};
   background: transparent;
-  color: ${({ theme }) => theme.text.primary};
+  color: ${({ theme }) => theme.utils.getText('neutral', 'primary')};
   font-size: 13px;
   text-align: left;
   cursor: pointer;
 
   &[data-active='true'] {
-    background: ${({ theme }) => theme.background.accentSubtle};
-    color: ${({ theme }) => theme.text.accent};
+    background: ${({ theme }) => theme.utils.getBackground('accent', 'surface')};
+    color: ${({ theme }) => theme.utils.getText('accent', 'primary')};
   }
 `
 
 export const MenuEmpty = styled.div`
   padding: 10px;
-  color: ${({ theme }) => theme.text.muted};
+  color: ${({ theme }) => theme.utils.getText('neutral', 'muted')};
   font-size: 13px;
 `

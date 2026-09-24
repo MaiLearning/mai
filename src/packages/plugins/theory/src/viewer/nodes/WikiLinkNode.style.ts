@@ -11,10 +11,10 @@ export const WikiChip = styled.span<{ $broken?: boolean }>`
   max-width: 100%;
   padding: 1px 8px;
   margin: 0 1px;
-  border: 1px solid ${({ theme }) => theme.background.accentSubtle};
+  border: 1px solid ${({ theme }) => theme.utils.getBackground('accent', 'surface')};
   border-radius: ${({ theme }) => theme.radius.sm};
-  background: ${({ theme }) => theme.background.accentSubtle};
-  color: ${({ theme }) => theme.text.accent};
+  background: ${({ theme }) => theme.utils.getBackground('accent', 'surface')};
+  color: ${({ theme }) => theme.utils.getText('accent', 'primary')};
   font-size: 0.95em;
   line-height: 1.6;
   cursor: pointer;
@@ -24,20 +24,20 @@ export const WikiChip = styled.span<{ $broken?: boolean }>`
     border-color 120ms ease;
 
   &:hover {
-    border-color: ${({ theme }) => theme.border.accent};
+    border-color: ${({ theme }) => theme.utils.getBorder('accent', 'default')};
   }
 
   &:focus-visible {
-    outline: 2px solid ${({ theme }) => theme.focus.ring};
+    outline: 2px solid ${({ theme }) => theme.utils.getFocusRing()};
     outline-offset: 1px;
   }
 
   ${({ theme, $broken }) =>
     $broken &&
     css`
-      border: 1px dashed ${theme.border.default};
+      border: 1px dashed ${theme.utils.getBorder('neutral', 'default')};
       background: transparent;
-      color: ${theme.status.danger.foreground};
+      color: ${theme.utils.getText('danger', 'primary')};
       cursor: not-allowed;
     `}
 `
