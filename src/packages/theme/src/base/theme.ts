@@ -53,9 +53,14 @@ export interface StepsConfig {
   border: Record<BorderKey, number>
   /** Насыщенная заливка. */
   solid: Record<SolidKey, number>
-  /** Текст. */
-  foreground: Record<ForegroundKey, number>
+  /** Текст: ступени могут различаться по смысловой роли текста. */
+  foreground: Record<IntentName, Record<ForegroundKey, number>>
 }
+
+/** Допустимый ключ ступени для категории `steps`. */
+export type StepKey<C extends keyof StepsConfig> = C extends 'foreground'
+  ? ForegroundKey
+  : keyof StepsConfig[C]
 
 /** Текущее состояние интерактивного элемента (категория `state`). */
 export type StateName = 'hoverAlpha' | 'activeAlpha' | 'selectedAlpha' | 'disabledAlpha'
@@ -69,7 +74,7 @@ export type SpacingKey = keyof AppTheme['spacing']
  * Цвета строятся из трёх осей:
  * - `intent` — смысловая роль элемента (полная 12-ступенчатая шкала);
  * - `steps` — номер ступени шкалы под конкретную CSS-роль (фон/граница/
- *   заливка/текст), общий для любого интента;
+ *   заливка/текст); ступени foreground могут различаться по интенту и режиму;
  * - `state` — альфа-прозрачность оверлея интерактивного состояния,
  *   применяемая поверх уже собранного цвета через `withState`.
  *

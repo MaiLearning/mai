@@ -4,4 +4,4 @@
 export { base } from './base'
 export { dark } from './dark'
 export { light } from './light'
-export { contrastText, state, steps } from './steps'
+export { contrastText, darkSteps, lightSteps, state } from './steps'

@@ -1,7 +1,7 @@
 import type { AppTheme, ColorScale } from '../../theme'
 import { createThemeUtils } from '../../utils'
 import { base } from './base'
-import { contrastText, state, steps } from './steps'
+import { contrastText, darkSteps, state } from './steps'
 
 /**
  * Нейтральная шкала. Ступени 1–3 — бывшие композиты поверхности
@@ -109,7 +109,7 @@ const colorPart = {
     danger,
     info,
   },
-  steps,
+  steps: darkSteps,
   state,
   contrastText,
   shadows: {

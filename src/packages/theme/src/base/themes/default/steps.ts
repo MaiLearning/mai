@@ -1,14 +1,14 @@
 import type { AppTheme, IntentName, StepsConfig } from '../../theme'
 
 /**
- * Индексы ступеней шкалы, общие для светлой и тёмной вариаций дизайна.
+ * Индексы общих для режимов ролей. Foreground задаётся отдельно для каждой
+ * цветовой вариации: контрастные ступени хроматических шкал в dark светлее,
+ * чем нужно для текста на поверхности, поэтому там используется ступень 11.
  *
  * Ступени Radix семантичны и не зависят от цветового режима: 1–2 — фоны
- * страницы, 3–5 — подложки компонентов, 6–8 — границы, 9–10 — solid,
- * 11–12 — текст. Поэтому один конфиг подходит обеим вариациям, а набор
- * цветов для каждой темы получается комбинацией `steps` с её шкалами.
+ * страницы, 3–5 — подложки компонентов, 6–8 — границы, 9–10 — solid.
  */
-export const steps: StepsConfig = {
+const commonSteps: Omit<StepsConfig, 'foreground'> = {
   background: {
     body: 1,
     surface: 2,
@@ -25,10 +25,36 @@ export const steps: StepsConfig = {
     base: 9,
     hover: 10,
   },
-  foreground: {
-    muted: 11,
-    primary: 12,
-  },
+}
+
+const lightForeground: StepsConfig['foreground'] = {
+  neutral: { muted: 11, primary: 12 },
+  accent: { muted: 11, primary: 12 },
+  success: { muted: 11, primary: 12 },
+  warning: { muted: 11, primary: 12 },
+  danger: { muted: 11, primary: 12 },
+  info: { muted: 11, primary: 12 },
+}
+
+const darkForeground: StepsConfig['foreground'] = {
+  neutral: { muted: 11, primary: 12 },
+  accent: { muted: 11, primary: 11 },
+  success: { muted: 11, primary: 11 },
+  warning: { muted: 11, primary: 11 },
+  danger: { muted: 11, primary: 11 },
+  info: { muted: 11, primary: 11 },
+}
+
+/** Ступени стандартной светлой темы. */
+export const lightSteps: StepsConfig = {
+  ...commonSteps,
+  foreground: lightForeground,
+}
+
+/** Ступени стандартной тёмной темы. */
+export const darkSteps: StepsConfig = {
+  ...commonSteps,
+  foreground: darkForeground,
 }
 
 /**

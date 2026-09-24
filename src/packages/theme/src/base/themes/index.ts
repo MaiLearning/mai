@@ -14,9 +14,10 @@ export type {
   IntentName,
   SolidKey,
   StateName,
+  StepKey,
   StepsConfig,
 } from '../theme'
 export { base } from './default/base'
 export { dark } from './default/dark'
 export { light } from './default/light'
-export { contrastText, state, steps } from './default/steps'
+export { contrastText, darkSteps, lightSteps, state } from './default/steps'

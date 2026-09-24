@@ -1,4 +1,4 @@
-import type { AppTheme, IntentName, StepsConfig } from '../theme'
+import type { AppTheme, ForegroundKey, IntentName, StepKey, StepsConfig } from '../theme'
 
 type ColorCategory = keyof StepsConfig
 
@@ -7,7 +7,8 @@ type ColorCategory = keyof StepsConfig
  *
  * Комбинация «роль элемента + категория + ключ» разворачивается в
  * конкретный цвет: `intent` задаёт смысл элемента, `steps[category][key]` —
- * номер ступени этой шкалы (1‑based, индекс в массиве — `step - 1`).
+ * номер ступени этой шкалы (1‑based, индекс в массиве — `step - 1`). Для
+ * foreground ступень дополнительно выбирается по `intentName`.
  *
  * @param theme полная тема приложения (нужны поля `intent` и `steps`)
  * @param intentName смысловая роль элемента: neutral / accent / success / warning / danger / info
@@ -20,13 +21,16 @@ type ColorCategory = keyof StepsConfig
  * getColor(theme, 'accent', 'solid', 'base')          // было background.accent
  * getColor(theme, 'danger', 'background', 'surface')  // было status.danger.background
  */
-export function getColor<C extends ColorCategory, K extends keyof StepsConfig[C]>(
+export function getColor<C extends ColorCategory, K extends StepKey<C>>(
   theme: Pick<AppTheme, 'intent' | 'steps'>,
   intentName: IntentName,
   category: C,
   key: K,
 ): string {
-  const step = theme.steps[category][key] as number
+  const step =
+    category === 'foreground'
+      ? theme.steps.foreground[intentName][key as ForegroundKey]
+      : (theme.steps[category] as Record<string, number>)[key as string]
 
   return theme.intent[intentName][step - 1]
 }

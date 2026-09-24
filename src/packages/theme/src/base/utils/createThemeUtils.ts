@@ -6,6 +6,7 @@ import type {
   IntentName,
   SolidKey,
   StateName,
+  StepKey,
   StepsConfig,
 } from '../theme'
 import { getColor } from './getColor'
@@ -36,7 +37,7 @@ export function getFocusRing(theme: Pick<AppTheme, 'intent' | 'steps'>): string 
  */
 export interface ThemeUtils {
   /** Берёт цвет напрямую: роль + категория + ключ ступени. */
-  getColor<C extends keyof StepsConfig, K extends keyof StepsConfig[C]>(
+  getColor<C extends keyof StepsConfig, K extends StepKey<C>>(
     intentName: IntentName,
     category: C,
     key: K,
@@ -45,7 +46,7 @@ export interface ThemeUtils {
   getBackground(intentName: IntentName, layer: BackgroundKey): string
   /** Контур: `getBorder(intent, 'default')` → ступень `border.default`. */
   getBorder(intentName: IntentName, strength: BorderKey): string
-  /** Текст: `getText(intent, 'primary')` → ступень `foreground.primary`. */
+  /** Текст: `getText(intent, 'primary')` → ступень foreground для этого интента. */
   getText(intentName: IntentName, level: ForegroundKey): string
   /** Насыщенная заливка: `getSolid(intent, 'base')` → ступень `solid.base`. */
   getSolid(intentName: IntentName, step: SolidKey): string

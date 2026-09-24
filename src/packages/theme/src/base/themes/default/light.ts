@@ -1,7 +1,7 @@
 import type { AppTheme, ColorScale } from '../../theme'
 import { createThemeUtils } from '../../utils'
 import { base } from './base'
-import { contrastText, state, steps } from './steps'
+import { contrastText, lightSteps, state } from './steps'
 
 const neutral: ColorScale = [
   '#fcfcfc',
@@ -103,7 +103,7 @@ const colorPart = {
     danger,
     info,
   },
-  steps,
+  steps: lightSteps,
   state,
   contrastText,
   shadows: {
