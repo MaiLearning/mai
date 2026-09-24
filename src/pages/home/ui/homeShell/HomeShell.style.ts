@@ -1,3 +1,4 @@
+import { Button } from '@mai/theme'
 import styled from 'styled-components'
 
 /** Каркас главной: сайдбар слева (только lg+), контент по центру, мобильная навигация снизу. */
@@ -15,66 +16,6 @@ export const ShellRoot = styled.div`
 export const ShellInner = styled.div`
   display: flex;
   width: 100%;
-`
-
-export const Sidebar = styled.aside`
-  display: none;
-  flex-shrink: 0;
-  position: sticky;
-  top: 0;
-  height: 100vh;
-  width: 256px;
-  padding: 24px 20px;
-  border-right: 1px solid ${({ theme }) => theme.border.default};
-  @container home-shell (min-width: 1200px) {
-    display: block;
-  }
-`
-
-export const Brand = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 0 8px;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  color: ${({ theme }) => theme.text.primary};
-`
-
-export const BrandMark = styled.span`
-  display: grid;
-  place-items: center;
-  width: 32px;
-  height: 32px;
-  border-radius: ${({ theme }) => theme.radius.md};
-  background: ${({ theme }) => theme.background.accent};
-  color: ${({ theme }) => theme.text.onPrimary};
-  box-shadow: ${({ theme }) => theme.shadows.sm};
-`
-
-export const Nav = styled.nav`
-  margin-top: 40px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  font-size: 14px;
-`
-
-export const NavLink = styled.a<{ $active?: boolean }>`
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 12px;
-  border-radius: ${({ theme }) => theme.radius.md};
-  text-decoration: none;
-  font-weight: ${({ $active }) => ($active ? 600 : 400)};
-  color: ${({ theme, $active }) => ($active ? theme.text.primary : theme.text.muted)};
-  background: ${({ theme, $active }) => ($active ? theme.background.selected : 'transparent')};
-  transition: background ${({ theme }) => theme.durations.fast};
-  &:hover {
-    background: ${({ theme, $active }) => ($active ? theme.background.selected : theme.background.hover)};
-    color: ${({ theme }) => theme.text.primary};
-  }
 `
 
 export const Content = styled.section`
@@ -105,7 +46,7 @@ export const Header = styled.header`
   justify-content: space-between;
   gap: 16px;
   padding-bottom: 28px;
-  border-bottom: 1px solid ${({ theme }) => theme.border.default};
+  border-bottom: 1px solid ${({ theme }) => theme.utils.getBorder('neutral', 'default')};
   @container content (min-width: 768px) {
     align-items: center;
   }
@@ -121,9 +62,9 @@ export const MobileBrand = styled.div`
   gap: 8px;
   margin-bottom: 8px;
   font-size: 12px;
-  color: ${({ theme }) => theme.text.muted};
+  color: ${({ theme }) => theme.utils.getText('neutral', 'muted')};
   svg {
-    color: ${({ theme }) => theme.text.accent};
+    color: ${({ theme }) => theme.utils.getText('accent', 'primary')};
   }
   @container home-shell (min-width: 1200px) {
     display: none;
@@ -133,9 +74,9 @@ export const MobileBrand = styled.div`
 export const Greeting = styled.h1`
   margin: 0;
   font-size: 20px;
-  font-weight: 600;
+  font-weight: ${({ theme }) => theme.typography.weights.semibold};
   letter-spacing: -0.02em;
-  color: ${({ theme }) => theme.text.primary};
+  color: ${({ theme }) => theme.utils.getText('neutral', 'primary')};
   @container content (min-width: 560px) {
     font-size: 24px;
   }
@@ -147,7 +88,7 @@ export const Greeting = styled.h1`
 export const GreetingSub = styled.p`
   margin: 4px 0 0;
   font-size: 14px;
-  color: ${({ theme }) => theme.text.muted};
+  color: ${({ theme }) => theme.utils.getText('neutral', 'muted')};
 `
 
 export const HeaderActions = styled.div`
@@ -157,25 +98,17 @@ export const HeaderActions = styled.div`
   gap: 8px;
 `
 
-export const IconButton = styled.button`
-  cursor: pointer;
-  display: grid;
-  place-items: center;
-  padding: 10px;
-  border: 1px solid ${({ theme }) => theme.border.default};
+/** Кнопка-иконка шапки: тема `Button`, приведённая к квадрату 40×40. */
+export const IconButton = styled(Button)`
+  box-sizing: border-box;
+  width: 40px;
+  height: 40px;
+  padding: 0;
   border-radius: ${({ theme }) => theme.radius.md};
-  background: transparent;
-  color: ${({ theme }) => theme.text.muted};
-  transition:
-    background ${({ theme }) => theme.durations.fast},
-    color ${({ theme }) => theme.durations.fast};
-  &:hover {
-    background: ${({ theme }) => theme.background.hover};
-    color: ${({ theme }) => theme.text.primary};
-  }
-  &:focus-visible {
-    outline: 2px solid ${({ theme }) => theme.focus.ring};
-    outline-offset: 2px;
+  color: ${({ theme }) => theme.utils.getText('neutral', 'muted')};
+
+  &:hover:not(:disabled) {
+    color: ${({ theme }) => theme.utils.getText('neutral', 'primary')};
   }
 `
 
@@ -185,46 +118,12 @@ export const Avatar = styled.div`
   width: 36px;
   height: 36px;
   border-radius: ${({ theme }) => theme.radius.full};
-  background: linear-gradient(135deg, #a78bfa, #4f46e5);
-  color: #ffffff;
+  background: linear-gradient(
+    135deg,
+    ${({ theme }) => theme.utils.getSolid('accent', 'hover')},
+    ${({ theme }) => theme.utils.getSolid('accent', 'base')}
+  );
+  color: ${({ theme }) => theme.contrastText.accent};
   font-size: 12px;
-  font-weight: 600;
-`
-
-export const MobileNav = styled.nav`
-  position: fixed;
-  inset-inline: 0;
-  bottom: 0;
-  z-index: ${({ theme }) => theme.zIndex.popover};
-  padding: 8px 12px max(12px, env(safe-area-inset-bottom));
-  border-top: 1px solid ${({ theme }) => theme.border.default};
-  background: ${({ theme }) => theme.background.elevated};
-  @container home-shell (min-width: 1200px) {
-    display: none;
-  }
-`
-
-export const MobileNavGrid = styled.div`
-  margin: 0 auto;
-  display: grid;
-  max-width: 28rem;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 4px;
-`
-
-export const MobileNavLink = styled.a<{ $active?: boolean }>`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  padding: 8px;
-  border-radius: ${({ theme }) => theme.radius.md};
-  text-decoration: none;
-  font-size: 11px;
-  font-weight: 500;
-  color: ${({ theme, $active }) => ($active ? theme.text.primary : theme.text.muted)};
-  &:hover {
-    background: ${({ theme }) => theme.background.hover};
-    color: ${({ theme }) => theme.text.primary};
-  }
+  font-weight: ${({ theme }) => theme.typography.weights.semibold};
 `

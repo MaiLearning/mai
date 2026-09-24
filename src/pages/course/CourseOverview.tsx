@@ -1,8 +1,9 @@
 import { selectCourseAtom } from '@mai/course'
+import { Alert } from '@mai/theme'
 import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 import { useParams } from 'react-router-dom'
-import { Hint, Kicker, Lead, Overview, Title } from './CourseOverview.style'
+import { Kicker, Lead, Overview, Title } from './CourseOverview.style'
 
 /**
  * CourseOverview — обзор курса (index-роут /course/:courseId).
@@ -19,7 +20,7 @@ export function CourseOverview() {
   if (!course) {
     return (
       <Overview>
-        <Hint color="muted">Курс не найден.</Hint>
+        <Alert variant="warning">Курс не найден.</Alert>
       </Overview>
     )
   }
@@ -29,7 +30,7 @@ export function CourseOverview() {
       <Kicker>Курс</Kicker>
       <Title>{course.name}</Title>
       <Lead>{course.description ?? 'Описание пока не заполнено.'}</Lead>
-      <Hint color="muted">Выберите материал в содержании слева, чтобы продолжить.</Hint>
+      <Alert variant="info">Выберите материал в содержании слева, чтобы продолжить.</Alert>
     </Overview>
   )
 }

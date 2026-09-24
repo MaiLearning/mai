@@ -2,21 +2,12 @@ import { LAST_OPENED_COURSE_KEY, loadCourseByIdAtom, selectCourseAtom } from '@m
 import { setKvValue } from '@mai/kv'
 import { CourseSidebarRoot } from '@mai/sidebar'
 import { warn } from '@mai/tauri/logs'
-import { Button, Spinner, Text } from '@mai/theme'
+import { Button, Flex, Spinner, Stack, Text } from '@mai/theme'
 import { useAtomValue, useSetAtom } from 'jotai'
 import { PanelLeftOpen, Settings } from 'lucide-react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Outlet, useNavigate, useParams } from 'react-router-dom'
-import {
-  FullPage,
-  LoadState,
-  Main,
-  Overlay,
-  Rail,
-  RailButton,
-  Shell,
-  SidebarSlot,
-} from './CourseShell.style'
+import { Main, Overlay, Rail, RailButton, Shell, SidebarSlot } from './CourseShell.style'
 
 /**
  * CourseShell — шелл страницы курса.
@@ -93,23 +84,23 @@ export function CourseShell() {
 
   if (!course && loading) {
     return (
-      <FullPage>
+      <Flex align="center" justify="center" style={{ minHeight: '100vh', padding: 32 }}>
         <Spinner label="Загрузка курса" />
-      </FullPage>
+      </Flex>
     )
   }
 
   if (!course && error) {
     return (
-      <FullPage>
-        <LoadState>
+      <Flex align="center" justify="center" style={{ minHeight: '100vh', padding: 32 }}>
+        <Stack gap="sm" align="center" style={{ textAlign: 'center' }}>
           <Text>Не удалось загрузить курс</Text>
           <Text color="muted">{error}</Text>
           <Button variant="secondary" onClick={load}>
             Повторить
           </Button>
-        </LoadState>
-      </FullPage>
+        </Stack>
+      </Flex>
     )
   }
 
@@ -132,12 +123,18 @@ export function CourseShell() {
 
       <Rail aria-label="Панель курса">
         {/* Настроек курса пока нет — временно ведём на главную */}
-        <RailButton onClick={() => setMenuOpen(true)} aria-label="Открыть содержание">
-          <PanelLeftOpen size={18} />
-        </RailButton>
-        <RailButton onClick={() => navigate('/home')} aria-label="Настройки курса">
-          <Settings size={18} />
-        </RailButton>
+        <RailButton
+          variant="ghost"
+          onlyIcon={<PanelLeftOpen size={18} aria-hidden="true" />}
+          onClick={() => setMenuOpen(true)}
+          aria-label="Открыть содержание"
+        />
+        <RailButton
+          variant="ghost"
+          onlyIcon={<Settings size={18} aria-hidden="true" />}
+          onClick={() => navigate('/home')}
+          aria-label="Настройки курса"
+        />
       </Rail>
 
       <Main>

@@ -11,8 +11,6 @@ import {
 import type { ReactNode } from 'react'
 import {
   Avatar,
-  Brand,
-  BrandMark,
   Content,
   ContentInner,
   Greeting,
@@ -22,15 +20,19 @@ import {
   HeaderText,
   IconButton,
   MobileBrand,
+  ShellInner,
+  ShellRoot,
+} from './HomeShell.style'
+import {
+  Brand,
+  BrandMark,
   MobileNav,
   MobileNavGrid,
   MobileNavLink,
   Nav,
   NavLink,
-  ShellInner,
-  ShellRoot,
   Sidebar,
-} from './HomeShell.style'
+} from './HomeShellNav.style'
 
 interface HomeShellProps {
   /** Имя пользователя в приветствии. */
@@ -87,9 +89,12 @@ export function HomeShell({ userName, userInitials, children }: HomeShellProps) 
               </HeaderText>
               <HeaderActions>
                 {/* TODO: панель уведомлений ещё не существует */}
-                <IconButton type="button" aria-label={t('notifications')}>
-                  <Bell size={18} aria-hidden="true" />
-                </IconButton>
+                <IconButton
+                  type="button"
+                  variant="outline"
+                  onlyIcon={<Bell size={18} aria-hidden="true" />}
+                  aria-label={t('notifications')}
+                />
                 <Avatar aria-hidden="true">{userInitials}</Avatar>
               </HeaderActions>
             </Header>
