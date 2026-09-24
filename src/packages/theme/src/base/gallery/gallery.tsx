@@ -1,8 +1,8 @@
 import { useMemo } from 'react'
 import { ThemeProvider, useTheme } from 'styled-components'
-import { Alert } from '../../ui/base/alert/alert'
-import { Button } from '../../ui/base/button/button'
-import { Text } from '../../ui/base/text/text'
+import { Text } from '../../components/foundation/text/text'
+import { Alert } from '../../components/primitive/alert/alert'
+import { Button } from '../../components/primitive/button/button'
 import { monoFonts, resolveFontFamily, sansFonts } from '../fonts/fontVariants'
 import type { AppTheme } from '../theme'
 import {

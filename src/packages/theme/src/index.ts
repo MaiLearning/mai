@@ -1,5 +1,46 @@
 /// В будущем мне еще предстоит разобраться с тем, что из этого экспортировать нужно а что нет.
 
+export type { IconName, IconProps, IconSize } from '@mai/icons'
+export {
+  CheckIcon,
+  CloseIcon,
+  ErrorIcon,
+  EyeIcon,
+  EyeOffIcon,
+  Icon,
+  InfoIcon,
+  SuccessIcon,
+  WarningIcon,
+} from '@mai/icons'
+export { ContextMenu } from '../packages/context-menu/src/contextMenu'
+export type {
+  ContextMenuHeaderProps,
+  ContextMenuItemProps,
+  ContextMenuRootProps,
+  ContextMenuSeparatorProps,
+  ContextMenuSubProps,
+  MenuItem,
+} from '../packages/context-menu/src/contextMenu.types'
+export type { MenuState } from '../packages/context-menu/src/useContextMenu'
+export { useContextMenu } from '../packages/context-menu/src/useContextMenu'
+export type {
+  DropdownMenuItem,
+  DropdownMenuPart,
+  DropdownMenuProps,
+} from '../packages/dropdown-menu/src/dropdownMenu'
+export { DropdownMenu } from '../packages/dropdown-menu/src/dropdownMenu'
+export type { NumberFieldProps } from '../packages/fields/src/numberField/numberField'
+export { NumberField } from '../packages/fields/src/numberField/numberField'
+export type { PasswordFieldProps } from '../packages/fields/src/passwordField/passwordField'
+export { PasswordField } from '../packages/fields/src/passwordField/passwordField'
+export type { SearchFieldProps } from '../packages/fields/src/searchField/searchField'
+export { SearchField } from '../packages/fields/src/searchField/searchField'
+export type { TextAreaFieldProps } from '../packages/fields/src/textAreaField/textAreaField'
+export { TextAreaField } from '../packages/fields/src/textAreaField/textAreaField'
+export type { TextFieldProps } from '../packages/fields/src/textField/textField'
+export { TextField } from '../packages/fields/src/textField/textField'
+export type { SelectItem, SelectProps } from '../packages/select/src/select'
+export { Select } from '../packages/select/src/select'
 export type { AppThemeContextValue, ThemeMode, ThemeName, ThemePreference } from './base/context'
 export { AppThemeContext } from './base/context'
 export { useAppTheme } from './base/hooks'
@@ -15,73 +56,31 @@ export type {
   IntentName,
   SolidKey,
   StateName,
+  StepKey,
   StepsConfig,
 } from './base/theme'
-export { base, contrastText, dark, light, state, steps } from './base/themes'
+export { base, contrastText, dark, darkSteps, light, lightSteps, state } from './base/themes'
 export type { ThemeDefinition, ThemeRegistry } from './base/types'
 export { blendColors, getColor, getFocusRing, withState } from './base/utils'
 export type { ThemeUtils } from './base/utils/createThemeUtils'
-export type { AlertProps, AlertVariant } from './ui/base/alert/alert'
-export { Alert } from './ui/base/alert/alert'
-export type { BadgeProps, BadgeTone, BadgeVariant } from './ui/base/badge/badge'
-export { Badge } from './ui/base/badge/badge'
-export type { BoxProps } from './ui/base/box/box'
-export { Box } from './ui/base/box/box'
-export type { ButtonProps, ButtonSize, ButtonVariant } from './ui/base/button/button'
-export { Button } from './ui/base/button/button'
-export type { CardProps } from './ui/base/card/card'
-export { Card } from './ui/base/card/card'
-export type { CheckboxProps } from './ui/base/checkbox/checkbox'
-export { Checkbox } from './ui/base/checkbox/checkbox'
-export type {
-  CheckboxGroupItem,
-  CheckboxGroupProps,
-} from './ui/base/checkboxGroup/checkboxGroup'
-export { CheckboxGroup } from './ui/base/checkboxGroup/checkboxGroup'
-export type {
-  DropdownMenuItem,
-  DropdownMenuPart,
-  DropdownMenuProps,
-} from './ui/base/dropdownMenu/dropdownMenu'
-export { DropdownMenu } from './ui/base/dropdownMenu/dropdownMenu'
-export type { FieldProps } from './ui/base/field/field'
-export { Field } from './ui/base/field/field'
-export type { FlexProps } from './ui/base/flex/flex'
-export { Flex } from './ui/base/flex/flex'
-export type { HeadingLevel, HeadingProps } from './ui/base/heading/heading'
-export { Heading } from './ui/base/heading/heading'
-export type { IconProps, IconSize } from './ui/base/icon/icon'
-export { Icon } from './ui/base/icon/icon'
-export type { LinkProps } from './ui/base/link/link'
-export { Link } from './ui/base/link/link'
-export type {
-  ListComponent,
-  ListDirection,
-  ListGap,
-  ListItemProps,
-  ListKey,
-  ListProps,
-  ListSelectionMode,
-} from './ui/base/list/list'
-export { List } from './ui/base/list/list'
-export type { ModalProps } from './ui/base/modal/modal'
-export { Modal } from './ui/base/modal/modal'
-export { ModalBody, ModalFooter, ModalFooterSpacer } from './ui/base/modal/modal.style'
-export type { ProgressProps } from './ui/base/progress/progress'
-export { Progress } from './ui/base/progress/progress'
-export type { ScrollAreaProps } from './ui/base/scrollArea/scrollArea'
-export { ScrollArea } from './ui/base/scrollArea/scrollArea'
-export type {
-  SegmentedControlItem,
-  SegmentedControlProps,
-} from './ui/base/segmentedControl/segmentedControl'
-export { SegmentedControl } from './ui/base/segmentedControl/segmentedControl'
-export type { SelectItem, SelectProps } from './ui/base/select/select'
-export { Select } from './ui/base/select/select'
-export type { SpinnerProps } from './ui/base/spinner/spinner'
-export { Spinner } from './ui/base/spinner/spinner'
-export type { SwitchProps } from './ui/base/switch/switch'
-export { Switch } from './ui/base/switch/switch'
+export type { BadgeProps, BadgeTone, BadgeVariant } from './components/foundation/badge/badge'
+export { Badge } from './components/foundation/badge/badge'
+export type { BoxProps } from './components/foundation/box/box'
+export { Box } from './components/foundation/box/box'
+export type { CardProps } from './components/foundation/card/card'
+export { Card } from './components/foundation/card/card'
+export type { FlexProps } from './components/foundation/flex/flex'
+export { Flex } from './components/foundation/flex/flex'
+export type { HeadingLevel, HeadingProps } from './components/foundation/heading/heading'
+export { Heading } from './components/foundation/heading/heading'
+export type { ProgressProps } from './components/foundation/progress/progress'
+export { Progress } from './components/foundation/progress/progress'
+export type { ScrollAreaProps } from './components/foundation/scrollArea/scrollArea'
+export { ScrollArea } from './components/foundation/scrollArea/scrollArea'
+export type { SpinnerProps } from './components/foundation/spinner/spinner'
+export { Spinner } from './components/foundation/spinner/spinner'
+export type { StackAlign, StackDirection, StackProps } from './components/foundation/stack/stack'
+export { Stack } from './components/foundation/stack/stack'
 export type {
   TextAlign,
   TextColor,
@@ -90,40 +89,44 @@ export type {
   TextProps,
   TextSize,
   TextWeight,
-} from './ui/base/text/text'
-export { Text } from './ui/base/text/text'
-export { ContextMenu } from './ui/context-menu/contextMenu'
+} from './components/foundation/text/text'
+export { Text } from './components/foundation/text/text'
 export type {
-  ContextMenuHeaderProps,
-  ContextMenuItemProps,
-  ContextMenuRootProps,
-  ContextMenuSeparatorProps,
-  ContextMenuSubProps,
-  MenuItem,
-} from './ui/context-menu/contextMenu.types'
-export type { MenuState } from './ui/context-menu/useContextMenu'
-export { useContextMenu } from './ui/context-menu/useContextMenu'
-export type { NumberFieldProps } from './ui/fields/numberField/numberField'
-export { NumberField } from './ui/fields/numberField/numberField'
-export type { PasswordFieldProps } from './ui/fields/passwordField/passwordField'
-export { PasswordField } from './ui/fields/passwordField/passwordField'
-export type { SearchFieldProps } from './ui/fields/searchField/searchField'
-export { SearchField } from './ui/fields/searchField/searchField'
-export type { TextAreaFieldProps } from './ui/fields/textAreaField/textAreaField'
-export { TextAreaField } from './ui/fields/textAreaField/textAreaField'
-export type { TextFieldProps } from './ui/fields/textField/textField'
-export { TextField } from './ui/fields/textField/textField'
+  CheckboxGroupItem,
+  CheckboxGroupProps,
+} from './components/pattern/checkboxGroup/checkboxGroup'
+export { CheckboxGroup } from './components/pattern/checkboxGroup/checkboxGroup'
 export type {
-  HierarchicalListItemProps,
-  HierarchicalListProps,
-} from './ui/hierarchicalList/hierarchicalList'
-
-export { HierarchicalList } from './ui/hierarchicalList/hierarchicalList'
-export type { HierarchicalRenderNode } from './ui/hierarchicalList/utils/renderHierarchicalItems'
-export { renderHierarchicalItems } from './ui/hierarchicalList/utils/renderHierarchicalItems'
-export { CloseIcon } from './ui/icons/icons/close'
-export { ErrorIcon } from './ui/icons/icons/error'
-export { EyeIcon, EyeOffIcon } from './ui/icons/icons/eye'
-export { InfoIcon } from './ui/icons/icons/info'
-export { SuccessIcon } from './ui/icons/icons/success'
-export { WarningIcon } from './ui/icons/icons/warning'
+  FieldCounterProps,
+  FieldDescriptionProps,
+  FieldErrorMessageProps,
+  FieldErrorProps,
+  FieldLabelProps,
+  FieldProps,
+} from './components/pattern/field/field'
+export { Field } from './components/pattern/field/field'
+export type {
+  FieldControlProps,
+  FieldControlProvidedProps,
+} from './components/pattern/field/fieldControl'
+export { useFieldControl, useFieldControlContext } from './components/pattern/field/fieldControl'
+export type { AlertProps, AlertVariant } from './components/primitive/alert/alert'
+export { Alert } from './components/primitive/alert/alert'
+export type { ButtonProps, ButtonSize, ButtonVariant } from './components/primitive/button/button'
+export { Button } from './components/primitive/button/button'
+export type { CheckboxProps } from './components/primitive/checkbox/checkbox'
+export { Checkbox } from './components/primitive/checkbox/checkbox'
+export type { InputProps, InputSize } from './components/primitive/input/input'
+export { Input } from './components/primitive/input/input'
+export type { LinkProps } from './components/primitive/link/link'
+export { Link } from './components/primitive/link/link'
+export type { ModalProps } from './components/primitive/modal/modal'
+export { Modal } from './components/primitive/modal/modal'
+export { ModalBody, ModalFooter, ModalFooterSpacer } from './components/primitive/modal/modal.style'
+export type {
+  SegmentedControlItem,
+  SegmentedControlProps,
+} from './components/primitive/segmentedControl/segmentedControl'
+export { SegmentedControl } from './components/primitive/segmentedControl/segmentedControl'
+export type { SwitchProps } from './components/primitive/switch/switch'
+export { Switch } from './components/primitive/switch/switch'
