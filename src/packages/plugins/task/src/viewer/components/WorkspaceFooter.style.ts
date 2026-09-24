@@ -15,7 +15,7 @@ export const Footer = styled.footer`
   gap: 16px;
   min-height: 104px;
   padding: 8px 28px 18px;
-  background: ${({ theme }) => theme.background.body};
+  background: ${({ theme }) => theme.utils.getBackground('neutral', 'body')};
 
   @container task-viewer (max-width: 479px) {
     min-height: 64px;
@@ -46,15 +46,15 @@ const Plate = styled.button`
   justify-content: center;
   flex-shrink: 0;
   height: 44px;
-  border: 1px solid ${({ theme }) => theme.border.default};
+  border: 1px solid ${({ theme }) => theme.utils.getBorder('neutral', 'default')};
   border-radius: ${({ theme }) => theme.radius.md};
-  background: ${({ theme }) => theme.background.accent};
-  color: ${({ theme }) => theme.text.primary};
+  background: ${({ theme }) => theme.utils.getSolid('accent', 'base')};
+  color: ${({ theme }) => theme.contrastText.accent};
   box-shadow: ${({ theme }) => theme.shadows.md};
   transition: all ${({ theme }) => theme.durations.fast};
 
   &:hover:not(:disabled) {
-    background: ${({ theme }) => theme.background.accentHover};
+    background: ${({ theme }) => theme.utils.getSolid('accent', 'hover')};
   }
 
   &:active:not(:disabled) {
@@ -102,7 +102,9 @@ export const Result = styled.span<{ $status: Exclude<CheckStatus, 'idle'> }>`
   font-size: 0.8125rem;
   font-weight: 600;
   color: ${({ theme, $status }) =>
-    $status === 'correct' ? theme.status.success.foreground : theme.status.danger.foreground};
+    $status === 'correct'
+      ? theme.utils.getText('success', 'primary')
+      : theme.utils.getText('danger', 'primary')};
 `
 
 /** Подпись результата: на узком вьюере скрывается, остаётся иконка. */

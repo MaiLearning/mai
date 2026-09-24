@@ -25,9 +25,9 @@ export function DifficultyMenu({
 }: DifficultyMenuProps) {
   const theme = useTheme()
   const toneColor: Record<DifficultyTone, string> = {
-    easy: theme.status.success.foreground,
-    medium: theme.text.accent,
-    hard: theme.status.danger.foreground,
+    easy: theme.utils.getSolid('success', 'base'),
+    medium: theme.utils.getSolid('accent', 'base'),
+    hard: theme.utils.getSolid('danger', 'base'),
   }
 
   return (

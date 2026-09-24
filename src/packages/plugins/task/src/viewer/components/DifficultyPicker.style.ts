@@ -6,10 +6,14 @@ export const MenuRow = styled.div<{ $active: boolean }>`
   align-items: center;
   gap: 2px;
   border-radius: ${({ theme }) => theme.radius.sm};
-  background: ${({ $active, theme }) => ($active ? theme.background.selected : 'transparent')};
+  background: ${({ $active, theme }) =>
+    $active
+      ? theme.utils.withState(theme.utils.getBackground('neutral', 'surface'), 'selectedAlpha')
+      : 'transparent'};
 
   &:hover {
-    background: ${({ theme }) => theme.background.hover};
+    background: ${({ theme }) =>
+      theme.utils.withState(theme.utils.getBackground('neutral', 'surface'), 'hoverAlpha')};
   }
 `
 
@@ -23,7 +27,7 @@ export const RowButton = styled.button`
   padding: 9px 10px;
   border: none;
   background: transparent;
-  color: ${({ theme }) => theme.text.primary};
+  color: ${({ theme }) => theme.utils.getText('neutral', 'primary')};
   font-size: 0.875rem;
   font-weight: 500;
   text-align: left;
@@ -45,12 +49,14 @@ export const ActionButton = styled.button<{ $danger?: boolean }>`
   border: none;
   border-radius: ${({ theme }) => theme.radius.sm};
   background: transparent;
-  color: ${({ theme }) => theme.text.muted};
+  color: ${({ theme }) => theme.utils.getText('neutral', 'muted')};
   transition: all ${({ theme }) => theme.durations.fast};
 
   &:hover {
-    color: ${({ theme, $danger }) => ($danger ? theme.status.danger.foreground : theme.text.primary)};
+    color: ${({ theme, $danger }) => ($danger ? theme.utils.getText('danger', 'primary') : theme.utils.getText('neutral', 'primary'))};
     background: ${({ theme, $danger }) =>
-      $danger ? theme.status.danger.background : theme.background.elevated};
+      $danger
+        ? theme.utils.getBackground('danger', 'surface')
+        : theme.utils.getBackground('neutral', 'elevated')};
   }
 `

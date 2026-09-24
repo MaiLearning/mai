@@ -1,5 +1,5 @@
+import { Tooltip } from '@mai/theme'
 import { Check, ChevronLeft, ChevronRight, CircleAlert, CircleCheck, RotateCcw } from 'lucide-react'
-import { Tooltip } from '../../ui'
 import type { CheckStatus } from '../core/types'
 import type { SaveState } from '../lib/useSavePipeline'
 import { SaveIndicator } from './SaveIndicator'

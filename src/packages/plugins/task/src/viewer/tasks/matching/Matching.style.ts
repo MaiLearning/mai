@@ -19,10 +19,12 @@ const Cell = styled.div<{ $variant: 'term' | 'def'; $state?: 'idle' | 'correct' 
   gap: 10px;
   padding: 14px 16px;
   border-radius: ${({ theme }) => theme.radius.md};
-  border: 1px solid ${({ theme }) => theme.border.default};
+  border: 1px solid ${({ theme }) => theme.utils.getBorder('neutral', 'default')};
   background: ${({ theme, $variant }) =>
-    $variant === 'term' ? theme.background.elevated : theme.background.surface};
-  color: ${({ theme }) => theme.text.primary};
+    $variant === 'term'
+      ? theme.utils.getBackground('neutral', 'elevated')
+      : theme.utils.getBackground('neutral', 'surface')};
+  color: ${({ theme }) => theme.utils.getText('neutral', 'primary')};
   min-height: 52px;
 
   ${({ $variant, theme }) =>
@@ -30,32 +32,32 @@ const Cell = styled.div<{ $variant: 'term' | 'def'; $state?: 'idle' | 'correct' 
     css`
       cursor: grab;
       &:hover {
-        border-color: ${theme.border.strong};
+        border-color: ${theme.utils.getBorder('neutral', 'strong')};
       }
     `}
 
   ${({ $state, theme }) =>
     $state === 'correct' &&
     css`
-      border-color: ${theme.status.success.foreground};
-      background: ${theme.status.success.background};
+      border-color: ${theme.utils.getBorder('success', 'default')};
+      background: ${theme.utils.getBackground('success', 'surface')};
     `}
 
   ${({ $state, theme }) =>
     $state === 'incorrect' &&
     css`
-      border-color: ${theme.status.danger.foreground};
-      background: ${theme.status.danger.background};
+      border-color: ${theme.utils.getBorder('danger', 'default')};
+      background: ${theme.utils.getBackground('danger', 'surface')};
     `}
 
   svg.grip {
-    color: ${({ theme }) => theme.text.muted};
+    color: ${({ theme }) => theme.utils.getText('neutral', 'muted')};
     flex-shrink: 0;
   }
 `
 
 const Connector = styled.span`
-  color: ${({ theme }) => theme.text.muted};
+  color: ${({ theme }) => theme.utils.getText('neutral', 'muted')};
   font-size: 1.1rem;
   user-select: none;
 `

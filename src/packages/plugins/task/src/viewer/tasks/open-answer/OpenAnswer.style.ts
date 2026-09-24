@@ -9,9 +9,9 @@ const TextArea = styled.textarea<{
   resize: vertical;
   padding: 16px;
   border-radius: ${({ theme }) => theme.radius.md};
-  border: 1px solid ${({ theme }) => theme.border.default};
-  background: ${({ theme }) => theme.background.body};
-  color: ${({ theme }) => theme.text.primary};
+  border: 1px solid ${({ theme }) => theme.utils.getBorder('neutral', 'default')};
+  background: ${({ theme }) => theme.utils.getBackground('neutral', 'body')};
+  color: ${({ theme }) => theme.utils.getText('neutral', 'primary')};
   font: inherit;
   font-size: 1rem;
   line-height: 1.6;
@@ -19,7 +19,7 @@ const TextArea = styled.textarea<{
   cursor: ${({ $locked }) => ($locked ? 'default' : 'text')};
 
   &::placeholder {
-    color: ${({ theme }) => theme.text.muted};
+    color: ${({ theme }) => theme.utils.getText('neutral', 'muted')};
   }
 
   &:focus {
@@ -31,15 +31,15 @@ const TextArea = styled.textarea<{
     !$locked &&
     css`
       &:focus {
-        border-color: ${theme.border.accent};
-        box-shadow: 0 0 0 3px ${theme.background.accentSubtle};
+        border-color: ${theme.utils.getBorder('accent', 'default')};
+        box-shadow: 0 0 0 3px ${theme.utils.getBackground('accent', 'surface')};
       }
     `}
 
   ${({ $state, theme }) =>
     $state === 'correct' &&
     css`
-      border-color: ${theme.status.success.foreground};
+      border-color: ${theme.utils.getBorder('success', 'default')};
     `}
 `
 
@@ -48,11 +48,11 @@ const SampleCard = styled.div`
   gap: 12px;
   padding: 16px;
   border-radius: ${({ theme }) => theme.radius.md};
-  border: 1px solid ${({ theme }) => theme.border.default};
-  background: ${({ theme }) => theme.background.elevated};
+  border: 1px solid ${({ theme }) => theme.utils.getBorder('neutral', 'default')};
+  background: ${({ theme }) => theme.utils.getBackground('neutral', 'elevated')};
 
   svg {
-    color: ${({ theme }) => theme.text.accent};
+    color: ${({ theme }) => theme.utils.getText('accent', 'primary')};
     flex-shrink: 0;
     margin-top: 2px;
   }
@@ -68,11 +68,11 @@ const SampleBody = styled.div`
     font-weight: 600;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    color: ${({ theme }) => theme.text.muted};
+    color: ${({ theme }) => theme.utils.getText('neutral', 'muted')};
   }
 
   .text {
-    color: ${({ theme }) => theme.text.primary};
+    color: ${({ theme }) => theme.utils.getText('neutral', 'primary')};
     line-height: 1.6;
   }
 `
@@ -83,13 +83,13 @@ const EditRow = styled.div`
   align-items: center;
   padding: 14px 16px;
   border-radius: ${({ theme }) => theme.radius.md};
-  border: 1px solid ${({ theme }) => theme.border.default};
-  background: ${({ theme }) => theme.background.body};
-  color: ${({ theme }) => theme.text.primary};
+  border: 1px solid ${({ theme }) => theme.utils.getBorder('neutral', 'default')};
+  background: ${({ theme }) => theme.utils.getBackground('neutral', 'body')};
+  color: ${({ theme }) => theme.utils.getText('neutral', 'primary')};
   transition: all ${({ theme }) => theme.durations.fast};
 
   &:hover {
-    border-color: ${({ theme }) => theme.border.strong};
+    border-color: ${({ theme }) => theme.utils.getBorder('neutral', 'strong')};
   }
 `
 

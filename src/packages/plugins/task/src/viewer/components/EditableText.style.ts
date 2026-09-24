@@ -15,7 +15,7 @@ export const Editable = styled.div<{
   padding: ${({ $editing }) => ($editing ? '6px 10px' : '0')};
   /* Компенсация padding: текст не сдвигается между режимами; в строках отключается */
   margin: ${({ $editing, $offset }) => ($editing && $offset ? '-6px -10px' : '0')};
-  color: ${({ theme, $muted }) => ($muted ? theme.text.muted : 'inherit')};
+  color: ${({ theme, $muted }) => ($muted ? theme.utils.getText('neutral', 'muted') : 'inherit')};
   transition:
     background ${({ theme }) => theme.durations.fast},
     box-shadow ${({ theme }) => theme.durations.fast};
@@ -28,7 +28,7 @@ export const Editable = styled.div<{
       cursor: text;
 
       &:hover {
-        box-shadow: inset 0 0 0 1px ${theme.border.strong};
+        box-shadow: inset 0 0 0 1px ${theme.utils.getBorder('neutral', 'strong')};
       }
 
       /* Гасим глобальный :focus-visible — иначе вокруг собственного
@@ -36,13 +36,13 @@ export const Editable = styled.div<{
       &:focus,
       &:focus-visible {
         outline: none;
-        background: ${theme.background.body};
-        box-shadow: inset 0 0 0 1px ${theme.border.accent};
+        background: ${theme.utils.getBackground('neutral', 'body')};
+        box-shadow: inset 0 0 0 1px ${theme.utils.getBorder('accent', 'default')};
       }
 
       &:empty::before {
         content: attr(data-placeholder);
-        color: ${theme.text.muted};
+        color: ${theme.utils.getText('neutral', 'muted')};
         pointer-events: none;
       }
     `}

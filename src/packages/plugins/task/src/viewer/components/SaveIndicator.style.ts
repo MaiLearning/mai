@@ -7,7 +7,7 @@ export const IndicatorRoot = styled.div`
   gap: 9px;
   font-size: 0.8125rem;
   font-weight: 400;
-  color: ${({ theme }) => theme.text.muted};
+  color: ${({ theme }) => theme.utils.getText('neutral', 'muted')};
 `
 
 /** Подпись состояния: на узком вьюере скрывается, остаётся только точка. */
@@ -24,10 +24,10 @@ export const Dot = styled.span<{ $tone: 'muted' | 'primary' | 'success' | 'dange
   border-radius: 999px;
   background: ${({ theme, $tone }) =>
     $tone === 'primary'
-      ? theme.background.accent
+      ? theme.utils.getSolid('accent', 'base')
       : $tone === 'success'
-        ? theme.status.success.foreground
+        ? theme.utils.getSolid('success', 'base')
         : $tone === 'danger'
-          ? theme.status.danger.foreground
-          : theme.border.strong};
+          ? theme.utils.getSolid('danger', 'base')
+          : theme.utils.getBorder('neutral', 'strong')};
 `

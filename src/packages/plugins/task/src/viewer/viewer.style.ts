@@ -11,8 +11,8 @@ export const Viewer = styled.section`
   height: 100%;
   width: 100%;
   min-height: 0;
-  background: ${({ theme }) => theme.background.body};
-  color: ${({ theme }) => theme.text.primary};
+  background: ${({ theme }) => theme.utils.getBackground('neutral', 'body')};
+  color: ${({ theme }) => theme.utils.getText('neutral', 'primary')};
 `
 
 /** Центрированная зона загрузки / пустого состояния. */
@@ -35,7 +35,7 @@ export const EmptyState = styled.div`
 export const EmptyText = styled.p`
   margin: 0;
   font-size: 1rem;
-  color: ${({ theme }) => theme.text.muted};
+  color: ${({ theme }) => theme.utils.getText('neutral', 'muted')};
 `
 
 /**
@@ -64,7 +64,7 @@ export const Header = styled.header`
   flex-direction: column;
   gap: 18px;
   padding: 22px 32px 20px;
-  border-bottom: 1px solid ${({ theme }) => theme.border.default};
+  border-bottom: 1px solid ${({ theme }) => theme.utils.getBorder('neutral', 'default')};
 `
 
 export const StepStrip = styled.div`
@@ -82,42 +82,42 @@ export const Step = styled.button<{ $state: 'idle' | 'current' | 'correct' | 'in
   width: 34px;
   height: 34px;
   border-radius: ${({ theme }) => theme.radius.sm};
-  border: 1px solid ${({ theme }) => theme.border.default};
+  border: 1px solid ${({ theme }) => theme.utils.getBorder('neutral', 'default')};
   background: transparent;
-  color: ${({ theme }) => theme.text.muted};
+  color: ${({ theme }) => theme.utils.getText('neutral', 'muted')};
   font-family: ${({ theme }) => theme.typography.fontFamilyMonospace};
   font-size: 0.8125rem;
   font-weight: 600;
   transition: all ${({ theme }) => theme.durations.fast};
 
   &:hover {
-    border-color: ${({ theme }) => theme.border.strong};
-    color: ${({ theme }) => theme.text.primary};
+    border-color: ${({ theme }) => theme.utils.getBorder('neutral', 'strong')};
+    color: ${({ theme }) => theme.utils.getText('neutral', 'primary')};
   }
 
   ${({ $state, theme }) =>
     $state === 'current' &&
     css`
-      border-color: ${theme.border.accent};
-      background: ${theme.background.accentSubtle};
-      color: ${theme.text.accent};
-      box-shadow: 0 0 0 3px ${theme.background.accentSubtle};
+      border-color: ${theme.utils.getBorder('accent', 'default')};
+      background: ${theme.utils.getBackground('accent', 'surface')};
+      color: ${theme.utils.getText('accent', 'primary')};
+      box-shadow: 0 0 0 3px ${theme.utils.getBackground('accent', 'surface')};
     `}
 
   ${({ $state, theme }) =>
     $state === 'correct' &&
     css`
-      border-color: ${theme.status.success.foreground};
-      background: ${theme.status.success.background};
-      color: ${theme.status.success.foreground};
+      border-color: ${theme.utils.getBorder('success', 'default')};
+      background: ${theme.utils.getBackground('success', 'surface')};
+      color: ${theme.utils.getText('success', 'primary')};
     `}
 
   ${({ $state, theme }) =>
     $state === 'incorrect' &&
     css`
-      border-color: ${theme.status.danger.foreground};
-      background: ${theme.status.danger.background};
-      color: ${theme.status.danger.foreground};
+      border-color: ${theme.utils.getBorder('danger', 'default')};
+      background: ${theme.utils.getBackground('danger', 'surface')};
+      color: ${theme.utils.getText('danger', 'primary')};
     `}
 `
 
@@ -135,9 +135,9 @@ export const StepAdd = styled(Step).attrs({ $state: 'idle' as const })`
   background: transparent;
 
   &:hover {
-    border-color: ${({ theme }) => theme.border.accent};
-    color: ${({ theme }) => theme.text.accent};
-    background: ${({ theme }) => theme.background.accentSubtle};
+    border-color: ${({ theme }) => theme.utils.getBorder('accent', 'default')};
+    color: ${({ theme }) => theme.utils.getText('accent', 'primary')};
+    background: ${({ theme }) => theme.utils.getBackground('accent', 'surface')};
   }
 `
 
@@ -152,7 +152,7 @@ export const TaskNo = styled.span`
   font-family: ${({ theme }) => theme.typography.fontFamily};
   font-size: 1.0625rem;
   font-weight: 700;
-  color: ${({ theme }) => theme.text.primary};
+  color: ${({ theme }) => theme.utils.getText('neutral', 'primary')};
 `
 
 export const Badge = styled.span<{
@@ -167,29 +167,29 @@ export const Badge = styled.span<{
   border-radius: ${({ theme }) => theme.radius.full};
   font-size: 0.75rem;
   font-weight: 600;
-  border: 1px solid ${({ theme }) => theme.border.default};
-  color: ${({ theme }) => theme.text.muted};
-  background: ${({ theme }) => theme.background.raised};
+  border: 1px solid ${({ theme }) => theme.utils.getBorder('neutral', 'default')};
+  color: ${({ theme }) => theme.utils.getText('neutral', 'muted')};
+  background: ${({ theme }) => theme.utils.getBackground('neutral', 'raised')};
 
   ${({ $tone, theme }) =>
     $tone === 'easy' &&
     css`
-      color: ${theme.status.success.foreground};
-      background: ${theme.status.success.background};
+      color: ${theme.utils.getText('success', 'primary')};
+      background: ${theme.utils.getBackground('success', 'surface')};
       border-color: transparent;
     `}
   ${({ $tone, theme }) =>
     $tone === 'medium' &&
     css`
-      color: ${theme.text.accent};
-      background: ${theme.background.accentSubtle};
+      color: ${theme.utils.getText('accent', 'primary')};
+      background: ${theme.utils.getBackground('accent', 'surface')};
       border-color: transparent;
     `}
   ${({ $tone, theme }) =>
     $tone === 'hard' &&
     css`
-      color: ${theme.status.danger.foreground};
-      background: ${theme.status.danger.background};
+      color: ${theme.utils.getText('danger', 'primary')};
+      background: ${theme.utils.getBackground('danger', 'surface')};
       border-color: transparent;
     `}
 
@@ -204,8 +204,8 @@ export const Badge = styled.span<{
 `
 
 export const KindBadge = styled(Badge)`
-  color: ${({ theme }) => theme.text.accent};
-  background: ${({ theme }) => theme.background.accentSubtle};
+  color: ${({ theme }) => theme.utils.getText('accent', 'primary')};
+  background: ${({ theme }) => theme.utils.getBackground('accent', 'surface')};
   border-color: transparent;
 `
 
@@ -214,8 +214,8 @@ export const ModeToggle = styled.div`
   padding: 4px;
   gap: 4px;
   border-radius: ${({ theme }) => theme.radius.md};
-  border: 1px solid ${({ theme }) => theme.border.default};
-  background: ${({ theme }) => theme.background.surface};
+  border: 1px solid ${({ theme }) => theme.utils.getBorder('neutral', 'default')};
+  background: ${({ theme }) => theme.utils.getBackground('neutral', 'surface')};
 `
 
 export const ModeButton = styled.button<{ $active: boolean }>`
@@ -229,11 +229,11 @@ export const ModeButton = styled.button<{ $active: boolean }>`
   font-size: 0.8125rem;
   font-weight: 600;
   transition: all ${({ theme }) => theme.durations.fast};
-  background: ${({ theme, $active }) => ($active ? theme.background.accent : 'transparent')};
-  color: ${({ theme, $active }) => ($active ? theme.text.onPrimary : theme.text.muted)};
+  background: ${({ theme, $active }) => ($active ? theme.utils.getSolid('accent', 'base') : 'transparent')};
+  color: ${({ theme, $active }) => ($active ? theme.contrastText.accent : theme.utils.getText('neutral', 'muted'))};
 
   &:hover {
-    color: ${({ theme, $active }) => ($active ? theme.text.onPrimary : theme.text.primary)};
+    color: ${({ theme, $active }) => ($active ? theme.contrastText.accent : theme.utils.getText('neutral', 'primary'))};
   }
 `
 
@@ -247,17 +247,17 @@ export const GhostButton = styled.button`
   gap: 8px;
   height: 44px;
   padding: 0 18px;
-  border: 1px solid ${({ theme }) => theme.border.default};
+  border: 1px solid ${({ theme }) => theme.utils.getBorder('neutral', 'default')};
   border-radius: ${({ theme }) => theme.radius.md};
   background: transparent;
-  color: ${({ theme }) => theme.text.primary};
+  color: ${({ theme }) => theme.utils.getText('neutral', 'primary')};
   font-size: 0.9375rem;
   font-weight: 600;
   transition: all ${({ theme }) => theme.durations.fast};
 
   &:hover:not(:disabled) {
-    border-color: ${({ theme }) => theme.border.strong};
-    background: ${({ theme }) => theme.background.elevated};
+    border-color: ${({ theme }) => theme.utils.getBorder('neutral', 'strong')};
+    background: ${({ theme }) => theme.utils.getBackground('neutral', 'elevated')};
   }
 
   &:disabled {
@@ -271,11 +271,11 @@ export const DeleteTaskButton = styled(GhostButton)`
   height: 30px;
   width: 30px;
   padding: 0;
-  color: ${({ theme }) => theme.text.muted};
+  color: ${({ theme }) => theme.utils.getText('neutral', 'muted')};
 
   &:hover:not(:disabled) {
-    color: ${({ theme }) => theme.status.danger.foreground};
-    border-color: ${({ theme }) => theme.status.danger.foreground};
-    background: ${({ theme }) => theme.status.danger.background};
+    color: ${({ theme }) => theme.utils.getText('danger', 'primary')};
+    border-color: ${({ theme }) => theme.utils.getBorder('danger', 'default')};
+    background: ${({ theme }) => theme.utils.getBackground('danger', 'surface')};
   }
 `

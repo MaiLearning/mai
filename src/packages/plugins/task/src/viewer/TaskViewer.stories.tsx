@@ -10,7 +10,7 @@ const Frame = styled.div`
   width: 960px;
   height: 640px;
   overflow: hidden;
-  border: 1px solid ${({ theme }) => theme.border.default};
+  border: 1px solid ${({ theme }) => theme.utils.getBorder('neutral', 'default')};
   border-radius: ${({ theme }) => theme.radius.lg};
 `
 
@@ -21,9 +21,9 @@ const Gallery = styled.div`
   gap: 40px;
   width: 720px;
   padding: 40px 32px;
-  border: 1px solid ${({ theme }) => theme.border.default};
+  border: 1px solid ${({ theme }) => theme.utils.getBorder('neutral', 'default')};
   border-radius: ${({ theme }) => theme.radius.lg};
-  background: ${({ theme }) => theme.background.body};
+  background: ${({ theme }) => theme.utils.getBackground('neutral', 'body')};
 `
 
 const byKind = (kind: TaskKind): AnyTask =>

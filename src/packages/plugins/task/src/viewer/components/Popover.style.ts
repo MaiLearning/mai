@@ -18,8 +18,8 @@ export const Panel = styled.div<{ $align: 'start' | 'end' }>`
   gap: 2px;
   padding: 6px;
   border-radius: ${({ theme }) => theme.radius.md};
-  border: 1px solid ${({ theme }) => theme.border.default};
-  background: ${({ theme }) => theme.background.elevated};
+  border: 1px solid ${({ theme }) => theme.utils.getBorder('neutral', 'default')};
+  background: ${({ theme }) => theme.utils.getBackground('neutral', 'elevated')};
   box-shadow: ${({ theme }) => theme.shadows.md};
 `
 
@@ -33,19 +33,20 @@ export const MenuItem = styled.button`
   border: none;
   border-radius: ${({ theme }) => theme.radius.sm};
   background: transparent;
-  color: ${({ theme }) => theme.text.primary};
+  color: ${({ theme }) => theme.utils.getText('neutral', 'primary')};
   font-size: 0.875rem;
   font-weight: 500;
   text-align: left;
   transition: background ${({ theme }) => theme.durations.fast};
 
   &:hover {
-    background: ${({ theme }) => theme.background.hover};
+    background: ${({ theme }) =>
+      theme.utils.withState(theme.utils.getBackground('neutral', 'surface'), 'hoverAlpha')};
   }
 
   svg {
     flex-shrink: 0;
-    color: ${({ theme }) => theme.text.accent};
+    color: ${({ theme }) => theme.utils.getText('accent', 'primary')};
   }
 `
 
@@ -53,7 +54,7 @@ export const MenuItem = styled.button`
 export const MenuDivider = styled.div`
   height: 1px;
   margin: 4px 6px;
-  background: ${({ theme }) => theme.border.default};
+  background: ${({ theme }) => theme.utils.getBorder('neutral', 'default')};
 `
 
 /** Цветная точка слева от названия сложности. */
@@ -63,5 +64,5 @@ export const ColorDot = styled.span<{ $bg: string }>`
   flex-shrink: 0;
   border-radius: 999px;
   background: ${({ $bg }) => $bg};
-  box-shadow: inset 0 0 0 1px rgba(22, 20, 40, 0.15);
+  box-shadow: inset 0 0 0 1px ${({ theme }) => theme.utils.getBorder('neutral', 'default')};
 `

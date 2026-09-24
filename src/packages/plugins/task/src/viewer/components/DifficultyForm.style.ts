@@ -14,20 +14,20 @@ export const FormInput = styled.input`
   height: 36px;
   padding: 0 12px;
   border-radius: ${({ theme }) => theme.radius.sm};
-  border: 1px solid ${({ theme }) => theme.border.default};
-  background: ${({ theme }) => theme.background.body};
-  color: ${({ theme }) => theme.text.primary};
+  border: 1px solid ${({ theme }) => theme.utils.getBorder('neutral', 'default')};
+  background: ${({ theme }) => theme.utils.getBackground('neutral', 'body')};
+  color: ${({ theme }) => theme.utils.getText('neutral', 'primary')};
   font: inherit;
   font-size: 0.875rem;
 
   &::placeholder {
-    color: ${({ theme }) => theme.text.muted};
+    color: ${({ theme }) => theme.utils.getText('neutral', 'muted')};
   }
 
   &:focus {
     outline: none;
-    border-color: ${({ theme }) => theme.border.accent};
-    box-shadow: 0 0 0 3px ${({ theme }) => theme.background.accentSubtle};
+    border-color: ${({ theme }) => theme.utils.getBorder('accent', 'default')};
+    box-shadow: 0 0 0 3px ${({ theme }) => theme.utils.getBackground('accent', 'surface')};
   }
 `
 
@@ -44,7 +44,7 @@ export const Swatch = styled.button<{ $color: string; $selected: boolean }>`
   border: none;
   border-radius: 7px;
   background: ${({ $color }) => $color};
-  box-shadow: inset 0 0 0 1px rgba(22, 20, 40, 0.14);
+  box-shadow: inset 0 0 0 1px ${({ theme }) => theme.utils.getBorder('neutral', 'default')};
   transition: transform ${({ theme }) => theme.durations.fast};
 
   &:hover {
@@ -72,10 +72,11 @@ export const CustomButton = styled.button<{ $open: boolean }>`
   gap: 6px;
   height: 30px;
   padding: 0 10px;
-  border: 1px dashed ${({ theme, $open }) => ($open ? theme.border.accent : theme.border.strong)};
+  border: 1px dashed
+    ${({ theme, $open }) => ($open ? theme.utils.getBorder('accent', 'default') : theme.utils.getBorder('neutral', 'strong'))};
   border-radius: ${({ theme }) => theme.radius.sm};
   background: transparent;
-  color: ${({ theme, $open }) => ($open ? theme.text.accent : theme.text.muted)};
+  color: ${({ theme, $open }) => ($open ? theme.utils.getText('accent', 'primary') : theme.utils.getText('neutral', 'muted'))};
   font-size: 0.75rem;
   font-weight: 600;
   white-space: nowrap;
@@ -84,8 +85,8 @@ export const CustomButton = styled.button<{ $open: boolean }>`
     border-color ${({ theme }) => theme.durations.fast};
 
   &:hover {
-    color: ${({ theme }) => theme.text.accent};
-    border-color: ${({ theme }) => theme.border.accent};
+    color: ${({ theme }) => theme.utils.getText('accent', 'primary')};
+    border-color: ${({ theme }) => theme.utils.getBorder('accent', 'default')};
   }
 `
 
@@ -97,8 +98,8 @@ export const Popup = styled.div`
   z-index: 30;
   padding: ${({ theme }) => theme.spacing.md};
   border-radius: ${({ theme }) => theme.radius.md};
-  border: 1px solid ${({ theme }) => theme.border.default};
-  background: ${({ theme }) => theme.background.elevated};
+  border: 1px solid ${({ theme }) => theme.utils.getBorder('neutral', 'default')};
+  background: ${({ theme }) => theme.utils.getBackground('neutral', 'elevated')};
   box-shadow: ${({ theme }) => theme.shadows.md};
 `
 
@@ -119,13 +120,15 @@ export const FormIcon = styled.button<{ $danger?: boolean }>`
   border: none;
   border-radius: ${({ theme }) => theme.radius.sm};
   background: transparent;
-  color: ${({ theme }) => theme.text.muted};
+  color: ${({ theme }) => theme.utils.getText('neutral', 'muted')};
   transition: all ${({ theme }) => theme.durations.fast};
 
   &:hover:not(:disabled) {
-    color: ${({ theme, $danger }) => ($danger ? theme.status.danger.foreground : theme.text.accent)};
+    color: ${({ theme, $danger }) => ($danger ? theme.utils.getText('danger', 'primary') : theme.utils.getText('accent', 'primary'))};
     background: ${({ theme, $danger }) =>
-      $danger ? theme.status.danger.background : theme.background.accentSubtle};
+      $danger
+        ? theme.utils.getBackground('danger', 'surface')
+        : theme.utils.getBackground('accent', 'surface')};
   }
 
   &:disabled {

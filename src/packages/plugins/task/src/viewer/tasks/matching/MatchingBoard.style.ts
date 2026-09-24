@@ -17,7 +17,7 @@ export const RowSlot = styled.div`
 /** Текст термина. */
 export const Term = styled.span`
   flex: 1;
-  color: ${({ theme }) => theme.text.primary};
+  color: ${({ theme }) => theme.utils.getText('neutral', 'primary')};
   font-weight: 500;
 `
 
@@ -29,39 +29,39 @@ export const Slot = styled.div<{ $state?: 'idle' | 'correct' | 'incorrect'; $ove
   display: flex;
   align-items: center;
   padding: 6px 8px;
-  border: 1px dashed ${({ theme }) => theme.border.default};
+  border: 1px dashed ${({ theme }) => theme.utils.getBorder('neutral', 'default')};
   border-radius: ${({ theme }) => theme.radius.md};
-  background: ${({ theme }) => theme.background.sunken};
+  background: ${({ theme }) => theme.utils.getBackground('neutral', 'sunken')};
   transition: all ${({ theme }) => theme.durations.fast};
 
   ${({ $over, theme }) =>
     $over &&
     css`
       border-style: solid;
-      border-color: ${theme.border.accent};
-      background: ${theme.background.accentSubtle};
+      border-color: ${theme.utils.getBorder('accent', 'default')};
+      background: ${theme.utils.getBackground('accent', 'surface')};
     `}
 
   ${({ $state, theme }) =>
     $state === 'correct' &&
     css`
       border-style: solid;
-      border-color: ${theme.status.success.foreground};
-      background: ${theme.status.success.background};
+      border-color: ${theme.utils.getBorder('success', 'default')};
+      background: ${theme.utils.getBackground('success', 'surface')};
     `}
 
   ${({ $state, theme }) =>
     $state === 'incorrect' &&
     css`
       border-style: solid;
-      border-color: ${theme.status.danger.foreground};
-      background: ${theme.status.danger.background};
+      border-color: ${theme.utils.getBorder('danger', 'default')};
+      background: ${theme.utils.getBackground('danger', 'surface')};
     `}
 `
 
 /** Плейсхолдер пустого слота. */
 export const SlotPlaceholder = styled.span`
-  color: ${({ theme }) => theme.text.muted};
+  color: ${({ theme }) => theme.utils.getText('neutral', 'muted')};
   font-size: 0.8125rem;
 `
 
@@ -71,10 +71,10 @@ export const Chip = styled.div<{ $dragging?: boolean; $locked?: boolean }>`
   align-items: center;
   max-width: 100%;
   padding: 8px 12px;
-  border: 1px solid ${({ theme }) => theme.border.strong};
+  border: 1px solid ${({ theme }) => theme.utils.getBorder('neutral', 'strong')};
   border-radius: ${({ theme }) => theme.radius.md};
-  background: ${({ theme }) => theme.background.elevated};
-  color: ${({ theme }) => theme.text.primary};
+  background: ${({ theme }) => theme.utils.getBackground('neutral', 'elevated')};
+  color: ${({ theme }) => theme.utils.getText('neutral', 'primary')};
   font-size: 0.875rem;
   cursor: ${({ $locked }) => ($locked ? 'default' : 'grab')};
   user-select: none;
@@ -84,14 +84,14 @@ export const Chip = styled.div<{ $dragging?: boolean; $locked?: boolean }>`
     border-color ${({ theme }) => theme.durations.fast};
 
   &:hover {
-    border-color: ${({ theme, $locked }) => ($locked ? theme.border.strong : theme.border.accent)};
+    border-color: ${({ theme, $locked }) => ($locked ? theme.utils.getBorder('neutral', 'strong') : theme.utils.getBorder('accent', 'default'))};
   }
 
   ${({ $dragging, theme }) =>
     $dragging &&
     css`
       opacity: 0.4;
-      border-color: ${theme.border.accent};
+      border-color: ${theme.utils.getBorder('accent', 'default')};
     `}
 `
 
@@ -103,21 +103,21 @@ export const Pool = styled.div<{ $over?: boolean }>`
   gap: 10px;
   min-height: 64px;
   padding: 12px 14px;
-  border: 1px dashed ${({ theme }) => theme.border.default};
+  border: 1px dashed ${({ theme }) => theme.utils.getBorder('neutral', 'default')};
   border-radius: ${({ theme }) => theme.radius.md};
-  background: ${({ theme }) => theme.background.sunken};
+  background: ${({ theme }) => theme.utils.getBackground('neutral', 'sunken')};
   transition: all ${({ theme }) => theme.durations.fast};
 
   ${({ $over, theme }) =>
     $over &&
     css`
-      border-color: ${theme.border.accent};
-      background: ${theme.background.accentSubtle};
+      border-color: ${theme.utils.getBorder('accent', 'default')};
+      background: ${theme.utils.getBackground('accent', 'surface')};
     `}
 `
 
 /** Подсказка пустого пула. */
 export const PoolHint = styled.span`
-  color: ${({ theme }) => theme.text.muted};
+  color: ${({ theme }) => theme.utils.getText('neutral', 'muted')};
   font-size: 0.8125rem;
 `

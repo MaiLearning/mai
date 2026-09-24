@@ -20,15 +20,17 @@ export const Item = styled.div<{
   gap: 14px;
   padding: 14px 16px;
   border-radius: ${({ theme }) => theme.radius.md};
-  border: 1px solid ${({ theme }) => theme.border.default};
-  background: ${({ theme }) => theme.background.surface};
-  color: ${({ theme }) => theme.text.primary};
+  border: 1px solid ${({ theme }) => theme.utils.getBorder('neutral', 'default')};
+  background: ${({ theme }) => theme.utils.getBackground('neutral', 'surface')};
+  color: ${({ theme }) => theme.utils.getText('neutral', 'primary')};
   cursor: ${({ $editing, $locked }) => ($editing || $locked ? 'default' : 'grab')};
   transition: all ${({ theme }) => theme.durations.fast};
 
   &:hover {
     border-color: ${({ theme, $editing, $locked }) =>
-      $editing || $locked ? theme.border.default : theme.border.strong};
+      $editing || $locked
+        ? theme.utils.getBorder('neutral', 'default')
+        : theme.utils.getBorder('neutral', 'strong')};
   }
 
   /* Текст тянется на всё свободное место строки */
@@ -40,15 +42,15 @@ export const Item = styled.div<{
   ${({ $state, theme }) =>
     $state === 'correct' &&
     css`
-      border-color: ${theme.status.success.foreground};
-      background: ${theme.status.success.background};
+      border-color: ${theme.utils.getBorder('success', 'default')};
+      background: ${theme.utils.getBackground('success', 'surface')};
     `}
 
   ${({ $state, theme }) =>
     $state === 'incorrect' &&
     css`
-      border-color: ${theme.status.danger.foreground};
-      background: ${theme.status.danger.background};
+      border-color: ${theme.utils.getBorder('danger', 'default')};
+      background: ${theme.utils.getBackground('danger', 'surface')};
     `}
 `
 
@@ -60,8 +62,8 @@ export const Index = styled.span`
   width: 26px;
   height: 26px;
   border-radius: ${({ theme }) => theme.radius.sm};
-  background: ${({ theme }) => theme.background.accentSubtle};
-  color: ${({ theme }) => theme.text.accent};
+  background: ${({ theme }) => theme.utils.getBackground('accent', 'surface')};
+  color: ${({ theme }) => theme.utils.getText('accent', 'primary')};
   font-family: ${({ theme }) => theme.typography.fontFamilyMonospace};
   font-size: 0.8125rem;
   font-weight: 600;
@@ -69,6 +71,6 @@ export const Index = styled.span`
 
 export const Grip = styled(GripVertical)<{ $locked?: boolean }>`
   flex-shrink: 0;
-  color: ${({ theme }) => theme.text.muted};
+  color: ${({ theme }) => theme.utils.getText('neutral', 'muted')};
   cursor: ${({ $locked }) => ($locked ? 'default' : 'grab')};
 `

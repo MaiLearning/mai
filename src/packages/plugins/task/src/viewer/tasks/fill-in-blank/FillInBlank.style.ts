@@ -4,7 +4,7 @@ import styled, { css } from 'styled-components'
 const Paragraph = styled.div<{ $editable?: boolean }>`
   font-size: 1.0625rem;
   line-height: 2.1;
-  color: ${({ theme }) => theme.text.primary};
+  color: ${({ theme }) => theme.utils.getText('neutral', 'primary')};
 
   ${({ $editable }) =>
     $editable &&
@@ -14,18 +14,18 @@ const Paragraph = styled.div<{ $editable?: boolean }>`
       overflow-wrap: break-word;
       cursor: text;
       border-radius: ${({ theme }) => theme.radius.sm};
-      box-shadow: inset 0 0 0 1px ${({ theme }) => theme.border.default};
+      box-shadow: inset 0 0 0 1px ${({ theme }) => theme.utils.getBorder('neutral', 'default')};
       transition: box-shadow ${({ theme }) => theme.durations.fast};
 
       &:hover {
-        box-shadow: inset 0 0 0 1px ${({ theme }) => theme.border.strong};
+        box-shadow: inset 0 0 0 1px ${({ theme }) => theme.utils.getBorder('neutral', 'strong')};
       }
 
       /* Гасим глобальный :focus-visible, как в EditableText: контур рисует рамка поля */
       &:focus,
       &:focus-visible {
         outline: none;
-        box-shadow: inset 0 0 0 1px ${({ theme }) => theme.border.accent};
+        box-shadow: inset 0 0 0 1px ${({ theme }) => theme.utils.getBorder('accent', 'default')};
       }
     `}
 `
@@ -41,10 +41,10 @@ const Blank = styled.input<{
   margin: 0 4px;
   padding: 4px 10px;
   border: none;
-  border-bottom: 2px solid ${({ theme }) => theme.border.strong};
+  border-bottom: 2px solid ${({ theme }) => theme.utils.getBorder('neutral', 'strong')};
   border-radius: ${({ theme }) => theme.radius.sm} ${({ theme }) => theme.radius.sm} 0 0;
-  background: ${({ theme }) => theme.background.body};
-  color: ${({ theme }) => theme.text.primary};
+  background: ${({ theme }) => theme.utils.getBackground('neutral', 'body')};
+  color: ${({ theme }) => theme.utils.getText('neutral', 'primary')};
   font: inherit;
   font-size: 1rem;
   text-align: center;
@@ -52,7 +52,7 @@ const Blank = styled.input<{
   cursor: ${({ $locked }) => ($locked ? 'default' : 'text')};
 
   &::placeholder {
-    color: ${({ theme }) => theme.text.muted};
+    color: ${({ theme }) => theme.utils.getText('neutral', 'muted')};
   }
 
   &:focus {
@@ -64,25 +64,25 @@ const Blank = styled.input<{
     !$locked &&
     css`
       &:focus {
-        border-bottom-color: ${theme.border.accent};
-        background: ${theme.background.accentSubtle};
+        border-bottom-color: ${theme.utils.getBorder('accent', 'default')};
+        background: ${theme.utils.getBackground('accent', 'surface')};
       }
     `}
 
   ${({ $state, theme }) =>
     $state === 'correct' &&
     css`
-      border-bottom-color: ${theme.status.success.foreground};
-      background: ${theme.status.success.background};
-      color: ${theme.status.success.foreground};
+      border-bottom-color: ${theme.utils.getBorder('success', 'default')};
+      background: ${theme.utils.getBackground('success', 'surface')};
+      color: ${theme.utils.getText('success', 'primary')};
     `}
 
   ${({ $state, theme }) =>
     $state === 'incorrect' &&
     css`
-      border-bottom-color: ${theme.status.danger.foreground};
-      background: ${theme.status.danger.background};
-      color: ${theme.status.danger.foreground};
+      border-bottom-color: ${theme.utils.getBorder('danger', 'default')};
+      background: ${theme.utils.getBackground('danger', 'surface')};
+      color: ${theme.utils.getText('danger', 'primary')};
     `}
 `
 
@@ -94,9 +94,9 @@ const BlankToken = styled.span`
   margin: 0 4px;
   padding: 2px 12px;
   border-radius: ${({ theme }) => theme.radius.full};
-  border: 1px dashed ${({ theme }) => theme.border.accent};
-  background: ${({ theme }) => theme.background.accentSubtle};
-  color: ${({ theme }) => theme.text.accent};
+  border: 1px dashed ${({ theme }) => theme.utils.getBorder('accent', 'default')};
+  background: ${({ theme }) => theme.utils.getBackground('accent', 'surface')};
+  color: ${({ theme }) => theme.utils.getText('accent', 'primary')};
   font-size: 0.9375rem;
   font-weight: 600;
 `
@@ -117,7 +117,7 @@ const ChipRemove = styled.button`
   transition: color ${({ theme }) => theme.durations.fast};
 
   &:hover {
-    color: ${({ theme }) => theme.status.danger.foreground};
+    color: ${({ theme }) => theme.utils.getText('danger', 'primary')};
   }
 `
 
@@ -147,17 +147,17 @@ const ToolbarButton = styled.button`
   height: 28px;
   padding: 0 12px;
   border-radius: ${({ theme }) => theme.radius.full};
-  border: 1px solid ${({ theme }) => theme.border.default};
+  border: 1px solid ${({ theme }) => theme.utils.getBorder('neutral', 'default')};
   background: transparent;
-  color: ${({ theme }) => theme.text.muted};
+  color: ${({ theme }) => theme.utils.getText('neutral', 'muted')};
   font-size: 0.75rem;
   font-weight: 600;
   transition: all ${({ theme }) => theme.durations.fast};
 
   &:hover:not(:disabled) {
-    border-color: ${({ theme }) => theme.border.accent};
-    color: ${({ theme }) => theme.text.accent};
-    background: ${({ theme }) => theme.background.accentSubtle};
+    border-color: ${({ theme }) => theme.utils.getBorder('accent', 'default')};
+    color: ${({ theme }) => theme.utils.getText('accent', 'primary')};
+    background: ${({ theme }) => theme.utils.getBackground('accent', 'surface')};
   }
 
   &:disabled {
