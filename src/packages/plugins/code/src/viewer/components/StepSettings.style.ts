@@ -15,31 +15,31 @@ export const Field = styled.label`
 export const FieldLabel = styled.span`
   font-size: 0.75rem;
   font-weight: 600;
-  color: ${({ theme }) => theme.text.muted};
+  color: ${({ theme }) => theme.utils.getText('neutral', 'muted')};
 `
 
 export const TextInput = styled.input`
   height: 38px;
   padding: 0 12px;
-  border: 1px solid ${({ theme }) => theme.border.default};
+  border: 1px solid ${({ theme }) => theme.utils.getBorder('neutral', 'default')};
   border-radius: ${({ theme }) => theme.radius.sm};
-  background: ${({ theme }) => theme.background.surface};
-  color: ${({ theme }) => theme.text.primary};
+  background: ${({ theme }) => theme.utils.getBackground('neutral', 'surface')};
+  color: ${({ theme }) => theme.utils.getText('neutral', 'primary')};
   font-size: 0.875rem;
 
   &:focus {
     outline: none;
-    border-color: ${({ theme }) => theme.border.accent};
+    border-color: ${({ theme }) => theme.utils.getBorder('accent', 'default')};
   }
 `
 
 export const TextArea = styled.textarea`
   min-height: 72px;
   padding: 10px 12px;
-  border: 1px solid ${({ theme }) => theme.border.default};
+  border: 1px solid ${({ theme }) => theme.utils.getBorder('neutral', 'default')};
   border-radius: ${({ theme }) => theme.radius.sm};
-  background: ${({ theme }) => theme.background.surface};
-  color: ${({ theme }) => theme.text.primary};
+  background: ${({ theme }) => theme.utils.getBackground('neutral', 'surface')};
+  color: ${({ theme }) => theme.utils.getText('neutral', 'primary')};
   font-family: ${({ theme }) => theme.typography.fontFamilyMonospace};
   font-size: 0.8125rem;
   line-height: 1.5;
@@ -47,12 +47,12 @@ export const TextArea = styled.textarea`
 
   &:focus {
     outline: none;
-    border-color: ${({ theme }) => theme.border.accent};
+    border-color: ${({ theme }) => theme.utils.getBorder('accent', 'default')};
   }
 `
 
 export const Hint = styled.p`
   margin: 0;
   font-size: 0.75rem;
-  color: ${({ theme }) => theme.text.muted};
+  color: ${({ theme }) => theme.utils.getText('neutral', 'muted')};
 `

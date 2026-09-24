@@ -13,16 +13,16 @@ export const Dot = styled.span<{ $tone: 'muted' | 'primary' | 'success' | 'dange
   flex-shrink: 0;
   background: ${({ theme, $tone }) =>
     $tone === 'primary'
-      ? theme.text.accent
+      ? theme.utils.getSolid('accent', 'base')
       : $tone === 'success'
-        ? theme.status.success.foreground
+        ? theme.utils.getSolid('success', 'base')
         : $tone === 'danger'
-          ? theme.status.danger.foreground
-          : theme.border.strong};
+          ? theme.utils.getSolid('danger', 'base')
+          : theme.utils.getBorder('neutral', 'strong')};
 `
 
 export const Label = styled.span`
   font-size: 0.75rem;
-  color: ${({ theme }) => theme.text.muted};
+  color: ${({ theme }) => theme.utils.getText('neutral', 'muted')};
   white-space: nowrap;
 `

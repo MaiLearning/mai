@@ -7,8 +7,8 @@ export const Footer = styled.footer`
   justify-content: space-between;
   gap: 16px;
   padding: 12px 32px;
-  border-top: 1px solid ${({ theme }) => theme.border.default};
-  background: ${({ theme }) => theme.background.body};
+  border-top: 1px solid ${({ theme }) => theme.utils.getBorder('neutral', 'default')};
+  background: ${({ theme }) => theme.utils.getBackground('neutral', 'body')};
 `
 
 export const FooterStart = styled.div`
@@ -31,14 +31,14 @@ export const NavButton = styled.button`
   width: 34px;
   height: 34px;
   border-radius: ${({ theme }) => theme.radius.sm};
-  border: 1px solid ${({ theme }) => theme.border.default};
-  background: ${({ theme }) => theme.background.surface};
-  color: ${({ theme }) => theme.text.muted};
+  border: 1px solid ${({ theme }) => theme.utils.getBorder('neutral', 'default')};
+  background: ${({ theme }) => theme.utils.getBackground('neutral', 'surface')};
+  color: ${({ theme }) => theme.utils.getText('neutral', 'muted')};
   transition: all ${({ theme }) => theme.durations.fast};
 
   &:hover:not(:disabled) {
-    border-color: ${({ theme }) => theme.border.strong};
-    color: ${({ theme }) => theme.text.primary};
+    border-color: ${({ theme }) => theme.utils.getBorder('neutral', 'strong')};
+    color: ${({ theme }) => theme.utils.getText('neutral', 'primary')};
   }
 
   &:disabled {
@@ -53,10 +53,10 @@ export const ActionButton = styled.button`
   gap: 8px;
   height: 34px;
   padding: 0 14px;
-  border: 1px solid ${({ theme }) => theme.border.accent};
+  border: 1px solid ${({ theme }) => theme.utils.getBorder('accent', 'default')};
   border-radius: ${({ theme }) => theme.radius.sm};
-  background: ${({ theme }) => theme.background.accent};
-  color: ${({ theme }) => theme.text.onPrimary};
+  background: ${({ theme }) => theme.utils.getSolid('accent', 'base')};
+  color: ${({ theme }) => theme.contrastText.accent};
   font-size: 0.8125rem;
   font-weight: 600;
   transition: all ${({ theme }) => theme.durations.fast};
@@ -92,5 +92,7 @@ export const Result = styled.span<{ $status: 'passed' | 'failed' }>`
   font-size: 0.8125rem;
   font-weight: 600;
   color: ${({ theme, $status }) =>
-    $status === 'passed' ? theme.status.success.foreground : theme.status.danger.foreground};
+    $status === 'passed'
+      ? theme.utils.getText('success', 'primary')
+      : theme.utils.getText('danger', 'primary')};
 `

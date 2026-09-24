@@ -1,3 +1,4 @@
+import { Tooltip } from '@mai/theme'
 import {
   Check,
   ChevronLeft,
@@ -7,7 +8,6 @@ import {
   Loader2,
   RotateCcw,
 } from 'lucide-react'
-import { Tooltip } from '../../ui'
 import type { StepStatus } from '../core/types'
 import type { SaveState } from '../lib/useCodeAutosave'
 import { SaveDot } from './SaveDot'

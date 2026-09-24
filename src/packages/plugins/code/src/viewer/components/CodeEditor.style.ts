@@ -2,10 +2,10 @@ import styled from 'styled-components'
 
 /** Обёртка CodeMirror: рамка как у полей ввода, тема приложения поверх дефолтной. */
 export const EditorWrap = styled.div`
-  border: 1px solid ${({ theme }) => theme.border.default};
+  border: 1px solid ${({ theme }) => theme.utils.getBorder('neutral', 'default')};
   border-radius: ${({ theme }) => theme.radius.md};
   overflow: hidden;
-  background: ${({ theme }) => theme.background.surface};
+  background: ${({ theme }) => theme.utils.getBackground('neutral', 'surface')};
 
   .cm-editor {
     background: transparent;
@@ -18,8 +18,8 @@ export const EditorWrap = styled.div`
 
   .cm-gutters {
     background: transparent;
-    border-right: 1px solid ${({ theme }) => theme.border.default};
-    color: ${({ theme }) => theme.text.muted};
+    border-right: 1px solid ${({ theme }) => theme.utils.getBorder('neutral', 'default')};
+    color: ${({ theme }) => theme.utils.getText('neutral', 'muted')};
   }
 
   .cm-content {
@@ -32,22 +32,22 @@ export const EditorWrap = styled.div`
   }
 
   .cm-activeLine {
-    background: ${({ theme }) => theme.background.elevated};
+    background: ${({ theme }) => theme.utils.getBackground('neutral', 'elevated')};
   }
 
   .cm-activeLineGutter {
     background: transparent;
-    color: ${({ theme }) => theme.text.primary};
+    color: ${({ theme }) => theme.utils.getText('neutral', 'primary')};
   }
 
   .cm-cursor {
-    border-left-color: ${({ theme }) => theme.text.primary};
+    border-left-color: ${({ theme }) => theme.utils.getText('neutral', 'primary')};
   }
 
   ::selection,
   .cm-selectionBackground,
   .cm-content ::selection {
-    background: ${({ theme }) => theme.background.accentSubtle} !important;
+    background: ${({ theme }) => theme.utils.getBackground('accent', 'surface')} !important;
   }
 
   .cm-scroller {
