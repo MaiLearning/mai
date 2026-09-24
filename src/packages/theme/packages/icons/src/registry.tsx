@@ -2,6 +2,7 @@ import type { LucideIcon, LucideProps } from 'lucide-react'
 import {
   AlignLeft,
   ArrowLeftRight,
+  ArrowRight,
   BarChart3,
   Bell,
   Bold,
@@ -93,6 +94,7 @@ const catalog = {
   trash2: { Component: Trash2 },
   alignLeft: { Component: AlignLeft },
   arrowLeftRight: { Component: ArrowLeftRight },
+  arrowRight: { Component: ArrowRight },
   barChart3: { Component: BarChart3 },
   bell: { Component: Bell },
   bold: { Component: Bold },
