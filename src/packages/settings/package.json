@@ -14,6 +14,8 @@
     "styled-components": "^6.5.3"
   },
   "dependencies": {
+    "@mai/fakeData": "workspace:*",
+    "@mai/i18n": "workspace:*",
     "@mai/tauri": "workspace:*",
     "@mai/theme": "workspace:*",
     "jotai": "^2.20.3",

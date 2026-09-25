@@ -1,5 +1,5 @@
 import { useAtomValue } from 'jotai'
-import { systemLanguageAtom, systemSettingsAtom, systemThemeAtom } from '../services/settingsStore'
+import { systemLanguageAtom, systemSettingsAtom, systemThemeAtom } from '../services/systemSettings'
 
 /** Документ системных настроек «Общие» (реактивно). */
 export function useSystemSettings() {

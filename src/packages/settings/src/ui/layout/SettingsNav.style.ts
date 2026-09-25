@@ -12,7 +12,7 @@ export const Group = styled.div`
   gap: ${({ theme }) => theme.spacing.xs};
 `
 
-export const NavItem = styled.button<{ $active: boolean }>`
+export const NavItem = styled.button<{ $active: boolean; $disabled?: boolean }>`
   display: flex;
   align-items: center;
   gap: ${({ theme }) => theme.spacing.sm};
@@ -20,16 +20,22 @@ export const NavItem = styled.button<{ $active: boolean }>`
   padding: ${({ theme }) => `${theme.spacing.sm} ${theme.spacing.md}`};
   border: 0;
   border-radius: ${({ theme }) => theme.radius.md};
-  background: transparent;
-  color: ${({ theme }) => theme.utils.getText('neutral', 'primary')};
+  background: ${({ theme, $disabled }) =>
+    $disabled
+      ? theme.utils.withState(theme.utils.getBackground('neutral', 'surface'), 'disabledAlpha')
+      : 'transparent'};
+  color: ${({ theme, $disabled }) =>
+    $disabled
+      ? theme.utils.withState(theme.utils.getText('neutral', 'primary'), 'disabledAlpha')
+      : theme.utils.getText('neutral', 'primary')};
   font: inherit;
   text-align: left;
-  cursor: pointer;
+  cursor: ${({ $disabled }) => ($disabled ? 'not-allowed' : 'pointer')};
   transition:
     background ${({ theme }) => theme.durations.fast},
     color ${({ theme }) => theme.durations.fast};
 
-  &:hover {
+  &:hover:not(:disabled) {
     background: ${({ theme }) =>
       theme.utils.withState(theme.utils.getBackground('neutral', 'surface'), 'hoverAlpha')};
   }
@@ -45,7 +51,7 @@ export const NavItem = styled.button<{ $active: boolean }>`
       background: ${theme.utils.getBackground('accent', 'surface')};
       color: ${theme.utils.getText('accent', 'primary')};
 
-      &:hover {
+      &:hover:not(:disabled) {
         background: ${theme.utils.getBackground('accent', 'surface')};
       }
     `}

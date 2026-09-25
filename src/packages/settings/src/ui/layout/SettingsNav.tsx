@@ -10,6 +10,7 @@ export interface SettingsNavItem {
   icon?: ReactNode
   /** Вложенные пункты. */
   children?: SettingsNavItem[]
+  disabled?: boolean
 }
 
 export interface SettingsNavProps {
@@ -26,29 +27,46 @@ interface NavLevelProps {
   activeId?: string
   onSelect: (id: string) => void
   nested?: boolean
+  parentDisabled?: boolean
 }
 
-function NavLevel({ items, activeId, onSelect, nested }: NavLevelProps) {
+function NavLevel({ items, activeId, onSelect, nested, parentDisabled = false }: NavLevelProps) {
   const Level = nested ? Children : Group
 
   return (
     <Level>
-      {items.map((item) => (
-        <div key={item.id}>
-          <NavItem
-            type="button"
-            $active={item.id === activeId}
-            data-active={item.id === activeId}
-            onClick={() => onSelect(item.id)}
-          >
-            {item.icon ? <Icon>{item.icon}</Icon> : null}
-            {item.label}
-          </NavItem>
-          {item.children?.length ? (
-            <NavLevel items={item.children} activeId={activeId} onSelect={onSelect} nested />
-          ) : null}
-        </div>
-      ))}
+      {items.map((item) => {
+        const disabled = item.disabled === true || parentDisabled
+        const active = !disabled && item.id === activeId
+
+        return (
+          <div key={item.id}>
+            <NavItem
+              type="button"
+              disabled={disabled}
+              $active={active}
+              $disabled={disabled}
+              data-active={active}
+              aria-current={active ? 'page' : undefined}
+              onClick={() => {
+                if (!disabled) onSelect(item.id)
+              }}
+            >
+              {item.icon ? <Icon>{item.icon}</Icon> : null}
+              {item.label}
+            </NavItem>
+            {item.children?.length ? (
+              <NavLevel
+                items={item.children}
+                activeId={activeId}
+                onSelect={onSelect}
+                nested
+                parentDisabled={disabled}
+              />
+            ) : null}
+          </div>
+        )
+      })}
     </Level>
   )
 }

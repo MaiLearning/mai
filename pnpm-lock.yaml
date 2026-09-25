@@ -510,6 +510,9 @@ importers:
       '@mai/resource':
         specifier: workspace:*
         version: link:../resource
+      '@mai/settings':
+        specifier: workspace:*
+        version: link:../settings
       '@mai/structure':
         specifier: workspace:*
         version: link:../structure
@@ -858,6 +861,12 @@ importers:
 
   src/packages/settings:
     dependencies:
+      '@mai/fakeData':
+        specifier: workspace:*
+        version: link:../fakeData
+      '@mai/i18n':
+        specifier: workspace:*
+        version: link:../i18n
       '@mai/tauri':
         specifier: workspace:*
         version: link:../tauri

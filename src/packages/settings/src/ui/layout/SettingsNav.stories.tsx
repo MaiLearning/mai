@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { BookOpen, Monitor, Puzzle, Settings, User } from 'lucide-react'
-import { fn } from 'storybook/test'
+import { expect, fn, userEvent } from 'storybook/test'
 import { SettingsNav, type SettingsNavItem } from './SettingsNav'
 
 const items: SettingsNavItem[] = [
@@ -16,6 +16,12 @@ const items: SettingsNavItem[] = [
   { id: 'courses', label: 'Курсы', icon: <BookOpen size={16} /> },
   { id: 'plugins', label: 'Плагины', icon: <Puzzle size={16} /> },
 ]
+
+const disabledItems: SettingsNavItem[] = [
+  { id: 'theory', label: 'Теория', icon: <Puzzle size={16} />, disabled: true },
+  { id: 'tasks', label: 'Задачи', icon: <BookOpen size={16} /> },
+]
+const disabledSelect = fn()
 
 const meta = {
   title: 'Settings/Layout/SettingsNav',
@@ -56,4 +62,19 @@ export const NoActive: Story = {
 /** Плоский список без вложенности. */
 export const Flat: Story = {
   args: { items: items.map(({ children: _children, ...item }) => item) },
+}
+
+export const Disabled: Story = {
+  args: {
+    items: disabledItems,
+    activeId: 'theory',
+    onSelect: disabledSelect,
+  },
+  play: async ({ canvas }) => {
+    const button = canvas.getByRole('button', { name: 'Теория' })
+    await userEvent.click(button)
+    expect(button).toBeDisabled()
+    expect(button).toHaveAttribute('data-active', 'false')
+    await expect(disabledSelect).not.toHaveBeenCalled()
+  },
 }

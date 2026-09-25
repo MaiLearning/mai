@@ -8,41 +8,51 @@
     "courses": "Courses",
     "plugins": "Plugins"
   },
-  "layout": {
-    "empty": "Select a settings section"
+  "page": {
+    "description": "Manage system and plugin settings."
+  },
+  "form": {
+    "empty": "This section has no settings yet."
+  },
+  "states": {
+    "loading": "Loading settings…",
+    "saving": "Saving…"
+  },
+  "errors": {
+    "action": "Failed to complete the operation: {{error}}"
+  },
+  "reset": {
+    "action": "Reset settings",
+    "cancel": "Cancel"
+  },
+  "confirm": {
+    "title": "Reset settings?",
+    "description": "All changes in this section will be removed.",
+    "action": "Reset"
   },
   "system": {
     "title": "System settings",
-    "description": "Appearance and interface language of the application.",
-    "saving": "Saving…",
-    "error": "Failed to save settings: {{error}}",
-    "theme": {
-      "label": "Color theme",
-      "hint": "System theme follows the operating system appearance."
-    },
-    "language": {
-      "label": "Interface language",
-      "hint": "Applied immediately after selection."
-    }
+    "description": "Appearance and interface language of the application."
   },
-  "options": {
-    "theme": {
+  "theme": {
+    "label": "Color theme",
+    "hint": "System theme follows the operating system appearance.",
+    "options": {
       "system": "System",
       "light": "Light",
       "dark": "Dark"
-    },
-    "language": {
+    }
+  },
+  "language": {
+    "label": "Interface language",
+    "hint": "Applied immediately after selection.",
+    "options": {
       "ru": "Русский",
       "en": "English"
     }
   },
   "controls": {
     "selectPlaceholder": "Select a value",
-    "noOptions": "No available options",
-    "required": "Required field",
-    "invalidUrl": "Enter a valid URL",
-    "invalidDate": "Enter a valid date",
-    "minLength": "At least {{min}} characters",
-    "maxLength": "At most {{max}} characters"
+    "noOptions": "No available options"
   }
 }
