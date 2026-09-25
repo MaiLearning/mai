@@ -4,6 +4,7 @@ import {
   Bell,
   BookOpen,
   LayoutGrid,
+  Settings,
   SlidersHorizontal,
   Sparkles,
   TerminalSquare,
@@ -31,6 +32,8 @@ import {
   MobileNavLink,
   Nav,
   NavLink,
+  RouteMobileLink,
+  RouteNavLink,
   Sidebar,
 } from './HomeShellNav.style'
 
@@ -73,6 +76,10 @@ export function HomeShell({ userName, userInitials, children }: HomeShellProps) 
               <SlidersHorizontal size={16} aria-hidden="true" />
               {t('nav.analytics')}
             </NavLink>
+            <RouteNavLink to="/settings">
+              <Settings size={16} aria-hidden="true" />
+              {t('nav.settings')}
+            </RouteNavLink>
           </Nav>
         </Sidebar>
 
@@ -117,6 +124,10 @@ export function HomeShell({ userName, userInitials, children }: HomeShellProps) 
             <BarChart3 size={18} aria-hidden="true" />
             {t('nav.analytics')}
           </MobileNavLink>
+          <RouteMobileLink to="/settings">
+            <Settings size={18} aria-hidden="true" />
+            {t('nav.settings')}
+          </RouteMobileLink>
         </MobileNavGrid>
       </MobileNav>
     </ShellRoot>

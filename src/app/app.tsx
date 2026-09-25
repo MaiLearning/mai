@@ -3,7 +3,7 @@ import { courseI18NResources } from '@mai/course'
 import { I18nProvider, initI18n } from '@mai/i18n'
 import { NotificationsHost } from '@mai/notifications'
 import { pluginI18NResources } from '@mai/plugin'
-import { settingsReadyAtom, useSystemTheme } from '@mai/settings'
+import { settingsI18NResources, settingsReadyAtom, useSystemTheme } from '@mai/settings'
 import { sidebarI18NResources } from '@mai/sidebar'
 import { ThemeProvider } from '@mai/theme'
 import { linkI18NResources } from '@mai-plugin/link'
@@ -27,6 +27,7 @@ initI18n({
     home: homeI18NResources,
     sidebar: sidebarI18NResources,
     plugin: pluginI18NResources,
+    settings: settingsI18NResources,
     link: linkI18NResources,
     theory: theoryI18NResources,
   },

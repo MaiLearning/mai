@@ -1,16 +1,16 @@
 import { isFakeDataEnabled } from '@mai/fakeData'
-import { loadPlugins, setInternalViewers } from '@mai/plugin'
-import { TheoryViewer } from '@mai-plugin/theory'
-import type { Task } from '../types'
+import { loadPlugins, setInternalPluginSettings, setInternalViewers } from '@mai/plugin'
 // Viewers
 import { CodeViewer } from '@mai-plugin/code'
 import { LinkViewer } from '@mai-plugin/link'
 import { TaskViewer } from '@mai-plugin/task'
+import { TheoryViewer, theorySettingsDefinition } from '@mai-plugin/theory'
+import type { Task } from '../types'
 
 /**
- * Регистрирует вьюверы internal-плагинов и загружает
- * записи плагинов из backend в рантайм-реестр.
- * В fake-режиме backend-записей нет — загружается только реестр вьюверов.
+ * Регистрирует viewers и settings internal-плагинов и загружает
+ * записи плагинов из backend в runtime-реестр.
+ * В fake-режиме backend-записей нет — регистрируются только локальные definitions.
  */
 export const initPluginsTask: Task = {
   name: 'init-plugins',
@@ -20,6 +20,9 @@ export const initPluginsTask: Task = {
       task: TaskViewer,
       link: LinkViewer,
       code: CodeViewer,
+    })
+    setInternalPluginSettings({
+      'internal-theory': theorySettingsDefinition,
     })
     if (!import.meta.env.DEV || !isFakeDataEnabled()) await loadPlugins()
   },

@@ -1,5 +1,6 @@
 import { I18nProvider, initI18n } from '@mai/i18n'
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { MemoryRouter } from 'react-router-dom'
 import { homeI18NResources } from '../../locales'
 import { HomeShell } from './HomeShell'
 
@@ -12,7 +13,9 @@ const meta = {
   decorators: [
     (Story) => (
       <I18nProvider>
-        <Story />
+        <MemoryRouter>
+          <Story />
+        </MemoryRouter>
       </I18nProvider>
     ),
   ],
