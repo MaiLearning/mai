@@ -17,9 +17,9 @@
 | `src-tauri/crates/mai-config` | backend-крейт: читает `mai.toml`, следит через `notify`, отдаёт по IPC-команде `config_get`, шлёт событие `config://changed` |
 | `src/packages/config` | этот пакет: `invoke` + `listen`, валидация zod, jotai-атом |
 
-Файл не типизирован на бэкенде (отдаётся как JSON) — схема живёт здесь,
-в `core/schema.ts` (zod). Бэкенд умеет только прочитать TOML; кто какую схему
-подразумевает — решает фронтенд.
+Файл не типизирован целиком на бэкенде: `mai-config` отдаёт raw JSON, а
+SQLite-конфигурация валидируется backend-адаптером при старте. Полная
+frontend-схема живёт здесь, в `core/schema.ts` (zod).
 
 ## Как пользоваться
 
@@ -41,6 +41,7 @@ import { getAppConfig } from '@mai/config'
 
 const { mode, modeConfig } = getAppConfig()
 if (modeConfig.fakeData) { /* включить fake-данные */ }
+console.log(modeConfig.database.path)
 ```
 
 ### API
@@ -55,6 +56,7 @@ if (modeConfig.fakeData) { /* включить fake-данные */ }
 ## Разработка
 
 - Схема: `src/core/schema.ts` (zod). Зеркалит `docs/SPEC.md`.
+- База данных: `mode.<профиль>.database`; `path` разрешается от `app_data_dir`.
 - Дефолты: `src/core/defaults.ts`.
 - Транспорт: `src/api/` (invoke/listen), не экспортируется наружу.
 - Тесты: `vitest` (`schema.test.ts`, `configStore.test.ts`).

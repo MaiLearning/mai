@@ -4,17 +4,29 @@ import { z } from 'zod'
 export const AppModeSchema = z.enum(['development', 'production', 'release'])
 export type AppMode = z.infer<typeof AppModeSchema>
 
+export const DatabaseSettingsSchema = z
+  .object({
+    path: z.string().min(1),
+    max_connections: z.number().int().positive().max(0xffffffff),
+  })
+  .transform((value) => ({
+    path: value.path,
+    maxConnections: value.max_connections,
+  }))
+
 /** Секция `[mode.<name>]` — настройки, применяемые в режиме. */
 const ModeSettingsSchema = z
   .object({
     debug: z.boolean().default(false),
     fake_data: z.boolean().default(false),
     hot_reload: z.boolean().default(false),
+    database: DatabaseSettingsSchema,
   })
   .transform((value) => ({
     debug: value.debug,
     fakeData: value.fake_data,
     hotReload: value.hot_reload,
+    database: value.database,
   }))
 
 export type ModeConfig = z.infer<typeof ModeSettingsSchema>
@@ -56,7 +68,7 @@ export interface AppConfig {
 /**
  * Распарсить сырое значение (JSON из `mai.toml`) в типизированный конфиг.
  * Секции режимов — `[mode.<имя>]` — собираются по `available`;
- * отсутствующая секция даёт настройки по умолчанию.
+ * каждая доступная секция должна содержать обязательную базу данных.
  * Неизвестные ключи внутри секций не ломают парсинг (поле для расширения).
  */
 export function parseAppConfig(raw: unknown): AppConfig {

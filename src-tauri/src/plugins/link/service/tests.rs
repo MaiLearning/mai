@@ -31,8 +31,8 @@ impl ChangePublisher for Recorder {
 /// Сервис на свежей БД с прогнанными миграциями + записывающий паблишер + пул.
 async fn service() -> (LinkService, Arc<Recorder>, sqlx::SqlitePool) {
     let config = DatabaseConfig::for_test();
-    MigrationRunner::new().run(&config.url);
-    let pool = create_pool(&config).await;
+    MigrationRunner::new().run(&config.path);
+    let pool = create_pool(&config.path, config.max_connections).await;
     let recorder = Arc::new(Recorder::default());
     let publisher: SharedChangePublisher = recorder.clone();
     let service = LinkService::new(

@@ -15,6 +15,10 @@ available = ["development", "production", "release"]
 [mode.development]
 debug = true
 fake_data = true
+
+[mode.development.database]
+path = ".dev/mai_dev.db"
+max_connections = 5
 "#,
     )
     .unwrap();
@@ -23,6 +27,14 @@ fake_data = true
     assert_eq!(value["name"], "Mai");
     assert_eq!(value["mode"]["default"], "development");
     assert_eq!(value["mode"]["development"]["fake_data"], true);
+    assert_eq!(
+        value["mode"]["development"]["database"]["path"],
+        ".dev/mai_dev.db"
+    );
+    assert_eq!(
+        value["mode"]["development"]["database"]["max_connections"],
+        5
+    );
 
     std::fs::remove_file(&path).unwrap();
 }

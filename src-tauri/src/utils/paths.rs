@@ -162,11 +162,6 @@ impl AppPaths {
         &self.courses_dir
     }
 
-    /// Путь к файлу базы данных: `{storage_dir}/mai.db`.
-    pub fn db_path(&self) -> PathBuf {
-        self.storage_dir.join("mai.db")
-    }
-
     pub fn plugin_path(&self, plugin_id: &str) -> PathBuf {
         self.plugins_dir.join(plugin_id)
     }

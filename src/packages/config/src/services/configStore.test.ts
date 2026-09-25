@@ -22,9 +22,18 @@ const validRaw = {
   mode: {
     default: 'development',
     available: ['development', 'production', 'release'],
-    development: { debug: true, fake_data: true, hot_reload: true },
-    production: {},
-    release: {},
+    development: {
+      debug: true,
+      fake_data: true,
+      hot_reload: true,
+      database: { path: '.dev/mai_dev.db', max_connections: 5 },
+    },
+    production: {
+      database: { path: 'storage/mai.db', max_connections: 5 },
+    },
+    release: {
+      database: { path: 'storage/mai.db', max_connections: 5 },
+    },
   },
 }
 
@@ -42,6 +51,10 @@ describe('initAppConfig', () => {
     expect(mockedSubscribe).toHaveBeenCalledOnce()
     expect(config.mode).toBe('development')
     expect(config.modeConfig.fakeData).toBe(true)
+    expect(config.modeConfig.database).toEqual({
+      path: '.dev/mai_dev.db',
+      maxConnections: 5,
+    })
     expect(getAppConfig().name).toBe('Mai')
     expect(getDefaultStore().get(appConfigAtom).version).toBe('0.2.0')
   })

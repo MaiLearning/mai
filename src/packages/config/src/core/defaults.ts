@@ -4,6 +4,10 @@ const defaultModeConfig: ModeConfig = {
   debug: false,
   fakeData: false,
   hotReload: false,
+  database: {
+    path: 'storage/mai.db',
+    maxConnections: 5,
+  },
 }
 
 /** Настройки development — зеркало `[mode.development]` из mai.toml. */
@@ -11,6 +15,10 @@ const developmentModeConfig: ModeConfig = {
   debug: true,
   fakeData: true,
   hotReload: true,
+  database: {
+    path: '.dev/mai_dev.db',
+    maxConnections: 5,
+  },
 }
 
 /**

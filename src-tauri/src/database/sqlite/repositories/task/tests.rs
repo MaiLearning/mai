@@ -15,8 +15,8 @@ use crate::plugins::task::service::data::{
 /// Репозиторий на свежей БД с прогнанными миграциями + ресурс-владелец.
 async fn seeded_repo() -> (SqliteTaskRepository, String) {
     let config = DatabaseConfig::for_test();
-    MigrationRunner::new().run(&config.url);
-    let pool = create_pool(&config).await;
+    MigrationRunner::new().run(&config.path);
+    let pool = create_pool(&config.path, config.max_connections).await;
 
     let course_id = uuid::Uuid::new_v4().to_string();
     sqlx::query("INSERT INTO courses (id, name, created_at, updated_at) VALUES (?, 't', 0, 0)")

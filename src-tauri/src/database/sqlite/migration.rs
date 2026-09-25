@@ -1,3 +1,5 @@
+use std::path::Path;
+
 use refinery::embed_migrations;
 use refinery::Runner;
 
@@ -14,8 +16,8 @@ impl MigrationRunner {
         }
     }
 
-    pub fn run(&self, db_path: &str) {
-        if let Some(parent) = std::path::Path::new(db_path).parent() {
+    pub fn run(&self, db_path: &Path) {
+        if let Some(parent) = db_path.parent() {
             std::fs::create_dir_all(parent).expect("failed to create database directory");
         }
 

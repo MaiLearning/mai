@@ -10,14 +10,18 @@ pub struct Database {
 
 impl Database {
     pub async fn new(config: DatabaseConfig) -> Self {
-        let url = config.url.clone();
+        let DatabaseConfig {
+            path,
+            max_connections,
+        } = config;
+        let migration_path = path.clone();
         tokio::task::spawn_blocking(move || {
-            MigrationRunner::new().run(&url);
+            MigrationRunner::new().run(&migration_path);
         })
         .await
         .expect("migration task panicked");
 
-        let pool = create_pool(&config).await;
+        let pool = create_pool(&path, max_connections).await;
 
         Self { pool }
     }

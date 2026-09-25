@@ -16,12 +16,24 @@ debug = true
 fake_data = true
 hot_reload = true
 
+[mode.development.database]
+path = ".dev/mai_dev.db"
+max_connections = 5
+
 [mode.production]
 debug = false
 fake_data = false
 hot_reload = false
 
+[mode.production.database]
+path = "storage/mai.db"
+max_connections = 5
+
 [mode.release]
 debug = false
 fake_data = false
 hot_reload = false
+
+[mode.release.database]
+path = "storage/mai.db"
+max_connections = 5

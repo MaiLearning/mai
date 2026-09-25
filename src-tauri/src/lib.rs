@@ -65,7 +65,7 @@ pub fn run() {
                 .build(),
         )
         .plugin(tauri_plugin_opener::init())
-        .setup(|app| {
+        .setup(|app| -> Result<(), Box<dyn std::error::Error>> {
             use std::sync::Arc;
 
             use crate::services::events::ChangeOrigin;
@@ -79,16 +79,27 @@ pub fn run() {
             // config_get, изменения приходят событием config://changed.
             // Путь не зависит от рабочего каталога процесса (CWD dev-запуска
             // может отличаться) — см. SPEC @mai/config.
-            let config_path =
-                resolve_config_path(&app_handle).expect("Не удалось найти конфигурацию mai.toml");
-            let app_config = Arc::new(
-                mai_config::MaiConfig::load(config_path.clone()).unwrap_or_else(|e| {
-                    panic!(
-                        "Failed to load mai.toml configuration at {:?}: {}",
-                        config_path, e
+            let config_path = resolve_config_path(&app_handle)
+                .map_err(|message| std::io::Error::new(std::io::ErrorKind::NotFound, message))?;
+            let app_config = Arc::new(mai_config::MaiConfig::load(config_path.clone()).map_err(
+                |error| {
+                    std::io::Error::new(
+                        std::io::ErrorKind::InvalidData,
+                        format!(
+                            "Не удалось прочитать mai.toml по пути {}: {error}",
+                            config_path.display()
+                        ),
                     )
-                }),
-            );
+                },
+            )?);
+            let db_config =
+                database::sqlite::from_mai_config(&app_config.current(), app_paths.app_data_dir())
+                    .map_err(|error| {
+                        std::io::Error::new(
+                            std::io::ErrorKind::InvalidData,
+                            format!("Некорректная конфигурация базы данных: {error}"),
+                        )
+                    })?;
             let emit_handle = app_handle.clone();
             let config_watcher = app_config
                 .watch(move |value| {
@@ -97,13 +108,6 @@ pub fn run() {
                 .expect("Failed to watch mai.toml");
             app.manage(app_config);
             app.manage(config_watcher);
-
-            #[cfg(debug_assertions)]
-            let db_config =
-                database::sqlite::settings::DatabaseConfig::for_dev(app_paths.app_data_dir());
-            #[cfg(not(debug_assertions))]
-            let db_config =
-                database::sqlite::settings::DatabaseConfig::for_prod(app_paths.app_data_dir());
 
             let publishers = crate::utils::events::ChangePublishers {
                 ipc: Arc::new(crate::utils::events::TauriChangePublisher::new(

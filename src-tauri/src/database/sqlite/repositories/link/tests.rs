@@ -12,16 +12,16 @@ use crate::plugins::link::service::data::{LinkData, LinkStatus, LinkTargetData};
 /// Репозиторий на свежей БД с прогнанными миграциями.
 async fn repo() -> SqliteLinkRepository {
     let config = DatabaseConfig::for_test();
-    MigrationRunner::new().run(&config.url);
-    let pool = create_pool(&config).await;
+    MigrationRunner::new().run(&config.path);
+    let pool = create_pool(&config.path, config.max_connections).await;
     SqliteLinkRepository::new(pool)
 }
 
 /// Репозиторий + пул (для расстановки вспомогательных данных напрямую).
 async fn repo_with_pool() -> (SqliteLinkRepository, sqlx::SqlitePool) {
     let config = DatabaseConfig::for_test();
-    MigrationRunner::new().run(&config.url);
-    let pool = create_pool(&config).await;
+    MigrationRunner::new().run(&config.path);
+    let pool = create_pool(&config.path, config.max_connections).await;
     let repo = SqliteLinkRepository::new(pool.clone());
     (repo, pool)
 }

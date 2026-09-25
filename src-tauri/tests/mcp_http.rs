@@ -12,7 +12,6 @@ use http::{Request, StatusCode};
 use http_body_util::BodyExt;
 use serde_json::{json, Value};
 use sqlx::sqlite::SqliteConnectOptions;
-use std::str::FromStr;
 use tower::ServiceExt;
 
 use mai_lib::database::sqlite::migration::MigrationRunner;
@@ -44,10 +43,11 @@ fn test_state(tag: &str) -> AppState {
     let dir = unique_dir(tag);
     std::fs::create_dir_all(&dir).expect("failed to create test dir");
     let db_path = dir.join("mai.db");
-    MigrationRunner::new().run(db_path.to_str().expect("non-utf8 db path"));
+    MigrationRunner::new().run(&db_path);
 
-    let options = SqliteConnectOptions::from_str(&format!("sqlite:{}", db_path.display()))
-        .expect("invalid sqlite options");
+    let options = SqliteConnectOptions::new()
+        .filename(&db_path)
+        .create_if_missing(true);
     let pool = sqlx::SqlitePool::connect_lazy_with(options);
 
     let app_paths = AppPaths {
