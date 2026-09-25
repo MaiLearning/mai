@@ -6,6 +6,14 @@
   "rename_success_message": "Resource renamed to “{{name}}”",
   "rename_failed_title": "Failed to rename resource",
 
+  "settings": {
+    "name": "Theory",
+    "autosaveDelay": {
+      "label": "Autosave delay",
+      "hint": "Time to wait after the latest change before saving."
+    }
+  },
+
   "breadcrumbs_label": "Material location",
   "title_label": "Theory material title",
   "title_placeholder": "Material title",

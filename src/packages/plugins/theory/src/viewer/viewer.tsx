@@ -7,6 +7,7 @@ import { Spinner } from '@mai/theme'
 import type { JSONContent } from '@tiptap/react'
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useEffectiveAutosaveDelay } from '../settings/useEffectiveAutosaveDelay'
 import { TheoryHeader } from './components/TheoryHeader'
 import { TheoryStatusBar } from './components/TheoryStatusBar'
 import { type InsertDialogKind, TheoryToolbar } from './components/TheoryToolbar'
@@ -66,10 +67,12 @@ export function TheoryViewer({ resourceId, courseId, data, onReady }: PluginRend
     },
     [courseId, resourceId],
   )
-  const { saveState, updatedAt, setUpdatedAt, scheduleSave, flushSave } = useTheoryAutosave(
+  const autosaveDelay = useEffectiveAutosaveDelay()
+  const { saveState, updatedAt, setUpdatedAt, scheduleSave, flushSave } = useTheoryAutosave({
     resourceId,
-    handleSaved,
-  )
+    debounceMs: autosaveDelay,
+    onSaved: handleSaved,
+  })
   const { editor, loading } = useTheoryEditor({
     resourceId,
     onDocChange: scheduleSave,

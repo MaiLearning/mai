@@ -2,9 +2,7 @@ import { info, error as logError } from '@mai/tauri/logs'
 import type { JSONContent } from '@tiptap/react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { saveTheoryContent } from '../../entity/services'
-
-/** Задержка дебаунса автосохранения. */
-const SAVE_DEBOUNCE_MS = 500
+import { DEFAULT_THEORY_AUTOSAVE_DELAY } from '../../settings/autosaveDelay'
 
 /** Минимальное время показа статуса «Сохранение…» — локальное сохранение быстрее, и статус не должен мелькать. */
 const SAVE_STATE_MIN_MS = 800
@@ -19,6 +17,12 @@ function holdMinSavingDuration(savingStartedAt: number): Promise<void> {
   return rest > 0 ? new Promise((resolve) => setTimeout(resolve, rest)) : Promise.resolve()
 }
 
+interface UseTheoryAutosaveOptions {
+  resourceId: string
+  debounceMs?: number
+  onSaved?: (content: JSONContent) => void
+}
+
 /**
  * Автосохранение контента теории: дебаунс изменений, статусы
  * idle/saving/saved/error, финальное сохранение при размонтировании.
@@ -26,7 +30,11 @@ function holdMinSavingDuration(savingStartedAt: number): Promise<void> {
  * flushSave — единственный владелец отложенного контента: он же используется
  * дебаунсом, ручным сохранением (Ctrl+S) и финальным сохранением — гонок нет.
  */
-export function useTheoryAutosave(resourceId: string, onSaved?: (content: JSONContent) => void) {
+export function useTheoryAutosave({
+  resourceId,
+  debounceMs = DEFAULT_THEORY_AUTOSAVE_DELAY,
+  onSaved,
+}: UseTheoryAutosaveOptions) {
   const [saveState, setSaveState] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle')
   const [updatedAt, setUpdatedAt] = useState<number | null>(null)
   const pendingRef = useRef<JSONContent | null>(null)
@@ -75,6 +83,11 @@ export function useTheoryAutosave(resourceId: string, onSaved?: (content: JSONCo
     }
   }, [resourceId])
 
+  const schedulePendingSave = useCallback(() => {
+    if (timerRef.current) clearTimeout(timerRef.current)
+    timerRef.current = setTimeout(() => void flushSave(), debounceMs)
+  }, [debounceMs, flushSave])
+
   const scheduleSave = useCallback(
     (content: JSONContent) => {
       pendingRef.current = content
@@ -82,11 +95,14 @@ export function useTheoryAutosave(resourceId: string, onSaved?: (content: JSONCo
       // сбрасываем только «Ошибка» (следующее изменение повторяет попытку).
       if (saveState === 'error') setSaveState('idle')
 
-      if (timerRef.current) clearTimeout(timerRef.current)
-      timerRef.current = setTimeout(() => void flushSave(), SAVE_DEBOUNCE_MS)
+      schedulePendingSave()
     },
-    [flushSave, saveState],
+    [saveState, schedulePendingSave],
   )
+
+  useEffect(() => {
+    if (timerRef.current) schedulePendingSave()
+  }, [schedulePendingSave])
 
   // Финальное сохранение при размонтировании / смене ресурса — тем же flushSave.
   const flushRef = useRef(flushSave)
