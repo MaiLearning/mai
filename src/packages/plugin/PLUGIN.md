@@ -45,6 +45,65 @@ import { loadPlugins } from '@mai/plugin'
 await loadPlugins()
 ```
 
+### Настройки плагина
+
+`setInternalPluginSettings(map)` атомарно регистрирует definition'ы по
+`pluginId`. Definition описывается Zod-схемой и не содержит React-компонентов
+или собственного migration-механизма: UI настроек генерируется автоматически
+(`settingsFieldSpecs` → `SettingsFieldRenderer` в `@mai/settings`).
+
+```ts
+import { definePluginSettings } from '@mai/settings'
+import { setInternalPluginSettings } from '@mai/plugin'
+import { z } from 'zod'
+
+const theorySettingsDefinition = definePluginSettings({
+  nameKey: 'settings.name', // заголовок пункта настроек
+  i18nNamespace: 'theory', // namespace переводов плагина
+  schema: z.object({
+    autosaveDelay: z
+      .enum(['500', '1000', '2000'])
+      .default('500')
+      .meta({
+        title: 'settings.autosaveDelay.label',
+        description: 'settings.autosaveDelay.hint',
+      }),
+  }),
+})
+
+setInternalPluginSettings({ 'internal-theory': theorySettingsDefinition })
+```
+
+Переводы полей ищутся в `i18nNamespace` по конвенции, `meta` не обязательна:
+
+- подпись — `title` из JSON Schema, иначе `<поле>.label`;
+- пояснение — `description`, иначе `<поле>.hint` (нет перевода — пояснения нет);
+- варианты выбора (`z.enum` / массив enum) — `<поле>.options.<значение>`.
+
+Ключи отсчитываются от `i18nNamespace` определения. В примере выше они заданы
+явно через `meta`, потому что плагин группирует строки настроек в объекте
+`settings` внутри своего namespace.
+
+Типы полей ограничены реестром схем бэкенда (`services/settings/schemas`):
+`toggle`, `single_selection`, `multi_selection`, `text_input`, `url_input`,
+`date_input`. Неподдерживаемое поле показывается ошибкой схемы, а не падением
+страницы.
+
+`usePluginSettings(pluginId)` загружает значения из домена `plugin`, применяет
+defaults через Zod и возвращает `values`, `setValue`, `saveValues` и `reset`.
+
+```ts
+const settings = usePluginSettings('internal-theory')
+const delay = settings?.values.autosaveDelay
+```
+
+Значения живут в общем сторе `@mai/settings` по ключу `plugin:<pluginId>`:
+страница настроек и другие потребители (например viewer плагина) видят одно
+состояние. `setValue` меняет одно значение и сохраняет его после паузы
+автосохранения, `saveValues` пишет полный набор немедленно, `reset` удаляет
+документ пункта. На бэкенд в домене `plugin` уходит полный self-describing
+документ.
+
 Просмотр ресурса:
 
 ```tsx

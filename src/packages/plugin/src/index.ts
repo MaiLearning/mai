@@ -18,6 +18,7 @@ export { RuntimePlugin } from './runtime/model'
 export { PluginStore } from './runtime/PluginStore'
 export { getInternalViewer, registerInternalViewer, setInternalViewers } from './runtime/registry'
 export type { PluginRenderProps, PluginTypeKey, PluginViewerProps } from './runtime/types'
+export * from './settings'
 export * from './store'
 // Просмотр ресурса через плагин
 export { PluginViewer } from './viewer/PluginViewer'

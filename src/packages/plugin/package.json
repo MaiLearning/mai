@@ -26,6 +26,7 @@
     "@mai/i18n": "workspace:*",
     "@mai/notifications": "workspace:*",
     "@mai/resource": "workspace:*",
+    "@mai/settings": "workspace:*",
     "@mai/structure": "workspace:*",
     "@mai/sync": "workspace:*",
     "@mai/tauri": "workspace:*",

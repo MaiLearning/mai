@@ -1,12 +1,16 @@
 import type { ResourceType } from '@mai/resource'
 import { fetchResourceTypes } from '@mai/resource'
 import { warn } from '@mai/tauri/logs'
+import { getDefaultStore } from 'jotai'
 import type { ComponentType } from 'react'
 import { fetchPlugins } from '../services/fetch'
+import { pluginsAtom } from '../store/atoms'
 import { pluginStore } from './instance'
 import { RuntimePlugin } from './model'
 import { getInternalViewer } from './registry'
 import type { PluginRenderProps, PluginTypeKey } from './types'
+
+const store = getDefaultStore()
 
 /**
  * Единая точка загрузки internal-плагинов из backend.
@@ -19,6 +23,7 @@ import type { PluginRenderProps, PluginTypeKey } from './types'
  */
 export async function loadPlugins(): Promise<void> {
   const [entities, resourceTypes] = await Promise.all([fetchPlugins(), fetchResourceTypes()])
+  store.set(pluginsAtom, entities)
 
   for (const entity of entities) {
     if (!entity.enabled) continue
