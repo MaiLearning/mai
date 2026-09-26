@@ -96,6 +96,11 @@ export { Text } from './components/foundation/text/text'
 export type { TooltipProps } from './components/foundation/tooltip/tooltip'
 export { Tooltip } from './components/foundation/tooltip/tooltip'
 export type {
+  BreadcrumbItem,
+  BreadcrumbsProps,
+} from './components/pattern/breadcrumbs/breadcrumbs'
+export { Breadcrumbs } from './components/pattern/breadcrumbs/breadcrumbs'
+export type {
   CheckboxGroupItem,
   CheckboxGroupProps,
 } from './components/pattern/checkboxGroup/checkboxGroup'
@@ -114,6 +119,14 @@ export type {
   FieldControlProvidedProps,
 } from './components/pattern/field/fieldControl'
 export { useFieldControl, useFieldControlContext } from './components/pattern/field/fieldControl'
+export type {
+  NavListGroup,
+  NavListItem,
+  NavListProps,
+} from './components/pattern/navList/navList'
+export { NavList } from './components/pattern/navList/navList'
+export type { PageHeaderProps } from './components/pattern/pageHeader/pageHeader'
+export { PageHeader } from './components/pattern/pageHeader/pageHeader'
 export type { AlertProps, AlertVariant } from './components/primitive/alert/alert'
 export { Alert } from './components/primitive/alert/alert'
 export type { ButtonProps, ButtonSize, ButtonVariant } from './components/primitive/button/button'

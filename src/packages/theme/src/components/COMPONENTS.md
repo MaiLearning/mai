@@ -15,9 +15,11 @@
 >   (`ScrollArea`); иконки (`Icon` + глифы) вынесены в отдельный пакет
 >   `@mai/icons`;
 > - `primitive` — `Button`, `Link`, `Checkbox`, `Switch`,
->   `SegmentedControl`, `Alert`, `Modal`, попап (`usePopover` +
->   `popover.style`), `Input` (новый примитив ввода);
-> - `pattern` — `Field`, `CheckboxGroup`.
+>   `SegmentedControl`, `Alert`, `Modal`, `Drawer` (общий overlay-механизм
+>   `primitive/overlay`), попап (`usePopover` + `popover.style`), `Input`
+>   (новый примитив ввода);
+> - `pattern` — `Field`, `CheckboxGroup`, `Breadcrumbs`, `NavList`,
+>   `PageHeader`.
 >
 > Осталось в `src/ui/` (по решению): `Select`, `DropdownMenu`,
 > `ContextMenu`, `List`, `HierarchicalList`, поля (`ui/fields/`) —
