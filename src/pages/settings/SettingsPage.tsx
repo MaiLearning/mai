@@ -7,16 +7,17 @@ import {
   type SettingsDocument,
   SettingsLayout,
   SettingsNav,
+  type SettingsNavGroup,
   type SettingsNavItem,
   SettingsSchemaForm,
   SYSTEM_DOMAIN,
   settingsStateKey,
   systemSettingsDefinition,
 } from '@mai/settings'
+import { Breadcrumbs, Icon, PageHeader } from '@mai/theme'
 import { useAtomValue } from 'jotai'
-import { Puzzle, Settings as SettingsIcon, X } from 'lucide-react'
 import { type ReactNode, useState } from 'react'
-import { CloseLink, Description, Header, HeaderRow, Inner, Page, Title } from './SettingsPage.style'
+import { CloseLink, Page } from './SettingsPage.style'
 
 /** Пункт страницы настроек: ключ состояния, определение и данные для навигации. */
 type SettingsEntry = {
@@ -38,14 +39,20 @@ function generalEntry(label: string): SettingsEntry {
     itemId: GENERAL_ITEM_ID,
     definition: systemSettingsDefinition,
     label,
-    icon: <SettingsIcon size={16} aria-hidden="true" />,
+    icon: <Icon name="settings" size="sm" aria-hidden="true" />,
   }
 }
 
+/** Данные пункта для навигации. */
+function toNavItem({ id, label, icon, disabled }: SettingsEntry): SettingsNavItem {
+  return { id, label, icon, disabled }
+}
+
 /**
- * Страница настроек: навигация по пунктам (системные «Общие» + плагины) и форма
- * выбранного пункта. Активный пункт вычисляется из выбора: если выбранный
- * плагин отключён, показываются «Общие» — состояние выбора не переписывается.
+ * Страница настроек: навигация по пунктам (системные «Общие» + плагины) и
+ * форма выбранного пункта. Заголовок, описание и хлебные крошки — в шапке
+ * раздела. Активный пункт вычисляется из выбора: если выбранный плагин
+ * отключён, показываются «Общие» — состояние выбора не переписывается.
  */
 export function SettingsPage() {
   const { t, i18n } = useTranslation('settings')
@@ -55,65 +62,70 @@ export function SettingsPage() {
 
   const general = generalEntry(t('nav.general'))
   const pluginMap = new Map(plugins.map((plugin) => [plugin.id, plugin]))
-  const entries: SettingsEntry[] = [
-    general,
-    ...registrations.map(({ pluginId, definition }): SettingsEntry => {
-      const plugin = pluginMap.get(pluginId)
-      const fallback = definition.nameKey
-        ? i18n.t(definition.i18nNamespace, definition.nameKey, { defaultValue: pluginId })
-        : pluginId
+  const pluginEntries: SettingsEntry[] = registrations.map(({ pluginId, definition }) => {
+    const plugin = pluginMap.get(pluginId)
+    const fallback = definition.nameKey
+      ? i18n.t(definition.i18nNamespace, definition.nameKey, { defaultValue: pluginId })
+      : pluginId
 
-      return {
-        id: settingsStateKey(PLUGIN_DOMAIN, pluginId),
-        domain: PLUGIN_DOMAIN,
-        itemId: pluginId,
-        definition,
-        label: plugin?.name ?? String(fallback),
-        icon: <Puzzle size={16} aria-hidden="true" />,
-        disabled: plugin?.enabled === false,
-      }
-    }),
-  ]
+    return {
+      id: settingsStateKey(PLUGIN_DOMAIN, pluginId),
+      domain: PLUGIN_DOMAIN,
+      itemId: pluginId,
+      definition,
+      label: plugin?.name ?? String(fallback),
+      icon: <Icon name="puzzle" size="sm" aria-hidden="true" />,
+      disabled: plugin?.enabled === false,
+    }
+  })
+  const entries = [general, ...pluginEntries]
   const active = entries.find((entry) => entry.id === selectedId && !entry.disabled) ?? general
-  const navItems: SettingsNavItem[] = entries.map(({ id, label, icon, disabled }) => ({
-    id,
-    label,
-    icon,
-    disabled,
-  }))
+
+  const groups: SettingsNavGroup[] = [
+    { id: 'system', title: t('nav.title'), items: [toNavItem(general)] },
+    { id: 'plugins', title: t('nav.plugins'), items: pluginEntries.map(toNavItem) },
+  ].filter((group) => group.items.length > 0)
+
+  const activeDescription = active.definition.descriptionKey
+    ? i18n.t(active.definition.i18nNamespace, active.definition.descriptionKey, {
+        defaultValue: t('page.description'),
+      })
+    : t('page.description')
 
   return (
     <Page>
-      <Inner>
-        <Header>
-          <HeaderRow>
-            <div>
-              <Title>{t('nav.title')}</Title>
-              <Description>{t('page.description')}</Description>
-            </div>
-            <CloseLink to="/home" aria-label={t('nav.close')}>
-              <X size={18} aria-hidden="true" />
-            </CloseLink>
-          </HeaderRow>
-        </Header>
-        <SettingsLayout
-          nav={
-            <SettingsNav
-              items={navItems}
-              activeId={active.id}
-              onSelect={setSelectedId}
-              ariaLabel={t('nav.title')}
+      <SettingsLayout
+        nav={
+          <SettingsNav
+            groups={groups}
+            activeId={active.id}
+            onSelect={setSelectedId}
+            ariaLabel={t('nav.title')}
+          />
+        }
+      >
+        <PageHeader
+          title={active.label}
+          description={activeDescription}
+          breadcrumbs={
+            <Breadcrumbs
+              ariaLabel={t('nav.breadcrumbs')}
+              items={[{ label: t('nav.title') }, { label: active.label, current: true }]}
             />
           }
-        >
-          <SettingsSchemaForm
-            key={active.id}
-            domain={active.domain}
-            itemId={active.itemId}
-            definition={active.definition}
-          />
-        </SettingsLayout>
-      </Inner>
+          actions={
+            <CloseLink to="/home" aria-label={t('nav.close')}>
+              <Icon name="close" size="lg" aria-hidden="true" />
+            </CloseLink>
+          }
+        />
+        <SettingsSchemaForm
+          key={active.id}
+          domain={active.domain}
+          itemId={active.itemId}
+          definition={active.definition}
+        />
+      </SettingsLayout>
     </Page>
   )
 }

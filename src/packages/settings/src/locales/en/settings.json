@@ -2,6 +2,7 @@
   "nav": {
     "title": "Settings",
     "close": "Close settings",
+    "breadcrumbs": "Settings sections path",
     "general": "General",
     "system": "System",
     "profile": "Profile",

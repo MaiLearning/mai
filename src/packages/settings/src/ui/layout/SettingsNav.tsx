@@ -1,5 +1,5 @@
+import { NavList } from '@mai/theme'
 import type { ReactNode } from 'react'
-import { Children, Group, Icon, Nav, NavItem } from './SettingsNav.style'
 
 export interface SettingsNavItem {
   /** Идентификатор пункта (для activeId и onSelect). */
@@ -13,8 +13,18 @@ export interface SettingsNavItem {
   disabled?: boolean
 }
 
-export interface SettingsNavProps {
+export interface SettingsNavGroup {
+  /** Ключ группы. */
+  id?: string
+  /** Заголовок группы над списком. */
+  title?: string
+  /** Пункты группы. */
   items: SettingsNavItem[]
+}
+
+export interface SettingsNavProps {
+  /** Группы пунктов настроек (системные, плагины, курсы). */
+  groups: SettingsNavGroup[]
   /** Активный пункт. */
   activeId?: string
   onSelect: (id: string) => void
@@ -22,60 +32,10 @@ export interface SettingsNavProps {
   ariaLabel?: string
 }
 
-interface NavLevelProps {
-  items: SettingsNavItem[]
-  activeId?: string
-  onSelect: (id: string) => void
-  nested?: boolean
-  parentDisabled?: boolean
-}
-
-function NavLevel({ items, activeId, onSelect, nested, parentDisabled = false }: NavLevelProps) {
-  const Level = nested ? Children : Group
-
-  return (
-    <Level>
-      {items.map((item) => {
-        const disabled = item.disabled === true || parentDisabled
-        const active = !disabled && item.id === activeId
-
-        return (
-          <div key={item.id}>
-            <NavItem
-              type="button"
-              disabled={disabled}
-              $active={active}
-              $disabled={disabled}
-              data-active={active}
-              aria-current={active ? 'page' : undefined}
-              onClick={() => {
-                if (!disabled) onSelect(item.id)
-              }}
-            >
-              {item.icon ? <Icon>{item.icon}</Icon> : null}
-              {item.label}
-            </NavItem>
-            {item.children?.length ? (
-              <NavLevel
-                items={item.children}
-                activeId={activeId}
-                onSelect={onSelect}
-                nested
-                parentDisabled={disabled}
-              />
-            ) : null}
-          </div>
-        )
-      })}
-    </Level>
-  )
-}
-
-/** Навигация по разделам настроек с вложенными пунктами. */
-export function SettingsNav({ items, activeId, onSelect, ariaLabel }: SettingsNavProps) {
-  return (
-    <Nav aria-label={ariaLabel}>
-      <NavLevel items={items} activeId={activeId} onSelect={onSelect} />
-    </Nav>
-  )
+/**
+ * Навигация по разделам настроек: группы пунктов с заголовками, иконки,
+ * вложенные пункты. Тонкий адаптер над паттерном `NavList` темы.
+ */
+export function SettingsNav({ groups, activeId, onSelect, ariaLabel }: SettingsNavProps) {
+  return <NavList groups={groups} activeId={activeId} onSelect={onSelect} ariaLabel={ariaLabel} />
 }

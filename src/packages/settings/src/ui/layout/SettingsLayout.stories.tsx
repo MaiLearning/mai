@@ -1,22 +1,31 @@
-import { Text } from '@mai/theme'
+import { Icon, Text } from '@mai/theme'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { BookOpen, Monitor, Puzzle, Settings, User } from 'lucide-react'
 import { fn } from 'storybook/test'
 import { SettingsLayout } from './SettingsLayout'
-import { SettingsNav, type SettingsNavItem } from './SettingsNav'
+import { SettingsNav, type SettingsNavGroup } from './SettingsNav'
 
-const items: SettingsNavItem[] = [
+const groups: SettingsNavGroup[] = [
   {
-    id: 'general',
-    label: 'Общие',
-    icon: <Settings size={16} />,
-    children: [
-      { id: 'system', label: 'Системные', icon: <Monitor size={16} /> },
-      { id: 'profile', label: 'Профиль', icon: <User size={16} /> },
+    id: 'system',
+    title: 'Настройки',
+    items: [
+      {
+        id: 'general',
+        label: 'Общие',
+        icon: <Icon name="settings" />,
+        children: [
+          { id: 'system', label: 'Системные', icon: <Icon name="monitor" /> },
+          { id: 'profile', label: 'Профиль', icon: <Icon name="user" /> },
+        ],
+      },
+      { id: 'courses', label: 'Курсы', icon: <Icon name="bookOpen" /> },
     ],
   },
-  { id: 'courses', label: 'Курсы', icon: <BookOpen size={16} /> },
-  { id: 'plugins', label: 'Плагины', icon: <Puzzle size={16} /> },
+  {
+    id: 'plugins',
+    title: 'Плагины',
+    items: [{ id: 'plugins', label: 'Плагины', icon: <Icon name="puzzle" /> }],
+  },
 ]
 
 const meta = {
@@ -32,7 +41,7 @@ const meta = {
     ),
   ],
   args: {
-    nav: <SettingsNav items={items} activeId="system" onSelect={fn()} />,
+    nav: <SettingsNav groups={groups} activeId="system" onSelect={fn()} />,
     children: <Text size="sm">Содержимое выбранного пункта настроек.</Text>,
   },
   argTypes: {
@@ -45,5 +54,5 @@ export default meta
 
 type Story = StoryObj<typeof meta>
 
-/** Навигация слева, содержимое справа. */
+/** Панель: навигация слева, содержимое справа. */
 export const Default: Story = {}

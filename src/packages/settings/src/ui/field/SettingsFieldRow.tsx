@@ -1,6 +1,5 @@
-import { Text } from '@mai/theme'
+import { Field } from '@mai/theme'
 import type { ReactNode } from 'react'
-import { Field, Label } from './SettingsFieldRow.style'
 
 export interface SettingsFieldRowProps {
   /** Подпись поля. */
@@ -15,21 +14,15 @@ export interface SettingsFieldRowProps {
   children: ReactNode
 }
 
-/** Обёртка поля настроек: подпись, контрол и пояснение/ошибка. */
+/**
+ * Обёртка поля настроек: подпись, контрол и пояснение/ошибка. Адаптер над
+ * паттерном `Field` темы — связывает `label` с контролом по `htmlFor` и
+ * показывает сообщение (ошибка перекрывает подсказку).
+ */
 export function SettingsFieldRow({ label, htmlFor, hint, error, children }: SettingsFieldRowProps) {
   return (
-    <Field>
-      <Label htmlFor={htmlFor}>{label}</Label>
+    <Field label={label} htmlFor={htmlFor} hint={hint} error={error}>
       {children}
-      {error ? (
-        <Text size="xs" color="red">
-          {error}
-        </Text>
-      ) : hint ? (
-        <Text size="xs" color="gray">
-          {hint}
-        </Text>
-      ) : null}
     </Field>
   )
 }
