@@ -16,6 +16,7 @@
   "dependencies": {
     "@mai/fakeData": "workspace:*",
     "@mai/i18n": "workspace:*",
+    "@mai/notifications": "workspace:*",
     "@mai/tauri": "workspace:*",
     "@mai/theme": "workspace:*",
     "jotai": "^2.20.3",

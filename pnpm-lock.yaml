@@ -867,6 +867,9 @@ importers:
       '@mai/i18n':
         specifier: workspace:*
         version: link:../i18n
+      '@mai/notifications':
+        specifier: workspace:*
+        version: link:../notifications
       '@mai/tauri':
         specifier: workspace:*
         version: link:../tauri

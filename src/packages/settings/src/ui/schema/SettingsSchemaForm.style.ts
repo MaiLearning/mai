@@ -7,7 +7,11 @@ export const Form = styled.div`
   width: 100%;
 `
 
+/** Строка статуса формы: индикатор и текст (загрузка/сохранение). */
 export const Status = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.sm};
   min-height: 20px;
   color: ${({ theme }) => theme.utils.getText('neutral', 'muted')};
   font-size: ${({ theme }) => theme.typography.sizes.sm};
