@@ -120,6 +120,13 @@ export type { ButtonProps, ButtonSize, ButtonVariant } from './components/primit
 export { Button } from './components/primitive/button/button'
 export type { CheckboxProps } from './components/primitive/checkbox/checkbox'
 export { Checkbox } from './components/primitive/checkbox/checkbox'
+export type {
+  DrawerProps,
+  DrawerSide,
+  DrawerSize,
+} from './components/primitive/drawer/drawer'
+export { Drawer, DrawerBody, DrawerFooter } from './components/primitive/drawer/drawer'
+export { DrawerFooterSpacer } from './components/primitive/drawer/drawer.style'
 export type { InputProps, InputSize } from './components/primitive/input/input'
 export { Input } from './components/primitive/input/input'
 export type { LinkProps } from './components/primitive/link/link'

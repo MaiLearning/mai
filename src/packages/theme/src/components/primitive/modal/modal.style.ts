@@ -1,18 +1,12 @@
 import styled, { css, keyframes } from 'styled-components'
+import { CLOSE_DURATION_MS, fadeIn } from '../overlay/overlay.style'
 
 /* ── Анимации ── */
 
-const fadeIn = keyframes`
-  from { opacity: 0; }
-  to   { opacity: 1; }
-`
 const panelIn = keyframes`
   from { opacity: 0; transform: translateY(16px) scale(0.975); }
   to   { opacity: 1; transform: translateY(0)     scale(1); }
 `
-
-/** Длительность анимации закрытия — совпадает с таймером в компоненте. */
-export const CLOSE_DURATION_MS = 180
 
 /* ── Пропсы ── */
 
