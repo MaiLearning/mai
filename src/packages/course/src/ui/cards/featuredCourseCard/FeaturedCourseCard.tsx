@@ -38,7 +38,7 @@ export function FeaturedCourseCard({
   const { t } = useTranslation('course')
 
   return (
-    <CourseCardRoot as="section" interactive={false} aria-label={course.name}>
+    <CourseCardRoot interactive={false} aria-label={course.name}>
       <CourseCover
         colorFrom={course.colorFrom}
         colorTo={course.colorTo}
