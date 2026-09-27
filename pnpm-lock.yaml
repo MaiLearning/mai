@@ -571,6 +571,9 @@ importers:
       '@mai/resource':
         specifier: workspace:*
         version: link:../../resource
+      '@mai/settings':
+        specifier: workspace:*
+        version: link:../../settings
       '@mai/tauri':
         specifier: workspace:*
         version: link:../../tauri

@@ -5,6 +5,7 @@ import { settingsI18NResources } from '@mai/settings'
 import { sidebarI18NResources } from '@mai/sidebar'
 import type { ThemePreference } from '@mai/theme'
 import { ThemeProvider } from '@mai/theme'
+import { codeI18NResources } from '@mai-plugin/code'
 import { theoryI18NResources } from '@mai-plugin/theory'
 import { mocked, sb } from 'storybook/test'
 import {
@@ -28,6 +29,7 @@ mocked(sendSettingsUpdate).mockImplementation(async (domain, itemId, settings) =
 initI18n({
   resources: {
     course: courseI18NResources,
+    code: codeI18NResources,
     settings: settingsI18NResources,
     sidebar: sidebarI18NResources,
     theory: theoryI18NResources,

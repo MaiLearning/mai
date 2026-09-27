@@ -20,6 +20,7 @@
     "@mai/notifications": "workspace:*",
     "@mai/plugin": "workspace:*",
     "@mai/resource": "workspace:*",
+    "@mai/settings": "workspace:*",
     "@mai/tauri": "workspace:*",
     "@mai/theme": "workspace:*",
     "@uiw/react-codemirror": "^4.25.11",

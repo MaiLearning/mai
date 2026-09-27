@@ -1,0 +1,14 @@
+{
+  "settings": {
+    "name": "Code",
+    "description": "Paths to the interpreters that run code lessons.",
+    "pythonPath": {
+      "label": "Python interpreter",
+      "hint": "Path to the executable file (for example, /usr/bin/python3). Python lessons cannot run without it."
+    },
+    "javascriptPath": {
+      "label": "JavaScript interpreter",
+      "hint": "Path to the Node.js executable file (for example, /usr/bin/node). JavaScript lessons cannot run without it."
+    }
+  }
+}

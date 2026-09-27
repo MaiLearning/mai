@@ -6,6 +6,7 @@ import { pluginI18NResources } from '@mai/plugin'
 import { settingsI18NResources, settingsReadyAtom, useSystemTheme } from '@mai/settings'
 import { sidebarI18NResources } from '@mai/sidebar'
 import { ThemeProvider } from '@mai/theme'
+import { codeI18NResources } from '@mai-plugin/code'
 import { linkI18NResources } from '@mai-plugin/link'
 import { theoryI18NResources } from '@mai-plugin/theory'
 import { useAtomValue } from 'jotai'
@@ -30,6 +31,7 @@ initI18n({
     settings: settingsI18NResources,
     link: linkI18NResources,
     theory: theoryI18NResources,
+    code: codeI18NResources,
   },
 })
 

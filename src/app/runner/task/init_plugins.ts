@@ -1,7 +1,7 @@
 import { isFakeDataEnabled } from '@mai/fakeData'
 import { loadPlugins, setInternalPluginSettings, setInternalViewers } from '@mai/plugin'
 // Viewers
-import { CodeViewer } from '@mai-plugin/code'
+import { CodeViewer, codeSettingsDefinition } from '@mai-plugin/code'
 import { LinkViewer } from '@mai-plugin/link'
 import { TaskViewer } from '@mai-plugin/task'
 import { TheoryViewer, theorySettingsDefinition } from '@mai-plugin/theory'
@@ -23,6 +23,7 @@ export const initPluginsTask: Task = {
     })
     setInternalPluginSettings({
       'internal-theory': theorySettingsDefinition,
+      'internal-code': codeSettingsDefinition,
     })
     if (!import.meta.env.DEV || !isFakeDataEnabled()) await loadPlugins()
   },
