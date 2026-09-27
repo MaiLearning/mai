@@ -31,23 +31,14 @@ fn map_repo_error(e: RepoError, context: &str) -> TheoryServiceError {
     }
 }
 
-fn empty_lexical_state() -> serde_json::Value {
+/// Пустой документ редактора. Форма — та же, что у фронта
+/// (`emptyDoc()` в `useTheoryEditor.ts`): TipTap-документ с одним пустым
+/// абзацем. Раньше здесь был Lexical-корень, которого редактор не понимает, и
+/// `clear()` писал его в БД как настоящий контент.
+fn empty_doc() -> serde_json::Value {
     serde_json::json!({
-        "root": {
-            "children": [{
-                "children": [],
-                "direction": null,
-                "format": "",
-                "indent": 0,
-                "type": "paragraph",
-                "version": 1
-            }],
-            "direction": null,
-            "format": "",
-            "indent": 0,
-            "type": "root",
-            "version": 1
-        }
+        "type": "doc",
+        "content": [{"type": "paragraph"}]
     })
 }
 
@@ -76,7 +67,7 @@ impl TheoryService {
             .map_err(|e| map_repo_error(e, "get theory content"))
     }
 
-    /// Чтение с пустым Lexical-корнем по умолчанию: редактору и gateway нужен
+    /// Чтение с пустым документом по умолчанию: редактору и gateway нужен
     /// валидный документ, а не ошибка. Записи при этом нет — строка появится
     /// только на первом `save`, а отсутствие строки помечается `NEVER_SAVED`.
     /// Несуществующий ресурс — `NotFound`: иначе опечатка в id выглядела бы
@@ -92,7 +83,7 @@ impl TheoryService {
 
                 Ok(TheoryContentData {
                     resource_id: resource_id.to_string(),
-                    content: empty_lexical_state(),
+                    content: empty_doc(),
                     created_at: NEVER_SAVED,
                     updated_at: NEVER_SAVED,
                 })
@@ -135,7 +126,7 @@ impl TheoryService {
     /// корень без записи; иначе пустой корень сохраняется с прежним `created_at`.
     pub async fn clear(&self, resource_id: &str) -> Result<TheoryContentData, TheoryServiceError> {
         match self.theory_repo.get(resource_id).await {
-            Ok(_) => self.save(resource_id, empty_lexical_state()).await,
+            Ok(_) => self.save(resource_id, empty_doc()).await,
             Err(RepoError::NotFound(_)) => self.get_or_default(resource_id).await,
             Err(e) => Err(map_repo_error(e, "get theory content")),
         }

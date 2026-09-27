@@ -79,8 +79,10 @@ async fn get_or_default_returns_unsaved_root_without_row() {
     assert_eq!(data.resource_id, "r-1");
     assert_eq!(data.created_at, NEVER_SAVED);
     assert_eq!(data.updated_at, NEVER_SAVED);
-    assert_eq!(data.content["root"]["type"], "root");
-    assert_eq!(data.content["root"]["children"][0]["type"], "paragraph");
+    // Форма — документ редактора, какую понимает фронт (`emptyDoc()`), а не
+    // устаревший Lexical-корень.
+    assert_eq!(data.content["type"], "doc");
+    assert_eq!(data.content["content"][0]["type"], "paragraph");
     assert_eq!(
         theory_rows(&pool).await,
         0,
@@ -190,6 +192,9 @@ async fn clear_existing_row_keeps_created_at() {
     let cleared = service.clear("r-1").await.expect("контент очищен");
 
     assert_eq!(cleared.created_at, saved.created_at);
-    assert_eq!(cleared.content["root"]["children"][0]["type"], "paragraph");
+    // `clear` пишет в БД настоящий контент, значит форма должна быть той, что
+    // понимает редактор.
+    assert_eq!(cleared.content["type"], "doc");
+    assert_eq!(cleared.content["content"][0]["type"], "paragraph");
     assert_eq!(theory_rows(&pool).await, 1);
 }
