@@ -17,4 +17,9 @@
 
 ## Прогресс
 
-<!-- отмечать шаги по мере работы -->
+- Пути интерпретаторов вынесены в пользовательские настройки плагина
+  (`plugin/internal-code`, поля `pythonPath` / `javascriptPath`): определение
+  `codeSettingsDefinition` регистрируется в `init_plugins`, форма — общая
+  `SettingsSchemaForm`. Бэкенд (`CodeService::resolve_runtime`) читает тот же
+  пункт через `SettingsService` вместо `app_kv` (`code-plugin/runtimes`);
+  пустая строка = рантайм не настроен.

@@ -2,15 +2,37 @@ use std::path::Path;
 use std::sync::Arc;
 
 use crate::database::repository::code::CodeRepository;
-use crate::database::repository::kv::KvRepository;
 use crate::database::repository::RepoError;
+use crate::services::settings::SettingsService;
 
 use super::data::{CodeContentData, CodeRowData, CodeRunResultData};
 use super::exceptions::CodeServiceError;
 use super::{executor, rules};
 
-/// KV-ключ с путями рантаймов: {"python": "<path>|null", "javascript": "<path>|null"}.
-const RUNTIMES_KEY: &str = "code-plugin/runtimes";
+/// Пункт пользовательских настроек с путями рантаймов — зеркало определения
+/// `codeSettingsDefinition` (`@mai-plugin/code`) на фронтенде.
+const SETTINGS_DOMAIN: &str = "plugin";
+const SETTINGS_ITEM_ID: &str = "internal-code";
+
+/// Ключ поля настроек с путём интерпретатора для языка (зеркало Zod-схемы).
+fn runtime_field(language: &str) -> &'static str {
+    match language {
+        "javascript" => "javascriptPath",
+        _ => "pythonPath",
+    }
+}
+
+/// Путь интерпретатора из документа настроек: отсутствие документа/поля или
+/// пустая строка (в т.ч. из пробелов) — рантайм не настроен.
+fn runtime_path(settings: &serde_json::Value, language: &str) -> Option<String> {
+    settings
+        .get(runtime_field(language))?
+        .get("value")?
+        .as_str()
+        .map(str::trim)
+        .filter(|path| !path.is_empty())
+        .map(str::to_string)
+}
 
 fn now_millis() -> i64 {
     std::time::SystemTime::now()
@@ -33,12 +55,15 @@ fn map_repo_error(e: RepoError, context: &str) -> CodeServiceError {
 
 pub struct CodeService {
     code_repo: Arc<dyn CodeRepository>,
-    kv_repo: Arc<dyn KvRepository>,
+    settings: SettingsService,
 }
 
 impl CodeService {
-    pub fn new(code_repo: Arc<dyn CodeRepository>, kv_repo: Arc<dyn KvRepository>) -> Self {
-        Self { code_repo, kv_repo }
+    pub fn new(code_repo: Arc<dyn CodeRepository>, settings: SettingsService) -> Self {
+        Self {
+            code_repo,
+            settings,
+        }
     }
 
     /// Снапшот контента code-ресурса (корень создаётся при отсутствии).
@@ -110,31 +135,76 @@ impl CodeService {
         Ok(result)
     }
 
-    /// Путь рантайма из KV `code-plugin/runtimes` с проверкой существования файла.
+    /// Путь рантайма из пункта настроек `plugin/internal-code` с проверкой
+    /// существования файла. Отсутствие пункта/поля или пустое значение — не настроен.
     async fn resolve_runtime(&self, language: &str) -> Result<String, CodeServiceError> {
         let not_configured =
             || CodeServiceError::Runtime(format!("Рантайм для языка '{}' не настроен", language));
 
-        let entry = match self.kv_repo.get(RUNTIMES_KEY).await {
-            Ok(entry) => entry,
-            Err(RepoError::NotFound(_)) => return Err(not_configured()),
-            Err(e) => return Err(map_repo_error(e, "get code runtimes")),
-        };
+        let document = self
+            .settings
+            .get(SETTINGS_DOMAIN, SETTINGS_ITEM_ID)
+            .await
+            .map_err(|e| {
+                CodeServiceError::Internal(format!("Не удалось прочитать настройки Code: {}", e))
+            })?;
 
-        let path = entry
-            .value
-            .get(language)
-            .and_then(|v| v.as_str())
-            .filter(|s| !s.is_empty())
+        let path = document
+            .as_ref()
+            .and_then(|document| runtime_path(&document.settings, language))
             .ok_or_else(not_configured)?;
 
-        if !Path::new(path).exists() {
+        if !Path::new(&path).exists() {
             return Err(CodeServiceError::Runtime(format!(
                 "Файл рантайма для языка '{}' не найден: {}",
                 language, path
             )));
         }
 
-        Ok(path.to_string())
+        Ok(path)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use serde_json::json;
+
+    use super::{runtime_field, runtime_path};
+
+    #[test]
+    fn runtime_field_matches_settings_schema() {
+        assert_eq!(runtime_field("python"), "pythonPath");
+        assert_eq!(runtime_field("javascript"), "javascriptPath");
+    }
+
+    #[test]
+    fn runtime_path_reads_trimmed_value() {
+        let settings = json!({
+            "pythonPath": { "type": "text_input", "value": "  /usr/bin/python3  " },
+            "javascriptPath": { "type": "text_input", "value": "/usr/bin/node" },
+        });
+
+        assert_eq!(
+            runtime_path(&settings, "python"),
+            Some("/usr/bin/python3".to_string())
+        );
+        assert_eq!(
+            runtime_path(&settings, "javascript"),
+            Some("/usr/bin/node".to_string())
+        );
+    }
+
+    #[test]
+    fn runtime_path_treats_missing_and_blank_as_unset() {
+        let blank = json!({ "pythonPath": { "type": "text_input", "value": "   " } });
+        assert_eq!(runtime_path(&blank, "python"), None);
+
+        let missing_field = json!({ "javascriptPath": { "type": "text_input", "value": "" } });
+        assert_eq!(runtime_path(&missing_field, "python"), None);
+
+        let missing_value = json!({ "pythonPath": { "type": "text_input" } });
+        assert_eq!(runtime_path(&missing_value, "python"), None);
+
+        assert_eq!(runtime_path(&json!({}), "javascript"), None);
     }
 }
