@@ -122,6 +122,8 @@ export function TheoryHeader({
   )
 
   const minutes = Math.max(1, Math.ceil(words / WORDS_PER_MINUTE))
+  // updatedAt === 0 — контент ещё не сохранялся (пустой корень без записи в БД),
+  // поэтому показываем «Черновик» без даты.
   const changedAt = updatedAt ?? resource?.updatedAt ?? null
 
   return (
