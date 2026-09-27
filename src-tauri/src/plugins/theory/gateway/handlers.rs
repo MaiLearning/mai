@@ -26,11 +26,12 @@ fn map_service_error(e: TheoryServiceError) -> GatewayError {
     }
 }
 
-/// Контент теории ресурса (пустой корень создаётся при отсутствии).
+/// Контент теории ресурса: при отсутствии записи возвращается пустой корень
+/// без записи в БД (строка появится только на первом сохранении).
 pub async fn content(args: Value, ctx: GatewayCtx) -> Result<Value, GatewayError> {
     let args: ContentArgs = parse_args(args)?;
     let data = build_service(&ctx.pool)
-        .get(&args.resource_id)
+        .get_or_default(&args.resource_id)
         .await
         .map_err(map_service_error)?;
     to_value(&data)

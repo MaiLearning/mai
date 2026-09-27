@@ -104,7 +104,9 @@ impl MaiMcpServer {
         }
     }
 
-    #[tool(description = "Контент теории ресурса (Lexical-состояние редактора)")]
+    #[tool(
+        description = "Контент теории ресурса (Lexical-состояние редактора); ошибка, если контент ещё не создан — инструмент ничего не записывает"
+    )]
     async fn get_theory(
         &self,
         Parameters(ResourceIdArgs { resource_id }): Parameters<ResourceIdArgs>,

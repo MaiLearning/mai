@@ -10,7 +10,7 @@ pub async fn get_theory_content(
     resource_id: String,
 ) -> Result<TheoryContentData, String> {
     build_service(pool.inner())
-        .get(&resource_id)
+        .get_or_default(&resource_id)
         .await
         .map_err(|e| e.to_string())
 }

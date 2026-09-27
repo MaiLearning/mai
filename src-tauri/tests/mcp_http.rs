@@ -219,3 +219,90 @@ async fn unknown_course_returns_tool_level_error() {
         "ошибка доходит текстом: {response}"
     );
 }
+
+/// Курс + ресурс напрямую в БД: теорию без существующего ресурса не прочитать.
+async fn seed_resource(pool: &sqlx::SqlitePool, course_id: &str, resource_id: &str) {
+    sqlx::query("INSERT INTO courses (id, name, created_at, updated_at) VALUES (?, 'c', 0, 0)")
+        .bind(course_id)
+        .execute(pool)
+        .await
+        .expect("course seeded");
+
+    sqlx::query("INSERT INTO resources (id, course_id, name) VALUES (?, ?, 'theory')")
+        .bind(resource_id)
+        .bind(course_id)
+        .execute(pool)
+        .await
+        .expect("resource seeded");
+}
+
+/// get_theory — read-only: отсутствие контента это ошибка, а не повод
+/// материализовать пустой корень в БД.
+#[tokio::test]
+async fn get_theory_does_not_create_content() {
+    let state = test_state("t");
+    seed_resource(&state.pool, "c-1", "r-1").await;
+
+    let (_, response) = post(
+        &state,
+        json!({
+            "jsonrpc": "2.0",
+            "id": 5,
+            "method": "tools/call",
+            "params": {
+                "name": "get_theory",
+                "arguments": {"resourceId": "r-1"}
+            }
+        }),
+    )
+    .await;
+
+    let result = result_of(&response);
+    assert_eq!(result["isError"], json!(true), "{response}");
+    let text = result["content"][0]["text"].as_str().expect("text-контент");
+    assert!(text.contains("Not found"), "{text}");
+
+    let rows: i64 = sqlx::query_scalar("SELECT COUNT(*) FROM theory_content")
+        .fetch_one(&state.pool)
+        .await
+        .expect("theory_content посчитан");
+    assert_eq!(rows, 0, "read-only tool не должен создавать строку");
+}
+
+/// get_theory отдаёт сохранённый контент (позитивная ветка строгого чтения).
+#[tokio::test]
+async fn get_theory_returns_stored_content() {
+    let state = test_state("t");
+    seed_resource(&state.pool, "c-1", "r-1").await;
+
+    sqlx::query(
+        "INSERT INTO theory_content (resource_id, content, created_at, updated_at) VALUES (?, ?, 10, 20)",
+    )
+    .bind("r-1")
+    .bind(r#"{"root":{"type":"root"}}"#)
+    .execute(&state.pool)
+    .await
+    .expect("theory row seeded");
+
+    let (_, response) = post(
+        &state,
+        json!({
+            "jsonrpc": "2.0",
+            "id": 6,
+            "method": "tools/call",
+            "params": {
+                "name": "get_theory",
+                "arguments": {"resourceId": "r-1"}
+            }
+        }),
+    )
+    .await;
+
+    let result = result_of(&response);
+    assert_eq!(result["isError"], json!(false), "{response}");
+    let text = result["content"][0]["text"].as_str().expect("text-контент");
+    let content: Value = serde_json::from_str(text).expect("JSON контента теории");
+    assert_eq!(content["resourceId"], "r-1");
+    assert_eq!(content["updatedAt"], json!(20));
+    assert_eq!(content["content"]["root"]["type"], "root");
+}

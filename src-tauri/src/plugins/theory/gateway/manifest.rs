@@ -22,7 +22,7 @@ pub fn manifest() -> GatewayManifest {
         version: "0.1.0".into(),
         methods: vec![GatewayMethodInfo::new(
             METHOD_CONTENT,
-            "Контент теории ресурса (Lexical-состояние); пустой корень создаётся при отсутствии. Аргументы: { resourceId }.",
+            "Контент теории ресурса (Lexical-состояние); при отсутствии контента возвращается пустой корень без записи в БД. Аргументы: { resourceId }.",
         )],
     }
 }
