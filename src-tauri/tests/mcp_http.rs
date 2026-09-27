@@ -118,10 +118,107 @@ async fn initialize_returns_server_info_named_mai() {
     .await;
 
     assert_eq!(status, StatusCode::OK);
-    let server_info = result_of(&response)["serverInfo"]
+    let result = result_of(&response);
+    let server_info = result["serverInfo"]
         .as_object()
         .expect("serverInfo в ответе initialize");
     assert_eq!(server_info["name"], "mai");
+}
+
+/// Инструкции и ресурсы — то, ради чего агент вообще подключается: без них он
+/// не знает ни терминов платформы, ни куда идти за справкой.
+#[tokio::test]
+async fn initialize_advertises_resources_and_ships_instructions() {
+    let state = test_state("t");
+    let (_, response) = post(
+        &state,
+        json!({
+            "jsonrpc": "2.0",
+            "id": 1,
+            "method": "initialize",
+            "params": {
+                "protocolVersion": "2025-03-26",
+                "capabilities": {},
+                "clientInfo": {"name": "mcp-test", "version": "0.0.0"}
+            }
+        }),
+    )
+    .await;
+
+    let result = result_of(&response);
+    assert!(
+        !result["capabilities"]["resources"].is_null(),
+        "resources должны быть объявлены: {response}"
+    );
+
+    let instructions = result["instructions"]
+        .as_str()
+        .expect("instructions в ответе initialize");
+    assert!(instructions.contains("## Глоссарий"), "{instructions}");
+    assert!(
+        instructions.contains("mai_course_outline"),
+        "{instructions}"
+    );
+}
+
+#[tokio::test]
+async fn resources_list_and_read_guide() {
+    let state = test_state("t");
+
+    let (_, listed) = post(
+        &state,
+        json!({"jsonrpc": "2.0", "id": 2, "method": "resources/list"}),
+    )
+    .await;
+    let uris: Vec<&str> = result_of(&listed)["resources"]
+        .as_array()
+        .expect("resources в ответе")
+        .iter()
+        .filter_map(|r| r["uri"].as_str())
+        .collect();
+    for expected in ["mai://guide/glossary", "mai://guide/workflow"] {
+        assert!(
+            uris.contains(&expected),
+            "нет ресурса '{expected}': {uris:?}"
+        );
+    }
+
+    let (_, read) = post(
+        &state,
+        json!({
+            "jsonrpc": "2.0",
+            "id": 3,
+            "method": "resources/read",
+            "params": {"uri": "mai://guide/glossary"}
+        }),
+    )
+    .await;
+    let contents = &result_of(&read)["contents"][0];
+    assert_eq!(contents["uri"], "mai://guide/glossary");
+    assert_eq!(contents["mimeType"], "text/markdown");
+    assert!(contents["text"]
+        .as_str()
+        .expect("text-ресурс")
+        .contains("# Глоссарий Mai"));
+}
+
+#[tokio::test]
+async fn resources_read_unknown_uri_reports_available() {
+    let state = test_state("t");
+    let (_, response) = post(
+        &state,
+        json!({
+            "jsonrpc": "2.0",
+            "id": 4,
+            "method": "resources/read",
+            "params": {"uri": "mai://guide/нет"}
+        }),
+    )
+    .await;
+
+    assert!(response.get("error").is_some(), "{response}");
+    let message = response["error"]["message"].as_str().unwrap_or_default();
+    assert!(message.contains("mai://guide/glossary"), "{message}");
 }
 
 #[tokio::test]
@@ -129,7 +226,7 @@ async fn tools_list_contains_all_read_only_tools() {
     let state = test_state("t");
     let (_, response) = post(
         &state,
-        json!({"jsonrpc": "2.0", "id": 2, "method": "tools/list"}),
+        json!({"jsonrpc": "2.0", "id": 5, "method": "tools/list"}),
     )
     .await;
 
@@ -138,17 +235,29 @@ async fn tools_list_contains_all_read_only_tools() {
         .expect("tools в ответе");
     let names: Vec<&str> = tools.iter().filter_map(|t| t["name"].as_str()).collect();
     for expected in [
-        "list_courses",
-        "get_course",
-        "get_course_structure",
-        "get_resource",
-        "get_theory",
-        "list_plugins",
+        "mai_list_courses",
+        "mai_get_course",
+        "mai_course_outline",
+        "mai_get_resource",
+        "mai_get_content",
+        "mai_search",
+        "mai_list_plugins",
     ] {
         assert!(
             names.contains(&expected),
             "нет tool '{expected}': {names:?}"
         );
+    }
+    // Схема параметров строится из Args: без неё агент не знает, что передавать.
+    let outline = tools
+        .iter()
+        .find(|t| t["name"] == "mai_course_outline")
+        .expect("mai_course_outline в списке");
+    let properties = outline["inputSchema"]["properties"]
+        .as_object()
+        .expect("схема параметров");
+    for field in ["courseId", "rootId", "depth", "typeKeys", "maxNodes"] {
+        assert!(properties.contains_key(field), "в схеме нет '{field}'");
     }
 }
 
@@ -177,9 +286,9 @@ async fn list_courses_reflects_created_course() {
         &state,
         json!({
             "jsonrpc": "2.0",
-            "id": 3,
+            "id": 6,
             "method": "tools/call",
-            "params": {"name": "list_courses", "arguments": {}}
+            "params": {"name": "mai_list_courses", "arguments": {}}
         }),
     )
     .await;
@@ -193,6 +302,8 @@ async fn list_courses_reflects_created_course() {
     let text = result["content"][0]["text"].as_str().expect("text-контент");
     let courses: Value = serde_json::from_str(text).expect("JSON курсов");
     assert_eq!(courses[0]["name"], "Rust: практика");
+    // Краткая карточка не тащит даты и цвета.
+    assert!(courses[0].get("createdAt").is_none(), "{text}");
 }
 
 #[tokio::test]
@@ -202,10 +313,10 @@ async fn unknown_course_returns_tool_level_error() {
         &state,
         json!({
             "jsonrpc": "2.0",
-            "id": 4,
+            "id": 7,
             "method": "tools/call",
             "params": {
-                "name": "get_course",
+                "name": "mai_get_course",
                 "arguments": {"courseId": "no-such-course"}
             }
         }),
@@ -220,7 +331,8 @@ async fn unknown_course_returns_tool_level_error() {
     );
 }
 
-/// Курс + ресурс напрямую в БД: теорию без существующего ресурса не прочитать.
+/// Курс + ресурс напрямую в БД: `type_key` ссылается на `resource_types`,
+/// поэтому тип объявляется первым. Теорию без существующего ресурса не прочитать.
 async fn seed_resource(pool: &sqlx::SqlitePool, course_id: &str, resource_id: &str) {
     sqlx::query("INSERT INTO courses (id, name, created_at, updated_at) VALUES (?, 'c', 0, 0)")
         .bind(course_id)
@@ -228,18 +340,56 @@ async fn seed_resource(pool: &sqlx::SqlitePool, course_id: &str, resource_id: &s
         .await
         .expect("course seeded");
 
-    sqlx::query("INSERT INTO resources (id, course_id, name) VALUES (?, ?, 'theory')")
-        .bind(resource_id)
-        .bind(course_id)
+    sqlx::query("INSERT OR IGNORE INTO resource_types (key, name) VALUES ('theory', 'Теория')")
         .execute(pool)
         .await
-        .expect("resource seeded");
+        .expect("resource type seeded");
+
+    sqlx::query(
+        "INSERT INTO resources (id, course_id, name, type_key, created_at, updated_at)
+         VALUES (?, ?, 'Лекция', 'theory', 10, 20)",
+    )
+    .bind(resource_id)
+    .bind(course_id)
+    .execute(pool)
+    .await
+    .expect("resource seeded");
 }
 
-/// get_theory — read-only: отсутствие контента это ошибка, а не повод
-/// материализовать пустой корень в БД.
+/// Курс с деревом: директория и ресурс внутри неё. Корневой узел ресурса
+/// создаёт триггер `trg_resource_create_structure`, поэтому вручную вставляется
+/// только узел директории, а узел ресурса переносится под него.
+async fn seed_structure(pool: &sqlx::SqlitePool, course_id: &str) {
+    seed_resource(pool, course_id, "r-1").await;
+
+    sqlx::query(
+        "INSERT INTO directories (id, course_id, name, created_at, updated_at)
+         VALUES ('d-1', ?, 'Модуль 1', 0, 0)",
+    )
+    .bind(course_id)
+    .execute(pool)
+    .await
+    .expect("directory seeded");
+
+    sqlx::query(
+        "INSERT INTO structures (id, course_id, parent_id, position, resource_id, directory_id)
+         VALUES ('n-d1', ?, NULL, 1, NULL, 'd-1')",
+    )
+    .bind(course_id)
+    .execute(pool)
+    .await
+    .expect("directory node seeded");
+
+    sqlx::query("UPDATE structures SET parent_id = 'n-d1', position = 0 WHERE id = 'r-1'")
+        .execute(pool)
+        .await
+        .expect("resource node moved under directory");
+}
+
+/// `mai_get_content` — read-only: отсутствие контента это ошибка, а не повод
+/// материализовать пустой документ в БД.
 #[tokio::test]
-async fn get_theory_does_not_create_content() {
+async fn get_content_does_not_create_content() {
     let state = test_state("t");
     seed_resource(&state.pool, "c-1", "r-1").await;
 
@@ -247,10 +397,10 @@ async fn get_theory_does_not_create_content() {
         &state,
         json!({
             "jsonrpc": "2.0",
-            "id": 5,
+            "id": 8,
             "method": "tools/call",
             "params": {
-                "name": "get_theory",
+                "name": "mai_get_content",
                 "arguments": {"resourceId": "r-1"}
             }
         }),
@@ -269,9 +419,9 @@ async fn get_theory_does_not_create_content() {
     assert_eq!(rows, 0, "read-only tool не должен создавать строку");
 }
 
-/// get_theory отдаёт сохранённый контент (позитивная ветка строгого чтения).
+/// `mai_get_content` отдаёт сохранённый контент: по умолчанию читаемым текстом.
 #[tokio::test]
-async fn get_theory_returns_stored_content() {
+async fn get_content_returns_stored_content_as_text() {
     let state = test_state("t");
     seed_resource(&state.pool, "c-1", "r-1").await;
 
@@ -279,7 +429,7 @@ async fn get_theory_returns_stored_content() {
         "INSERT INTO theory_content (resource_id, content, created_at, updated_at) VALUES (?, ?, 10, 20)",
     )
     .bind("r-1")
-    .bind(r#"{"root":{"type":"root"}}"#)
+    .bind(r#"{"type":"doc","content":[{"type":"heading","attrs":{"level":2},"content":[{"type":"text","text":"Введение"}]},{"type":"paragraph","content":[{"type":"text","text":"Тело лекции."}]}]}"#)
     .execute(&state.pool)
     .await
     .expect("theory row seeded");
@@ -288,10 +438,10 @@ async fn get_theory_returns_stored_content() {
         &state,
         json!({
             "jsonrpc": "2.0",
-            "id": 6,
+            "id": 9,
             "method": "tools/call",
             "params": {
-                "name": "get_theory",
+                "name": "mai_get_content",
                 "arguments": {"resourceId": "r-1"}
             }
         }),
@@ -301,8 +451,148 @@ async fn get_theory_returns_stored_content() {
     let result = result_of(&response);
     assert_eq!(result["isError"], json!(false), "{response}");
     let text = result["content"][0]["text"].as_str().expect("text-контент");
-    let content: Value = serde_json::from_str(text).expect("JSON контента теории");
-    assert_eq!(content["resourceId"], "r-1");
-    assert_eq!(content["updatedAt"], json!(20));
-    assert_eq!(content["content"]["root"]["type"], "root");
+    // Текстовая проекция вместо служебной обвязки документа.
+    assert!(text.contains("## Введение"), "{text}");
+    assert!(text.contains("Тело лекции."), "{text}");
+    assert!(
+        !text.contains("\"type\":\"doc\""),
+        "сырой документ не должен протекать: {text}"
+    );
+}
+
+/// `format: "json"` — без потерь, с привязкой к ресурсу.
+#[tokio::test]
+async fn get_content_json_format_is_lossless() {
+    let state = test_state("t");
+    seed_resource(&state.pool, "c-1", "r-1").await;
+
+    sqlx::query(
+        "INSERT INTO theory_content (resource_id, content, created_at, updated_at) VALUES (?, ?, 10, 20)",
+    )
+    .bind("r-1")
+    .bind(r#"{"type":"doc","content":[{"type":"callout","attrs":{"tone":"warning"},"content":[{"type":"paragraph"}]}]}"#)
+    .execute(&state.pool)
+    .await
+    .expect("theory row seeded");
+
+    let (_, response) = post(
+        &state,
+        json!({
+            "jsonrpc": "2.0",
+            "id": 10,
+            "method": "tools/call",
+            "params": {
+                "name": "mai_get_content",
+                "arguments": {"resourceId": "r-1", "format": "json"}
+            }
+        }),
+    )
+    .await;
+
+    let result = result_of(&response);
+    assert_eq!(result["isError"], json!(false), "{response}");
+    let text = result["content"][0]["text"].as_str().expect("text-контент");
+    let payload: Value = serde_json::from_str(text).expect("JSON контента");
+    assert_eq!(payload["resourceId"], "r-1");
+    assert_eq!(payload["typeKey"], "theory");
+    assert_eq!(payload["updatedAt"], json!(20));
+    // Выноска в текст не ложится — в json остаётся на месте.
+    assert_eq!(payload["content"]["content"][0]["type"], "callout");
+    assert_eq!(payload["content"]["content"][0]["attrs"]["tone"], "warning");
+}
+
+/// Оглавление отдаёт дерево текстом: id узлов приходят из ответа, а не из БД.
+#[tokio::test]
+async fn course_outline_renders_tree_with_ids() {
+    let state = test_state("t");
+    seed_structure(&state.pool, "c-1").await;
+
+    let (_, response) = post(
+        &state,
+        json!({
+            "jsonrpc": "2.0",
+            "id": 11,
+            "method": "tools/call",
+            "params": {
+                "name": "mai_course_outline",
+                "arguments": {"courseId": "c-1"}
+            }
+        }),
+    )
+    .await;
+
+    let result = result_of(&response);
+    assert_eq!(result["isError"], json!(false), "{response}");
+    let text = result["content"][0]["text"].as_str().expect("text-контент");
+    assert!(text.contains("Модуль 1 [dir n-d1]"), "{text}");
+    assert!(text.contains("  Лекция [res r-1 theory upd:20]"), "{text}");
+}
+
+/// `mai_search` находит текст содержимого, не требуя его вызова агентом.
+#[tokio::test]
+async fn search_finds_phrase_inside_theory() {
+    let state = test_state("t");
+    seed_resource(&state.pool, "c-1", "r-1").await;
+
+    sqlx::query(
+        "INSERT INTO theory_content (resource_id, content, created_at, updated_at) VALUES (?, ?, 10, 20)",
+    )
+    .bind("r-1")
+    .bind(r#"{"type":"doc","content":[{"type":"paragraph","content":[{"type":"text","text":"Владение памятью в Rust"}]}]}"#)
+    .execute(&state.pool)
+    .await
+    .expect("theory row seeded");
+
+    let (_, response) = post(
+        &state,
+        json!({
+            "jsonrpc": "2.0",
+            "id": 12,
+            "method": "tools/call",
+            "params": {
+                "name": "mai_search",
+                "arguments": {"query": "владение", "courseId": "c-1"}
+            }
+        }),
+    )
+    .await;
+
+    let result = result_of(&response);
+    assert_eq!(result["isError"], json!(false), "{response}");
+    let text = result["content"][0]["text"].as_str().expect("text-контент");
+    assert!(text.contains("\"resourceId\":\"r-1\""), "{text}");
+    assert!(text.contains("\"place\":\"content\""), "{text}");
+}
+
+/// Ресурс без `typeKey` — не ошибка вызова, но объяснение, что делать.
+#[tokio::test]
+async fn get_content_without_type_key_is_actionable() {
+    let state = test_state("t");
+    sqlx::query("INSERT INTO courses (id, name, created_at, updated_at) VALUES ('c-9', 'c', 0, 0)")
+        .execute(&state.pool)
+        .await
+        .expect("course seeded");
+    sqlx::query("INSERT INTO resources (id, course_id, name) VALUES ('r-9', 'c-9', 'Без типа')")
+        .execute(&state.pool)
+        .await
+        .expect("resource seeded");
+
+    let (_, response) = post(
+        &state,
+        json!({
+            "jsonrpc": "2.0",
+            "id": 13,
+            "method": "tools/call",
+            "params": {
+                "name": "mai_get_content",
+                "arguments": {"resourceId": "r-9"}
+            }
+        }),
+    )
+    .await;
+
+    let result = result_of(&response);
+    assert_eq!(result["isError"], json!(true), "{response}");
+    let text = result["content"][0]["text"].as_str().expect("text-контент");
+    assert!(text.contains("нет типа"), "{text}");
 }

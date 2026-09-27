@@ -6,10 +6,29 @@
 //! [`MaiMcpServer`] — клоны состояния дёшевы (Arc), сервисы собираются
 //! per-call по образцу HTTP-эндпоинтов.
 //!
-//! v1 read-only: tools зовут существующие сервисы, новой бизнес-логики нет.
-//! Мутации — следующая итерация (с публикацией событий, origin=http).
+//! Слои:
+//!
+//! - `tools/` — инструменты (модель вызывает), по файлу на инструмент;
+//! - `resources/` — MCP-ресурсы `mai://guide/*` (модель читает по URI);
+//! - `content/` — проекции содержимого по `typeKey` (не путать с `resources/`);
+//! - `render.rs` — рендер ответов: компактный JSON, кап размера, метрики;
+//! - `router.rs` — маршруты, `get_info`, объявление ресурсов;
+//! - `instructions.md` — текст, отдаваемый агенту в `initialize`.
+//!
+//! Соглашения слоя — в `MCP.md`. Событийная синхронизация — в
+//! `server/endpoints/ENDPOINTS.md` и `app/mai/src/utils/sync/SYNC.md`.
+//!
+//! v1 read-only: инструменты зовут существующие сервисы и **не мутируют БД**,
+//! новой бизнес-логики нет. Мутации — следующая итерация (с публикацией
+//! событий, origin=http).
 
+mod content;
+mod dto;
 mod handler;
+mod instructions;
+mod render;
+mod resources;
+mod router;
 mod tools;
 
 use std::sync::Arc;
