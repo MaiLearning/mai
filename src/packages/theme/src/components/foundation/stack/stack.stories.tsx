@@ -7,7 +7,7 @@ const gapKeys: SpacingKey[] = ['xs', 'sm', 'md', 'lg', 'xl']
 /**
  * Stack — foundation-контейнер для вертикального или горизонтального
  * расположения элементов. Ось задаётся `direction`, отступ между
- * элементами — `gap` (ключ токена `theme.spacing` или px-число),
+ * элементами — `gap` (ключ каталога `theme.spacing` или число шагов),
  * выравнивание по поперечной оси — `align`.
  */
 const meta = {
@@ -84,7 +84,7 @@ export const Directions: Story = {
   ),
 }
 
-/** Зазор ключом токена и числом пикселей. */
+/** Зазор ключом каталога и числом базовых шагов. */
 export const Gap: Story = {
   render: () => (
     <div style={{ display: 'grid', gap: 24 }}>
@@ -96,8 +96,8 @@ export const Gap: Story = {
         {block('токен lg')}
         {block('B')}
       </Stack>
-      <Stack gap={24} style={{ maxWidth: 300 }}>
-        {block('24px')}
+      <Stack gap={12} style={{ maxWidth: 300 }}>
+        {block('12 шагов = 1.5rem')}
         {block('B')}
       </Stack>
     </div>

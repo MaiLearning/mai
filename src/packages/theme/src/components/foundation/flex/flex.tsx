@@ -18,7 +18,7 @@ export interface FlexProps extends Omit<ComponentPropsWithoutRef<'div'>, 'wrap'>
   align?: FlexAlign
   justify?: FlexJustify
   wrap?: FlexWrap
-  /** Отступ между элементами: ключ токена `theme.spacing` или px-значение. */
+  /** Отступ между элементами: ключ каталога `theme.spacing` или число базовых шагов. */
   gap?: SpacingKey | number
 }
 

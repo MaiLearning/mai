@@ -29,7 +29,7 @@ flex-модели через узкий пропс-API с токенами те�
 | `align` | `flex-start \| flex-end \| center \| stretch \| baseline` | `stretch` | Выравнивание по поперечной оси |
 | `justify` | `flex-start \| flex-end \| center \| space-between \| space-around \| space-evenly` | `flex-start` | Распределение по главной оси |
 | `wrap` | `nowrap \| wrap \| wrap-reverse` | `'nowrap'` | Перенос элементов |
-| `gap` | `SpacingKey \| number` | — | Зазор: токен `theme.spacing` или px |
+| `gap` | `SpacingKey \| number` | — | Зазор: ключ каталога `theme.spacing` или число базовых шагов |
 
 Плюс все атрибуты `<div>`.
 

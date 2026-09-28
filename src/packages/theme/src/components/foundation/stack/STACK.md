@@ -31,7 +31,7 @@
 | Пропс | Тип | Дефолт | Описание |
 |---|---|---|---|
 | `direction` | `'vertical' \| 'horizontal'` | `'vertical'` | Ось раскладки |
-| `gap` | `SpacingKey \| number` | — | Зазор: токен `theme.spacing` или px |
+| `gap` | `SpacingKey \| number` | — | Зазор: ключ каталога `theme.spacing` или число базовых шагов |
 | `align` | `flex-start \| flex-end \| center \| stretch \| baseline` | `stretch` | Выравнивание по поперечной оси |
 
 Плюс все атрибуты `<div>` (`style`, `className`, `onClick`, …).

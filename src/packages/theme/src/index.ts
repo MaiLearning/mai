@@ -61,7 +61,8 @@ export type {
 } from './base/theme'
 export { base, contrastText, dark, darkSteps, light, lightSteps, state } from './base/themes'
 export type { ThemeDefinition, ThemeRegistry } from './base/types'
-export { blendColors, getColor, getFocusRing, withState } from './base/utils'
+export type { SpacingValue } from './base/utils'
+export { blendColors, getColor, getFocusRing, resolveSpace, withState } from './base/utils'
 export type { ThemeUtils } from './base/utils/createThemeUtils'
 export type { BadgeProps, BadgeTone, BadgeVariant } from './components/foundation/badge/badge'
 export { Badge } from './components/foundation/badge/badge'
@@ -69,6 +70,11 @@ export type { BoxProps } from './components/foundation/box/box'
 export { Box } from './components/foundation/box/box'
 export type { CardProps } from './components/foundation/card/card'
 export { Card } from './components/foundation/card/card'
+export type {
+  ContainerProps,
+  ContainerSize,
+} from './components/foundation/container/container'
+export { Container } from './components/foundation/container/container'
 export type { DividerProps } from './components/foundation/divider/divider'
 export { Divider } from './components/foundation/divider/divider'
 export type { FlexProps } from './components/foundation/flex/flex'

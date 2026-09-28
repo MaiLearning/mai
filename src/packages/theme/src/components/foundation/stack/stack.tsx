@@ -8,7 +8,7 @@ export type StackAlign = 'flex-start' | 'flex-end' | 'center' | 'stretch' | 'bas
 export interface StackProps extends Omit<ComponentPropsWithoutRef<'div'>, 'dir'> {
   /** Ось раскладки: элементы друг под другом или в ряд. */
   direction?: StackDirection
-  /** Отступ между элементами: ключ токена `theme.spacing` или px-значение. */
+  /** Отступ между элементами: ключ каталога `theme.spacing` или число базовых шагов. */
   gap?: SpacingKey | number
   /** Выравнивание по поперечной оси. */
   align?: StackAlign

@@ -15,16 +15,27 @@
   (`hoverAlpha 0.06 | activeAlpha 0.12 | selectedAlpha 0.08 | disabledAlpha 0.32`).
 - **`contrastText`** — единственное значение, не выводимое из шкалы: текст поверх
   насыщенной заливки (тёмный на warning-solid, белый на остальных).
-- Примитивы (`typography`, `spacing`, `radius`, `shadows`, `zIndex`, `durations`)
-  лежат отдельно от цвета и берутся из темы напрямую.
+- Примитивы (`typography`, `spacing`, `radius`, `shadows`, `zIndex`, `durations`,
+  `layout`) лежат отдельно от цвета и берутся из темы напрямую.
+  - `spacing` — **каталог имён над базовым шагом**: `spacing.step`
+    (`{ value: 0.125, unit: 'rem' }`) — источник истины, `spacing.xs…xl` —
+    кратные шага подсказки для повторяющихся значений. Всё, что в каталог
+    не помещается, задаётся числом **шагов**: `space(6)` = 6 × 0.125rem.
+    Покрытие имён низкое намеренно — 91% реальных значений кратны шагу, а
+    называть их пришлось бы восемью подписями без смысла.
+  - `layout` — размеры центрируемой области (`containerWidths`, из которых
+    `Container` берёт `size`), не микро-отступы.
 
-**Доступ к цвету:**
+**Доступ к токенам:**
 
-- Из styled-компонентов — только `theme.utils.*`
-  (`getColor`, `getBackground`, `getBorder`, `getText`, `getSolid`, `getFocusRing`, `withState`).
-- Чистые функции (`getColor(theme, intent, category, key)`, `withState(color, theme, stateName)`,
-  `getFocusRing(theme)`, `blendColors`) — внутри `src/base/utils/` для неподключённых к теме
-  мест (глобальные стили, построение тем). В стилизованных компонентах ими не пользоваться.
+- Из styled-компонентов — только `theme.utils.*`:
+  цвет (`getColor`, `getBackground`, `getBorder`, `getText`, `getSolid`,
+  `getFocusRing`, `withState`) и разрешение отступов (`space`).
+- Чистые функции (`getColor(theme, intent, category, key)`,
+  `withState(color, theme, stateName)`, `resolveSpace(theme, value)`,
+  `getFocusRing(theme)`, `blendColors`) — внутри `src/base/utils/` для неподключённых
+  к теме мест (глобальные стили, построение тем). В стилизованных компонентах ими
+  не пользоваться.
 
 ## Правила выбора цвета в компоненте
 
@@ -130,8 +141,14 @@
 - Цвет — в билдере styled через `${({ theme }) => …}` (или `${(p) => …}`); готовый объект
   темы как импорт не подмешивать.
 - Transient-пропсы — с префиксом `$` (`$variant`, `$disabled`).
-- Примитивы берутся напрямую: `theme.spacing.*`, `theme.typography.*`, `theme.radius.*`,
-  `theme.shadows.*`, `theme.zIndex.*`, `theme.durations.*` — это не часть цветовой оси.
+- Примитивы берутся напрямую: `theme.spacing.*` (каталог имён),
+  `theme.spacing.step` (базовый шаг), `theme.typography.*`, `theme.radius.*`,
+  `theme.shadows.*`, `theme.zIndex.*`, `theme.durations.*`, `theme.layout.*` — это не
+  часть цветовой оси.
+- Отступы в layout-компонентах разрешаются через `theme.utils.space($value)`
+  (`SpacingValue` = `SpacingKey | number`), а не копированием разбора значения
+  в каждом стиле. **Число — это количество базовых шагов, а не пиксели:**
+  `space(6)` → `0.75rem`. Смешивать нельзя: `space(24)` — это 3rem, а не 24px.
 - Библиотечные UI-компоненты (`src/ui/*`) подчиняются тем же правилам: своих цветов нет.
 
 ## Сторибук: титулы историй
