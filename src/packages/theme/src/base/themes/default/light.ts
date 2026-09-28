@@ -115,6 +115,6 @@ const colorPart = {
 
 export const light: AppTheme = {
   ...colorPart,
-  utils: createThemeUtils(colorPart),
+  utils: createThemeUtils({ ...colorPart, spacing: base.spacing }),
   ...base,
 }

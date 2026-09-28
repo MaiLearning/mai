@@ -1,10 +1,10 @@
 import styled from 'styled-components'
-import type { AppTheme } from '../../../base/theme'
+import type { SpacingValue } from '../../../base/utils'
 import type { StackAlign, StackDirection } from './stack'
 
 export interface StackRootProps {
   $direction: StackDirection
-  $gap?: keyof AppTheme['spacing'] | number
+  $gap?: SpacingValue
   $align?: StackAlign
 }
 
@@ -14,6 +14,5 @@ export const StackRoot = styled.div<StackRootProps>`
   min-width: 0;
   flex-direction: ${({ $direction }) => ($direction === 'vertical' ? 'column' : 'row')};
   align-items: ${({ $align }) => $align ?? 'stretch'};
-  gap: ${({ theme, $gap }) =>
-    $gap === undefined ? '0' : typeof $gap === 'number' ? `${$gap}px` : theme.spacing[$gap]};
+  ${({ theme, $gap }) => $gap !== undefined && `gap: ${theme.utils.space($gap)};`}
 `

@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import type { AppTheme } from '../../../base/theme'
+import type { SpacingValue } from '../../../base/utils'
 import type { FlexAlign, FlexDirection, FlexJustify, FlexWrap } from './flex'
 
 export interface FlexRootProps {
@@ -7,7 +7,7 @@ export interface FlexRootProps {
   $align?: FlexAlign
   $justify?: FlexJustify
   $wrap: FlexWrap
-  $gap?: keyof AppTheme['spacing'] | number
+  $gap?: SpacingValue
 }
 
 export const FlexRoot = styled.div<FlexRootProps>`
@@ -18,5 +18,5 @@ export const FlexRoot = styled.div<FlexRootProps>`
   align-items: ${({ $align }) => $align ?? 'stretch'};
   justify-content: ${({ $justify }) => $justify ?? 'flex-start'};
   flex-wrap: ${({ $wrap }) => $wrap};
-  gap: ${({ theme, $gap }) => ($gap === undefined ? '0' : typeof $gap === 'number' ? `${$gap}px` : theme.spacing[$gap])};
+  ${({ theme, $gap }) => $gap !== undefined && `gap: ${theme.utils.space($gap)};`}
 `

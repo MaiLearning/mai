@@ -65,8 +65,49 @@ export type StepKey<C extends keyof StepsConfig> = C extends 'foreground'
 /** Текущее состояние интерактивного элемента (категория `state`). */
 export type StateName = 'hoverAlpha' | 'activeAlpha' | 'selectedAlpha' | 'disabledAlpha'
 
-/** Ключ токена отступа (`theme.spacing.*`). */
-export type SpacingKey = keyof AppTheme['spacing']
+/**
+ * Единица длины, в которой живёт базовый шаг отступов.
+ *
+ * Проценты исключены осознанно: шаг — это «сколько раз базовый шаг»,
+ * а для процентов умножение не имеет смысла. Токены с процентами —
+ * отдельная величина (`layout`).
+ */
+export type SpacingUnit = 'rem' | 'px' | 'em'
+
+/**
+ * Базовый шаг отступов — источник истины всей шкалы.
+ *
+ * `value` задан в долях `unit`: 0.125 — это 1/8 rem, то есть шаг 2px при
+ * корне 16px. Выбрано как точная степенная дробь, поэтому умножение на
+ * целое не даёт артефактов float. Переключение системы на пиксели — смена
+ * одной пары: `{ value: 2, unit: 'px' }`.
+ */
+export interface SpacingStep {
+  value: number
+  unit: SpacingUnit
+}
+
+/**
+ * Шкала отступов: базовый шаг плюс каталог имён.
+ *
+ * Каталог — не источник истины, а подсказка для мест, где значение
+ * повторяется. Всё, что в каталог не помещается, задаётся числом шагов
+ * (`theme.utils.space(6)`), поэтому шкала не растёт вместе с числом
+ * различных значений в интерфейсе.
+ */
+export interface SpacingTokens {
+  /** Базовый шаг. */
+  step: SpacingStep
+  /** Каталог имён: значения — целые кратные `step`. */
+  xs: string
+  sm: string
+  md: string
+  lg: string
+  xl: string
+}
+
+/** Ключ каталога отступов (`theme.spacing.*`). */
+export type SpacingKey = 'xs' | 'sm' | 'md' | 'lg' | 'xl'
 
 /**
  * Типовой контракт темы приложения.
@@ -126,13 +167,7 @@ export interface AppTheme {
       relaxed: number
     }
   }
-  spacing: {
-    xs: string
-    sm: string
-    md: string
-    lg: string
-    xl: string
-  }
+  spacing: SpacingTokens
   radius: {
     sm: string
     md: string
@@ -153,5 +188,23 @@ export interface AppTheme {
     fast: string
     normal: string
     slow: string
+  }
+  /**
+   * Токены раскладки: размеры центрируемой области, в отличие от
+   * `spacing` (микро-отступы) — это не про расстояния между элементами,
+   * а про габариты области. Отсюда `Container` берёт `size`.
+   */
+  layout: {
+    /** Потолки ширины центрируемых областей. */
+    containerWidths: {
+      /** Узкая область: панели, боковые блоки, диалоги. */
+      narrow: string
+      /** Текстовая колонка для чтения: обзоры, описания. */
+      read: string
+      /** Область листинга кода. */
+      code: string
+      /** Широкая область: каркас страницы, каталоги. */
+      wide: string
+    }
   }
 }

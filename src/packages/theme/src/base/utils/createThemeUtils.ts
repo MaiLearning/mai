@@ -10,6 +10,8 @@ import type {
   StepsConfig,
 } from '../theme'
 import { getColor } from './getColor'
+import type { SpacingValue } from './space'
+import { resolveSpace } from './space'
 import { withState } from './withState'
 
 /**
@@ -27,13 +29,13 @@ export function getFocusRing(theme: Pick<AppTheme, 'intent' | 'steps'>): string 
 }
 
 /**
- * Функции работы с цветом, связанные с конкретной темой.
+ * Функции, связанные с конкретной темой.
  *
  * Прокидываются в объект темы как `theme.utils.*`, чтобы стилизованные
- * компоненты пользовались цветом без импорта чистых функций:
- * `theme.utils.getBackground($variant, 'surface')`. Бинды замыкаются на
- * нужные поля темы (`mode`, `intent`, `steps`, `state`) и делегируют
- * чистым функциям из `base/utils`.
+ * компоненты пользовались токенами без импорта чистых функций:
+ * `theme.utils.getBackground('surface', ...)`, `theme.utils.space('md')`.
+ * Бинды замыкаются на нужные поля темы (`mode`, `intent`, `steps`,
+ * `state`, `spacing`) и делегируют чистым функциям из `base/utils`.
  */
 export interface ThemeUtils {
   /** Берёт цвет напрямую: роль + категория + ключ ступени. */
@@ -54,24 +56,30 @@ export interface ThemeUtils {
   getFocusRing(): string
   /** Накладывает оверлей интерактивного состояния (hover/active/selected/disabled). */
   withState(baseColor: string, stateName: StateName): string
+  /** Приводит значение отступа к CSS-длине: ключ шкалы `spacing` или число пикселей. */
+  space(value: SpacingValue): string
 }
 
-/** Минимальный набор полей темы, из которых собираются бинды цвета. */
-export type ThemeUtilsSource = Pick<AppTheme, 'mode' | 'intent' | 'steps' | 'state'>
+/** Минимальный набор полей темы, из которых собираются бинды. */
+export type ThemeUtilsSource = Pick<AppTheme, 'mode' | 'intent' | 'steps' | 'state' | 'spacing'>
 
 /**
  * Собирает `ThemeUtils`, связанные с конкретной темой.
  *
  * Вызывается при конструировании темы из цветовой части (mode + intent +
- * steps + state), поэтому бинды не требуют ни одной ссылки на себя —
- * циклической зависимости нет.
+ * steps + state) и шкалы отступов, поэтому бинды не требуют ни одной
+ * ссылки на себя — циклической зависимости нет.
  *
- * @param theme цветовая часть темы
+ * @param theme цветовая часть темы и шкала отступов
  * @returns объект `utils`, готовый к встраиванию в `AppTheme`
  *
  * @example
  * const colorPart = { mode: 'light', intent, steps, state, contrastText, shadows }
- * const light: AppTheme = { ...colorPart, utils: createThemeUtils(colorPart) }
+ * const light: AppTheme = {
+ *   ...colorPart,
+ *   utils: createThemeUtils({ ...colorPart, spacing: base.spacing }),
+ *   ...base,
+ * }
  */
 export function createThemeUtils(theme: ThemeUtilsSource): ThemeUtils {
   return {
@@ -82,5 +90,6 @@ export function createThemeUtils(theme: ThemeUtilsSource): ThemeUtils {
     getSolid: (intentName, step) => getColor(theme, intentName, 'solid', step),
     getFocusRing: () => getFocusRing(theme),
     withState: (baseColor, stateName) => withState(baseColor, theme, stateName),
+    space: (value) => resolveSpace(theme, value),
   }
 }

@@ -34,6 +34,9 @@ export const base: Omit<
     },
   },
   spacing: {
+    // Базовый шаг: 0.125rem = 2px при корне 16px. Каталог ниже — целые
+    // кратные шага (2/4/8/12/16), отсюда и значения.
+    step: { value: 0.125, unit: 'rem' },
     xs: '0.25rem',
     sm: '0.5rem',
     md: '1rem',
@@ -55,5 +58,13 @@ export const base: Omit<
     fast: '120ms',
     normal: '200ms',
     slow: '300ms',
+  },
+  layout: {
+    containerWidths: {
+      narrow: '25rem',
+      read: '47.5rem',
+      code: '53.75rem',
+      wide: '75rem',
+    },
   },
 }
