@@ -11,7 +11,7 @@ export const MAX_CODE_LENGTH = 100_000
 
 // ─────────────────────────  Модель контента  ─────────────────────────
 
-export const CodeLanguageSchema = z.enum(['python', 'javascript'])
+export const CodeLanguageSchema = z.enum(['python', 'javascript', 'rust'])
 
 export const CodeStepSchema = z.object({
   id: z.string(),

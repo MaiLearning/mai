@@ -14,10 +14,12 @@ use super::{executor, rules};
 const SETTINGS_DOMAIN: &str = "plugin";
 const SETTINGS_ITEM_ID: &str = "internal-code";
 
-/// Ключ поля настроек с путём интерпретатора для языка (зеркало Zod-схемы).
+/// Ключ поля настроек с путём рантайма для языка (зеркало Zod-схемы).
+/// Для Rust это путь до компилятора `rustc`, а не интерпретатора.
 fn runtime_field(language: &str) -> &'static str {
     match language {
         "javascript" => "javascriptPath",
+        "rust" => "rustcPath",
         _ => "pythonPath",
     }
 }
@@ -175,6 +177,7 @@ mod tests {
     fn runtime_field_matches_settings_schema() {
         assert_eq!(runtime_field("python"), "pythonPath");
         assert_eq!(runtime_field("javascript"), "javascriptPath");
+        assert_eq!(runtime_field("rust"), "rustcPath");
     }
 
     #[test]
@@ -182,6 +185,7 @@ mod tests {
         let settings = json!({
             "pythonPath": { "type": "text_input", "value": "  /usr/bin/python3  " },
             "javascriptPath": { "type": "text_input", "value": "/usr/bin/node" },
+            "rustcPath": { "type": "text_input", "value": "  /usr/bin/rustc  " },
         });
 
         assert_eq!(
@@ -191,6 +195,10 @@ mod tests {
         assert_eq!(
             runtime_path(&settings, "javascript"),
             Some("/usr/bin/node".to_string())
+        );
+        assert_eq!(
+            runtime_path(&settings, "rust"),
+            Some("/usr/bin/rustc".to_string())
         );
     }
 

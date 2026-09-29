@@ -1,7 +1,7 @@
 use super::exceptions::CodeServiceError;
 
 /// Поддерживаемые языки исполнения.
-pub const SUPPORTED_LANGUAGES: [&str; 2] = ["python", "javascript"];
+pub const SUPPORTED_LANGUAGES: [&str; 3] = ["python", "javascript", "rust"];
 
 /// Максимальный размер исполняемого кода — 256 KB.
 const MAX_CODE_BYTES: usize = 256 * 1024;

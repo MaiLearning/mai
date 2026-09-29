@@ -17,6 +17,7 @@
   "dependencies": {
     "@codemirror/lang-javascript": "^6.2.5",
     "@codemirror/lang-python": "^6.2.1",
+    "@codemirror/lang-rust": "^6.0.2",
     "@mai/notifications": "workspace:*",
     "@mai/plugin": "workspace:*",
     "@mai/resource": "workspace:*",

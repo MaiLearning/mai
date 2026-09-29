@@ -1,5 +1,7 @@
 import { javascript } from '@codemirror/lang-javascript'
 import { python } from '@codemirror/lang-python'
+import { rust } from '@codemirror/lang-rust'
+import type { Extension } from '@uiw/react-codemirror'
 import CodeMirror from '@uiw/react-codemirror'
 import type { CodeLanguage } from '../../entity'
 import { padToLines, stripTrailingEmpty } from '../lib/padLines'
@@ -11,6 +13,13 @@ interface CodeEditorProps {
   onChange: (value: string) => void
   readOnly?: boolean
   ariaLabel: string
+}
+
+/** Расширение подсветки CodeMirror по языку урока (исчерпывающая карта — новый язык требует записи здесь). */
+const LANGUAGE_EXTENSIONS: Record<CodeLanguage, Extension> = {
+  python: python(),
+  javascript: javascript(),
+  rust: rust(),
 }
 
 /**
@@ -25,7 +34,7 @@ export function CodeEditor({
   readOnly = false,
   ariaLabel,
 }: CodeEditorProps) {
-  const extensions = [language === 'python' ? python() : javascript()]
+  const extensions = [LANGUAGE_EXTENSIONS[language]]
 
   return (
     <EditorWrap aria-label={ariaLabel}>

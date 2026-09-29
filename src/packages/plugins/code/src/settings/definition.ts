@@ -2,8 +2,9 @@ import { definePluginSettings } from '@mai/settings'
 import { z } from 'zod'
 
 /**
- * Настройки плагина code: пути до интерпретаторов на машине пользователя.
- * Ключи полей — зеркало бэкенда (`plugins/code/service/service.rs`),
+ * Настройки плагина code: пути до рантаймов на машине пользователя
+ * (интерпретаторы Python/JavaScript, компилятор Rust). Ключи полей —
+ * зеркало бэкенда (`plugins/code/service/service.rs`),
  * пустая строка = рантайм не настроен.
  */
 export const codeSettingsDefinition = definePluginSettings({
@@ -18,6 +19,10 @@ export const codeSettingsDefinition = definePluginSettings({
     javascriptPath: z.string().max(1000).default('').meta({
       title: 'settings.javascriptPath.label',
       description: 'settings.javascriptPath.hint',
+    }),
+    rustcPath: z.string().max(1000).default('').meta({
+      title: 'settings.rustcPath.label',
+      description: 'settings.rustcPath.hint',
     }),
   }),
 })

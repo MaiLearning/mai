@@ -82,7 +82,7 @@ describe('code content schema', () => {
     expect(CodeContentDataSchema.parse(data)).toEqual(data)
   })
 
-  it.each([['python'], ['javascript']] as const)('валидирует язык %s', (language) => {
+  it.each([['python'], ['javascript'], ['rust']] as const)('валидирует язык %s', (language) => {
     expect(CodeLanguageSchema.parse(language)).toBe(language)
   })
 
@@ -140,9 +140,13 @@ describe('командные входные схемы', () => {
       language: 'python',
       code: 'print(1)',
     })
+    expect(RunCodeInputSchema.parse({ language: 'rust', code: 'fn main() {}' })).toEqual({
+      language: 'rust',
+      code: 'fn main() {}',
+    })
     expect(() =>
       RunCodeInputSchema.parse({ language: 'python', code: 'x'.repeat(MAX_CODE_LENGTH + 1) }),
     ).toThrow()
-    expect(() => RunCodeInputSchema.parse({ language: 'rust', code: 'fn main() {}' })).toThrow()
+    expect(() => RunCodeInputSchema.parse({ language: 'ruby', code: 'puts 1' })).toThrow()
   })
 })
