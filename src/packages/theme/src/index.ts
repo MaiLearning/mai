@@ -79,6 +79,13 @@ export type { DividerProps } from './components/foundation/divider/divider'
 export { Divider } from './components/foundation/divider/divider'
 export type { FlexProps } from './components/foundation/flex/flex'
 export { Flex } from './components/foundation/flex/flex'
+export type {
+  GridAlign,
+  GridColumns,
+  GridJustify,
+  GridProps,
+} from './components/foundation/grid/grid'
+export { Grid } from './components/foundation/grid/grid'
 export type { HeadingLevel, HeadingProps } from './components/foundation/heading/heading'
 export { Heading } from './components/foundation/heading/heading'
 export type { ProgressProps } from './components/foundation/progress/progress'
