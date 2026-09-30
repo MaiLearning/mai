@@ -152,4 +152,4 @@ CSS: треки бывают `fr` (доля свободного места), `a
 
 Импортирует `box/box.style` (нормализация блока), `base/theme` (тип
 `SpacingKey`) и `base/utils` (тип `SpacingValue`). Из `primitive/`, `pattern/`
-и `component/` ничего не использует.
+и пакетов ничего не использует.

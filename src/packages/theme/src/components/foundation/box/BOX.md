@@ -61,4 +61,4 @@ const Panel = styled(Box)`
 ## Зависимости
 
 Импортирует только `box.style.ts`. Из `primitive/`, `pattern/` и
-`component/` ничего не использует.
+пакетов ничего не использует.

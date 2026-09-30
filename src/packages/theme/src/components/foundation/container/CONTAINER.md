@@ -108,5 +108,5 @@
 
 Импортирует `box/box.style` (на нём строятся оба слоя) и собственный
 `container.style`. Типы пропсов — из `base/theme`
-(`layout.containerWidths`). Из `primitive/`, `pattern/` и `component/`
+(`layout.containerWidths`). Из `primitive/`, `pattern/` и пакетов
 ничего не использует.

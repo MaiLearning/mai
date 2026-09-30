@@ -21,8 +21,8 @@
 
 - Любой попап: управляемый хук + панель, монтируемая при `opened`,
   позиционируемая через `coords`.
-- Меню в `Select`/`DropdownMenu`/`ContextMenu` (легаси `ui/`, используют
-  `usePopover` и/или палитру `popover.style`).
+- Меню в `@mai/select` / `@mai/dropdown-menu` / `@mai/context-menu` — они
+  используют `usePopover` и/или палитру `popover.style`.
 
 ## Когда НЕ использовать
 

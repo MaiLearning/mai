@@ -61,4 +61,4 @@
 ## Зависимости
 
 Импортирует только `stack.style.ts` и `base/theme` (тип `SpacingKey`).
-Из `primitive/`, `pattern/` и `component/` ничего не использует.
+Из `primitive/`, `pattern/` и пакетов ничего не использует.
