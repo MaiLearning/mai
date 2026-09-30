@@ -15,7 +15,7 @@ const views = [
  * состояния и акцентной границей. Управляемый компонент.
  */
 const meta = {
-  title: 'UI/Primitive/SegmentedControl',
+  title: 'Theme/Components/Primitive/SegmentedControl',
   component: SegmentedControl,
   tags: ['autodocs'],
   parameters: {

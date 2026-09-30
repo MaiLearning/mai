@@ -11,7 +11,7 @@ const tones: IntentName[] = ['neutral', 'accent', 'success', 'warning', 'danger'
  * интентов темы.
  */
 const meta = {
-  title: 'UI/Foundation/Badge',
+  title: 'Theme/Components/Foundation/Badge',
   component: Badge,
   tags: ['autodocs'],
   parameters: {

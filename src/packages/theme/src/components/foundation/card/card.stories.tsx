@@ -7,7 +7,7 @@ import { Card } from './card'
  * добавляет потребитель. Интерактивная карточка приподнимается на hover.
  */
 const meta = {
-  title: 'UI/Foundation/Card',
+  title: 'Theme/Components/Foundation/Card',
   component: Card,
   tags: ['autodocs'],
   parameters: {

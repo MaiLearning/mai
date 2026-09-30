@@ -14,7 +14,7 @@ const backdrop = { background: 'color-mix(in srgb, currentColor 8%, transparent)
  * растут вместе с контейнером.
  */
 const meta = {
-  title: 'UI/Foundation/Container',
+  title: 'Theme/Components/Foundation/Container',
   component: Container,
   tags: ['autodocs'],
   parameters: {

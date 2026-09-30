@@ -8,7 +8,7 @@ import { Breadcrumbs } from './breadcrumbs'
  * является ссылкой.
  */
 const meta = {
-  title: 'UI/Pattern/Breadcrumbs',
+  title: 'Theme/Components/Pattern/Breadcrumbs',
   component: Breadcrumbs,
   tags: ['autodocs'],
   parameters: {

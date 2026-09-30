@@ -8,7 +8,7 @@ import { NumberField } from './numberField'
  * `<input type="number">` в обвязке Field.
  */
 const meta = {
-  title: 'Fields/NumberField',
+  title: 'Theme/Packages/Fields/NumberField',
   component: NumberField,
   tags: ['autodocs'],
   parameters: {

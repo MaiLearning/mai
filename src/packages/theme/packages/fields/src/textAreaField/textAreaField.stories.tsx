@@ -8,7 +8,7 @@ import { TextAreaField } from './textAreaField'
  * обвязке Field.
  */
 const meta = {
-  title: 'Fields/TextAreaField',
+  title: 'Theme/Packages/Fields/TextAreaField',
   component: TextAreaField,
   tags: ['autodocs'],
   parameters: {

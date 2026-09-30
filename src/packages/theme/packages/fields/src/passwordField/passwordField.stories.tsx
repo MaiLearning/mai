@@ -7,7 +7,7 @@ import { PasswordField } from './passwordField'
  * `<input type="password">` в обвязке Field.
  */
 const meta = {
-  title: 'Fields/PasswordField',
+  title: 'Theme/Packages/Fields/PasswordField',
   component: PasswordField,
   tags: ['autodocs'],
   parameters: {

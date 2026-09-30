@@ -28,7 +28,7 @@ const groups: NavListGroup[] = [
  * Активный пункт выделяется акцентной подложкой; disabled — недоступен.
  */
 const meta = {
-  title: 'UI/Pattern/NavList',
+  title: 'Theme/Components/Pattern/NavList',
   component: NavList,
   tags: ['autodocs'],
   parameters: {

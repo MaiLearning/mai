@@ -6,7 +6,7 @@ import { Tooltip } from './tooltip'
  * показывается через атрибут `title`. Собственной панели нет.
  */
 const meta = {
-  title: 'UI/Foundation/Tooltip',
+  title: 'Theme/Components/Foundation/Tooltip',
   component: Tooltip,
   tags: ['autodocs'],
   parameters: {

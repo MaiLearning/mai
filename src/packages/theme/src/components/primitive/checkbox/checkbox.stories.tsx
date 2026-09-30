@@ -10,7 +10,7 @@ import { Checkbox } from './checkbox'
  * Доступность обеспечивают `role="checkbox"` и `aria-checked`.
  */
 const meta = {
-  title: 'UI/Primitive/Checkbox',
+  title: 'Theme/Components/Primitive/Checkbox',
   component: Checkbox,
   tags: ['autodocs'],
   parameters: {

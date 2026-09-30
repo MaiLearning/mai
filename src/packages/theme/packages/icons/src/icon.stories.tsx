@@ -4,7 +4,7 @@ import type { IconName } from './registry'
 import { iconRegistry } from './registry'
 
 const meta = {
-  title: 'Icons/Icon',
+  title: 'Theme/Packages/Icons/Icon',
   component: Icon,
   tags: ['autodocs'],
   parameters: {

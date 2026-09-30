@@ -7,7 +7,7 @@ import { Box } from './box'
  * подключения для специализаций (`Container`, `Flex`, `Stack`).
  */
 const meta = {
-  title: 'UI/Foundation/Box',
+  title: 'Theme/Components/Foundation/Box',
   component: Box,
   tags: ['autodocs'],
   parameters: {

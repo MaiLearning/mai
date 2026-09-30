@@ -9,7 +9,7 @@ const longContent = Array.from({ length: 30 }, (_, index) => `Элемент с�
  * ированную высоту, `maxHeight` — максимальную (ниже начинается прокрутка).
  */
 const meta = {
-  title: 'UI/Foundation/ScrollArea',
+  title: 'Theme/Components/Foundation/ScrollArea',
   component: ScrollArea,
   tags: ['autodocs'],
   parameters: {

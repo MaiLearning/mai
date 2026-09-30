@@ -56,7 +56,7 @@ function ContextMenuDemo({ onSelect, onDelete }: ContextMenuDemoProps) {
 }
 
 const meta = {
-  title: 'ContextMenu/ContextMenu',
+  title: 'Theme/Packages/ContextMenu/ContextMenu',
   component: ContextMenuDemo,
   tags: ['autodocs'],
   parameters: {

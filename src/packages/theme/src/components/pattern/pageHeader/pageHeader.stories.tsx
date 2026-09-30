@@ -8,7 +8,7 @@ import { PageHeader } from './pageHeader'
  * действий, отделённый от контента границей.
  */
 const meta = {
-  title: 'UI/Pattern/PageHeader',
+  title: 'Theme/Components/Pattern/PageHeader',
   component: PageHeader,
   tags: ['autodocs'],
   parameters: {

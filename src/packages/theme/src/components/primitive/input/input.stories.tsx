@@ -5,7 +5,7 @@ import { expect, fn, screen, userEvent } from 'storybook/test'
 import { Input, InputAdornmentButton } from './input'
 
 const meta = {
-  title: 'UI/Primitive/Input',
+  title: 'Theme/Components/Primitive/Input',
   component: Input,
   tags: ['autodocs'],
   parameters: {

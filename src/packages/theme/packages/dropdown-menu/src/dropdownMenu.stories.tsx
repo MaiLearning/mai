@@ -102,7 +102,7 @@ const ImageIcon = glyph(
  * или Esc, навигация — клавиатурой (↑ ↓ Home End Enter).
  */
 const meta = {
-  title: 'DropdownMenu/DropdownMenu',
+  title: 'Theme/Packages/DropdownMenu/DropdownMenu',
   component: DropdownMenu,
   tags: ['autodocs'],
   parameters: {

@@ -19,7 +19,7 @@ const colors: TextColor[] = [
  * `target="_blank"` и `rel="noreferrer"`.
  */
 const meta = {
-  title: 'UI/Primitive/Link',
+  title: 'Theme/Components/Primitive/Link',
   component: Link,
   tags: ['autodocs'],
   parameters: {

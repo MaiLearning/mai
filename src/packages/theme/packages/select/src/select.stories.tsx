@@ -16,7 +16,7 @@ const items = [
  * закрытие — кликом вне или Esc. Управляемый компонент.
  */
 const meta = {
-  title: 'Select/Select',
+  title: 'Theme/Packages/Select/Select',
   component: Select,
   tags: ['autodocs'],
   parameters: {

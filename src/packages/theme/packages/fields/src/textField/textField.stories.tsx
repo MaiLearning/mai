@@ -8,7 +8,7 @@ import { TextField } from './textField'
  * в обвязке Field: подпись, подсказка/ошибка, счётчик символов.
  */
 const meta = {
-  title: 'Fields/TextField',
+  title: 'Theme/Packages/Fields/TextField',
   component: TextField,
   tags: ['autodocs'],
   parameters: {

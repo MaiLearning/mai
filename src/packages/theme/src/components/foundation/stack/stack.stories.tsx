@@ -11,7 +11,7 @@ const gapKeys: SpacingKey[] = ['xs', 'sm', 'md', 'lg', 'xl']
  * выравнивание по поперечной оси — `align`.
  */
 const meta = {
-  title: 'UI/Foundation/Stack',
+  title: 'Theme/Components/Foundation/Stack',
   component: Stack,
   tags: ['autodocs'],
   parameters: {

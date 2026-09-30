@@ -7,7 +7,7 @@ import { Divider } from './divider'
  * высоте строки/ряда.
  */
 const meta = {
-  title: 'UI/Foundation/Divider',
+  title: 'Theme/Components/Foundation/Divider',
   component: Divider,
   tags: ['autodocs'],
   parameters: {

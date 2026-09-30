@@ -15,7 +15,7 @@ const frameworks = [
  * из `value`. Подписи элементов идут рядом с флажками.
  */
 const meta = {
-  title: 'UI/Pattern/CheckboxGroup',
+  title: 'Theme/Components/Pattern/CheckboxGroup',
   component: CheckboxGroup,
   tags: ['autodocs'],
   parameters: {

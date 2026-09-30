@@ -11,7 +11,7 @@ import { Modal } from './modal'
  * `opened`, поэтому в живом коде состояние держит вызывающий компонент.
  */
 const meta = {
-  title: 'UI/Primitive/Modal',
+  title: 'Theme/Components/Primitive/Modal',
   component: Modal,
   tags: ['autodocs'],
   parameters: {

@@ -8,7 +8,7 @@ import { SearchField } from './searchField'
  * `<input type="search">` в обвязке Field.
  */
 const meta = {
-  title: 'Fields/SearchField',
+  title: 'Theme/Packages/Fields/SearchField',
   component: SearchField,
   tags: ['autodocs'],
   parameters: {

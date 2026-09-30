@@ -16,7 +16,7 @@ function WiredInput() {
  * aria-атрибуты.
  */
 const meta = {
-  title: 'UI/Pattern/Field',
+  title: 'Theme/Components/Pattern/Field',
   component: Field,
   tags: ['autodocs'],
   parameters: {

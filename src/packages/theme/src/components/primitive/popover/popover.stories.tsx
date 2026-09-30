@@ -50,7 +50,7 @@ const TriggerButton = styled.button`
 const playOnClick = fn()
 
 const meta = {
-  title: 'UI/Primitive/Popover',
+  title: 'Theme/Components/Primitive/Popover',
   parameters: {
     docs: {
       description: {

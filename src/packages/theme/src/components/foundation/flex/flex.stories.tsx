@@ -22,7 +22,7 @@ const gapKeys: SpacingKey[] = ['xs', 'sm', 'md', 'lg', 'xl']
  * на ключи каталога `theme.spacing` или число базовых шагов.
  */
 const meta = {
-  title: 'UI/Foundation/Flex',
+  title: 'Theme/Components/Foundation/Flex',
   component: Flex,
   tags: ['autodocs'],
   parameters: {

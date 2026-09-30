@@ -10,7 +10,7 @@ import { Switch } from './switch'
  * чивают доступность без скрытых инпутов.
  */
 const meta = {
-  title: 'UI/Primitive/Switch',
+  title: 'Theme/Components/Primitive/Switch',
   component: Switch,
   tags: ['autodocs'],
   parameters: {

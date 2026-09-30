@@ -28,7 +28,7 @@ function Cell({ label }: { label: string }) {
  * число базовых шагов.
  */
 const meta = {
-  title: 'UI/Foundation/Grid',
+  title: 'Theme/Components/Foundation/Grid',
   component: Grid,
   tags: ['autodocs'],
   parameters: {

@@ -23,7 +23,7 @@ const colors: TextColor[] = [
  * цветом из токенов темы.
  */
 const meta = {
-  title: 'UI/Foundation/Heading',
+  title: 'Theme/Components/Foundation/Heading',
   component: Heading,
   tags: ['autodocs'],
   parameters: {

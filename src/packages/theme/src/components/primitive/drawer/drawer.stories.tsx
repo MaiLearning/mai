@@ -9,7 +9,7 @@ import { Drawer, type DrawerProps } from './drawer'
  * портал в body, блокировка скролла, focus-trap, закрытие по Esc/оверлею.
  */
 const meta = {
-  title: 'UI/Primitive/Drawer',
+  title: 'Theme/Components/Primitive/Drawer',
   component: Drawer,
   tags: ['autodocs'],
   parameters: {
