@@ -14,18 +14,6 @@
     "./base": {
       "types": "./src/base/provider.tsx",
       "import": "./src/base/provider.tsx"
-    },
-    "./ui/button": {
-      "types": "./src/ui/base/button/button.tsx",
-      "import": "./src/ui/base/button/button.tsx"
-    },
-    "./ui/text": {
-      "types": "./src/ui/base/text/text.tsx",
-      "import": "./src/ui/base/text/text.tsx"
-    },
-    "./ui/*": {
-      "types": "./src/ui/*",
-      "import": "./src/ui/*"
     }
   },
   "files": [
