@@ -55,6 +55,10 @@ export const Overlay = styled.button<{ $open: boolean }>`
 export const Rail = styled.nav`
   position: sticky;
   top: 0;
+  /* box-sizing обязателен: глобального сброса border-box в приложении нет,
+     и в content-box высота 100vh складывалась с padding-top, выдавая
+     документу лишние пиксели высоты и скроллбар окна на всей странице. */
+  box-sizing: border-box;
   height: 100vh;
   z-index: 11;
   display: none;
