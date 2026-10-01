@@ -1,3 +1,4 @@
+import type { SelectItem } from '@mai/theme'
 import type { CodeLanguage } from '../../entity'
 
 /** Режимы воркспейса: прохождение и редактор шага. */
@@ -12,3 +13,8 @@ export const LANGUAGE_LABEL: Record<CodeLanguage, string> = {
   javascript: 'JavaScript',
   rust: 'Rust',
 }
+
+/** Языки для выпадающего списка шапки; порядок — как у `LANGUAGE_LABEL`. */
+export const LANGUAGE_ITEMS: SelectItem[] = Object.entries(LANGUAGE_LABEL).map(
+  ([value, label]) => ({ value, label }),
+)

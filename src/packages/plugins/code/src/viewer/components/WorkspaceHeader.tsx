@@ -1,7 +1,7 @@
 import { Eye, Pencil, Trash2 } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import type { CodeLanguage, CodeStep } from '../../entity'
-import { LANGUAGE_LABEL, type StepStatus, type ViewMode } from '../core/types'
+import { LANGUAGE_ITEMS, LANGUAGE_LABEL, type StepStatus, type ViewMode } from '../core/types'
 import { stepTitle } from '../lib/useCodeContent'
 import {
   Badge,
@@ -14,7 +14,7 @@ import {
   ModeToggle,
 } from '../viewer.style'
 import { CodeStepper } from './CodeStepper'
-import { LanguageSelect, TitleInput, TopRow } from './WorkspaceHeader.style'
+import { LanguagePicker, TitleInput, TopRow } from './WorkspaceHeader.style'
 
 interface WorkspaceHeaderProps {
   title: string
@@ -105,17 +105,12 @@ export function WorkspaceHeader({
           <Badge>{step ? stepTitle(step, index) : ''}</Badge>
           {editing ? (
             <>
-              <LanguageSelect
+              <LanguagePicker
                 value={language}
+                items={LANGUAGE_ITEMS}
                 aria-label="Язык урока"
-                onChange={(e) => onLanguageChange(e.target.value as CodeLanguage)}
-              >
-                {Object.entries(LANGUAGE_LABEL).map(([value, label]) => (
-                  <option key={value} value={value}>
-                    {label}
-                  </option>
-                ))}
-              </LanguageSelect>
+                onChange={(value) => onLanguageChange(value as CodeLanguage)}
+              />
               {step && (
                 <DeleteStepButton
                   type="button"

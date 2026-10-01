@@ -1,3 +1,4 @@
+import { Select } from '@mai/theme'
 import styled from 'styled-components'
 
 /** Строка шапки: название ресурса + справа переключатель режимов. */
@@ -39,18 +40,21 @@ export const TitleInput = styled.input`
   }
 `
 
-export const LanguageSelect = styled.select`
-  height: 30px;
-  padding: 0 8px;
-  border: 1px solid ${({ theme }) => theme.utils.getBorder('neutral', 'default')};
-  border-radius: ${({ theme }) => theme.radius.sm};
-  background: ${({ theme }) => theme.utils.getBackground('neutral', 'surface')};
-  color: ${({ theme }) => theme.utils.getText('neutral', 'primary')};
-  font-size: 0.8125rem;
-  font-weight: 600;
+export const LanguagePicker = styled(Select)`
+  /* Select из темы рассчитан на форму (36px, на всю ширину). В строке
+     мета соседние бейджи 26–30px, поэтому размер и ширина правятся здесь.
+     Select принимает className и кладёт его на SelectWrapper, поэтому
+     переопределениям нужна двойная специфичность. */
+  && {
+    width: auto;
+  }
 
-  &:focus {
-    outline: none;
-    border-color: ${({ theme }) => theme.utils.getBorder('accent', 'default')};
+  && > button {
+    min-height: 30px;
+    padding: 0 ${({ theme }) => theme.spacing.sm};
+    border-radius: ${({ theme }) => theme.radius.sm};
+    background: ${({ theme }) => theme.utils.getBackground('neutral', 'surface')};
+    font-size: 0.8125rem;
+    font-weight: 600;
   }
 `
