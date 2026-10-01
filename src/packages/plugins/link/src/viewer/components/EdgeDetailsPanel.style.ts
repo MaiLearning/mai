@@ -1,4 +1,4 @@
-import { Badge } from '@mai/theme'
+import { Badge, themedScrollbar } from '@mai/theme'
 import styled from 'styled-components'
 
 export const PanelRoot = styled.div`
@@ -11,6 +11,8 @@ export const PanelRoot = styled.div`
   border-left: 1px solid ${({ theme }) => theme.utils.getBorder('neutral', 'default')};
   background: ${({ theme }) => theme.utils.getBackground('neutral', 'surface')};
   overflow-y: auto;
+
+  ${themedScrollbar}
 `
 
 export const PanelTitle = styled.h3`

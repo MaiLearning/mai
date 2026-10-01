@@ -140,7 +140,7 @@ export function CodeWorkspace({
         onLanguageChange={setLanguage}
       />
 
-      <Body className="app-scroll">
+      <Body>
         <BodyInner>
           {editing ? (
             <StepSettings

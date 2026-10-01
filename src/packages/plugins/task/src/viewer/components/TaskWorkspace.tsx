@@ -151,7 +151,7 @@ export function TaskWorkspace({
         onCreate={create}
       />
 
-      <Body className="app-scroll">
+      <Body>
         <BodyInner>
           <TaskRenderer
             task={task}

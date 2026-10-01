@@ -1,3 +1,4 @@
+import { themedScrollbar } from '@mai/theme'
 import styled, { css } from 'styled-components'
 import { Row } from './TreeRow.style'
 
@@ -23,19 +24,17 @@ export const RowSlot = styled.div`
 `
 
 /**
- * Скролл-контейнер дерева. `flex: 0 1 auto` (а не `flex: 1`): свободное
+ * Скролл-контейнер дерева. `flex: 0 1 auto` (не `flex: 1`): свободное
  * место уходит нижней зоне дропа в корень, а при переполнении контейнер
  * сжимается, оставляя ей минимум 24px.
- *
- * `app-scroll` — общий стиль тонкого скроллбара (global-style).
- * `data-lenis-prevent` — ReactLenis root перехватывает wheel на window,
- * без маркера колесо над деревом не работает (см. app.tsx).
  */
-export const Scroll = styled.div.attrs({ className: 'app-scroll', 'data-lenis-prevent': 'true' })`
+export const Scroll = styled.div`
   flex: 0 1 auto;
   min-height: 0;
   overflow-y: auto;
   overscroll-behavior: contain;
+
+  ${themedScrollbar}
 `
 
 /**

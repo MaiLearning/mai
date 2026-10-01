@@ -1,3 +1,4 @@
+import { themedScrollbar } from '@mai/theme'
 import { EditorContent } from '@tiptap/react'
 import styled from 'styled-components'
 
@@ -35,11 +36,13 @@ export const CanvasWrap = styled.div`
 `
 
 /** Прокручиваемая рабочая область с листом документа по центру. */
-export const Canvas = styled.div.attrs({ className: 'app-scroll', 'data-lenis-prevent': 'true' })`
+export const Canvas = styled.div`
   flex: 1;
   min-width: 0;
   overflow-y: auto;
   padding: ${({ theme }) => `${theme.spacing.xl} ${theme.spacing.lg}`};
+
+  ${themedScrollbar}
 `
 
 /** Оверлей загрузки контента: закрывает документ, пока идёт загрузка с backend. */

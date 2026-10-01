@@ -1,3 +1,4 @@
+import { themedScrollbar } from '@mai/theme'
 import styled from 'styled-components'
 
 /**
@@ -32,6 +33,8 @@ export const Sidebar = styled.aside`
     border-bottom: 0;
     overflow-y: auto;
   }
+
+  ${themedScrollbar}
 `
 
 export const Content = styled.main`

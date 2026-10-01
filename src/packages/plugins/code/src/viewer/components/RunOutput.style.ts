@@ -1,3 +1,4 @@
+import { themedScrollbar } from '@mai/theme'
 import styled from 'styled-components'
 
 export const Root = styled.section`
@@ -42,6 +43,8 @@ export const Stream = styled.pre<{ $tone: 'stdout' | 'stderr' }>`
     $tone === 'stderr'
       ? theme.utils.getText('danger', 'primary')
       : theme.utils.getText('neutral', 'primary')};
+
+  ${themedScrollbar}
 `
 
 export const Empty = styled.p`

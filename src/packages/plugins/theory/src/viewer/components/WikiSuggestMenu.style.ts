@@ -1,3 +1,4 @@
+import { themedScrollbar } from '@mai/theme'
 import styled from 'styled-components'
 
 /** Плавающая панель меню автокомплита (fixed — координаты вьюпорта). */
@@ -15,6 +16,8 @@ export const MenuSurface = styled.div<{ $x: number; $y: number }>`
   border-radius: ${({ theme }) => theme.radius.md};
   background: ${({ theme }) => theme.utils.getBackground('neutral', 'elevated')};
   box-shadow: ${({ theme }) => theme.shadows.md};
+
+  ${themedScrollbar}
 `
 
 export const MenuItem = styled.button`

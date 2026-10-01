@@ -1,4 +1,5 @@
 import { readableOn } from '@mai/course'
+import { themedScrollbar } from '@mai/theme'
 import styled, { css } from 'styled-components'
 
 // ─────────────────────────  Корневая зона  ─────────────────────────
@@ -38,17 +39,16 @@ export const EmptyText = styled.p`
   color: ${({ theme }) => theme.utils.getText('neutral', 'muted')};
 `
 
-/**
- * Скролл-зона задач. `data-lenis-prevent` — ReactLenis root перехватывает wheel
- * на window, вложенный скролл должен крутиться нативно.
- */
-export const Body = styled.div.attrs({ className: 'app-scroll', 'data-lenis-prevent': 'true' })`
+/** Скролл-зона задач. */
+export const Body = styled.div`
   flex: 1;
   min-height: 0;
   overflow-y: auto;
   display: flex;
   justify-content: center;
   padding: 40px 32px;
+
+  ${themedScrollbar}
 `
 
 export const BodyInner = styled.div`
