@@ -12,8 +12,6 @@ const DEFAULT_CONTENT: CodeLessonContent = {
   results: {},
 }
 
-const MAX_TITLE_FALLBACK = 200
-
 /** Копия словаря без ключа (удаление записи, а не запись undefined). */
 function omitKey<T>(obj: Record<string, T>, key: string): Record<string, T> {
   const { [key]: _removed, ...rest } = obj
@@ -169,11 +167,4 @@ export function useCodeContent(resourceId: string) {
     setStepResult,
     resetStep,
   }
-}
-
-/** Заголовок шага по умолчанию, если автор его не задал. */
-export function stepTitle(step: CodeStep, index: number): string {
-  const title = step.title.trim()
-
-  return title === '' ? `Шаг ${index + 1}`.slice(0, MAX_TITLE_FALLBACK) : title
 }

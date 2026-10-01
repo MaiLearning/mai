@@ -2,9 +2,7 @@ import { Eye, Pencil, Trash2 } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import type { CodeLanguage, CodeStep } from '../../entity'
 import { LANGUAGE_ITEMS, LANGUAGE_LABEL, type StepStatus, type ViewMode } from '../core/types'
-import { stepTitle } from '../lib/useCodeContent'
 import {
-  Badge,
   DeleteStepButton,
   Header,
   KindBadge,
@@ -102,7 +100,6 @@ export function WorkspaceHeader({
       <MetaRow>
         <MetaLeft>
           <KindBadge>{`Шаг ${index + 1} / ${steps.length}`}</KindBadge>
-          <Badge>{step ? stepTitle(step, index) : ''}</Badge>
           {editing ? (
             <>
               <LanguagePicker
