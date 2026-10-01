@@ -1,13 +1,5 @@
 import { Tooltip } from '@mai/theme'
-import {
-  Check,
-  ChevronLeft,
-  ChevronRight,
-  CircleAlert,
-  CircleCheck,
-  Loader2,
-  RotateCcw,
-} from 'lucide-react'
+import { Check, ChevronLeft, ChevronRight, CircleAlert, CircleCheck, RotateCcw } from 'lucide-react'
 import type { StepStatus } from '../core/types'
 import type { SaveState } from '../lib/useCodeAutosave'
 import { SaveDot } from './SaveDot'
@@ -19,6 +11,8 @@ import {
   FooterStart,
   NavButton,
   Result,
+  ResultLabel,
+  Spin,
 } from './WorkspaceFooter.style'
 
 interface WorkspaceFooterProps {
@@ -61,7 +55,9 @@ export function WorkspaceFooter({
         {checked && (
           <Result $status={status}>
             {status === 'passed' ? <CircleCheck size={17} /> : <CircleAlert size={17} />}
-            {status === 'passed' ? 'Проверка пройдена' : 'Проверка не пройдена'}
+            <ResultLabel>
+              {status === 'passed' ? 'Проверка пройдена' : 'Проверка не пройдена'}
+            </ResultLabel>
           </Result>
         )}
       </FooterStart>
@@ -70,7 +66,7 @@ export function WorkspaceFooter({
         {!editing && status !== 'passed' && status !== 'failed' && (
           <Tooltip content="Запустить и проверить">
             <ActionButton type="button" disabled={running} onClick={onCheck}>
-              {running ? <Loader2 size={16} className="spin" /> : <Check size={18} />}
+              {running ? <Spin size={16} /> : <Check size={18} />}
               <ActionLabel>{running ? 'Запуск…' : 'Проверить'}</ActionLabel>
             </ActionButton>
           </Tooltip>

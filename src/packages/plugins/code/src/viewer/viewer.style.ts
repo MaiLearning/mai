@@ -1,14 +1,25 @@
 import { themedScrollbar } from '@mai/theme'
 import styled, { css } from 'styled-components'
 
+/**
+ * Высота плавающего футера: кнопка 44px + вертикальный отступ 24px.
+ * Читается и футером (как `height`), и `LessonBlock` (как `padding-bottom`),
+ * поэтому контент уходит из-под кнопок, а сам блок заезжает под футер.
+ */
+export const FOOTER_HEIGHT = '68px'
+
+/** Слой плавающего футера: над содержимым, но под popover/modal темы. */
+export const FOOTER_Z = 10
+
 // ─────────────────────────  Корневая зона  ─────────────────────────
 
 /**
  * Корень вьюера урока кода — занимает всё доступное пространство; источник
- * container query для футера.
+ * container query для футера и позиционирующий родитель плавающего футера.
  */
 export const Viewer = styled.section`
   container: code-viewer / inline-size;
+  position: relative;
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -60,6 +71,12 @@ export const Body = styled.div`
  * редактора и строку метрик; на низком окне блок не вылезет за экран.
  * Проценты резолвятся корректно: `Body` — `flex: 1` в колонке `Viewer`
  * фиксированной высоты и растягивает потомка по умолчанию.
+ *
+ * `padding-bottom` равен высоте плавающего футера: футер лежит поверх зоны
+ * (`position: absolute` в `Viewer`) и намеренно прозрачный — сквозь него
+ * должен быть виден сам блок, поэтому низ резервируется не в `Body`, а
+ * внутри прокрутки. Так контент уходит из-под кнопок, а полоса блока
+ * физически заезжает под футер.
  */
 export const LessonBlock = styled.div`
   display: flex;
@@ -70,6 +87,7 @@ export const LessonBlock = styled.div`
   min-height: min(420px, 100%);
 
   max-height: 100%;
+  padding-bottom: ${FOOTER_HEIGHT};
   overflow-y: auto;
   overscroll-behavior: contain;
 
