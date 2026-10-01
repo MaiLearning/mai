@@ -3,8 +3,12 @@ import styled, { css } from 'styled-components'
 
 // ─────────────────────────  Корневая зона  ─────────────────────────
 
-/** Корень вьюера урока кода — занимает всё доступное пространство. */
+/**
+ * Корень вьюера урока кода — занимает всё доступное пространство; источник
+ * container query для футера.
+ */
 export const Viewer = styled.section`
+  container: code-viewer / inline-size;
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -37,25 +41,45 @@ export const EmptyText = styled.p`
   color: ${({ theme }) => theme.utils.getText('neutral', 'muted')};
 `
 
-/** Скролл-зона основного содержимого. */
+/** Раскладка зоны содержимого; прокрутку несёт `LessonBlock`. */
 export const Body = styled.div`
   flex: 1;
   min-height: 0;
-  overflow-y: auto;
   display: flex;
   justify-content: center;
   padding: 28px 32px;
-
-  ${themedScrollbar}
 `
 
-export const BodyInner = styled.div`
+/**
+ * Блок урока: инструкция, редактор кода и вывод запуска. Прокрутка не на
+ * всём viewer, а здесь — блок не ниже необходимого, но не выше доступной
+ * высоты, поэтому внутренности растут (например редактор на 20+ строк) и
+ * прокручиваются внутри блока, а шапка и футер остаются на месте.
+ *
+ * `min-height: min(420px, 100%)` — 420px хватает на инструкцию, 10 строк
+ * редактора и строку метрик; на низком окне блок не вылезет за экран.
+ * Проценты резолвятся корректно: `Body` — `flex: 1` в колонке `Viewer`
+ * фиксированной высоты и растягивает потомка по умолчанию.
+ */
+export const LessonBlock = styled.div`
   display: flex;
   flex-direction: column;
   gap: 16px;
   width: 100%;
   max-width: 860px;
-  min-height: 0;
+  min-height: min(420px, 100%);
+
+  max-height: 100%;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+
+  /* flex-shrink по умолчанию жмёт содержимое (инструкция сжимается, полоса
+     не появляется) — блок должен переполняться, а не ужимать части урока. */
+  & > * {
+    flex-shrink: 0;
+  }
+
+  ${themedScrollbar}
 `
 
 // ─────────────────────────  Header  ─────────────────────────

@@ -1,4 +1,3 @@
-import { themedScrollbar } from '@mai/theme'
 import styled from 'styled-components'
 
 export const Root = styled.section`
@@ -29,11 +28,10 @@ export const Value = styled.code`
   color: ${({ theme }) => theme.utils.getText('neutral', 'primary')};
 `
 
+/** Поток вывода: без своего скролла — прокручивает блок урока (`LessonBlock`). */
 export const Stream = styled.pre<{ $tone: 'stdout' | 'stderr' }>`
   margin: 0;
   padding: 12px 14px;
-  max-height: 220px;
-  overflow: auto;
   font-family: ${({ theme }) => theme.typography.fontFamilyMonospace};
   font-size: 0.8125rem;
   line-height: 1.5;
@@ -43,8 +41,6 @@ export const Stream = styled.pre<{ $tone: 'stdout' | 'stderr' }>`
     $tone === 'stderr'
       ? theme.utils.getText('danger', 'primary')
       : theme.utils.getText('neutral', 'primary')};
-
-  ${themedScrollbar}
 `
 
 export const Empty = styled.p`

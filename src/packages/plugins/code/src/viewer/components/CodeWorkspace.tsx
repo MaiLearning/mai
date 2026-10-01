@@ -3,7 +3,7 @@ import type { CodeLessonContent, CodeStep } from '../../entity'
 import type { StepStatus, ViewMode } from '../core/types'
 import type { SaveState } from '../lib/useCodeAutosave'
 import { useCodeRun } from '../lib/useCodeRun'
-import { Body, BodyInner, Viewer } from '../viewer.style'
+import { Body, LessonBlock, Viewer } from '../viewer.style'
 import { CodeEditor } from './CodeEditor'
 import { InstructionsBlock } from './InstructionsBlock'
 import { RunOutput } from './RunOutput'
@@ -81,7 +81,7 @@ export function CodeWorkspace({
     return (
       <Viewer aria-label="Урок кода">
         <Body>
-          <BodyInner />
+          <LessonBlock />
         </Body>
       </Viewer>
     )
@@ -141,7 +141,7 @@ export function CodeWorkspace({
       />
 
       <Body>
-        <BodyInner>
+        <LessonBlock>
           {editing ? (
             <StepSettings
               step={step}
@@ -160,7 +160,7 @@ export function CodeWorkspace({
               <RunOutput output={runOutput.output} error={runOutput.error} />
             </>
           )}
-        </BodyInner>
+        </LessonBlock>
       </Body>
 
       <WorkspaceFooter
