@@ -2,7 +2,7 @@ import { useTranslation } from '@mai/i18n'
 import { Button } from '@mai/theme'
 import { DEFAULT_PHYSICS, PHYSICS_LIMITS } from '../core/constants'
 import type { PhysicsParams } from '../core/types'
-import { Panel, Row, RowLabel, RowValue, Slider } from './GraphSettingsPanel.style'
+import { Panel, Row, RowHead, RowLabel, RowValue, Slider } from './GraphSettingsPanel.style'
 
 interface GraphSettingsPanelProps {
   params: PhysicsParams
@@ -26,7 +26,10 @@ function SliderRow({
 }) {
   return (
     <Row>
-      <RowLabel>{label}</RowLabel>
+      <RowHead>
+        <RowLabel>{label}</RowLabel>
+        <RowValue>{value}</RowValue>
+      </RowHead>
       <Slider
         type="range"
         min={min}
@@ -35,7 +38,6 @@ function SliderRow({
         value={value}
         onChange={(e) => onChange(Number(e.target.value))}
       />
-      <RowValue>{value}</RowValue>
     </Row>
   )
 }

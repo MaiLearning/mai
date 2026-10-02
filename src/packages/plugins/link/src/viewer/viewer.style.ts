@@ -1,4 +1,4 @@
-import { Text } from '@mai/theme'
+import { Button, Text } from '@mai/theme'
 import styled from 'styled-components'
 
 // ─────────────────────────  Корневая зона viewer  ─────────────────────────
@@ -36,6 +36,15 @@ export const HeaderTitle = styled(Text)`
 `
 
 export const HeaderSubtitle = styled(Text).attrs({ color: 'muted' })``
+
+/** Кнопка-иконка шапки: квадратная заливка под единственную иконку. */
+export const HeaderIconButton = styled(Button).attrs({ variant: 'primary', size: 'md' } as const)`
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  flex-shrink: 0;
+  border-radius: ${({ theme }) => theme.radius.md};
+`
 
 // ─────────────────────────  Тело: граф + панель  ─────────────────────────
 

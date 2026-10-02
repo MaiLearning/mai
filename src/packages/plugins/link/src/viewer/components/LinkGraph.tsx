@@ -1,5 +1,5 @@
 import { useTranslation } from '@mai/i18n'
-import { useAppTheme } from '@mai/theme'
+import { Tooltip, useAppTheme } from '@mai/theme'
 import { Scan, SlidersHorizontal, ZoomIn, ZoomOut } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { DEFAULT_PHYSICS, ZOOM_BUTTON_FACTOR } from '../core/constants'
@@ -49,26 +49,35 @@ export function LinkGraph({
       <canvas ref={canvasRef} />
       <OverlayRail>
         <ControlsBar>
-          <ControlButton
-            aria-label={t('zoom_in')}
-            onClick={() => controls.zoomBy(ZOOM_BUTTON_FACTOR)}
-            onlyIcon={<ZoomIn size={18} />}
-          />
-          <ControlButton
-            aria-label={t('zoom_out')}
-            onClick={() => controls.zoomBy(1 / ZOOM_BUTTON_FACTOR)}
-            onlyIcon={<ZoomOut size={18} />}
-          />
-          <ControlButton
-            aria-label={t('fit_view')}
-            onClick={() => controls.fitView()}
-            onlyIcon={<Scan size={18} />}
-          />
-          <ControlButton
-            aria-label={t('graph_settings')}
-            onClick={() => setSettingsOpen((open) => !open)}
-            onlyIcon={<SlidersHorizontal size={18} />}
-          />
+          <Tooltip content={t('zoom_in')}>
+            <ControlButton
+              aria-label={t('zoom_in')}
+              onClick={() => controls.zoomBy(ZOOM_BUTTON_FACTOR)}
+              onlyIcon={<ZoomIn size={18} />}
+            />
+          </Tooltip>
+          <Tooltip content={t('zoom_out')}>
+            <ControlButton
+              aria-label={t('zoom_out')}
+              onClick={() => controls.zoomBy(1 / ZOOM_BUTTON_FACTOR)}
+              onlyIcon={<ZoomOut size={18} />}
+            />
+          </Tooltip>
+          <Tooltip content={t('fit_view')}>
+            <ControlButton
+              aria-label={t('fit_view')}
+              onClick={() => controls.fitView()}
+              onlyIcon={<Scan size={18} />}
+            />
+          </Tooltip>
+          <Tooltip content={t('graph_settings')}>
+            <ControlButton
+              aria-label={t('graph_settings')}
+              selected={settingsOpen}
+              onClick={() => setSettingsOpen((open) => !open)}
+              onlyIcon={<SlidersHorizontal size={18} />}
+            />
+          </Tooltip>
         </ControlsBar>
 
         {settingsOpen && <GraphSettingsPanel params={params} onChange={setParams} />}

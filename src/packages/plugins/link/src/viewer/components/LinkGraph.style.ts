@@ -17,22 +17,33 @@ export const CanvasWrap = styled.div`
   }
 `
 
-/** Правая колонка оверлея: кнопки управления + раскрывающаяся панель. */
+/**
+ * Правая колонка оверлея: кнопки управления + раскрывающаяся панель.
+ *
+ * `align-items: flex-end`, а не `stretch`: рейл абсолютный, его ширина
+ * задаётся самым широким ребёнком (панель настроек), и при `stretch` плитка
+ * кнопок растягивалась под её ширину. `max-height` ограничивает колонку
+ * вьюпортом — сама панель скроллится, плитка кнопок остаётся на месте.
+ */
 export const OverlayRail = styled.div`
   position: absolute;
   top: ${({ theme }) => theme.spacing.md};
   right: ${({ theme }) => theme.spacing.md};
   display: flex;
   flex-direction: column;
-  align-items: stretch;
+  align-items: flex-end;
   gap: ${({ theme }) => theme.spacing.sm};
+  max-height: calc(100% - 2 * ${({ theme }) => theme.spacing.md});
+  overflow: hidden;
 `
 
 /** Колонка кнопок управления. */
 export const ControlsBar = styled.div`
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   gap: 2px;
+  flex-shrink: 0;
   padding: 4px;
   border: 1px solid ${({ theme }) => theme.utils.getBorder('neutral', 'default')};
   border-radius: ${({ theme }) => theme.radius.md};

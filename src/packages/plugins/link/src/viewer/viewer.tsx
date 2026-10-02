@@ -4,8 +4,9 @@ import type { PluginRenderProps } from '@mai/plugin'
 import type { StructureNodeFlat } from '@mai/structure'
 import { fetchStructure } from '@mai/structure'
 import { error as logError } from '@mai/tauri/logs'
-import { Button, Spinner } from '@mai/theme'
+import { Button, Spinner, Tooltip } from '@mai/theme'
 import { useAtomValue, useSetAtom } from 'jotai'
+import { KeyRound } from 'lucide-react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { type Link, linksByCourseAtom, loadCourseLinksAtom } from '../entity'
@@ -21,6 +22,7 @@ import {
   EmptyState,
   GraphArea,
   Header,
+  HeaderIconButton,
   HeaderSubtitle,
   HeaderTitle,
   HeaderTitles,
@@ -127,7 +129,13 @@ export function LinkViewer({ courseId, onReady }: PluginRenderProps) {
           <HeaderTitle>{t('title')}</HeaderTitle>
           <HeaderSubtitle>{t('subtitle')}</HeaderSubtitle>
         </HeaderTitles>
-        <Button onClick={() => setCreating(true)}>{t('add_edge')}</Button>
+        <Tooltip content={t('add_edge')}>
+          <HeaderIconButton
+            aria-label={t('add_edge')}
+            onClick={() => setCreating(true)}
+            onlyIcon={<KeyRound size={18} />}
+          />
+        </Tooltip>
       </Header>
 
       <Body>
