@@ -67,7 +67,11 @@ export const Panel = styled.div<ModalStyledProps>`
     `}
 
   @media (min-width: 768px) {
-    max-height: calc(100dvh - 48px);
+    /* Потолок обязан совпадать с двойным отступом оверлея: при меньшем
+       значении панель вырастает за его контентный бокс, и overflow-y у
+       оверлея показывает лишний скроллбар там, где должен скроллиться
+       ModalBody. */
+    max-height: calc(100dvh - 2 * ${({ theme }) => theme.spacing.xl});
     border-radius: ${({ theme }) => theme.radius.lg};
   }
 `

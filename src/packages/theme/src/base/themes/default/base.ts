@@ -49,10 +49,12 @@ export const base: Omit<
     lg: '0.625rem',
     full: '9999px',
   },
+  // Наслоение снизу вверх. Попап порталится в body и обязан пережить
+  // модалку, иначе раскрытый Select/DropdownMenu уедет под её подложку.
   zIndex: {
-    popover: 1000,
-    toast: 1100,
     modal: 1200,
+    popover: 1300,
+    toast: 1400,
   },
   durations: {
     fast: '120ms',
