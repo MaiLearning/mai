@@ -1,12 +1,12 @@
 import type { Course } from '@mai/course'
 import { useTranslation } from '@mai/i18n'
 import { notifyError, notifySuccess } from '@mai/notifications'
-import { Button, Modal, TextField } from '@mai/theme'
+import { Button, Field, Modal, Select, TextField } from '@mai/theme'
 import { useSetAtom } from 'jotai'
-import { useState } from 'react'
+import { useId, useMemo, useState } from 'react'
 import { type CreateLinkInput, createLinkAtom, type LinkTarget } from '../../entity'
 import { OWNER_PLUGIN_ID } from '../core/constants'
-import { Fields, FieldsLabel, FieldsSelect } from './CreateLinkModal.style'
+import { Fields } from './CreateLinkModal.style'
 import { type PickerResource, TargetPicker } from './TargetPicker'
 
 export interface CreateLinkModalProps {
@@ -32,11 +32,20 @@ export function CreateLinkModal({
   const { t } = useTranslation('link')
   const createLink = useSetAtom(createLinkAtom)
 
+  const sourceId = useId()
   const [sourceSelect, setSourceSelect] = useState(`course:${courseId}`)
   const [target, setTarget] = useState<LinkTarget | null>(null)
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [submitting, setSubmitting] = useState(false)
+
+  const sourceItems = useMemo(
+    () => [
+      { value: `course:${courseId}`, label: t('source_course') },
+      ...resources.map((resource) => ({ value: `resource:${resource.id}`, label: resource.name })),
+    ],
+    [courseId, resources, t],
+  )
 
   const reset = () => {
     setSourceSelect(`course:${courseId}`)
@@ -90,15 +99,14 @@ export function CreateLinkModal({
       }
     >
       <Fields>
-        <FieldsLabel>{t('source')}</FieldsLabel>
-        <FieldsSelect value={sourceSelect} onChange={(e) => setSourceSelect(e.target.value)}>
-          <option value={`course:${courseId}`}>{t('source_course')}</option>
-          {resources.map((resource) => (
-            <option key={resource.id} value={`resource:${resource.id}`}>
-              {resource.name}
-            </option>
-          ))}
-        </FieldsSelect>
+        <Field label={t('source')} htmlFor={sourceId}>
+          <Select
+            id={sourceId}
+            value={sourceSelect}
+            items={sourceItems}
+            onChange={setSourceSelect}
+          />
+        </Field>
 
         <TargetPicker
           target={target}

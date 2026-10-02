@@ -1,8 +1,8 @@
 import type { Course } from '@mai/course'
-import { TextField } from '@mai/theme'
-import { useState } from 'react'
+import { Select, TextField } from '@mai/theme'
+import { useMemo, useState } from 'react'
 import { LINK_URI_PATTERN, type LinkTarget } from '../../entity'
-import { KindTab, KindTabs, PickerField, PickerRoot, PickerSelect } from './TargetPicker.style'
+import { KindTab, KindTabs, PickerField, PickerRoot } from './TargetPicker.style'
 
 export type TargetKind = 'resource' | 'course' | 'uri'
 
@@ -23,6 +23,7 @@ export interface TargetPickerProps {
   currentCourseId: string
   /** Подписи полей (i18n уже разрешён в родителе). */
   labels: {
+    /** Подпись группы выбора цели — идёт в `aria-label` корня. */
     kindLabel: string
     resource: string
     course: string
@@ -49,6 +50,20 @@ export function TargetPicker({
   const [kind, setKind] = useState<TargetKind>(target?.kind ?? 'resource')
   const [uriText, setUriText] = useState(target?.kind === 'uri' ? target.uri : '')
 
+  const resourceItems = useMemo(
+    () => resources.map((resource) => ({ value: resource.id, label: resource.name })),
+    [resources],
+  )
+
+  const courseItems = useMemo(
+    () =>
+      courses.map((course) => ({
+        value: course.id,
+        label: course.id === currentCourseId ? `${course.name} ★` : course.name,
+      })),
+    [courses, currentCourseId],
+  )
+
   const switchKind = (next: TargetKind) => {
     setKind(next)
     onTargetChange(null)
@@ -74,7 +89,7 @@ export function TargetPicker({
     kind === 'uri' && uriText.trim() !== '' && !LINK_URI_PATTERN.test(uriText.trim())
 
   return (
-    <PickerRoot>
+    <PickerRoot role="group" aria-label={labels.kindLabel}>
       <KindTabs>
         <KindTab $active={kind === 'resource'} onClick={() => switchKind('resource')}>
           {labels.resource}
@@ -89,34 +104,25 @@ export function TargetPicker({
 
       {kind === 'resource' && (
         <PickerField>
-          <PickerSelect
+          <Select
+            aria-label={labels.pickResource}
+            placeholder={labels.pickResource}
             value={target?.kind === 'resource' ? target.resourceId : ''}
-            onChange={(e) => pickResource(e.target.value)}
-          >
-            <option value="">{labels.pickResource}</option>
-            {resources.map((resource) => (
-              <option key={resource.id} value={resource.id}>
-                {resource.name}
-              </option>
-            ))}
-          </PickerSelect>
+            items={resourceItems}
+            onChange={pickResource}
+          />
         </PickerField>
       )}
 
       {kind === 'course' && (
         <PickerField>
-          <PickerSelect
+          <Select
+            aria-label={labels.pickCourse}
+            placeholder={labels.pickCourse}
             value={target?.kind === 'course' ? target.courseId : ''}
-            onChange={(e) => pickCourse(e.target.value)}
-          >
-            <option value="">{labels.pickCourse}</option>
-            {courses.map((course) => (
-              <option key={course.id} value={course.id}>
-                {course.name}
-                {course.id === currentCourseId ? ' ★' : ''}
-              </option>
-            ))}
-          </PickerSelect>
+            items={courseItems}
+            onChange={pickCourse}
+          />
         </PickerField>
       )}
 
