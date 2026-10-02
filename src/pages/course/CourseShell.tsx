@@ -122,7 +122,6 @@ export function CourseShell() {
       {menuOpen && <Overlay $open={menuOpen} onClick={() => setMenuOpen(false)} />}
 
       <Rail aria-label="Панель курса">
-        {/* Настроек курса пока нет — временно ведём на главную */}
         <RailButton
           variant="ghost"
           onlyIcon={<PanelLeftOpen size={18} aria-hidden="true" />}
@@ -132,8 +131,8 @@ export function CourseShell() {
         <RailButton
           variant="ghost"
           onlyIcon={<Settings size={18} aria-hidden="true" />}
-          onClick={() => navigate('/home')}
-          aria-label="Настройки курса"
+          onClick={() => navigate('/settings')}
+          aria-label="Настройки"
         />
       </Rail>
 
