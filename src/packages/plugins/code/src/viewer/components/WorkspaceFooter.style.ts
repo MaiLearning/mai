@@ -12,11 +12,17 @@ import { FOOTER_HEIGHT, FOOTER_Z } from '../viewer.style'
  * (`title`) и рисуется браузером поверх всего. На узком вьюере
  * (container query) подписи сворачиваются в иконки.
  *
+ * `box-sizing: border-box` обязателен: глобального сброса border-box в
+ * приложении нет, и в content-box полоса стала бы 92px вместо
+ * `FOOTER_HEIGHT` (44px кнопка + 24px отступ) — тогда резерв
+ * `padding-bottom` в `LessonBlock` не совпадает с футером.
+ *
  * `pointer-events: none` на самом футере: невидимые участки не должны
  * перехватывать клики по уроку под ними (выделение текста, drag, ссылки) —
  * их ловят только группы с кнопками.
  */
 export const Footer = styled.footer`
+  box-sizing: border-box;
   position: absolute;
   right: 0;
   bottom: 0;
