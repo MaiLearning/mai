@@ -20,7 +20,9 @@ export type SpacingValue = SpacingKey | number
 export function resolveSpace(theme: Pick<AppTheme, 'spacing'>, value: SpacingValue): string {
   if (typeof value === 'number') {
     const { value: step, unit } = theme.spacing.step
+
     return `${value * step}${unit}`
   }
+
   return theme.spacing[value]
 }

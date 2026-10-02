@@ -12,6 +12,7 @@ function render(node: ReactNode) {
   const html = renderToStaticMarkup(
     sheet.collectStyles(createElement(StyledThemeProvider, { theme: light }, node)),
   )
+
   return { html, css: sheet.getStyleTags() }
 }
 

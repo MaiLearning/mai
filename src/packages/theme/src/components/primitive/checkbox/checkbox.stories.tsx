@@ -72,6 +72,7 @@ export const WithLabel: Story = {
 export const Interactive: Story = {
   render: (args) => {
     const [checked, setChecked] = useState(false)
+
     return <Checkbox {...args} checked={checked} onChange={setChecked} />
   },
 }

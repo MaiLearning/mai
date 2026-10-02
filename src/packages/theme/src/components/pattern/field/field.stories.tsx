@@ -5,6 +5,7 @@ import { useFieldControl } from './fieldControl'
 /** Демо-контрол, подписанный на контракт Field (пока примитивы не переведены). */
 function WiredInput() {
   const props = useFieldControl()
+
   return <input {...props} />
 }
 

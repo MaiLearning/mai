@@ -47,6 +47,7 @@ type Story = StoryObj<typeof meta>
 export const Playground: Story = {
   render: (args) => {
     const [value, setValue] = useState('list')
+
     return <SegmentedControl {...args} value={value} onChange={setValue} />
   },
 }

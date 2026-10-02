@@ -29,6 +29,7 @@ export function resolveColumns(columns: GridColumns | undefined, min: string | u
   if (typeof columns === 'number') {
     return Number.isInteger(columns) && columns > 0 ? `repeat(${columns}, 1fr)` : undefined
   }
+
   return columns
 }
 
@@ -47,6 +48,7 @@ export const GridRoot = styled(BoxRoot)<GridRootProps>`
   display: grid;
   ${({ $columns, $min }) => {
     const template = resolveColumns($columns, $min)
+
     return template && `grid-template-columns: ${template};`
   }}
   align-items: ${({ $align }) => $align ?? 'stretch'};

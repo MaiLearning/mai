@@ -6,6 +6,7 @@ import { Heading } from './heading'
 const levels: HeadingLevel[] = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']
 const sizes: TextSize[] = ['xs', 'sm', 'md', 'lg', 'xl']
 const weights: TextWeight[] = ['regular', 'medium', 'semibold', 'bold']
+
 const colors: TextColor[] = [
   'primary',
   'muted',

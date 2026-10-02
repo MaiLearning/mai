@@ -47,6 +47,7 @@ type Story = StoryObj<typeof meta>
 export const Playground: Story = {
   render: (args) => {
     const [value, setValue] = useState<string[]>(['react'])
+
     return <CheckboxGroup {...args} value={value} onChange={setValue} />
   },
 }
@@ -60,6 +61,7 @@ export const Disabled: Story = {
 export const Multiple: Story = {
   render: () => {
     const [value, setValue] = useState<string[]>(['react', 'vue'])
+
     return <CheckboxGroup items={[...frameworks]} value={value} onChange={setValue} />
   },
 }

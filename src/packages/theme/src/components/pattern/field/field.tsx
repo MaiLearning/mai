@@ -196,6 +196,7 @@ function FieldDescription({ children, className }: FieldDescriptionProps) {
   useEffect(() => {
     if (!registerMessage || !unregisterMessage) return
     registerMessage(id)
+
     return () => unregisterMessage(id)
   }, [registerMessage, unregisterMessage, id])
 
@@ -218,6 +219,7 @@ function FieldError({ children, className }: FieldErrorProps) {
     if (!hasMessages) return
     registerMessage?.(id)
     setInvalid?.(true)
+
     return () => {
       unregisterMessage?.(id)
       setInvalid?.(false)
@@ -239,6 +241,7 @@ function FieldErrorMessage({ children, className }: FieldErrorMessageProps) {
 
 function FieldCounter({ count, max, className }: FieldCounterProps) {
   const ctx = useFieldControlContext()
+
   return (
     <Counter $over={count > max} $disabled={ctx?.disabled} className={className}>
       {count}/{max}

@@ -4,6 +4,7 @@ import type { FlexAlign, FlexDirection, FlexJustify, FlexWrap } from './flex'
 import { Flex } from './flex'
 
 const directions: FlexDirection[] = ['row', 'column', 'row-reverse', 'column-reverse']
+
 const justifications: FlexJustify[] = [
   'flex-start',
   'center',
