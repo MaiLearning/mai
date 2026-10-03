@@ -1,6 +1,13 @@
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 
+/**
+ * Ширина колонки навигации: 200px на узких окнах, 280px на широких. Верхняя
+ * граница — ширина, которая была зашита в каркас до появления пропа, поэтому
+ * на больших экранах страница не меняется.
+ */
+export const navWidth = 'clamp(12.5rem, 24vw, 17.5rem)'
+
 /** Корень страницы настроек: фон и вертикальная раскладка на всю высоту. */
 export const Page = styled.div`
   display: flex;

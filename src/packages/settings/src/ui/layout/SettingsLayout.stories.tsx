@@ -1,5 +1,6 @@
 import { Icon, Text } from '@mai/theme'
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import type { ReactNode } from 'react'
 import { fn } from 'storybook/test'
 import { SettingsLayout } from './SettingsLayout'
 import { SettingsNav, type SettingsNavGroup } from './SettingsNav'
@@ -33,13 +34,6 @@ const meta = {
   component: SettingsLayout,
   tags: ['autodocs'],
   parameters: { layout: 'padded' },
-  decorators: [
-    (Story) => (
-      <div style={{ width: 720 }}>
-        <Story />
-      </div>
-    ),
-  ],
   args: {
     nav: <SettingsNav groups={groups} activeId="system" onSelect={fn()} />,
     children: <Text size="sm">Содержимое выбранного пункта настроек.</Text>,
@@ -54,5 +48,20 @@ export default meta
 
 type Story = StoryObj<typeof meta>
 
+/**
+ * Рамка стори: её ширина выбирает ветку раскладки каркаса, потому что порог
+ * задан контейнерным запросом и считается от ширины контейнера, а не окна.
+ */
+function frame(width: number, story: ReactNode) {
+  return <div style={{ width }}>{story}</div>
+}
+
 /** Панель: навигация слева, содержимое справа. */
-export const Default: Story = {}
+export const Default: Story = {
+  render: (args) => frame(960, <SettingsLayout {...args} />),
+}
+
+/** Узкая раскладка: навигация над содержимым, ширина колонки не участвует. */
+export const Narrow: Story = {
+  render: (args) => frame(480, <SettingsLayout {...args} />),
+}

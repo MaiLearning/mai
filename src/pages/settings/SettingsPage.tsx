@@ -17,7 +17,7 @@ import {
 import { Breadcrumbs, Icon, PageHeader } from '@mai/theme'
 import { useAtomValue } from 'jotai'
 import { type ReactNode, useState } from 'react'
-import { CloseLink, Page } from './SettingsPage.style'
+import { CloseLink, navWidth, Page } from './SettingsPage.style'
 
 /** Пункт страницы настроек: ключ состояния, определение и данные для навигации. */
 type SettingsEntry = {
@@ -95,6 +95,7 @@ export function SettingsPage() {
   return (
     <Page>
       <SettingsLayout
+        navWidth={navWidth}
         nav={
           <SettingsNav
             groups={groups}
