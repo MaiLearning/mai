@@ -13,7 +13,7 @@ export function HomePage() {
 
   return (
     // TODO: мок пользователя — заменить реальными данными, когда появится модель
-    <HomeShell userName="Алексей" userInitials="АК">
+    <HomeShell userInitials="АК">
       <CoursesSection
         courses={courses}
         lessonCounts={lessonCounts}

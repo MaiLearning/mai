@@ -30,8 +30,12 @@ import {
 } from './HomeShellNav.style'
 
 interface HomeShellProps {
-  /** Имя пользователя в приветствии. */
-  userName: string
+  /**
+   * Имя пользователя для приветствия. Пока механики аккаунта нет, имя не
+   * подставляется: перевод `greeting` не содержит плейсхолдера, а проп
+   * оставлен швом под будущую модель пользователя.
+   */
+  userName?: string
   /** Инициалы для аватара. */
   userInitials: string
   children: ReactNode
@@ -41,7 +45,7 @@ interface HomeShellProps {
  * Каркас главной страницы по референсу: сайдбар слева (desktop),
  * хедер с приветствием, мобильная навигация снизу.
  */
-export function HomeShell({ userName, userInitials, children }: HomeShellProps) {
+export function HomeShell({ userInitials, children }: HomeShellProps) {
   const { t } = useTranslation('home')
 
   return (
@@ -87,7 +91,7 @@ export function HomeShell({ userName, userInitials, children }: HomeShellProps) 
                   <TerminalSquare size={14} aria-hidden="true" />
                   {t('brand')}
                 </MobileBrand>
-                <Greeting>{t('greeting', { name: userName })}</Greeting>
+                <Greeting>{t('greeting')}</Greeting>
                 <GreetingSub>{t('greetingSubtitle')}</GreetingSub>
               </HeaderText>
               <HeaderActions>

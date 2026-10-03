@@ -1,5 +1,5 @@
 {
-  "greeting": "Добрый день, {{name}}",
+  "greeting": "Добрый день",
   "greetingSubtitle": "Продолжайте с того места, где остановились.",
   "brand": "Mai",
   "notifications": "Уведомления",

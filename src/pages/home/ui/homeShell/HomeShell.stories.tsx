@@ -22,7 +22,6 @@ const meta = {
   parameters: { layout: 'fullscreen' },
   args: {
     // TODO: мок пользователя — заменить реальными данными, когда появится модель
-    userName: 'Алексей',
     userInitials: 'АК',
     children: <div style={{ marginTop: 28, color: '#64748b' }}>Контент страницы</div>,
   },
