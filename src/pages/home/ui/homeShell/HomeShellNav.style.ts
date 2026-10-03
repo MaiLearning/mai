@@ -1,5 +1,25 @@
+import type { AppTheme } from '@mai/theme'
 import { Link } from 'react-router-dom'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
+
+/**
+ * Высота одного пункта нижней панели: padding 8 + icon 18 + gap 4 +
+ * строка подписи 15 + padding 8. Задаётся ссылке как `min-height`, чтобы
+ * число было не предположением, а величиной, которую обеспечивает раскладка.
+ */
+const MOBILE_NAV_LINK_HEIGHT = 53
+
+/**
+ * Резерв под мобильную панель в контенте страницы: border-top 1 + padding-top 8
+ * оверлея + пункт + padding-bottom 12. Считается от `MOBILE_NAV_LINK_HEIGHT`,
+ * поэтому панель и `padding-bottom` в ShellRoot не могут разойтись — раньше там
+ * стоял хардкод 76px, и любая правка подписи (перенос на вторую строку)
+ * перекрывала собой низ контента.
+ *
+ * `env(safe-area-inset-bottom)` в резерв не входит: в десктопном окне он нулевой,
+ * а на мобильном панель утолщается вместе с системным отступом.
+ */
+export const MOBILE_NAV_RESERVE = 1 + 8 + MOBILE_NAV_LINK_HEIGHT + 12
 
 export const Sidebar = styled.aside`
   display: none;
@@ -109,48 +129,71 @@ export const MobileNav = styled.nav`
   }
 `
 
+/**
+ * Пункты нижней панели — flex, а не grid с фиксированным числом колонок:
+ * колонок ровно столько, сколько пунктов, и возвращение закомментированного
+ * раздела «Аналитика» не потребует правки раскладки.
+ */
 export const MobileNavGrid = styled.div`
   margin: 0 auto;
-  display: grid;
+  display: flex;
   max-width: 28rem;
-  grid-template-columns: repeat(4, 1fr);
   gap: 4px;
+`
+
+/**
+ * Общая часть ссылки нижней панели для обычной ссылки и `Link` из роутера.
+ *
+ * `box-sizing: border-box` обязателен: глобального сброса border-box в
+ * приложении нет, и в content-box `min-height` задал бы высоту контентного
+ * бокса — панель стала бы выше `MOBILE_NAV_RESERVE`.
+ *
+ * `min-width: 0` обязателен по той же причине, по которой он нужен в grid:
+ * иначе длинная подпись (min-content) распирает колонку, и пункты перестают
+ * делить ширину поровну.
+ */
+const mobileNavLinkCss = css`
+  box-sizing: border-box;
+  min-width: 0;
+  flex: 1 1 0;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-height: ${MOBILE_NAV_LINK_HEIGHT}px;
+  padding: 8px;
+  border-radius: ${({ theme }) => theme.radius.md};
+  text-decoration: none;
+  font-size: 11px;
+  font-weight: ${({ theme }) => theme.typography.weights.medium};
+  color: ${({ theme, $active }: { theme: AppTheme; $active?: boolean }) =>
+    $active ? theme.utils.getText('neutral', 'primary') : theme.utils.getText('neutral', 'muted')};
+  &:hover:not(:disabled) {
+    background: ${({ theme }) =>
+      theme.utils.withState(theme.utils.getBackground('neutral', 'surface'), 'hoverAlpha')};
+    color: ${({ theme }) => theme.utils.getText('neutral', 'primary')};
+  }
 `
 
 export const MobileNavLink = styled.a<{ $active?: boolean }>`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  padding: 8px;
-  border-radius: ${({ theme }) => theme.radius.md};
-  text-decoration: none;
-  font-size: 11px;
-  font-weight: ${({ theme }) => theme.typography.weights.medium};
-  color: ${({ theme, $active }) =>
-    $active ? theme.utils.getText('neutral', 'primary') : theme.utils.getText('neutral', 'muted')};
-  &:hover:not(:disabled) {
-    background: ${({ theme }) =>
-      theme.utils.withState(theme.utils.getBackground('neutral', 'surface'), 'hoverAlpha')};
-    color: ${({ theme }) => theme.utils.getText('neutral', 'primary')};
-  }
+  ${mobileNavLinkCss}
 `
 
 export const RouteMobileLink = styled(Link)<{ $active?: boolean }>`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  padding: 8px;
-  border-radius: ${({ theme }) => theme.radius.md};
-  text-decoration: none;
-  font-size: 11px;
-  font-weight: ${({ theme }) => theme.typography.weights.medium};
-  color: ${({ theme, $active }) =>
-    $active ? theme.utils.getText('neutral', 'primary') : theme.utils.getText('neutral', 'muted')};
-  &:hover:not(:disabled) {
-    background: ${({ theme }) =>
-      theme.utils.withState(theme.utils.getBackground('neutral', 'surface'), 'hoverAlpha')};
-    color: ${({ theme }) => theme.utils.getText('neutral', 'primary')};
-  }
+  ${mobileNavLinkCss}
+`
+
+/**
+ * Подпись пункта нижней панели. Никогда не переносится и не расталкивает
+ * панель: слишком длинный перевод обрезается многоточием, а доступное имя
+ * остаётся полным за счёт `aria-label` на ссылке.
+ */
+export const MobileNavLabel = styled.span`
+  max-width: 100%;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `

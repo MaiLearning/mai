@@ -6,6 +6,7 @@
   "nav": {
     "overview": "Overview",
     "manage": "Manage courses",
+    "manageShort": "Courses",
     "analytics": "Analytics",
     "settings": "Settings",
     "main": "Main navigation"

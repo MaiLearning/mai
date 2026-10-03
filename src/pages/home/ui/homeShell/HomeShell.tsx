@@ -1,14 +1,5 @@
 import { useTranslation } from '@mai/i18n'
-import {
-  BarChart3,
-  Bell,
-  BookOpen,
-  LayoutGrid,
-  Settings,
-  SlidersHorizontal,
-  Sparkles,
-  TerminalSquare,
-} from 'lucide-react'
+import { Bell, BookOpen, LayoutGrid, Settings, Sparkles, TerminalSquare } from 'lucide-react'
 import type { ReactNode } from 'react'
 import {
   Avatar,
@@ -29,6 +20,7 @@ import {
   BrandMark,
   MobileNav,
   MobileNavGrid,
+  MobileNavLabel,
   MobileNavLink,
   Nav,
   NavLink,
@@ -71,11 +63,15 @@ export function HomeShell({ userName, userInitials, children }: HomeShellProps) 
               <BookOpen size={16} aria-hidden="true" />
               {t('nav.manage')}
             </NavLink>
-            {/* TODO: раздел аналитики ещё не существует — ссылка ведёт в никуда */}
-            <NavLink href="#analytics">
+            {/*
+              TODO: раздел аналитики ещё не существует — ссылка ведёт в никуда.
+              Вернуть вместе с импортами SlidersHorizontal (здесь) и BarChart3
+              (в мобильной панели ниже): без них tsc падает на noUnusedLocals.
+            */}
+            {/* <NavLink href="#analytics">
               <SlidersHorizontal size={16} aria-hidden="true" />
               {t('nav.analytics')}
-            </NavLink>
+            </NavLink> */}
             <RouteNavLink to="/settings">
               <Settings size={16} aria-hidden="true" />
               {t('nav.settings')}
@@ -112,21 +108,22 @@ export function HomeShell({ userName, userInitials, children }: HomeShellProps) 
 
       <MobileNav aria-label={t('nav.main')}>
         <MobileNavGrid>
-          <MobileNavLink href="#courses" $active>
+          <MobileNavLink href="#courses" $active aria-current="page" aria-label={t('nav.overview')}>
             <LayoutGrid size={18} aria-hidden="true" />
-            {t('nav.overview')}
+            <MobileNavLabel>{t('nav.overview')}</MobileNavLabel>
           </MobileNavLink>
-          <MobileNavLink href="#library">
+          <MobileNavLink href="#library" aria-label={t('nav.manage')}>
             <BookOpen size={18} aria-hidden="true" />
-            {t('nav.manage')}
+            <MobileNavLabel>{t('nav.manageShort')}</MobileNavLabel>
           </MobileNavLink>
-          <MobileNavLink href="#analytics">
+          {/* TODO: раздел аналитики ещё не существует — ссылка ведёт в никуда. */}
+          {/* <MobileNavLink href="#analytics" aria-label={t('nav.analytics')}>
             <BarChart3 size={18} aria-hidden="true" />
-            {t('nav.analytics')}
-          </MobileNavLink>
-          <RouteMobileLink to="/settings">
+            <MobileNavLabel>{t('nav.analytics')}</MobileNavLabel>
+          </MobileNavLink> */}
+          <RouteMobileLink to="/settings" aria-label={t('nav.settings')}>
             <Settings size={18} aria-hidden="true" />
-            {t('nav.settings')}
+            <MobileNavLabel>{t('nav.settings')}</MobileNavLabel>
           </RouteMobileLink>
         </MobileNavGrid>
       </MobileNav>

@@ -1,5 +1,6 @@
 import { Button } from '@mai/theme'
 import styled from 'styled-components'
+import { MOBILE_NAV_RESERVE } from './HomeShellNav.style'
 
 /** Каркас главной: сайдбар слева (только lg+), контент по центру, мобильная навигация снизу. */
 export const ShellRoot = styled.div`
@@ -7,8 +8,13 @@ export const ShellRoot = styled.div`
   overflow-x: clip;
   container-type: inline-size;
   container-name: home-shell;
-  padding-bottom: 76px;
-  @container home-shell (min-width: 1200px) {
+  padding-bottom: ${MOBILE_NAV_RESERVE}px;
+  /* Медиазапрос, а не @container home-shell: ShellRoot сам является этим
+     контейнером, а элемент не резолвится против собственного контейнера —
+     запрос не срабатывал никогда, и резерв висел внизу на всех ширинах.
+     Ширина ShellRoot равна ширине вьюпорта, поэтому для него обе формы
+     эквивалентны. */
+  @media (min-width: 1200px) {
     padding-bottom: 0;
   }
 `
