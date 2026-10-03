@@ -53,6 +53,11 @@ export const Panel = styled.div<ModalStyledProps>`
   width: 100%;
   max-width: ${({ $width }) => `${$width}px`};
   max-height: 100dvh;
+  /* border-box обязателен: глобального сброса border-box в приложении нет,
+     а max-height без него ограничивает контентный бокс — рамка добавляет
+     1–2px, панель становится выше подложки, и её overflow-y показывает
+     лишний скроллбар на пустом месте. */
+  box-sizing: border-box;
   background: ${({ theme }) => theme.utils.getBackground('neutral', 'surface')};
   border: 1px solid ${({ theme }) => theme.utils.getBorder('neutral', 'default')};
   border-radius: ${({ theme }) => theme.radius.lg} ${({ theme }) => theme.radius.lg} 0 0;
