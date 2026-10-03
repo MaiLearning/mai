@@ -1,8 +1,7 @@
 import { useTranslation } from '@mai/i18n'
-import { Bell, BookOpen, LayoutGrid, Settings, Sparkles, TerminalSquare } from 'lucide-react'
+import { BookOpen, LayoutGrid, Settings, Sparkles, TerminalSquare } from 'lucide-react'
 import type { ReactNode } from 'react'
 import {
-  Avatar,
   Content,
   ContentInner,
   Greeting,
@@ -10,7 +9,6 @@ import {
   Header,
   HeaderActions,
   HeaderText,
-  IconButton,
   MobileBrand,
   ShellInner,
   ShellRoot,
@@ -36,7 +34,10 @@ interface HomeShellProps {
    * оставлен швом под будущую модель пользователя.
    */
   userName?: string
-  /** Инициалы для аватара. */
+  /**
+   * Инициалы для аватара. Аватар — вместе с панелью уведомлений — пока
+   * закомментирован, поэтому проп пока не читается.
+   */
   userInitials: string
   children: ReactNode
 }
@@ -45,7 +46,7 @@ interface HomeShellProps {
  * Каркас главной страницы по референсу: сайдбар слева (desktop),
  * хедер с приветствием, мобильная навигация снизу.
  */
-export function HomeShell({ userInitials, children }: HomeShellProps) {
+export function HomeShell({ children }: HomeShellProps) {
   const { t } = useTranslation('home')
 
   return (
@@ -95,14 +96,14 @@ export function HomeShell({ userInitials, children }: HomeShellProps) {
                 <GreetingSub>{t('greetingSubtitle')}</GreetingSub>
               </HeaderText>
               <HeaderActions>
-                {/* TODO: панель уведомлений ещё не существует */}
-                <IconButton
+                {/* TODO: панель уведомлений ещё не существует, поэтому закомментированно */}
+                {/* <IconButton
                   type="button"
                   variant="outline"
                   onlyIcon={<Bell size={18} aria-hidden="true" />}
                   aria-label={t('notifications')}
                 />
-                <Avatar aria-hidden="true">{userInitials}</Avatar>
+                <Avatar aria-hidden="true">{userInitials}</Avatar> */}
               </HeaderActions>
             </Header>
             {children}
