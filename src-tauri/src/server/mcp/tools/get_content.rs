@@ -57,7 +57,23 @@ struct Envelope<'a> {
     /// Миллисекунды эпохи: агент видит свежесть прочитанного.
     updated_at: i64,
     content: &'a Value,
+    /// Заполняется, когда документ не влез в лимит ответа и был урезан по
+    /// границе элемента: сколько блоков/задач/шагов отдали и сколько их всего.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    truncated: Option<Truncation>,
 }
+
+/// Признак структурной обрезки содержимого.
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct Truncation {
+    shown: usize,
+    total: usize,
+    hint: &'static str,
+}
+
+/// Бюджет обрезки: кап ответа минус запас на конверт и маркер обрезки.
+const JSON_TRIM_BUDGET: usize = render::MAX_RESULT_CHARS - 2_000;
 
 pub async fn run(state: &AppState, args: Args) -> Result<CallToolResult, ErrorData> {
     let repo = Arc::new(SqliteResourceRepository::new(state.pool.clone()));
@@ -93,7 +109,12 @@ pub async fn run(state: &AppState, args: Args) -> Result<CallToolResult, ErrorDa
 
     let raw = match view.fetch(state, &resource.id).await {
         Ok(raw) => raw,
-        Err(e) => return render::tool_error(NAME, e),
+        Err(e) => {
+            return render::tool_error(
+                NAME,
+                format!("у ресурса {} ({}) {}", resource.id, view.label(), e),
+            )
+        }
     };
 
     match args.format {
@@ -115,15 +136,33 @@ pub async fn run(state: &AppState, args: Args) -> Result<CallToolResult, ErrorDa
             }
             Ok(render::text(NAME, format!("{head}{body}")))
         }
-        Format::Json => render::json(
-            NAME,
-            &Envelope {
-                resource_id: &resource.id,
-                name: &resource.name,
-                type_key,
-                updated_at: resource.updated_at,
-                content: &raw,
-            },
-        ),
+        Format::Json => {
+            // Документ не влезает в лимит ответа — режем структурно, по границе
+            // элемента, чтобы агент получил валидный JSON (см. `ContentView::trim`).
+            let trimmed = view.trim(&raw, JSON_TRIM_BUDGET);
+            let (content, truncation) = match &trimmed {
+                Some(t) => (
+                    t.value.clone(),
+                    Some(Truncation {
+                        shown: t.shown,
+                        total: t.total,
+                        hint: "содержимое урезано по границе элемента; остальное — mai_search по нужной фразе",
+                    }),
+                ),
+                None => (raw.clone(), None),
+            };
+
+            render::json(
+                NAME,
+                &Envelope {
+                    resource_id: &resource.id,
+                    name: &resource.name,
+                    type_key,
+                    updated_at: resource.updated_at,
+                    content: &content,
+                    truncated: truncation,
+                },
+            )
+        }
     }
 }

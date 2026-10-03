@@ -38,6 +38,21 @@ impl TaskService {
             .map_err(|e| map_repo_error(e, "build task snapshot"))
     }
 
+    /// Строгий снапшот: нет содержимого — `NotFound`, корень не создаётся.
+    ///
+    /// Для read-only слоёв (MCP). Путь редактора берёт [`TaskService::snapshot`]:
+    /// там ленивое создание корня нужно, чтобы открытие неинициализированного
+    /// ресурса не падало.
+    pub async fn snapshot_strict(
+        &self,
+        resource_id: &str,
+    ) -> Result<TaskSnapshotData, TaskServiceError> {
+        self.task_repo
+            .snapshot_strict(resource_id)
+            .await
+            .map_err(|e| map_repo_error(e, "read task snapshot"))
+    }
+
     /// Создание задачи с дефолтным содержимым по виду (kind-строка от клиента).
     pub async fn create_task(
         &self,

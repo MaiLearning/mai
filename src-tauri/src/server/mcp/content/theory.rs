@@ -14,9 +14,10 @@
 use serde_json::Value;
 
 use crate::plugins::theory::runtime::build_service;
+use crate::plugins::theory::service::exceptions::TheoryServiceError;
 use crate::server::state::AppState;
 
-use super::{ContentView, Fetch};
+use super::{trim, ContentView, Fetch, FetchError, TrimPaths, Trimmed};
 
 pub struct TheoryView;
 
@@ -35,12 +36,30 @@ impl ContentView for TheoryView {
                 .get(resource_id)
                 .await
                 .map(|data| data.content)
-                .map_err(|e| format!("содержимое теории: {e}"))
+                .map_err(|e| match e {
+                    // Строгое чтение теории: отсутствие контента — это «нет
+                    // содержимого», а не поломка хранилища.
+                    TheoryServiceError::NotFound(_) => FetchError::NoContent,
+                    other => FetchError::Read(format!("содержимое теории: {other}")),
+                })
         })
     }
 
     fn to_text(&self, raw: &Value) -> String {
         to_text(raw)
+    }
+
+    fn trim(&self, raw: &Value, budget: usize) -> Option<Trimmed> {
+        // Блоки документа независимы: обрезаем по границе блока.
+        trim::trim_by_items(
+            raw,
+            &TrimPaths {
+                items: "content",
+                keyed_maps: &[],
+                id: "id",
+            },
+            budget,
+        )
     }
 }
 

@@ -24,6 +24,7 @@ use crate::services::course::CourseService;
 use crate::services::structure::{StructureNodeFlat, StructureService};
 
 use super::super::content;
+use super::super::content::FetchError;
 use super::super::render;
 
 /// Сколько символов контекста показывать с каждой стороны вхождения.
@@ -93,6 +94,10 @@ pub async fn run(state: &AppState, args: Args) -> Result<CallToolResult, ErrorDa
     let mut scanned = 0usize;
     let mut scan_capped = false;
     let mut failed: Vec<String> = Vec::new();
+    // Отсутствие содержимого — норма, а не поломка: в отчёт пошлёт счётчиком,
+    // иначе курс с пустыми ресурсами превратит отчёт в стену id.
+    let mut empty = 0usize;
+    let mut unsupported: Vec<String> = Vec::new();
 
     for course_id in &courses {
         let nodes = match structure(state).get_structure(course_id).await {
@@ -118,6 +123,7 @@ pub async fn run(state: &AppState, args: Args) -> Result<CallToolResult, ErrorDa
                 continue;
             };
             let Some(view) = content::find(type_key) else {
+                unsupported.push(type_key.to_string());
                 continue;
             };
             match view.fetch(state, &node.id).await {
@@ -127,7 +133,8 @@ pub async fn run(state: &AppState, args: Args) -> Result<CallToolResult, ErrorDa
                     }
                 }
                 // Ресурс без содержимого — норма, не повод прерывать поиск.
-                Err(e) => failed.push(format!("{}: {e}", node.id)),
+                Err(FetchError::NoContent) => empty += 1,
+                Err(FetchError::Read(e)) => failed.push(format!("{}: {e}", node.id)),
             }
         }
         if scan_capped {
@@ -141,7 +148,7 @@ pub async fn run(state: &AppState, args: Args) -> Result<CallToolResult, ErrorDa
     hits.truncate(max_results);
 
     let mut report = format!(
-        "запрос «{}» · курсов {} · просмотрено ресурсов {}{}",
+        "запрос «{}» · курсов {} · просмотрено ресурсов {}{}{}",
         args.query,
         courses.len(),
         scanned,
@@ -149,15 +156,28 @@ pub async fn run(state: &AppState, args: Args) -> Result<CallToolResult, ErrorDa
             " (потолок maxScan)"
         } else {
             ""
-        }
+        },
+        if empty > 0 {
+            format!(" · без содержимого {empty}")
+        } else {
+            String::new()
+        },
     );
     if hits.is_empty() {
         report.push_str("\nсовпадений нет");
     } else if total > hits.len() {
         report.push_str(&format!("\nпоказано {} из {}", hits.len(), total));
     }
+    if !unsupported.is_empty() {
+        unsupported.sort();
+        unsupported.dedup();
+        report.push_str(&format!(
+            "\nсодержимое этих типов не выставлено наружу, по ним искали только по имени: {}",
+            unsupported.join(", ")
+        ));
+    }
     if !failed.is_empty() {
-        report.push_str(&format!("\nбез содержимого: {}", failed.join(", ")));
+        report.push_str(&format!("\nне прочитано: {}", failed.join(", ")));
     }
 
     let body = render::json_string(&hits)?;

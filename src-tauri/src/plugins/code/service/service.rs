@@ -91,6 +91,22 @@ impl CodeService {
         }
     }
 
+    /// Строгий снимок содержимого: нет содержимого — `NotFound`, корень не создаётся.
+    ///
+    /// Для read-only слоёв (MCP). Путь редактора берёт [`CodeService::snapshot`]:
+    /// там ленивое создание нужно, чтобы открытие неинициализированного
+    /// ресурса не падало.
+    pub async fn snapshot_strict(
+        &self,
+        resource_id: &str,
+    ) -> Result<CodeContentData, CodeServiceError> {
+        self.code_repo
+            .get(resource_id)
+            .await
+            .map(Into::into)
+            .map_err(|e| map_repo_error(e, "get code content"))
+    }
+
     /// Обновление контента code-ресурса.
     pub async fn update_content(
         &self,

@@ -16,6 +16,13 @@ pub trait TaskRepository: Send + Sync {
     /// Полный агрегат контента ресурса; корень создаётся при отсутствии.
     async fn snapshot(&self, resource_id: &str) -> RepoResult<TaskSnapshotData>;
 
+    /// Строгий агрегат: нет корня — NotFound, без материализации.
+    ///
+    /// Для слоёв, которым запрещено писать (MCP). Путь редактора берёт
+    /// [`TaskRepository::snapshot`] — там ленивое создание корня нужно, чтобы
+    /// открытие ресурса не падало на неинициализированном контенте.
+    async fn snapshot_strict(&self, resource_id: &str) -> RepoResult<TaskSnapshotData>;
+
     /// Создание задачи с детьми по виду; позиция = max + 1; bump корня.
     async fn create_task(&self, resource_id: &str, task: TaskData) -> RepoResult<TaskData>;
 

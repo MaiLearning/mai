@@ -3,7 +3,7 @@
 //! Зеркалит `plugins/gateway/registry.rs`: одно место перечисления типов в
 //! ядре. Новый тип ресурса — реализация `ContentView` и одна строка в `all()`.
 
-use super::{ContentView, SnapshotView, TheoryView};
+use super::{ContentView, SnapshotView, TheoryView, TrimPaths};
 
 /// Статические проекции. Отдаём &'static — набор не меняется в рантайме.
 pub fn all() -> Vec<&'static dyn ContentView> {
@@ -23,11 +23,21 @@ static TASK: SnapshotView = SnapshotView {
     type_keys: &["task"],
     label: "задачи",
     fetch: super::snapshot::fetch_task,
+    paths: TrimPaths {
+        items: "tasks",
+        keyed_maps: &["answers", "results", "completed"],
+        id: "id",
+    },
 };
 static CODE: SnapshotView = SnapshotView {
     type_keys: &["code"],
     label: "код",
     fetch: super::snapshot::fetch_code,
+    paths: TrimPaths {
+        items: "steps",
+        keyed_maps: &["code", "results"],
+        id: "id",
+    },
 };
 
 #[cfg(test)]

@@ -334,23 +334,39 @@ async fn unknown_course_returns_tool_level_error() {
 /// Курс + ресурс напрямую в БД: `type_key` ссылается на `resource_types`,
 /// поэтому тип объявляется первым. Теорию без существующего ресурса не прочитать.
 async fn seed_resource(pool: &sqlx::SqlitePool, course_id: &str, resource_id: &str) {
-    sqlx::query("INSERT INTO courses (id, name, created_at, updated_at) VALUES (?, 'c', 0, 0)")
-        .bind(course_id)
-        .execute(pool)
-        .await
-        .expect("course seeded");
+    seed_resource_of_type(pool, course_id, resource_id, "theory").await;
+}
 
-    sqlx::query("INSERT OR IGNORE INTO resource_types (key, name) VALUES ('theory', 'Теория')")
+/// То же для ресурса произвольного типа: нужна проверка read-only не только на
+/// теории — у задач и кода чтение тоже обязано ничего не материализовать.
+async fn seed_resource_of_type(
+    pool: &sqlx::SqlitePool,
+    course_id: &str,
+    resource_id: &str,
+    type_key: &str,
+) {
+    sqlx::query(
+        "INSERT OR IGNORE INTO courses (id, name, created_at, updated_at) VALUES (?, 'c', 0, 0)",
+    )
+    .bind(course_id)
+    .execute(pool)
+    .await
+    .expect("course seeded");
+
+    sqlx::query("INSERT OR IGNORE INTO resource_types (key, name) VALUES (?, ?)")
+        .bind(type_key)
+        .bind(type_key)
         .execute(pool)
         .await
         .expect("resource type seeded");
 
     sqlx::query(
         "INSERT INTO resources (id, course_id, name, type_key, created_at, updated_at)
-         VALUES (?, ?, 'Лекция', 'theory', 10, 20)",
+         VALUES (?, ?, 'Лекция', ?, 10, 20)",
     )
     .bind(resource_id)
     .bind(course_id)
+    .bind(type_key)
     .execute(pool)
     .await
     .expect("resource seeded");
@@ -388,35 +404,51 @@ async fn seed_structure(pool: &sqlx::SqlitePool, course_id: &str) {
 
 /// `mai_get_content` — read-only: отсутствие контента это ошибка, а не повод
 /// материализовать пустой документ в БД.
+///
+/// Проверяется каждый тип содержимого: у задач и кода сервисы умеют создавать
+/// корень лениво (это нужно редактору), и слой MCP обязан брать строгие
+/// чтения — иначе агент материализует пустые строки просто чтением.
 #[tokio::test]
 async fn get_content_does_not_create_content() {
-    let state = test_state("t");
-    seed_resource(&state.pool, "c-1", "r-1").await;
+    for (type_key, table) in [
+        ("theory", "theory_content"),
+        ("task", "task_content"),
+        ("code", "code"),
+    ] {
+        let state = test_state(type_key);
+        seed_resource_of_type(&state.pool, "c-1", "r-1", type_key).await;
 
-    let (_, response) = post(
-        &state,
-        json!({
-            "jsonrpc": "2.0",
-            "id": 8,
-            "method": "tools/call",
-            "params": {
-                "name": "mai_get_content",
-                "arguments": {"resourceId": "r-1"}
-            }
-        }),
-    )
-    .await;
+        let (_, response) = post(
+            &state,
+            json!({
+                "jsonrpc": "2.0",
+                "id": 8,
+                "method": "tools/call",
+                "params": {
+                    "name": "mai_get_content",
+                    "arguments": {"resourceId": "r-1"}
+                }
+            }),
+        )
+        .await;
 
-    let result = result_of(&response);
-    assert_eq!(result["isError"], json!(true), "{response}");
-    let text = result["content"][0]["text"].as_str().expect("text-контент");
-    assert!(text.contains("Not found"), "{text}");
+        let result = result_of(&response);
+        assert_eq!(result["isError"], json!(true), "{type_key}: {response}");
+        let text = result["content"][0]["text"].as_str().expect("text-контент");
+        assert!(
+            text.contains("нет сохранённого содержимого"),
+            "{type_key}: {text}"
+        );
 
-    let rows: i64 = sqlx::query_scalar("SELECT COUNT(*) FROM theory_content")
-        .fetch_one(&state.pool)
-        .await
-        .expect("theory_content посчитан");
-    assert_eq!(rows, 0, "read-only tool не должен создавать строку");
+        let rows: i64 = sqlx::query_scalar(&format!("SELECT COUNT(*) FROM {table}"))
+            .fetch_one(&state.pool)
+            .await
+            .unwrap_or_else(|e| panic!("{table} посчитан: {e}"));
+        assert_eq!(
+            rows, 0,
+            "{type_key}: read-only tool не должен создавать строку"
+        );
+    }
 }
 
 /// `mai_get_content` отдаёт сохранённый контент: по умолчанию читаемым текстом.
@@ -595,4 +627,103 @@ async fn get_content_without_type_key_is_actionable() {
     assert_eq!(result["isError"], json!(true), "{response}");
     let text = result["content"][0]["text"].as_str().expect("text-контент");
     assert!(text.contains("нет типа"), "{text}");
+}
+
+/// Пустые ресурсы в отчёте поиска — счётчиком, а не списком id: иначе курс без
+/// содержимого превращает отчёт в стену идентификаторов.
+#[tokio::test]
+async fn search_reports_empty_resources_as_count() {
+    let state = test_state("t");
+    seed_resource(&state.pool, "c-1", "r-1").await;
+    seed_resource_of_type(&state.pool, "c-1", "r-2", "task").await;
+    seed_resource_of_type(&state.pool, "c-1", "r-3", "code").await;
+
+    let (_, response) = post(
+        &state,
+        json!({
+            "jsonrpc": "2.0",
+            "id": 14,
+            "method": "tools/call",
+            "params": {
+                "name": "mai_search",
+                "arguments": {"query": "владение", "courseId": "c-1"}
+            }
+        }),
+    )
+    .await;
+
+    let result = result_of(&response);
+    assert_eq!(result["isError"], json!(false), "{response}");
+    let text = result["content"][0]["text"].as_str().expect("text-контент");
+    assert!(text.contains("без содержимого 3"), "{text}");
+    assert!(!text.contains("не прочитано"), "{text}");
+
+    // Поиск остался чистым: ни одна пустая строка не материализована.
+    for (table, count) in [("task_content", 0), ("code", 0)] {
+        let rows: i64 = sqlx::query_scalar(&format!("SELECT COUNT(*) FROM {table}"))
+            .fetch_one(&state.pool)
+            .await
+            .expect("посчитано");
+        assert_eq!(rows, count, "{table} должен остаться пустым");
+    }
+}
+
+/// Большой документ в `format: "json"` урезается по границе блока и остаётся
+/// валидным JSON: резать посередине тела нельзя.
+#[tokio::test]
+async fn big_theory_json_is_trimmed_and_stays_valid() {
+    let state = test_state("t");
+    seed_resource(&state.pool, "c-1", "r-1").await;
+
+    let blocks: Vec<Value> = (0..4_000)
+        .map(|i| {
+            json!({
+                "type": "paragraph",
+                "content": [{"type": "text", "text": format!("блок {i} {}", "x".repeat(40))}]
+            })
+        })
+        .collect();
+    let doc = serde_json::to_string(&json!({"type": "doc", "content": blocks})).expect("doc");
+
+    sqlx::query(
+        "INSERT INTO theory_content (resource_id, content, created_at, updated_at) VALUES (?, ?, 10, 20)",
+    )
+    .bind("r-1")
+    .bind(doc)
+    .execute(&state.pool)
+    .await
+    .expect("theory row seeded");
+
+    let (_, response) = post(
+        &state,
+        json!({
+            "jsonrpc": "2.0",
+            "id": 15,
+            "method": "tools/call",
+            "params": {
+                "name": "mai_get_content",
+                "arguments": {"resourceId": "r-1", "format": "json"}
+            }
+        }),
+    )
+    .await;
+
+    let result = result_of(&response);
+    assert_eq!(result["isError"], json!(false), "{response}");
+    let text = result["content"][0]["text"].as_str().expect("text-контент");
+    let payload: Value = serde_json::from_str(text).expect("ответ — валидный JSON");
+
+    let truncation = &payload["truncated"];
+    assert_eq!(truncation["total"], json!(4_000));
+    assert!(
+        truncation["shown"].as_u64().expect("shown") < 4_000,
+        "должно быть урезано: {truncation}"
+    );
+    assert!(
+        truncation["hint"].as_str().is_some_and(|h| !h.is_empty()),
+        "у обрезки должна быть подсказка"
+    );
+
+    let returned = payload["content"]["content"].as_array().expect("блоки");
+    assert_eq!(returned.len() as u64, truncation["shown"].as_u64().unwrap());
 }

@@ -79,160 +79,17 @@ impl TaskRepository for SqliteTaskRepository {
     async fn snapshot(&self, resource_id: &str) -> RepoResult<TaskSnapshotData> {
         let mut tx = self.pool.begin().await.map_err(RepoError::Db)?;
         ensure_root_tx(&mut tx, resource_id).await?;
-
-        let (created_at, updated_at): (i64, i64) =
-            sqlx::query_as("SELECT created_at, updated_at FROM task_content WHERE resource_id = ?")
-                .bind(resource_id)
-                .fetch_one(&mut *tx)
-                .await
-                .map_err(RepoError::Db)?;
-
-        let difficulty_rows: Vec<(String, String, String)> = fetch_scoped(
-            &mut tx,
-            "SELECT id, label, color FROM task_difficulties WHERE resource_id = ? ORDER BY position",
-            resource_id,
-        ).await?;
-
-        let task_rows: Vec<TaskRow> = fetch_scoped(
-            &mut tx,
-            "SELECT id, kind, prompt, difficulty, answer_bool, sample_answer, placeholder \
-             FROM tasks WHERE resource_id = ? ORDER BY position",
-            resource_id,
-        )
-        .await?;
-
-        // Дети задач и ответы прогресса, сгруппированные по task_id
-        let mut choices = group(
-            fetch_scoped::<ChoiceRow>(
-                &mut tx,
-                "SELECT c.task_id, c.id, c.text, c.correct FROM task_choices c \
-                 JOIN tasks t ON t.id = c.task_id WHERE t.resource_id = ? ORDER BY c.task_id, c.position",
-                resource_id,
-            ).await?,
-            |r| r.task_id.as_str(),
-        );
-        let mut pairs = group(
-            fetch_scoped::<MatchPairRow>(
-                &mut tx,
-                "SELECT m.task_id, m.id, m.pair_left, m.pair_right FROM task_match_pairs m \
-                 JOIN tasks t ON t.id = m.task_id WHERE t.resource_id = ? ORDER BY m.task_id, m.position",
-                resource_id,
-            ).await?,
-            |r| r.task_id.as_str(),
-        );
-        let mut items = group(
-            fetch_scoped::<OrderingItemRow>(
-                &mut tx,
-                "SELECT o.task_id, o.id, o.text FROM task_ordering_items o \
-                 JOIN tasks t ON t.id = o.task_id WHERE t.resource_id = ? ORDER BY o.task_id, o.position",
-                resource_id,
-            ).await?,
-            |r| r.task_id.as_str(),
-        );
-        let mut segments = group(
-            fetch_scoped::<BlankSegmentRow>(
-                &mut tx,
-                "SELECT s.task_id, s.id, s.text, s.blank FROM task_blank_segments s \
-                 JOIN tasks t ON t.id = s.task_id WHERE t.resource_id = ? ORDER BY s.task_id, s.position",
-                resource_id,
-            ).await?,
-            |r| r.task_id.as_str(),
-        );
-        let progress_rows: Vec<ProgressRow> = fetch_scoped(
-            &mut tx,
-            "SELECT p.task_id, p.kind, p.choice_id, p.value_bool, p.text, p.result, p.completed \
-             FROM task_progress p JOIN tasks t ON t.id = p.task_id WHERE t.resource_id = ?",
-            resource_id,
-        )
-        .await?;
-        let answer_choices = group(
-            fetch_scoped::<AnswerChoiceRow>(
-                &mut tx,
-                "SELECT a.task_id, a.choice_id FROM task_answer_choices a \
-                 JOIN tasks t ON t.id = a.task_id WHERE t.resource_id = ? ORDER BY a.task_id, a.position",
-                resource_id,
-            ).await?,
-            |r| r.task_id.as_str(),
-        );
-        let answer_matches = group(
-            fetch_scoped::<AnswerMatchRow>(
-                &mut tx,
-                "SELECT a.task_id, a.left_id, a.right_id FROM task_answer_matches a \
-                 JOIN tasks t ON t.id = a.task_id WHERE t.resource_id = ? ORDER BY a.task_id, a.left_id",
-                resource_id,
-            ).await?,
-            |r| r.task_id.as_str(),
-        );
-        let answer_items = group(
-            fetch_scoped::<AnswerItemRow>(
-                &mut tx,
-                "SELECT a.task_id, a.item_id FROM task_answer_items a \
-                 JOIN tasks t ON t.id = a.task_id WHERE t.resource_id = ? ORDER BY a.task_id, a.position",
-                resource_id,
-            ).await?,
-            |r| r.task_id.as_str(),
-        );
-        let answer_blanks = group(
-            fetch_scoped::<AnswerBlankRow>(
-                &mut tx,
-                "SELECT a.task_id, a.segment_id, a.value FROM task_answer_blanks a \
-                 JOIN tasks t ON t.id = a.task_id WHERE t.resource_id = ? ORDER BY a.task_id, a.segment_id",
-                resource_id,
-            ).await?,
-            |r| r.task_id.as_str(),
-        );
-
+        let snapshot = read_snapshot_tx(&mut tx, resource_id).await?;
         tx.commit().await.map_err(RepoError::Db)?;
+        Ok(snapshot)
+    }
 
-        let mut tasks = Vec::with_capacity(task_rows.len());
-        for row in task_rows {
-            tasks.push(build_task_data(
-                row,
-                &mut choices,
-                &mut pairs,
-                &mut items,
-                &mut segments,
-            )?);
-        }
-
-        // Прогресс → answers (есть скаляр или дети), results (result NOT NULL), completed (1)
-        let mut answers = HashMap::new();
-        let mut results = HashMap::new();
-        let mut completed = HashMap::new();
-        for row in progress_rows {
-            if let Some(answer) = build_progress_answer(
-                &row,
-                &answer_choices,
-                &answer_matches,
-                &answer_items,
-                &answer_blanks,
-            ) {
-                answers.insert(row.task_id.clone(), answer);
-            }
-            if let Some(result_str) = &row.result {
-                let result = parse_result(result_str, &row.task_id)?;
-                results.insert(row.task_id.clone(), result);
-            }
-            if row.completed != 0 {
-                completed.insert(row.task_id.clone(), true);
-            }
-        }
-
-        Ok(TaskSnapshotData {
-            resource_id: resource_id.to_string(),
-            content: TaskContentData {
-                tasks,
-                difficulties: difficulty_rows
-                    .into_iter()
-                    .map(|(id, label, color)| CustomDifficultyData { id, label, color })
-                    .collect(),
-                answers: answers.into_iter().collect(),
-                results: results.into_iter().collect(),
-                completed: completed.into_iter().collect(),
-            },
-            created_at,
-            updated_at,
-        })
+    async fn snapshot_strict(&self, resource_id: &str) -> RepoResult<TaskSnapshotData> {
+        let mut tx = self.pool.begin().await.map_err(RepoError::Db)?;
+        require_root_tx(&mut tx, resource_id).await?;
+        let snapshot = read_snapshot_tx(&mut tx, resource_id).await?;
+        tx.commit().await.map_err(RepoError::Db)?;
+        Ok(snapshot)
     }
 
     async fn create_task(&self, resource_id: &str, task: TaskData) -> RepoResult<TaskData> {
@@ -558,12 +415,190 @@ impl TaskRepository for SqliteTaskRepository {
 // ---------------------------------------------------------------------------
 
 /// Get-or-create корня task_content (таймстампы проставят DEFAULT).
+/// Чтение агрегата без побочных эффектов: только SELECT-ы, корень не создаётся.
+/// Общая часть `snapshot` (ленивый корень) и `snapshot_strict` (строгий).
+async fn read_snapshot_tx(
+    db: &mut SqliteConnection,
+    resource_id: &str,
+) -> RepoResult<TaskSnapshotData> {
+    let (created_at, updated_at): (i64, i64) =
+        sqlx::query_as("SELECT created_at, updated_at FROM task_content WHERE resource_id = ?")
+            .bind(resource_id)
+            .fetch_one(&mut *db)
+            .await
+            .map_err(RepoError::Db)?;
+
+    let difficulty_rows: Vec<(String, String, String)> = fetch_scoped(
+        db,
+        "SELECT id, label, color FROM task_difficulties WHERE resource_id = ? ORDER BY position",
+        resource_id,
+    )
+    .await?;
+
+    let task_rows: Vec<TaskRow> = fetch_scoped(
+        db,
+        "SELECT id, kind, prompt, difficulty, answer_bool, sample_answer, placeholder \
+         FROM tasks WHERE resource_id = ? ORDER BY position",
+        resource_id,
+    )
+    .await?;
+
+    // Дети задач и ответы прогресса, сгруппированные по task_id
+    let mut choices = group(
+        fetch_scoped::<ChoiceRow>(
+            db,
+            "SELECT c.task_id, c.id, c.text, c.correct FROM task_choices c \
+             JOIN tasks t ON t.id = c.task_id WHERE t.resource_id = ? ORDER BY c.task_id, c.position",
+            resource_id,
+        ).await?,
+        |r| r.task_id.as_str(),
+    );
+    let mut pairs = group(
+        fetch_scoped::<MatchPairRow>(
+            db,
+            "SELECT m.task_id, m.id, m.pair_left, m.pair_right FROM task_match_pairs m \
+             JOIN tasks t ON t.id = m.task_id WHERE t.resource_id = ? ORDER BY m.task_id, m.position",
+            resource_id,
+        ).await?,
+        |r| r.task_id.as_str(),
+    );
+    let mut items = group(
+        fetch_scoped::<OrderingItemRow>(
+            db,
+            "SELECT o.task_id, o.id, o.text FROM task_ordering_items o \
+             JOIN tasks t ON t.id = o.task_id WHERE t.resource_id = ? ORDER BY o.task_id, o.position",
+            resource_id,
+        ).await?,
+        |r| r.task_id.as_str(),
+    );
+    let mut segments = group(
+        fetch_scoped::<BlankSegmentRow>(
+            db,
+            "SELECT s.task_id, s.id, s.text, s.blank FROM task_blank_segments s \
+             JOIN tasks t ON t.id = s.task_id WHERE t.resource_id = ? ORDER BY s.task_id, s.position",
+            resource_id,
+        ).await?,
+        |r| r.task_id.as_str(),
+    );
+    let progress_rows: Vec<ProgressRow> = fetch_scoped(
+        db,
+        "SELECT p.task_id, p.kind, p.choice_id, p.value_bool, p.text, p.result, p.completed \
+         FROM task_progress p JOIN tasks t ON t.id = p.task_id WHERE t.resource_id = ?",
+        resource_id,
+    )
+    .await?;
+    let answer_choices = group(
+        fetch_scoped::<AnswerChoiceRow>(
+            db,
+            "SELECT a.task_id, a.choice_id FROM task_answer_choices a \
+             JOIN tasks t ON t.id = a.task_id WHERE t.resource_id = ? ORDER BY a.task_id, a.position",
+            resource_id,
+        ).await?,
+        |r| r.task_id.as_str(),
+    );
+    let answer_matches = group(
+        fetch_scoped::<AnswerMatchRow>(
+            db,
+            "SELECT a.task_id, a.left_id, a.right_id FROM task_answer_matches a \
+             JOIN tasks t ON t.id = a.task_id WHERE t.resource_id = ? ORDER BY a.task_id, a.left_id",
+            resource_id,
+        ).await?,
+        |r| r.task_id.as_str(),
+    );
+    let answer_items = group(
+        fetch_scoped::<AnswerItemRow>(
+            db,
+            "SELECT a.task_id, a.item_id FROM task_answer_items a \
+             JOIN tasks t ON t.id = a.task_id WHERE t.resource_id = ? ORDER BY a.task_id, a.position",
+            resource_id,
+        ).await?,
+        |r| r.task_id.as_str(),
+    );
+    let answer_blanks = group(
+        fetch_scoped::<AnswerBlankRow>(
+            db,
+            "SELECT a.task_id, a.segment_id, a.value FROM task_answer_blanks a \
+             JOIN tasks t ON t.id = a.task_id WHERE t.resource_id = ? ORDER BY a.task_id, a.segment_id",
+            resource_id,
+        ).await?,
+        |r| r.task_id.as_str(),
+    );
+
+    let mut tasks = Vec::with_capacity(task_rows.len());
+    for row in task_rows {
+        tasks.push(build_task_data(
+            row,
+            &mut choices,
+            &mut pairs,
+            &mut items,
+            &mut segments,
+        )?);
+    }
+
+    // Прогресс → answers (есть скаляр или дети), results (result NOT NULL), completed (1)
+    let mut answers = HashMap::new();
+    let mut results = HashMap::new();
+    let mut completed = HashMap::new();
+    for row in progress_rows {
+        if let Some(answer) = build_progress_answer(
+            &row,
+            &answer_choices,
+            &answer_matches,
+            &answer_items,
+            &answer_blanks,
+        ) {
+            answers.insert(row.task_id.clone(), answer);
+        }
+        if let Some(result_str) = &row.result {
+            let result = parse_result(result_str, &row.task_id)?;
+            results.insert(row.task_id.clone(), result);
+        }
+        if row.completed != 0 {
+            completed.insert(row.task_id.clone(), true);
+        }
+    }
+
+    Ok(TaskSnapshotData {
+        resource_id: resource_id.to_string(),
+        content: TaskContentData {
+            tasks,
+            difficulties: difficulty_rows
+                .into_iter()
+                .map(|(id, label, color)| CustomDifficultyData { id, label, color })
+                .collect(),
+            answers: answers.into_iter().collect(),
+            results: results.into_iter().collect(),
+            completed: completed.into_iter().collect(),
+        },
+        created_at,
+        updated_at,
+    })
+}
+
 async fn ensure_root_tx(db: &mut SqliteConnection, resource_id: &str) -> RepoResult<()> {
     sqlx::query("INSERT OR IGNORE INTO task_content (resource_id) VALUES (?)")
         .bind(resource_id)
         .execute(db)
         .await
         .map_err(RepoError::Db)?;
+    Ok(())
+}
+
+/// Строгая пара к `ensure_root_tx`: корень должен уже существовать, иначе
+/// NotFound. Ничего не пишет — вызывающий слой объявил себя read-only.
+async fn require_root_tx(db: &mut SqliteConnection, resource_id: &str) -> RepoResult<()> {
+    let exists: Option<(i64,)> = sqlx::query_as("SELECT 1 FROM task_content WHERE resource_id = ?")
+        .bind(resource_id)
+        .fetch_optional(&mut *db)
+        .await
+        .map_err(RepoError::Db)?;
+
+    exists.ok_or_else(|| {
+        RepoError::NotFound(format!(
+            "Task content for resource '{}' not found",
+            resource_id
+        ))
+    })?;
     Ok(())
 }
 

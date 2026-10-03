@@ -52,8 +52,31 @@ pub fn json_string(data: &impl Serialize) -> Result<String, ErrorData> {
 }
 
 /// JSON-ответ инструмента: компактной сериализацией.
+///
+/// JSON **не обрезается**: обрезка посередине тела даёт агенту нечитаемый
+/// хвост, который нельзя ни распарсить, ни восстановить. Превышение капа —
+/// отказ с подсказкой, как это делает [`tool_error`], а не битый документ.
+/// Кто умеет уложиться в бюджет структурно (резать по элементам коллекции),
+/// делает это до вызова — см. `ContentView::trim`.
 pub fn json(tool: &str, data: &impl Serialize) -> Result<CallToolResult, ErrorData> {
-    Ok(text(tool, json_string(data)?))
+    let body = json_string(data)?;
+    let total = body.chars().count();
+    if total > MAX_RESULT_CHARS {
+        return too_big(
+            tool,
+            total,
+            "уже JSON — сузь выборку (mai_search, mai_course_outline с rootId/depth) либо возьми format:\"text\"",
+        );
+    }
+    Ok(logged(tool, total, false, body))
+}
+
+/// Отказ по размеру ответа: сколько просили, сколько влезло и что делать.
+fn too_big(tool: &str, total: usize, hint: &str) -> Result<CallToolResult, ErrorData> {
+    tool_error(
+        tool,
+        format!("ответ не отдан: {total} симв. при лимите {MAX_RESULT_CHARS}. {hint}"),
+    )
 }
 
 /// Tool-level ошибка: «выполнено, но не получилось» (не найдено, невалидные
@@ -126,5 +149,33 @@ mod tests {
         let result = tool_error("t", "не найдено").unwrap();
         assert_eq!(result.is_error, Some(true));
         assert!(body(&result).contains("t: не найдено"));
+    }
+
+    #[test]
+    fn json_помещается_в_лимит_как_есте() {
+        // Обвязка `{"a":"…"}` тоже считается в кап, поэтому берём с запасом.
+        let value = serde_json::json!({"a": "x".repeat(MAX_RESULT_CHARS - 16)});
+        let result = json("t", &value).unwrap();
+
+        assert_ne!(result.is_error, Some(true));
+        let text = body(&result);
+        assert!(
+            serde_json::from_str::<serde_json::Value>(&text).is_ok(),
+            "ответ — валидный JSON"
+        );
+    }
+
+    #[test]
+    fn json_сверх_лимита_отказывает_а_не_режется() {
+        let value = serde_json::json!({"a": "x".repeat(MAX_RESULT_CHARS * 2)});
+        let result = json("t", &value).unwrap();
+
+        assert_eq!(result.is_error, Some(true));
+        let text = body(&result);
+        assert!(text.contains("лимите"), "{text}");
+        assert!(
+            serde_json::from_str::<serde_json::Value>(&text).is_err(),
+            "битого JSON быть не должно"
+        );
     }
 }
