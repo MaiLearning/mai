@@ -16,10 +16,10 @@ jobs:
 
       # pnpm/action-setup обязан идти ДО setup-node: при cache: pnpm setup-node
       # вызывает `pnpm store path` и без установленного pnpm падает.
+      # Версию берёт из packageManager в package.json — если задать ещё и
+      # with.version, action падает с «Multiple versions of pnpm specified».
       - name: setup pnpm
         uses: pnpm/action-setup@v4
-        with:
-          version: 12.4.1
 
       - name: setup node
         uses: actions/setup-node@v6
