@@ -120,7 +120,11 @@ export const MobileNav = styled.nav`
   position: fixed;
   inset-inline: 0;
   bottom: 0;
-  z-index: ${({ theme }) => theme.zIndex.popover};
+  /* Хром страницы, а не попап: значение обязано остаться ниже
+     theme.zIndex.modal, иначе фиксированная панель перекроет подложку
+     модалки (модалка порталится в body, но z-index сравнивается в корневом
+     контейнере). Шкала взята у CourseShell: рейл 11, оверлей 19, слот 20. */
+  z-index: 20;
   padding: 8px 12px max(12px, env(safe-area-inset-bottom));
   border-top: 1px solid ${({ theme }) => theme.utils.getBorder('neutral', 'default')};
   background: ${({ theme }) => theme.utils.getBackground('neutral', 'elevated')};

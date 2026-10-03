@@ -4,6 +4,11 @@ import { MOBILE_NAV_RESERVE } from './HomeShellNav.style'
 
 /** Каркас главной: сайдбар слева (только lg+), контент по центру, мобильная навигация снизу. */
 export const ShellRoot = styled.div`
+  /* box-sizing обязателен: глобального сброса border-box в приложении нет, а
+     без него min-height: 100vh ограничивает контентный бокс, и padding-bottom
+     под мобильную панель уходил за пределы окна — документ всегда
+     прокручивался на лишние MOBILE_NAV_RESERVE пикселей. */
+  box-sizing: border-box;
   min-height: 100vh;
   overflow-x: clip;
   container-type: inline-size;
